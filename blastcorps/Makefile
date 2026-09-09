@@ -7,18 +7,31 @@ ASM_PROCESSOR_DIR := $(TOOLS_DIR)/asm-processor
 
 SRC_DIR = src.$(VERSION)
 
-# timestamps
+# gzip mtimes, taken from each ROM's own gzip headers.  They are part of the
+# compressed stream, so getting one wrong makes the rebuilt section differ from
+# the original even when the code inside it is identical.
 ifeq ($(VERSION),us.v10)
-HD_CODE_TEXT_TIMESTAMP			= 855502464
-HD_CODE_DATA_TIMESTAMP 			= 855502465
+HD_CODE_TEXT_TIMESTAMP      = 855502464
+HD_CODE_DATA_TIMESTAMP      = 855502465
 HD_FRONT_END_TEXT_TIMESTAMP = 855502466
 HD_FRONT_END_DATA_TIMESTAMP = 855502466
-else
-# US v1.1
-HD_CODE_TEXT_TIMESTAMP 			= 855919890
-HD_CODE_DATA_TIMESTAMP 			= 855919891
+else ifeq ($(VERSION),us.v11)
+HD_CODE_TEXT_TIMESTAMP      = 855919890
+HD_CODE_DATA_TIMESTAMP      = 855919891
 HD_FRONT_END_TEXT_TIMESTAMP = 855919891
 HD_FRONT_END_DATA_TIMESTAMP = 855919891
+else ifeq ($(VERSION),jp)
+HD_CODE_TEXT_TIMESTAMP      = 855921039
+HD_CODE_DATA_TIMESTAMP      = 855921040
+HD_FRONT_END_TEXT_TIMESTAMP = 855921040
+HD_FRONT_END_DATA_TIMESTAMP = 855921040
+else ifeq ($(VERSION),eu)
+HD_CODE_TEXT_TIMESTAMP      = 862230153
+HD_CODE_DATA_TIMESTAMP      = 862230153
+HD_FRONT_END_TEXT_TIMESTAMP = 862230154
+HD_FRONT_END_DATA_TIMESTAMP = 862230154
+else
+$(error Unknown VERSION '$(VERSION)'; expected one of us.v10 us.v11 jp eu)
 endif
 
 # init
@@ -49,6 +62,20 @@ HD_CODE_O_FILES := $(foreach file,$(HD_CODE_S_FILES),$(BUILD_DIR)/$(file).o) \
                    $(foreach file,$(HD_CODE_C_FILES),$(BUILD_DIR)/$(file).o) \
                    $(foreach file,$(HD_CODE_BIN_FILES),$(BUILD_DIR)/$(file).o)
 
+# asm/hd_front_end
+HD_FRONT_END_ASM_DIRS  = asm/hd_front_end
+HD_FRONT_END_BIN_DIRS  = assets/hd_front_end
+HD_FRONT_END_SRC_DIR   = $(SRC_DIR)/hd_front_end
+HD_FRONT_END_SRC_DIRS  = $(HD_FRONT_END_SRC_DIR)
+
+HD_FRONT_END_S_FILES   = $(foreach dir,$(HD_FRONT_END_ASM_DIRS),$(wildcard $(dir)/*.s))
+HD_FRONT_END_C_FILES   = $(foreach dir,$(HD_FRONT_END_SRC_DIRS),$(wildcard $(dir)/*.c))
+HD_FRONT_END_BIN_FILES = $(foreach dir,$(HD_FRONT_END_BIN_DIRS),$(wildcard $(dir)/*.bin))
+
+HD_FRONT_END_O_FILES := $(foreach file,$(HD_FRONT_END_S_FILES),$(BUILD_DIR)/$(file).o) \
+                        $(foreach file,$(HD_FRONT_END_C_FILES),$(BUILD_DIR)/$(file).o) \
+                        $(foreach file,$(HD_FRONT_END_BIN_FILES),$(BUILD_DIR)/$(file).o)
+
 
 # Files requiring pre/post-processing
 GREP    = grep -rl
@@ -57,6 +84,9 @@ GLOBAL_ASM_INIT_O_FILES := $(foreach file,$(GLOBAL_ASM_INIT_C_FILES),$(BUILD_DIR
 
 GLOBAL_ASM_HD_CODE_C_FILES := $(shell $(GREP) GLOBAL_ASM $(HD_CODE_SRC_DIR) </dev/null 2>/dev/null)
 GLOBAL_ASM_HD_CODE_O_FILES := $(foreach file,$(GLOBAL_ASM_HD_CODE_C_FILES),$(BUILD_DIR)/$(file).o)
+
+GLOBAL_ASM_HD_FRONT_END_C_FILES := $(shell $(GREP) GLOBAL_ASM $(HD_FRONT_END_SRC_DIR) </dev/null 2>/dev/null)
+GLOBAL_ASM_HD_FRONT_END_O_FILES := $(foreach file,$(GLOBAL_ASM_HD_FRONT_END_C_FILES),$(BUILD_DIR)/$(file).o)
 
 
 # Tooling
@@ -94,8 +124,12 @@ INIT_LD_SCRIPT = init.$(VERSION).ld
 HD_CODE_TARGET = $(BUILD_DIR)/hd_code.$(VERSION)
 HD_CODE_LD_SCRIPT = hd_code.$(VERSION).ld
 
+HD_FRONT_END_TARGET = $(BUILD_DIR)/hd_front_end.$(VERSION)
+HD_FRONT_END_LD_SCRIPT = hd_front_end.$(VERSION).ld
+
 INIT_LDFLAGS    = -T $(INIT_LD_SCRIPT) -Map $(INIT_TARGET).map -T undefined_syms_auto.init.$(VERSION).txt -T undefined_funcs_auto.init.$(VERSION).txt -T undefined_syms.init.$(VERSION).txt --no-check-sections
 HD_CODE_LDFLAGS = -T $(HD_CODE_LD_SCRIPT) -Map $(HD_CODE_TARGET).map -T undefined_syms_auto.hd_code.$(VERSION).txt -T undefined_funcs_auto.hd_code.$(VERSION).txt -T undefined_syms.hd_code.$(VERSION).txt --no-check-sections
+HD_FRONT_END_LDFLAGS = -T $(HD_FRONT_END_LD_SCRIPT) -Map $(HD_FRONT_END_TARGET).map -T undefined_syms_auto.hd_front_end.$(VERSION).txt -T undefined_funcs_auto.hd_front_end.$(VERSION).txt -T undefined_syms.hd_front_end.$(VERSION).txt --no-check-sections
 
 
 ### Optimisation Overrides
@@ -105,15 +139,27 @@ HD_CODE_LDFLAGS = -T $(HD_CODE_LD_SCRIPT) -Map $(HD_CODE_TARGET).map -T undefine
 
 default: all
 
-all: verify_init verify_hd_code
+# asm/ and assets/ hold one version at a time, so leftovers from a previous
+# VERSION would quietly be linked into this one.  Refuse to build on a tree
+# that was last used for something else.
+stamp:
+	@if [ -f .version ] && [ "$$(cat .version)" != "$(VERSION)" ]; then \
+		echo "error: tree holds $$(cat .version) output; run 'make clean' first" >&2; \
+		exit 1; \
+	fi
+	@echo $(VERSION) > .version
+
+all: verify_init verify_hd_code verify_hd_front_end
 
 dirs:
-	$(foreach dir,$(INIT_SRC_DIR) $(INIT_ASM_DIRS) $(INIT_BIN_DIRS) $(HD_CODE_SRC_DIR) $(HD_CODE_ASM_DIRS) $(HD_CODE_BIN_DIRS),$(shell mkdir -p $(BUILD_DIR)/$(dir)))
+	$(foreach dir,$(INIT_SRC_DIR) $(INIT_ASM_DIRS) $(INIT_BIN_DIRS) $(HD_CODE_SRC_DIR) $(HD_CODE_ASM_DIRS) $(HD_CODE_BIN_DIRS) $(HD_FRONT_END_SRC_DIR) $(HD_FRONT_END_ASM_DIRS) $(HD_FRONT_END_BIN_DIRS),$(shell mkdir -p $(BUILD_DIR)/$(dir)))
 
 
 init: dirs $(INIT_TARGET).bin
 
 hd_code: dirs $(HD_CODE_TARGET).bin
+
+hd_front_end: dirs $(HD_FRONT_END_TARGET).bin
 
 verify_init: init
 	@echo "$$(cat init.$(VERSION).sha1)  $(INIT_TARGET).bin" | sha1sum --check
@@ -121,20 +167,30 @@ verify_init: init
 verify_hd_code: hd_code
 	@echo "$$(cat hd_code.$(VERSION).sha1)  $(HD_CODE_TARGET).bin" | sha1sum --check
 
-extract:
+verify_hd_front_end: hd_front_end
+	@echo "$$(cat hd_front_end.$(VERSION).sha1)  $(HD_FRONT_END_TARGET).bin" | sha1sum --check
+
+extract: stamp
 	$(PYTHON) $(TOOLS_DIR)/splat/split.py init.$(VERSION).yaml
 	$(PYTHON) $(TOOLS_DIR)/splat/split.py hd_code.$(VERSION).yaml
+	$(PYTHON) $(TOOLS_DIR)/splat/split.py hd_front_end.$(VERSION).yaml
 
-compress: $(BUILD_DIR)/hd_code_text.$(VERSION).gz $(BUILD_DIR)/hd_code_data.$(VERSION).gz
+compress: $(BUILD_DIR)/hd_code_text.$(VERSION).gz $(BUILD_DIR)/hd_code_data.$(VERSION).gz \
+          $(BUILD_DIR)/hd_front_end_text.$(VERSION).gz $(BUILD_DIR)/hd_front_end_data.$(VERSION).gz
 	@echo "Replacing extracted hd_code..."
 	cp $(BUILD_DIR)/hd_code_text.$(VERSION).gz ../assets/hd_code_text.$(VERSION).bin
 	cp $(BUILD_DIR)/hd_code_data.$(VERSION).gz ../assets/hd_code_data.$(VERSION).bin
+	@echo "Replacing extracted hd_front_end..."
+	cp $(BUILD_DIR)/hd_front_end_text.$(VERSION).gz ../assets/hd_front_end_text.$(VERSION).bin
+	cp $(BUILD_DIR)/hd_front_end_data.$(VERSION).gz ../assets/hd_front_end_data.$(VERSION).bin
 
 clean:
 	rm -rf asm
 	rm -rf assets
 	rm -rf build
 	rm -f *auto.txt
+	rm -f *.ld
+	rm -f .version
 
 
 ### Recipes
@@ -145,6 +201,9 @@ $(BUILD_DIR)/init.$(VERSION).elf: $(INIT_O_FILES)
 $(BUILD_DIR)/hd_code.$(VERSION).elf: $(HD_CODE_O_FILES)
 	@$(LD) $(HD_CODE_LDFLAGS) -o $@
 
+$(BUILD_DIR)/hd_front_end.$(VERSION).elf: $(HD_FRONT_END_O_FILES)
+	@$(LD) $(HD_FRONT_END_LDFLAGS) -o $@
+
 ifndef PERMUTER
 $(GLOBAL_ASM_INIT_O_FILES): $(BUILD_DIR)/%.c.o: %.c
 	$(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py $(OPT_FLAGS) $< > $(BUILD_DIR)/$<
@@ -152,7 +211,13 @@ $(GLOBAL_ASM_INIT_O_FILES): $(BUILD_DIR)/%.c.o: %.c
 	$(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py $(OPT_FLAGS) $< --post-process $@ \
 		--assembler "$(AS) $(ASFLAGS)" --asm-prelude $(ASM_PROCESSOR_DIR)/prelude.s
 
-$(GLOBAL_ASM_O_HD_CODE_FILES): $(BUILD_DIR)/%.c.o: %.c
+$(GLOBAL_ASM_HD_CODE_O_FILES): $(BUILD_DIR)/%.c.o: %.c
+	$(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py $(OPT_FLAGS) $< > $(BUILD_DIR)/$<
+	$(CC) -c -32 $(CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $(BUILD_DIR)/$<
+	$(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py $(OPT_FLAGS) $< --post-process $@ \
+		--assembler "$(AS) $(ASFLAGS)" --asm-prelude $(ASM_PROCESSOR_DIR)/prelude.s
+
+$(GLOBAL_ASM_HD_FRONT_END_O_FILES): $(BUILD_DIR)/%.c.o: %.c
 	$(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py $(OPT_FLAGS) $< > $(BUILD_DIR)/$<
 	$(CC) -c -32 $(CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $(BUILD_DIR)/$<
 	$(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py $(OPT_FLAGS) $< --post-process $@ \
@@ -193,16 +258,18 @@ $(BUILD_DIR)/hd_code_text.$(VERSION).bin: $(BUILD_DIR)/hd_code.$(VERSION).elf
 $(BUILD_DIR)/hd_code_data.$(VERSION).bin: $(BUILD_DIR)/hd_code.$(VERSION).elf
 	$(OBJCOPY) -O binary --only-section .hd_code_data $< $@
 
-$(BUILD_DIR)/hd_front_end_text.$(VERSION).bin: $(BUILD_DIR)/hd_code.$(VERSION).elf
+$(BUILD_DIR)/hd_front_end_text.$(VERSION).bin: $(BUILD_DIR)/hd_front_end.$(VERSION).elf
 	$(OBJCOPY) -O binary --only-section .hd_front_end $< $@
 
-$(BUILD_DIR)/hd_front_end_data.$(VERSION).bin: $(BUILD_DIR)/hd_code.$(VERSION).elf
+$(BUILD_DIR)/hd_front_end_data.$(VERSION).bin: $(BUILD_DIR)/hd_front_end.$(VERSION).elf
 	$(OBJCOPY) -O binary --only-section .hd_front_end_data $< $@
 
 
 ### Settings
 .SECONDARY:
-.PHONY: all clean default
+.PHONY: all clean default dirs extract compress stamp \
+        init hd_code hd_front_end \
+        verify_init verify_hd_code verify_hd_front_end
 SHELL = /bin/bash -e -o pipefail
 
 
