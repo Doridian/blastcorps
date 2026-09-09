@@ -1,0 +1,51 @@
+options:
+  base_path: .
+  basename: hd_front_end.jp
+  compiler: IDO
+  create_detected_syms: yes
+  find_file_boundaries: yes
+  target_path: hd_front_end.jp.bin
+  undefined_funcs_auto_path: undefined_funcs_auto.hd_front_end.jp.txt
+  undefined_syms_auto_path: undefined_syms_auto.hd_front_end.jp.txt
+  src_path: src.jp
+segments:
+  # hd_front_end_text is inflated to 0x801E7000 by func_8028B3E0 in hd_code
+  - name:  hd_front_end
+    type:  code
+    vram:  0x801E7000
+    start: 0x00000000
+    subsegments:
+    - [0x00000, asm, hd_front_end/00000]
+    - [0x1C40, asm, hd_front_end/1C40]
+    - [0x6870, asm, hd_front_end/6870]
+    - [0x7200, asm, hd_front_end/7200]
+    - [0x7670, asm, hd_front_end/7670]
+    - [0x8230, asm, hd_front_end/8230]
+    - [0x9420, asm, hd_front_end/9420]
+    - [0xDD20, asm, hd_front_end/DD20]
+    - [0xE660, asm, hd_front_end/E660]
+    - [0x10700, asm, hd_front_end/10700]
+    - [0x113E0, asm, hd_front_end/113E0]
+    - [0x178E0, asm, hd_front_end/178E0]
+    - [0x19640, asm, hd_front_end/19640]
+    - [0x1A190, asm, hd_front_end/1A190]
+    - [0x1ADD0, asm, hd_front_end/1ADD0]
+    - [0x1B680, asm, hd_front_end/1B680]
+    - [0x1B7D0, asm, hd_front_end/1B7D0]
+    - [0x1B840, asm, hd_front_end/1B840]
+    - [0x1CC10, asm, hd_front_end/1CC10]
+    - [0x1D220, asm, hd_front_end/1D220]
+    - [0x1D360, asm, hd_front_end/1D360]
+    - [0x1D4A0, asm, hd_front_end/1D4A0]
+    - [0x1D660, asm, hd_front_end/1D660]
+    - [0x1DB60, asm, hd_front_end/1DB60]
+    - [0x1E340, asm, hd_front_end/1E340]
+    - [0x1F510, asm, hd_front_end/1F510]
+    - [0x1F8C0, asm, hd_front_end/1F8C0]
+    - [0x1FC70, asm, hd_front_end/1FC70]
+    # RSP microcode (0xFB0 bytes, fits IMEM): sets sp=0x110 and loads from
+    # DMEM 0xFC4, so it is not r4300 code. Kept as bin until it is classified.
+    - [0x1FFE0, bin, hd_front_end/1FFE0]
+    - [0x20F90, linker, data]
+    - [0x20F90, bin, hd_front_end/hd_front_end_data] # .data
+  - [0x29B00] # EOF

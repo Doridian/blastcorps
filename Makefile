@@ -1,5 +1,10 @@
 BASENAME  = blastcorps
-VERSION  := us.v10
+VERSION  := us.v11
+
+VERSIONS  := us.v10 us.v11 jp eu
+ifeq ($(filter $(VERSION),$(VERSIONS)),)
+$(error Unknown VERSION '$(VERSION)'; expected one of $(VERSIONS))
+endif
 
 BUILD_DIR = build
 ASM_DIRS  = asm
@@ -44,18 +49,30 @@ all: dirs $(TARGET).z64 verify
 dirs:
 	$(foreach dir,$(SRC_DIRS) $(ASM_DIRS) $(BIN_DIRS),$(shell mkdir -p $(BUILD_DIR)/$(dir)))
 
+# asm/ and assets/ hold one version at a time, so leftovers from a previous
+# VERSION would quietly be linked into this one.  Refuse to build on a tree
+# that was last used for something else.
+stamp:
+	@if [ -f .version ] && [ "$$(cat .version)" != "$(VERSION)" ]; then \
+		echo "error: tree holds $$(cat .version) output; run 'make clean' first" >&2; \
+		exit 1; \
+	fi
+	@echo $(VERSION) > .version
+
 check: .baserom.$(VERSION).ok
 
 verify: $(TARGET).z64
 	@echo "$$(cat $(BASENAME).$(VERSION).sha1)  $(TARGET).z64" | sha1sum --check
 
-extract: check assets/init.$(VERSION).bin
+extract: check stamp assets/init.$(VERSION).bin
 
 clean:
 	rm -rf asm
 	rm -rf assets
 	rm -rf build
 	rm -f *auto.txt
+	rm -f *.ld
+	rm -f .version
 	rm -rf $(BLASTCORP_EXTRACTED)
 
 decompress: $(BLASTCORP_EXTRACTED)
@@ -99,5 +116,5 @@ $(TARGET).z64: $(TARGET).bin
 
 ### Settings
 .SECONDARY:
-.PHONY: all clean default
+.PHONY: all check clean decompress default dirs extract stamp verify
 SHELL = /bin/bash -e -o pipefail
