@@ -13,3 +13,5 @@ assets/
 build/
 expected/
 junk/
+.env/
+.version

@@ -32,17 +32,43 @@ git submodule update
 
 # Build
 
-This is a two-stage build; first stage is to extract the compressed section from the ROM, second stage is to extract/compile them.
+## Requirements
 
-Place a US Rev 1.0 ROM at the base of this repo.
+* A MIPS cross-binutils, prefixed `mips-linux-gnu-` (`as`, `ld`, `objcopy`).
+  Debian/Ubuntu ship it as `binutils-mips-linux-gnu`; elsewhere build binutils
+  with `--target=mips-linux-gnu`.  Override the prefix with e.g.
+  `make CROSS=mips64-elf-` if yours is named differently.
+* Python 3 with splat's dependencies (see below), and `gzip`.
 
 ## Set up Python for splat
 
 ```
-virtualenv .env
+python3 -m venv .env
 . .env/bin/activate
 pip install -r tools/splat/requirements.txt
 ```
+
+Keep the virtualenv active for every `make` below; the Makefiles invoke plain
+`python3`.  Alternatively pass it explicitly: `make PYTHON=.env/bin/python ...`.
+
+## Versions
+
+`VERSION` selects the revision to work on and defaults to `us.v11`:
+
+| `VERSION` | ROM                            |
+| ---       | ---                            |
+| `us.v10`  | `Blast Corps (USA)`            |
+| `us.v11`  | `Blast Corps (USA) (Rev 1)`    |
+| `jp`      | `Blastdozer (Japan)`           |
+| `eu`      | `Blast Corps (Europe) (En,De)` |
+
+`asm/` and `assets/` hold one version at a time, so run `make clean` (and
+`make -C blastcorps clean`) before switching `VERSION`.  The build refuses to
+run on a tree left over from a different version rather than producing a
+mismatched ROM.
+
+This is a two-stage build.  Stage 1 splits the ROM and links it back together;
+stage 2 additionally disassembles and reassembles the three code modules.
 
 ## Stage 1
 
@@ -50,22 +76,24 @@ pip install -r tools/splat/requirements.txt
 ```
 make VERSION=us.v11 extract
 ```
-**Decompress hd_code and hd_front_end .text and .data sections**
-```
-make VERSION=us.v11 decompress
-```
 **Build ROM**
 ```
 make VERSION=us.v11
 ```
 
+The build ends with a `sha1sum --check` against `blastcorps.<VERSION>.sha1`.
+
 ## Stage 2 (Optional)
 
-**Extract `init` + `hd_code` (TODO: `hd_front_end`):**
+**Decompress hd_code and hd_front_end .text and .data sections**
+```
+make VERSION=us.v11 decompress
+```
+**Extract `init`, `hd_code` and `hd_front_end`:**
 ```
 make VERSION=us.v11 -C blastcorps extract
 ```
-**Compile ASM/C**
+**Compile ASM/C** (each module is checked against its own sha1)
 ```
 make VERSION=us.v11 -C blastcorps
 ```
@@ -76,6 +104,20 @@ make VERSION=us.v11 -C blastcorps compress
 **(re)Build ROM**
 ```
 make VERSION=us.v11
+```
+
+Going all the way round -- split, disassemble, reassemble, re-deflate, relink --
+reproduces every one of the four ROMs byte for byte.
+
+## Regenerating the splat configs
+
+The top-level split and the stage-2 module splits are both generated rather than
+hand-maintained, because the gzip members are self-delimiting and hand-written
+offsets have been wrong before:
+
+```
+python3 tools/gen_build_yaml.py baserom.jp.z64 jp > blastcorps.jp.yaml
+python3 tools/gen_code_yaml.py hd_code jp --vram 0x802447C0 --data 0xA47E0 --end 0xCAF60
 ```
 
 ## C tools
@@ -93,8 +135,10 @@ ninja -C build-tools
 ### Run the tools
 
 ```
-./build-tools/tools/src/blast_textures
+./build-tools/tools/src/unblast        # decompress a single Blast block
+./build-tools/tools/src/unblast_rom    # decompress every Blast block in a ROM
 ./build-tools/tools/src/gen_level_table
+./build-tools/tools/src/gen_splat_yaml
 ```
 
 # Related
