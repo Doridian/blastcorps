@@ -756,6 +756,6 @@ segments:
   - [0x7E3bEA, bin]                            # zero padding
   - [0x7E3BF0, bin, hd_front_end_text.us.v10]  # 855502466
   - [0x7F64A0, bin, hd_front_end_data.us.v10]  # 855502466
-  - [0x7f9c76, bin]                         # zero padding
+  - [0x7f9c75, bin]                         # zero padding
   - [0x7f9c80, bin, trailer] # 0xff to end
   - [0x800000]
