@@ -8,16 +8,16 @@
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/54F50/func_80299D04.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/54F50/func_80299D70.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/54F50/huft_build.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/54F50/func_8029A40C.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/54F50/inflate_codes.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/54F50/func_8029A814.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/54F50/inflate_stored.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/54F50/func_8029A9A8.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/54F50/inflate_fixed.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/54F50/func_8029AB50.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/54F50/inflate_dynamic.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/54F50/func_8029B13C.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/54F50/inflate_block.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/54F50/func_8029B288.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/54F50/inflate.s")

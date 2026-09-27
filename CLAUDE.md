@@ -93,6 +93,12 @@ so a too-wide `bin` goes unnoticed: only the sha1 decides, and it cannot tell.
   extra `-O1` build in `tools/build_ultralib.sh`. A few functions
   (`__osDispatchThread`, `__osSyncPutChars`, `osPiStartDma`, `osSpTaskLoad`,
   `alAudioFrame`) differ outright and are placed by similarity (`lib:fuzzy`).
+- Hand-identified code goes in `blastcorps/symbols_known.txt` (us.v11 init
+  addresses, with evidence). gen_symbols copies each name to every
+  masked-identical copy, pairing globals by lui/lo position. Rare's gzip 1.2.4
+  inflate lives there: one copy in init (inflates hd_code), one in hd_code
+  (inflates hd_front_end). `bi_reverse` and `clear_bufs` match as gzip's own
+  source, which pins down the global names.
 - Each module links its own copies of libultra, so a name like `__osDisableInt`
   exists in both `init` and `hd_code` at different addresses. Cross-module names
   (`from:`) are only added where they don't collide.

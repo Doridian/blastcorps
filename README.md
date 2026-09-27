@@ -155,6 +155,7 @@ with how it was found:
 | `lib:ref`   | a matched function calls or references it by this name             |
 | `lib:fuzzy` | at least 85% similar to one reference and clearly closer than any other |
 | `from:<m>`  | defined in module `<m>`; named here because this module calls it     |
+| `gzip`      | Rare's copy of gzip 1.2.4's decompressor, named in `symbols_known.txt` |
 | `called`    | unnamed, but called; listed so splat starts a function there        |
 
 Each module is linked separately and carries its own copy of the libultra
@@ -170,7 +171,13 @@ python3 tools/gen_symbols.py us.v11 <those directories>
 ```
 
 Names added by hand go above the marker line in a `symbol_addrs` file and
-survive regeneration.
+survive regeneration.  Code that is identified by hand and exists in more than
+one place goes in `blastcorps/symbols_known.txt` instead, at its address in
+us.v11's init: `gen_symbols.py` names every copy of it, in every module and
+version, along with the globals each copy uses.  That is how Rare's gzip
+decompressor (`inflate`, `huft_build`, `get_method`, ... and globals such as
+`inptr`, `outcnt`, `cplens`) is named in both init and hd_code; the file lists
+the evidence for each name.
 
 ## C tools
 

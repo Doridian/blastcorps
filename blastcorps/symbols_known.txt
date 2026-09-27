@@ -1,0 +1,64 @@
+// Names identified by hand, at their addresses in init (us.v11).
+//
+// tools/gen_symbols.py finds every copy of these functions in every module and
+// version (same instructions once addresses are masked) and names each copy,
+// along with the globals the copy uses in place of the ones named here.  The
+// text after `//` becomes the tag in the generated files.
+//
+// Rare's gzip decompressor, from gzip 1.2.4.  init uses it to inflate hd_code,
+// and hd_code has its own copy for hd_front_end.  The evidence for each name:
+//   inflate         wp = bk = bb = 0; inflate_block() until e; give back
+//                   whole bytes of lookahead (while (bk >= 8) inptr--).  Rare
+//                   adds inptr += 8 to skip the gzip trailer.
+//   inflate_block   1 bit e, 2 bits t: 2 dynamic, 0 stored, 1 fixed, else 2.
+//   inflate_stored  aligns to a byte, reads n, copies n bytes (Rare dropped
+//                   the ~n check).
+//   inflate_fixed   lengths 8/9/7/8 up to 144/256/280/288, huft_build(l, 288,
+//                   257, cplens, cplext, ...), then 30 distances of length 5.
+//   inflate_dynamic border[19], lbits/dbits, all four tables, huft_build.
+//   huft_build      BMAX 16, invalid-code marker 99.  No huft_free: Rare
+//                   allocates the tables from a static heap.
+//   inflate_codes   mask_bits, e > 16 extra-bits handling.
+//   get_method      method byte must be 8, else "kiunzip: unknown method %d --
+//                   get newer version of gzip" and exit_code = 1; then skips
+//                   the header fields by flag; header_bytes = inptr + 8.
+//   clear_bufs      outcnt = 0; insize = inptr = 0; bytes_in = bytes_out = 0,
+//                   stored in that order, which is what tells the globals apart.
+//   bi_reverse      exactly gzip's bits.c version.
+// outcnt is inflate's wp (gzip: #define wp outcnt); window is where inflate
+// writes, which Rare points straight at the destination.  The table contents
+// (cplens 3..258, mask_bits 0..0xFFFF, border 16,17,18,0,8,...) and lbits = 9,
+// dbits = 6 are gzip's.
+
+huft_build = 0x8021ED50; // type:func gzip
+inflate_codes = 0x8021F3EC; // type:func gzip
+inflate_stored = 0x8021F7F4; // type:func gzip
+inflate_fixed = 0x8021F988; // type:func gzip
+inflate_dynamic = 0x8021FB30; // type:func gzip
+inflate_block = 0x8022011C; // type:func gzip
+inflate = 0x80220268; // type:func gzip
+get_method = 0x8022043C; // type:func gzip
+bi_reverse = 0x8022069C; // type:func gzip
+clear_bufs = 0x802206D0; // type:func gzip
+
+border = 0x80222740; // type:data gzip
+cplens = 0x80222754; // type:data gzip
+cplext = 0x80222794; // type:data gzip
+cpdist = 0x802227B4; // type:data gzip
+cpdext = 0x802227F0; // type:data gzip
+mask_bits = 0x80222810; // type:data gzip
+lbits = 0x80222834; // type:data gzip
+dbits = 0x80222838; // type:data gzip
+method = 0x80222840; // type:data gzip
+exit_code = 0x80222844; // type:data gzip
+bb = 0x802229E4; // type:data gzip
+bk = 0x802229E8; // type:data gzip
+hufts = 0x802229EC; // type:data gzip
+inbuf = 0x802229F0; // type:data gzip
+window = 0x802229F4; // type:data gzip
+header_bytes = 0x802229FC; // type:data gzip
+bytes_in = 0x80222A08; // type:data gzip
+bytes_out = 0x80222A0C; // type:data gzip
+insize = 0x80222A18; // type:data gzip
+inptr = 0x80222A1C; // type:data gzip
+outcnt = 0x80222A20; // type:data gzip

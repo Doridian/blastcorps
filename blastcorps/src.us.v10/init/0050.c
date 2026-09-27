@@ -1,15 +1,15 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/0050/func_8021ED50.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/0050/huft_build.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/0050/func_8021F3EC.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/0050/inflate_codes.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/0050/func_8021F7F4.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/0050/inflate_stored.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/0050/func_8021F988.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/0050/inflate_fixed.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/0050/func_8021FB30.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/0050/inflate_dynamic.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/0050/func_8022011C.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/0050/inflate_block.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/0050/func_80220268.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/0050/inflate.s")
