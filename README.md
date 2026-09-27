@@ -122,7 +122,55 @@ tools/regen_code_yaml.sh
 
 `regen_code_yaml.sh` runs `gen_code_yaml.py` for hd_code and hd_front_end in
 every version and needs all their decompressed module binaries in `blastcorps/`.
-It records where the data islands inside `.text` sit in each version.
+It records where the data islands inside `.text` sit in each version.  Pass
+`--c` and set `SYMS=1` to get the configs as committed (see below).
+
+## Functions and symbols
+
+Every function is its own file.  Stage 2 extraction writes
+`blastcorps/asm/nonmatchings/<module>/<file>/<function>.s`, and
+`blastcorps/src.<VERSION>/<module>/<file>.c` pulls each one in with
+`#pragma GLOBAL_ASM`; decompiling a function means replacing its pragma with C.
+Splat only creates those `.c` files when they are missing and never rewrites
+them, so if the function boundaries change, delete the untouched stubs and
+extract again.  The only code not in this form is the handwritten math code
+between hd_code's data islands, which starts and ends at odd offsets and stays
+plain `asm`.
+
+Only recognised functions and variables have names.  Everything else keeps an
+address-based default: `func_802447C0` for functions, `D_80307B50` for data.
+
+The recognised names are libultra's.  `tools/libmatch.py` compiles nothing
+itself; it compares the game against libultra objects built from
+[decompals/ultralib](https://github.com/decompals/ultralib) with the same
+IDO 5.3.  Relocated fields are masked, so a function matches only when every
+other bit is identical.  The relocations of each match then name what it calls
+and the globals it uses.  Blast Corps links an older libultra than ultralib
+reproduces, so a few functions only match by similarity.  Each symbol is tagged
+with how it was found:
+
+| tag         | meaning                                                            |
+| ---         | ---                                                                |
+| `lib:exact` | the body matches a reference object (masked relocations aside)      |
+| `lib:ref`   | a matched function calls or references it by this name             |
+| `lib:fuzzy` | at least 85% similar to one reference and clearly closer than any other |
+| `from:<m>`  | defined in module `<m>`; named here because this module calls it     |
+| `called`    | unnamed, but called; listed so splat starts a function there        |
+
+Each module is linked separately and carries its own copy of the libultra
+functions it uses, so the same name can appear in several modules at different
+addresses.  Functions whose bodies are identical under two names
+(`alCSPPlay`/`alSeqpPlay`, `guFrustum`/`guPosition`, ...) stay unnamed.
+
+To regenerate the symbol files:
+
+```
+tools/build_ultralib.sh /tmp/ultralib        # prints the object directories
+python3 tools/gen_symbols.py us.v11 <those directories>
+```
+
+Names added by hand go above the marker line in a `symbol_addrs` file and
+survive regeneration.
 
 ## C tools
 

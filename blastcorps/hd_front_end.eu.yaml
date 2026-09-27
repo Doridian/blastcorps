@@ -5,6 +5,7 @@ options:
   create_detected_syms: yes
   find_file_boundaries: yes
   target_path: hd_front_end.eu.bin
+  symbol_addrs_path: symbol_addrs.hd_front_end.eu.txt
   undefined_funcs_auto_path: undefined_funcs_auto.hd_front_end.eu.txt
   undefined_syms_auto_path: undefined_syms_auto.hd_front_end.eu.txt
   src_path: src.eu
@@ -16,33 +17,33 @@ segments:
     start: 0x00000000
     subalign: 4
     subsegments:
-    - [0x00000, asm, hd_front_end/00000]
-    - [0x1A20, asm, hd_front_end/1A20]
-    - [0xB370, asm, hd_front_end/B370]
-    - [0xC070, asm, hd_front_end/C070]
-    - [0xC4E0, asm, hd_front_end/C4E0]
-    - [0xD090, asm, hd_front_end/D090]
-    - [0xE3A0, asm, hd_front_end/E3A0]
-    - [0xECE0, asm, hd_front_end/ECE0]
-    - [0x10FB0, asm, hd_front_end/10FB0]
-    - [0x11D10, asm, hd_front_end/11D10]
-    - [0x13B80, asm, hd_front_end/13B80]
-    - [0x146D0, asm, hd_front_end/146D0]
-    - [0x15320, asm, hd_front_end/15320]
-    - [0x1BA50, asm, hd_front_end/1BA50]
-    - [0x1C080, asm, hd_front_end/1C080]
-    - [0x1C1D0, asm, hd_front_end/1C1D0]
-    - [0x1C240, asm, hd_front_end/1C240]
-    - [0x1D610, asm, hd_front_end/1D610]
-    - [0x1DC20, asm, hd_front_end/1DC20]
-    - [0x1DD60, asm, hd_front_end/1DD60]
-    - [0x1DEA0, asm, hd_front_end/1DEA0]
-    - [0x1E060, asm, hd_front_end/1E060]
-    - [0x1E560, asm, hd_front_end/1E560]
-    - [0x1ED40, asm, hd_front_end/1ED40]
-    - [0x1FF10, asm, hd_front_end/1FF10]
-    - [0x202C0, asm, hd_front_end/202C0]
-    - [0x20670, asm, hd_front_end/20670]
+    - [0x00000, c, hd_front_end/00000]
+    - [0x1A20, c, hd_front_end/1A20]
+    - [0xB370, c, hd_front_end/B370]
+    - [0xC070, c, hd_front_end/C070]
+    - [0xC4E0, c, hd_front_end/C4E0]
+    - [0xD090, c, hd_front_end/D090]
+    - [0xE3A0, c, hd_front_end/E3A0]
+    - [0xECE0, c, hd_front_end/ECE0]
+    - [0x10FB0, c, hd_front_end/10FB0]
+    - [0x11D10, c, hd_front_end/11D10]
+    - [0x13B80, c, hd_front_end/13B80]
+    - [0x146D0, c, hd_front_end/146D0]
+    - [0x15320, c, hd_front_end/15320]
+    - [0x1BA50, c, hd_front_end/1BA50]
+    - [0x1C080, c, hd_front_end/1C080]
+    - [0x1C1D0, c, hd_front_end/1C1D0]
+    - [0x1C240, c, hd_front_end/1C240]
+    - [0x1D610, c, hd_front_end/1D610]
+    - [0x1DC20, c, hd_front_end/1DC20]
+    - [0x1DD60, c, hd_front_end/1DD60]
+    - [0x1DEA0, c, hd_front_end/1DEA0]
+    - [0x1E060, c, hd_front_end/1E060]
+    - [0x1E560, c, hd_front_end/1E560]
+    - [0x1ED40, c, hd_front_end/1ED40]
+    - [0x1FF10, c, hd_front_end/1FF10]
+    - [0x202C0, c, hd_front_end/202C0]
+    - [0x20670, c, hd_front_end/20670]
     # RSP microcode (0xFB0 bytes, fits IMEM): sets sp=0x110 and loads from
     # DMEM 0xFC4, so it is not r4300 code
     - [0x209E0, bin, hd_front_end/209E0]
