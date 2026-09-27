@@ -117,8 +117,12 @@ offsets have been wrong before:
 
 ```
 python3 tools/gen_build_yaml.py baserom.jp.z64 jp > blastcorps.jp.yaml
-python3 tools/gen_code_yaml.py hd_code jp --vram 0x802447C0 --data 0xA47E0 --end 0xCAF60
+tools/regen_code_yaml.sh
 ```
+
+`regen_code_yaml.sh` runs `gen_code_yaml.py` for hd_code and hd_front_end in
+every version and needs all their decompressed module binaries in `blastcorps/`.
+It records where the data islands inside `.text` sit in each version.
 
 ## C tools
 

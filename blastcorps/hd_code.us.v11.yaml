@@ -13,6 +13,7 @@ segments:
     type:  code
     vram:  0x802447C0
     start: 0x00000000
+    subalign: 4
     subsegments:
     - [0x00000, asm, hd_code/00000]
     - [0x12D80, asm, hd_code/12D80]
@@ -61,7 +62,12 @@ segments:
     - [0x60F60, asm, hd_code/60F60]
     - [0x62740, asm, hd_code/62740]
     - [0x679E0, asm, hd_code/679E0]
+    # u16 lookup table (sine) for the handwritten math routines around it
     - [0x68810, bin, hd_code/68810]
+    - [0x69014, asm, hd_code/69014]
+    # second u16 lookup table of the handwritten math routines
+    - [0x690C0, bin, hd_code/690C0]
+    - [0x69944, asm, hd_code/69944]
     - [0x69BB0, asm, hd_code/69BB0]
     - [0x6B4A0, asm, hd_code/6B4A0]
     - [0x6C5E0, asm, hd_code/6C5E0]
@@ -71,8 +77,12 @@ segments:
     - [0x75490, asm, hd_code/75490]
     - [0x772A0, asm, hd_code/772A0]
     - [0x77E20, asm, hd_code/77E20]
-    - [0x7D9D0, bin, hd_code/7D9D0_data] # ?? handwritten or a mix of .text+.data?
-    - [0x80280, asm, hd_code/7FB50]
+    # data with code pointers, ahead of a block of handwritten routines
+    - [0x7D9D0, bin, hd_code/7D9D0]
+    - [0x7F8B0, asm, hd_code/7F8B0]
+    # more data with code pointers, after that block
+    - [0x800DC, bin, hd_code/800DC]
+    - [0x80280, asm, hd_code/80280]
     - [0x83910, asm, hd_code/83910]
     - [0x853D0, asm, hd_code/853D0]
     - [0x86ED0, asm, hd_code/86ED0]
@@ -83,7 +93,8 @@ segments:
     - [0x8A2E0, asm, hd_code/8A2E0]
     - [0x8AEE0, asm, hd_code/8AEE0]
     - [0x8DDB0, asm, hd_code/8DDB0]
-    - [0x8E910, bin, hd_code/8E910] # more data?
+    # data island; no code reaches it
+    - [0x8E910, bin, hd_code/8E910]
     - [0x8F860, asm, hd_code/8F860]
     - [0x8FAF0, asm, hd_code/8FAF0]
     - [0x8FC40, asm, hd_code/8FC40]
@@ -184,7 +195,8 @@ segments:
     - [0xA0A30, asm, hd_code/A0A30]
     - [0xA0A40, asm, hd_code/A0A40]
     - [0xA0AA0, asm, hd_code/A0AA0]
-    - [0xA0BA0, bin, hd_code/A0BA0] # more data
+    # RSP microcode; its entry sets sp=0x110 and jumps into IMEM
+    - [0xA0C30, bin, hd_code/A0C30]
     - [0xA4410, linker, data]
     - [0xA4410, bin, hd_code/hd_code_data] # .data
-  - [0xCAEA0]
+  - [0xCAEA0] # EOF

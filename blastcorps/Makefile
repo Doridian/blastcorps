@@ -109,7 +109,10 @@ MIPSISET := -mips2 -o32
 
 INCLUDE_CFLAGS := -I . -I include -I include/2.0I -I include/2.0I/PR
 
-ASFLAGS = -EB -mtune=vr4300 -march=vr4300 -mabi=32 -I include
+# --no-pad-sections: handwritten code between the data islands in hd_code
+# starts and ends at odd offsets, and padding its .text out to 16 would shift
+# everything after it.
+ASFLAGS = -EB -mtune=vr4300 -march=vr4300 -mabi=32 -I include --no-pad-sections
 
 CFLAGS := -G 0 -Xfullwarn -Xcpluscomm -signed -nostdinc -non_shared -Wab,-r4300_mul
 CFLAGS += -D_LANGUAGE_C -D_FINALROM

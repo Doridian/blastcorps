@@ -57,14 +57,24 @@ Regions kept as `bin` because they are not r4300 code:
 
 - The last `0xFB0` bytes of every `hd_front_end` `.text` are RSP microcode
   (`sp = 0x110`, loads from DMEM `0xFC4`, exactly IMEM-sized).
-- Four data blobs inside each `hd_code` `.text`; sizes are `0x1140`, `0x28C0`,
-  `0xF60` and `0x36F0` in `jp`/`eu`. Find them by assembling every `asm/hd_code/*.s`
-  and bracketing the failures — capstone decodes data as Octeon opcodes
-  (`bbit0`, `synci`, `dlsa`) that `-march=vr4300` then rejects.
+- Six data islands inside each `hd_code` `.text`, listed with their offsets in
+  `tools/regen_code_yaml.sh`: two u16 tables embedded in Rare's handwritten
+  math routines, two pointer-bearing blobs around another block of handwritten
+  routines, one unreferenced blob, and the RSP microcode after libultra's
+  `ldiv`. Four are byte-identical across versions; the pointer-bearing two were
+  bounded by following control flow from every call into them. Capstone decodes
+  data as Octeon opcodes (`bbit0`, `synci`, `dlsa`) that `-march=vr4300`
+  rejects, so an island left as `asm` fails to assemble.
 
-Landing a `bin` region slightly wide or narrow is harmless: a data word that
-happens to decode as a real instruction reassembles to the same bytes. Only the
-sha1 decides.
+The islands are not 16-aligned, so the code between them starts and ends at odd
+offsets. That is why the code segments use `subalign: 4` and stage 2 assembles
+with `--no-pad-sections`; either default pads those objects and shifts
+everything after them. The same code also trips splat's file-boundary
+suggestions, so `gen_code_yaml.py` drops any boundary that a branch crosses.
+
+The jp/eu configs used to lump about 0x38000 bytes of real code into these bins
+(the generator ignored bin lengths). It still matched, because a bin is exact,
+so a too-wide `bin` goes unnoticed: only the sha1 decides, and it cannot tell.
 
 ## Conventions
 

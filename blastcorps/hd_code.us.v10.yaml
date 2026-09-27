@@ -13,8 +13,9 @@ segments:
     type:  code
     vram:  0x802447C0
     start: 0x00000000
+    subalign: 4
     subsegments:
-    - [0x0000, asm, hd_code/0000]
+    - [0x00000, asm, hd_code/00000]
     - [0x12D80, asm, hd_code/12D80]
     - [0x13A70, asm, hd_code/13A70]
     - [0x14B30, asm, hd_code/14B30]
@@ -60,8 +61,12 @@ segments:
     - [0x60D40, asm, hd_code/60D40]
     - [0x60F50, asm, hd_code/60F50]
     - [0x62730, asm, hd_code/62730]
-    - [0x68790, bin, hd_code/68790] # handwritten?
-    - [0x69920, asm, hd_code/69920]
+    # u16 lookup table (sine) for the handwritten math routines around it
+    - [0x68790, bin, hd_code/68790]
+    - [0x68F94, asm, hd_code/68F94]
+    # second u16 lookup table of the handwritten math routines
+    - [0x69040, bin, hd_code/69040]
+    - [0x698C4, asm, hd_code/698C4]
     - [0x69B30, asm, hd_code/69B30]
     - [0x6C540, asm, hd_code/6C540]
     - [0x6E160, asm, hd_code/6E160]
@@ -70,9 +75,11 @@ segments:
     - [0x753F0, asm, hd_code/753F0]
     - [0x77200, asm, hd_code/77200]
     - [0x77D80, asm, hd_code/77D80]
-    - [0x7D920, bin, hd_code/7D920] # data?
+    # data with code pointers, ahead of a block of handwritten routines
+    - [0x7D920, bin, hd_code/7D920]
     - [0x7F800, asm, hd_code/7F800]
-    - [0x80030, bin, hd_code/80030] # ?
+    # more data with code pointers, after that block
+    - [0x8002C, bin, hd_code/8002C]
     - [0x801D0, asm, hd_code/801D0]
     - [0x83860, asm, hd_code/83860]
     - [0x85320, asm, hd_code/85320]
@@ -84,7 +91,8 @@ segments:
     - [0x8A230, asm, hd_code/8A230]
     - [0x8AE30, asm, hd_code/8AE30]
     - [0x8DD00, asm, hd_code/8DD00]
-    - [0x8E860, bin, hd_code/8E860] # data
+    # data island; no code reaches it
+    - [0x8E860, bin, hd_code/8E860]
     - [0x8F7B0, asm, hd_code/8F7B0]
     - [0x8FA40, asm, hd_code/8FA40]
     - [0x8FB90, asm, hd_code/8FB90]
@@ -185,7 +193,8 @@ segments:
     - [0xA0980, asm, hd_code/A0980]
     - [0xA0990, asm, hd_code/A0990]
     - [0xA09F0, asm, hd_code/A09F0]
-    - [0xA0AF0, bin, hd_code/A0AF0] # data
+    # RSP microcode; its entry sets sp=0x110 and jumps into IMEM
+    - [0xA0B80, bin, hd_code/A0B80]
     - [0xA4360, linker, data]
-    - [0xA4360, bin, hd_code/hd_code_data]
-  - [0xCADF0]
+    - [0xA4360, bin, hd_code/hd_code_data] # .data
+  - [0xCADF0] # EOF

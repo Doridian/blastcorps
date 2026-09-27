@@ -14,6 +14,7 @@ segments:
     type:  code
     vram:  0x801E7000
     start: 0x00000000
+    subalign: 4
     subsegments:
     - [0x00000, asm, hd_front_end/00000]
     - [0x1C40, asm, hd_front_end/1C40]
@@ -44,7 +45,7 @@ segments:
     - [0x1F8C0, asm, hd_front_end/1F8C0]
     - [0x1FC70, asm, hd_front_end/1FC70]
     # RSP microcode (0xFB0 bytes, fits IMEM): sets sp=0x110 and loads from
-    # DMEM 0xFC4, so it is not r4300 code. Kept as bin until it is classified.
+    # DMEM 0xFC4, so it is not r4300 code
     - [0x1FFE0, bin, hd_front_end/1FFE0]
     - [0x20F90, linker, data]
     - [0x20F90, bin, hd_front_end/hd_front_end_data] # .data
