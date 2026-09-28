@@ -207,29 +207,41 @@ $(BUILD_DIR)/hd_code.$(VERSION).elf: $(HD_CODE_O_FILES)
 $(BUILD_DIR)/hd_front_end.$(VERSION).elf: $(HD_FRONT_END_O_FILES)
 	@$(LD) $(HD_FRONT_END_LDFLAGS) -o $@
 
+# IDO can't write dependency files, so list the headers with the host cpp and
+# add the .s files each C file pulls in through GLOBAL_ASM.  Otherwise
+# re-extracting (which rewrites the .s) leaves stale objects behind.
+define write_deps
+	@{ $(CPP) -MM -MT $@ $(INCLUDE_CFLAGS) -D_LANGUAGE_C -D_FINALROM $< 2>/dev/null || echo "$@: $<"; \
+	   { grep -o 'GLOBAL_ASM("[^"]*")' $< || true; } | sed 's/GLOBAL_ASM("\(.*\)")/$(subst /,\/,$@): \1/'; } > $(@:.o=.d)
+endef
+
 ifndef PERMUTER
 $(GLOBAL_ASM_INIT_O_FILES): $(BUILD_DIR)/%.c.o: %.c
 	$(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py $(OPT_FLAGS) $< > $(BUILD_DIR)/$<
 	$(CC) -c -32 $(CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $(BUILD_DIR)/$<
 	$(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py $(OPT_FLAGS) $< --post-process $@ \
 		--assembler "$(AS) $(ASFLAGS)" --asm-prelude $(ASM_PROCESSOR_DIR)/prelude.s
+	$(write_deps)
 
 $(GLOBAL_ASM_HD_CODE_O_FILES): $(BUILD_DIR)/%.c.o: %.c
 	$(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py $(OPT_FLAGS) $< > $(BUILD_DIR)/$<
 	$(CC) -c -32 $(CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $(BUILD_DIR)/$<
 	$(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py $(OPT_FLAGS) $< --post-process $@ \
 		--assembler "$(AS) $(ASFLAGS)" --asm-prelude $(ASM_PROCESSOR_DIR)/prelude.s
+	$(write_deps)
 
 $(GLOBAL_ASM_HD_FRONT_END_O_FILES): $(BUILD_DIR)/%.c.o: %.c
 	$(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py $(OPT_FLAGS) $< > $(BUILD_DIR)/$<
 	$(CC) -c -32 $(CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $(BUILD_DIR)/$<
 	$(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py $(OPT_FLAGS) $< --post-process $@ \
 		--assembler "$(AS) $(ASFLAGS)" --asm-prelude $(ASM_PROCESSOR_DIR)/prelude.s
+	$(write_deps)
 endif
 
 # non asm-processor recipe
 $(BUILD_DIR)/%.c.o: %.c
 	$(CC) -c $(CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(write_deps)
 
 $(BUILD_DIR)/%.s.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
@@ -267,6 +279,8 @@ $(BUILD_DIR)/hd_front_end_text.$(VERSION).bin: $(BUILD_DIR)/hd_front_end.$(VERSI
 $(BUILD_DIR)/hd_front_end_data.$(VERSION).bin: $(BUILD_DIR)/hd_front_end.$(VERSION).elf
 	$(OBJCOPY) -O binary --only-section .hd_front_end_data $< $@
 
+
+-include $(foreach file,$(INIT_C_FILES) $(HD_CODE_C_FILES) $(HD_FRONT_END_C_FILES),$(BUILD_DIR)/$(file).d)
 
 ### Settings
 .SECONDARY:
