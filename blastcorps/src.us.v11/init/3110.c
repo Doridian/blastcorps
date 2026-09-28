@@ -7,9 +7,9 @@
 #include "ultra_internal.h"
 #include <PR/rdb.h>
 
-extern u32 debugState;
-extern s32 numChars;
-extern s32 numCharsToReceive;
+static u32 debugState = 0;
+static s32 numChars = 0;
+static s32 numCharsToReceive = 0;
 extern u8 debugBuffer[0x100];
 extern OSThread __osThreadSave;
 

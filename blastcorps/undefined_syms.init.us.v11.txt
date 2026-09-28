@@ -1,4 +1,1 @@
 .L802447C0 = 0x802447C0;
-/* gzip tables addressed by a lui/addiu pair splat does not match up */
-cplens = 0x80222754;
-cpdist = 0x802227B4;

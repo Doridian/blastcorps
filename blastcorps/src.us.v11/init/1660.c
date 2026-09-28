@@ -9,8 +9,8 @@
 #define ORIG_NAME    0x08
 #define COMMENT      0x10
 
-/* "kiunzip: unknown method %d -- get newer version of gzip\n" */
-extern char D_802228D0[];
+int method = DEFLATED;
+int exit_code = 0;
 
 void func_80220714(const char *fmt, ...);
 
@@ -46,7 +46,7 @@ int get_method(void) {
 
     method = (int)get_byte();
     if (method != DEFLATED) {
-        func_80220714(D_802228D0, method);
+        func_80220714("kiunzip: unknown method %d -- get newer version of gzip\n", method);
         exit_code = ERROR;
         return -1;
     }

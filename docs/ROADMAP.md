@@ -13,7 +13,7 @@ lands in `us.v11` first.
 
 | module         | functions | instructions | in C (2026-09-27) |
 | ---            | ---:      | ---:         | ---:              |
-| `init`         | 67        | ~3.7k        | 95%               |
+| `init`         | 67        | ~3.7k        | 100%              |
 | `hd_code`      | 1421      | ~160k        | 0%                |
 | `hd_front_end` | 161       | ~33k         | 0%                |
 
@@ -62,13 +62,19 @@ decompilation.
 A PC port needs every address to be symbolic. The same work lets the N64 build
 change size (a "shiftable" build), which is how we test it.
 
-- [ ] Find each module's `.data`/`.rodata` boundary and its `.bss` range.
-      `init`'s entry point zeroes `0x23A0` bytes from `0x802229E0`, so its
-      `.bss` is `0x802229E0`–`0x80224D80`. The hd_code entry should give its
-      range the same way.
-- [ ] Replace the data `bin`s with splat `data`/`rodata` segments so pointers
-      in data become relocations. Migrate rodata into the functions that use it
-      as each file is decompiled.
+- [x] `init`: `.data`/`.rodata` split per object. Each C file defines its
+      own data (the gzip tables, `osClockRate`, the thread queues); the asm
+      files' data are splat `data`/`rodata` segments. The layout, one 16-byte
+      aligned block per object in link order, is in `init.us.v11.yaml`.
+- [ ] `init` `.bss` (`0x802229E0`, `0x23A0` bytes, cleared by the entry
+      point). Its variables are still absolute linker symbols. Two problems:
+      this splat only supports `.bss` belonging to a C file, and IDO emits
+      uninitialized globals as COMMON, which GNU ld places by its own rules.
+      Options: `obj(COMMON)` entries per object in the linker script, or
+      linker symbols relative to the start of `.bss` rather than absolute.
+- [ ] The same for `hd_code` and `hd_front_end`, whose data is still one
+      `bin` each. The hd_code entry point should give its `.bss` range as
+      `init`'s did.
 - [ ] Make the ROM offsets that code uses to find assets and the compressed
       modules into linker symbols instead of constants. For example,
       `func_80220730` hardcodes `0x787FD0`, `0x7E3AD0` and `0x7F9BE0`.
@@ -80,10 +86,9 @@ change size (a "shiftable" build), which is how we test it.
 
 Matching C for every non-handwritten function, in this order:
 
-1. **`init`.** Done except `osInitialize`, whose C is known but only matches
-   with `osClockRate` defined in the same file, which waits for the data
-   split. The rest of `init` is handwritten and now split out as `asm`: the
-   entry point, the boot code at `0x1A30`, and libultra's `.s` files.
+1. **`init`.** Done. The rest of `init` is handwritten and split out as
+   `asm`: the entry point, the boot code at `0x1A30`, and libultra's `.s`
+   files.
 2. **libultra everywhere.** Most functions match ultralib's source directly.
    The ones that don't (`lib:fuzzy`) are an older revision and get their own
    copies. Share one source file across modules where the code is identical.

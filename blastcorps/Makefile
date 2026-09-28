@@ -35,7 +35,7 @@ $(error Unknown VERSION '$(VERSION)'; expected one of us.v10 us.v11 jp eu)
 endif
 
 # init
-INIT_ASM_DIRS  = asm/init
+INIT_ASM_DIRS  = asm/init asm/data/init
 INIT_BIN_DIRS  = assets/init
 INIT_SRC_DIR   = $(SRC_DIR)/init
 INIT_SRC_DIRS  = $(INIT_SRC_DIR)
@@ -49,7 +49,7 @@ INIT_O_FILES := $(foreach file,$(INIT_S_FILES),$(BUILD_DIR)/$(file).o) \
                 $(foreach file,$(INIT_BIN_FILES),$(BUILD_DIR)/$(file).o)
 
 #asm/hd_code asm/hd_front_end
-HD_CODE_ASM_DIRS  = asm/hd_code
+HD_CODE_ASM_DIRS  = asm/hd_code asm/data/hd_code
 HD_CODE_BIN_DIRS  = assets/hd_code
 HD_CODE_SRC_DIR   = $(SRC_DIR)/hd_code
 HD_CODE_SRC_DIRS  = $(HD_CODE_SRC_DIR)
@@ -63,7 +63,7 @@ HD_CODE_O_FILES := $(foreach file,$(HD_CODE_S_FILES),$(BUILD_DIR)/$(file).o) \
                    $(foreach file,$(HD_CODE_BIN_FILES),$(BUILD_DIR)/$(file).o)
 
 # asm/hd_front_end
-HD_FRONT_END_ASM_DIRS  = asm/hd_front_end
+HD_FRONT_END_ASM_DIRS  = asm/hd_front_end asm/data/hd_front_end
 HD_FRONT_END_BIN_DIRS  = assets/hd_front_end
 HD_FRONT_END_SRC_DIR   = $(SRC_DIR)/hd_front_end
 HD_FRONT_END_SRC_DIRS  = $(HD_FRONT_END_SRC_DIR)

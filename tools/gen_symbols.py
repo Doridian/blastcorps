@@ -42,9 +42,11 @@ def layout(mod, version):
     """vram, text words, and the [start, end) byte ranges of the bins in .text."""
     yml = (CODE / f"{mod}.{version}.yaml").read_text()
     vram = int(re.search(r"vram:\s*(0x[0-9A-Fa-f]+)", yml)[1], 16)
-    subs = [(int(o, 16), t) for o, t in re.findall(r"- \[(0x[0-9A-Fa-f]+),\s*(\w+)", yml)]
-    end = next((o for o, t in subs if t == "linker"), None)
-    if end is None:  # init: its trailing bin is data
+    subs = [(int(o, 16), t) for o, t in re.findall(r"- \[(0x[0-9A-Fa-f]+),\s*(\.?\w+)", yml)]
+    # .text ends at the first data subsegment (a `linker` entry in hd_code and
+    # hd_front_end; data/rodata ones, or a trailing bin, in init).
+    end = next((o for o, t in subs if t.lstrip(".") in ("linker", "data", "rodata", "bss")), None)
+    if end is None:
         end = next(o for o, t in reversed(subs) if t == "bin")
     bins = [(o, subs[i + 1][0] if i + 1 < len(subs) else end)
             for i, (o, t) in enumerate(subs) if t == "bin" and o < end]

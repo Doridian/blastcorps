@@ -80,6 +80,12 @@ outcnt = 0x80222A20; // type:data gzip
 //                   dispatches if it was running.  ultralib's destroythread.c.
 //   osSetIntMask    setintmask.s: mfc0 SR, MI_INTR_MASK << 16, the
 //                   __osRcpImTable lookup by (mask & 0x3F0000) >> 15.
+//   __osException   exceptasm.s: __osExceptionPreamble jumps to it
+//                   (lui/addiu k0, jr k0).  Named here so its globals,
+//                   __osRdbSendMessage and __osFaultedThread, get names too.
+//                   Its pre-NMI path tests __osShutdown (initialize.c's
+//                   second variable, after osClockRate); hardware interrupts
+//                   dispatch through __osHwIntTable (lw at table + 4 * n).
 // kdebugserver.c in its 2.0D-era form, as in SM64's libultra: the state
 // machine on debugState/numChars/numCharsToReceive, command 1 sends memory
 // (address and length as big-endian u32s at debugBuffer + 1 and + 5),
@@ -88,6 +94,7 @@ outcnt = 0x80222A20; // type:data gzip
 // once when __osRdbWriteOK is 0, then sends in packets of 3.
 
 osInitialize = 0x80220C40; // type:func libultra
+__osException = 0x80221040; // type:func libultra
 u32_to_string = 0x80221E10; // type:func libultra
 string_to_u32 = 0x80221E40; // type:func libultra
 send_packet = 0x80221E98; // type:func libultra
@@ -99,11 +106,14 @@ osSetIntMask = 0x80222470; // type:func libultra
 osDestroyThread = 0x802224D0; // type:func libultra
 
 osClockRate = 0x80222860; // type:data libultra
+__osShutdown = 0x80222868; // type:data libultra
+__osHwIntTable = 0x80222870; // type:data libultra
 debugState = 0x80222890; // type:data libultra
 numChars = 0x80222894; // type:data libultra
 numCharsToReceive = 0x80222898; // type:data libultra
 __osActiveQueue = 0x802228AC; // type:data libultra
 __osRunningThread = 0x802228B0; // type:data libultra
+__osFaultedThread = 0x802228B4; // type:data libultra
 __osRdbSendMessage = 0x802228C0; // type:data libultra
 __osRdbWriteOK = 0x802228C4; // type:data libultra
 __osRcpImTable = 0x80222960; // type:data libultra

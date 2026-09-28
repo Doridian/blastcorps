@@ -36,7 +36,8 @@ segments:
     - [0x3060, c, init/3060]
     - [0x30E0, c, init/30E0]
     - [0x3110, c, init/3110]   # kdebugserver.c
-    - [0x3590, c, init/3590]
+    - [0x3590, c, init/3590]   # thread.c
+    - [0x35D0, c, init/35D0]   # syncputchars.c
     - [0x3700, c, init/3700]
     - [0x3770, asm, init/3770] # osSetIntMask
     - [0x37D0, c, init/37D0]
@@ -44,5 +45,18 @@ segments:
     - [0x3990, asm, init/3990] # __osGetCause
     - [0x39A0, c, init/39A0]
     - [0x3A00, asm, init/3A00] # __osDisableInt, __osRestoreInt
-    - [0x3A40, bin, init/3A40] # .data?
+    # .data, then .rodata, of each object in link order.  .bss starts at
+    # 0x802229E0 and is 0x23A0 bytes (the entry point clears it); its
+    # variables are still linker symbols.
+    - [0x3A40, .data, init/0050]
+    - [0x3B40, .data, init/1660]
+    - [0x3B50, data, init/1A30]
+    - [0x3B60, .data, init/1F40]
+    - [0x3B70, data, init/2330]
+    - [0x3B90, .data, init/3110]
+    - [0x3BA0, .data, init/3590]
+    - [0x3BC0, .data, init/35D0]
+    - [0x3BD0, .rodata, init/1660]
+    - [0x3C10, rodata, init/2330]
+    - [0x3C60, rodata, init/3770]
   - [0x3CE0]
