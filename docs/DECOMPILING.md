@@ -175,6 +175,49 @@ never reaches a stub:
 
 If you find more, extend the generator rather than hand-editing a config.
 
+## More that mattered in the data-owning pass
+
+- A string after a late constant in one `.rodata` block, or zero padding to
+  16 after a jump table, marks an object boundary splat missed.
+  `gen_code_yaml.py` finds these itself (`missed_boundaries()`), and takes
+  `OBJECT_STARTS` (first functions by name) and `--split` for ones that
+  don't show.
+- One C stub has one optimisation level, and IDO -O3 inlines across the
+  whole stub, so a stub holding several original objects needs a `.text`
+  split per object. A C file also packs its data with no 16-byte gap
+  between objects.
+- Strings reached only from asm `.data`: define them as
+  `const char D_X[] = "...";` at their place in the source (at the top if
+  they come first). Const arrays and literals go in `.rodata` in source
+  order, each 4-aligned. Unreferenced zero bytes can be emulated the same
+  way. Asserts IDO folds away still emit their strings.
+- IDO CSEs identical expressions containing a literal, so a constant used
+  three times can still be one literal per use.
+- Two different globals sharing one `lui` need to be fields of one struct
+  defined in the file; separate definitions aren't enough.
+- `X = f(); g(Y);` on one line lets the store sink into the jal's delay
+  slot; try that first when only a store's position differs.
+  `X = 0, f(Y);` puts the store in the call's delay slot.
+- Operand order sets FP register allocation and the order of constants in
+  `.late_rodata`.
+- `D &= !f();` gives `sltiu`. `X = f() + X;` differs from `X += f();`. An
+  `||` chain on a value in `$s0` is a `switch` with fall-through.
+- Temp registers are assigned in source order even when scheduling moves
+  the instruction. `volatile` can reproduce a reload IDO would fold; so can
+  an empty `if (x == y) {} else`. `register f32` explains a value kept in
+  `$f20` plus a spare stack slot.
+- Empty cases still count toward IDO's jump-table decision: add
+  `case 0: break;` to make a table start at 0. A u64 `switch` can make a
+  jump table for dense small low-word cases.
+- IDO forwards a just-stored global into a later load at -O1, so an index
+  stored right before use shows as an unfolded address computation.
+- libaudio here is old: its asserts are compiled out except in env.c, where
+  they call `func_8029A7E4("\n--- ASSERTION FAULT - %s - %s, line %d\n\n",
+  #EX, "env.c", __LINE__)`. At -O3 a static gets a custom calling
+  convention, an inlined-everywhere static still leaves an empty stub, and
+  an unused static is dropped (so reverb's `L_INC` is non-static). 2.0D's
+  gu.h FTOFRAC8 is double where 2.0I's is float.
+
 ## Known so far
 
 These are only guesses at meaning until they're in `symbols_known.txt`:

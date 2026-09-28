@@ -14,8 +14,8 @@ lands in `us.v11` first.
 | module         | IDO-compiled code | handwritten asm | in C (2026-09-28) |
 | ---            | ---:              | ---:            | ---:              |
 | `init`         | ~10 KB            | ~4 KB           | 100%              |
-| `hd_code`      | ~420 KB           | ~220 KB         | 56%               |
-| `hd_front_end` | ~130 KB           | (eu: one block) | 69%               |
+| `hd_code`      | ~420 KB           | ~220 KB         | 99%               |
+| `hd_front_end` | ~130 KB           | ~2 KB           | 90%               |
 
 Run `tools/progress.py` for current numbers. Its percentages are of the
 IDO-compiled code only.
