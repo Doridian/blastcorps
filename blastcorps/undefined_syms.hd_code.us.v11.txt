@@ -1,0 +1,2 @@
+/* reached through a lui/addiu pair splat does not match up */
+D_803092A0 = 0x803092A0;
