@@ -71,9 +71,11 @@ def main() -> None:
     # A failed link leaves the previous binary in place, which would diff
     # clean against code that no longer builds.
     image = STAGE2 / "build" / f"{name}.bin"
-    objs = (STAGE2 / "build").glob(f"src.{args.version}/{args.module}/*.o")
-    if any(o.stat().st_mtime > image.stat().st_mtime for o in objs):
-        sys.exit(f"{image} is older than its objects; the last build failed")
+    inputs = [*(STAGE2 / "build").glob(f"src.{args.version}/{args.module}/*.o"),
+              *(STAGE2 / f"src.{args.version}" / args.module).glob("*.c"),
+              *(STAGE2 / "include").rglob("*.h")]
+    if any(f.stat().st_mtime > image.stat().st_mtime for f in inputs):
+        sys.exit(f"{image} is older than its sources; the last build failed")
 
     sections, symbols = read_map(STAGE2 / "build" / f"{name}.map")
     if args.function not in symbols:

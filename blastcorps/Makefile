@@ -137,6 +137,12 @@ HD_FRONT_END_LDFLAGS = -T $(HD_FRONT_END_LD_SCRIPT) -Map $(HD_FRONT_END_TARGET).
 
 ### Optimisation Overrides
 
+# libultra's ll.c (the long long helpers) is built -mips3 -32, as in the SDK.
+MIPS3_C_FILES.us.v11 := init/2D60.c
+# ld won't mix it with the -mips2 objects, so it's relabelled mips2 after.
+$(foreach f,$(MIPS3_C_FILES.$(VERSION)),$(BUILD_DIR)/$(SRC_DIR)/$(f).o): MIPSISET := -mips3 -32
+$(foreach f,$(MIPS3_C_FILES.$(VERSION)),$(BUILD_DIR)/$(SRC_DIR)/$(f).o): POSTCC := $(PYTHON) $(TOOLS_DIR)/elf_mips2.py
+
 
 ### Targets
 
@@ -210,9 +216,11 @@ $(BUILD_DIR)/hd_front_end.$(VERSION).elf: $(HD_FRONT_END_O_FILES)
 # IDO can't write dependency files, so list the headers with the host cpp and
 # add the .s files each C file pulls in through GLOBAL_ASM.  Otherwise
 # re-extracting (which rewrites the .s) leaves stale objects behind.
+# Each prerequisite also gets an empty rule (as with -MP), so one that goes
+# away, like a .s renamed by re-extracting, doesn't stop the build.
 define write_deps
-	@{ $(CPP) -MM -MT $@ $(INCLUDE_CFLAGS) -D_LANGUAGE_C -D_FINALROM $< 2>/dev/null || echo "$@: $<"; \
-	   { grep -o 'GLOBAL_ASM("[^"]*")' $< || true; } | sed 's/GLOBAL_ASM("\(.*\)")/$(subst /,\/,$@): \1/'; } > $(@:.o=.d)
+	@{ $(CPP) -MM -MP -MT $@ $(INCLUDE_CFLAGS) -D_LANGUAGE_C -D_FINALROM $< 2>/dev/null || echo "$@: $<"; \
+	   { grep -o 'GLOBAL_ASM("[^"]*")' $< || true; } | sed 's/GLOBAL_ASM("\(.*\)")/$(subst /,\/,$@): \1\n\1:/'; } > $(@:.o=.d)
 endef
 
 ifndef PERMUTER
@@ -241,6 +249,7 @@ endif
 # non asm-processor recipe
 $(BUILD_DIR)/%.c.o: %.c
 	$(CC) -c $(CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+	$(if $(POSTCC),$(POSTCC) $@)
 	$(write_deps)
 
 $(BUILD_DIR)/%.s.o: %.s
