@@ -745,7 +745,189 @@ Gfx *func_801FA180(Gfx *arg0, u8 *arg1, f32 arg2, s8 *arg3) {
     return gfx;
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/11530/func_801FA74C.s")
+#define ABS(x) (((x) > 0) ? (x) : -(x))
+
+void func_8027690C(u8 *arg0, f32 x, f32 y, f32 z, s16 *outX, s16 *outY, Mtx *arg6, Mtx *arg7, Mtx *arg8, f32 arg9);
+
+Gfx *func_801FA74C(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
+    u8 *arg0;
+    Gfx *arg1;
+    u8 arg2;
+    u8 arg3;
+    s8 *arg4;
+    f32 *arg5;
+    u8 arg6;
+    u8 arg7;
+    u8 arg8;
+    u8 arg9;
+    u8 arg10;
+    u8 arg11;
+    u8 arg12;
+{
+    Vtx *sp12C;
+    Vtx *sp128;
+    Gfx *gfx;
+    s32 sp120;
+    s32 sp11C;
+    s32 sp118;
+    u8 sp117;
+    u8 sp116;
+    f32 sp110;
+    UnkStruct_8020D810 *sp10C;
+    UnkStruct_8020D810 *sp108;
+    f32 sp104;
+    f32 sp100;
+    f32 spFC;
+    f32 spF8;
+    s16 spF6;
+    s16 spF4;
+    s16 spF2;
+    s16 spF0;
+    f32 spEC;
+    f32 spE8;
+    f32 spE4;
+    f32 spE0;
+    f32 spDC;
+    f32 spD8;
+    f32 spD4;
+    f32 spD0;
+    f32 spCC;
+    f32 spC8;
+    f32 spC4;
+    f32 spC0;
+    f32 spBC;
+    u8 spBB;
+    u8 spBA;
+    u32 spB4;
+    u8 spB3;
+
+    gfx = arg1;
+    sp117 = 1;
+    spBA = 0;
+    spC0 = 1.0f;
+    if (arg3 == D_8021A905 || D_80364AF0[D_80364AE8].unk18[arg2] == 0) {
+        spB3 = arg3;
+        arg3 = arg2;
+        arg2 = spB3;
+    }
+    if (D_8021A940[arg2] & ((u64)1 << arg3)) {
+        sp116 = 1;
+    } else {
+        sp116 = 0;
+    }
+    D_8021A940[arg2] |= (u64)1 << arg3;
+    D_8021A940[arg3] |= (u64)1 << arg2;
+    *arg4 = -1;
+    if (sp116 != 0 || func_801FE760(arg3) != 0) {
+        return arg1;
+    }
+    if (func_80264BA4(arg2) == 3 || func_80264BA4(arg3) == 3) {
+        spBA = 1;
+    }
+    if (arg2 == D_8021A905) {
+        *arg4 = arg3;
+    }
+    if (func_80264BA4(arg2) == 3 && func_80264BA4(arg3) == 3) {
+        if (D_80364A87 != 0 &&
+            (D_80364AF0[D_80364AE8].unk18[arg3] == 0 ||
+             ((D_80364A87 & 1) && arg2 == D_8021A905 &&
+              !(((D_80364AF0[D_80364AE8].unk18[arg3] > 0) && (D_80364AF0[D_80364AE8].unk18[arg3] < 6)) ? 1 : 0)))) {
+            if (D_8021A924 != 0) {
+                sp110 = MIN(1.0, MAX(D_8021AB28, (f32)(D_803156C4 - D_8021AB24) * 60.0 / 60.0 / 90.0));
+                if (sp110 == 1.0 && D_8021AB38 != 0) {
+                    func_802608C8(D_8021AB38);
+                } else if (D_8021AB38 == 0 && sp110 != 1.0 && D_80217B6C == 3) {
+                    func_80260650(D_80367738, 0x7C, &D_8021AB38);
+                }
+            } else {
+                sp110 = 0.0f;
+            }
+        } else {
+            sp110 = 1.0f;
+        }
+    } else {
+        sp110 = 1.0f;
+    }
+    sp10C = &D_8020D810[arg2];
+    sp108 = &D_8020D810[arg3];
+    spEC = sp10C->unk24;
+    spE4 = sp10C->unk28;
+    spDC = sp10C->unk2C;
+    spE8 = sp108->unk24;
+    spE0 = sp108->unk28;
+    spD8 = sp108->unk2C;
+    spF8 = sqrtf(SQ(spE8 - spEC) + SQ(spE0 - spE4) + SQ(spD8 - spDC));
+    sp118 = MAX(3.0, MIN(spF8 / 32.0, 15.0));
+    sp11C = sp118 + 1;
+    sp12C = sp128 = (Vtx *)D_8021A928[D_8035805C] + D_8021A909 * 16;
+    spCC = (spEC * spE8 + spE4 * spE0 + spDC * spD8) / 250.0 / 250.0;
+    spC8 = 90.0 - (((spCC >= 0.0f) ? 1 : -1) * func_802AD7D4(((spCC > 0.0f) ? spCC : -spCC) * 65535.0)) / 16.0 /
+                      11.377777;
+    if (spC8 >= 180.0) {
+        spC8 -= 180.0;
+    }
+    if (spC8 < -180.0) {
+        spC8 += 180.0;
+    }
+    spC8 *= 0.017453292519943295;
+    spBB = 0;
+    for (sp120 = 0; sp120 < sp11C; sp120++, sp12C++) {
+        spC4 = MIN(sp110, 1.0 / (sp11C - 1) * (f32)sp120);
+        spD4 = func_802574F0((1.0 - spC4) * spC8) / func_802574F0(spC8);
+        spD0 = func_802574F0(spC4 * spC8) / func_802574F0(spC8);
+        if (arg6 != 0) {
+            spC0 = func_802574F0(spC4 * 3.141592653) * sp118 / 64.0 + 1.0;
+        }
+        sp104 = (spD4 * spEC + spD0 * spE8) * spC0;
+        sp100 = (spD4 * spE4 + spD0 * spE0) * spC0;
+        spFC = (spD4 * spDC + spD0 * spD8) * spC0;
+        if (*arg4 != -1 && sp120 < 2) {
+            switch (D_80217B6C) {
+                case 3:
+                    if (sp120 != 0) {
+                        func_8027690C(arg0, sp104, sp100, spFC, &spF6, &spF4, &D_80217B70[3][D_8035805C],
+                                      &D_80217B70[3][D_8035805C] + 2, (Mtx *)(arg0 + 0x1280), 1.0f);
+                        *arg5 = func_8028BBF4(spF2, spF0, spF6, spF4);
+                    } else {
+                        func_8027690C(arg0, sp104, sp100, spFC, &spF2, &spF0, &D_80217B70[3][D_8035805C],
+                                      &D_80217B70[3][D_8035805C] + 2, (Mtx *)(arg0 + 0x1280), 1.0f);
+                    }
+                    break;
+                default:
+                    if (sp120 != 0) {
+                        *arg5 = (arg2 < arg3) ? 0 : 180;
+                    }
+                    break;
+            }
+        }
+        sp12C->v.ob[0] = sp104;
+        sp12C->v.ob[1] = sp100;
+        sp12C->v.ob[2] = spFC;
+        spBC = MAX(0.0, (sp104 * D_8021A90C + sp100 * D_8021A910 + spFC * D_8021A914) / spC0 / 250000.0);
+        if (arg6 != 0) {
+            spB4 = 1.0 /
+                   MAX(0.001, ((spBC - D_8021AB40) > 0.0f) ? (spBC - D_8021AB40) : -(spBC - D_8021AB40)) *
+                   D_8021AB44 * D_8021AB44 * D_8021AB48;
+        } else {
+            spB4 = 0;
+        }
+        sp12C->v.cn[0] = MIN(255.0, ((0.5 - ABS(spC4 - 0.5)) * (f32)arg10 + ABS(spC4 - 0.5) * (f32)arg7) * 2.0 + spB4);
+        sp12C->v.cn[1] =
+            MIN(255.0, ((0.5 - ABS(spC4 - 0.5)) * (f32)arg11 + ABS(spC4 - 0.5) * (f32)arg8) * 2.0 * spBC + spB4);
+        sp12C->v.cn[2] =
+            MIN(255.0, ((0.5 - ABS(spC4 - 0.5)) * (f32)arg12 + ABS(spC4 - 0.5) * (f32)arg9) * 2.0 * (1.0 - spBC) + spB4);
+        sp12C->v.cn[3] = D_8021AB21 * spBC / (2 - arg6);
+        if (sp120 != 0 && sp116 == 0 && spBA != 0 && spBC > 0.0f) {
+            if (spBB == 0) {
+                gSPVertex(gfx++, sp128, sp11C, 0);
+                spBB = 1;
+            }
+            gSPLineW3D(gfx++, sp120 - 1, sp120, 2.0 - MIN(2.0, (D_8021A918 / 1000.0f) / (1.0 + spBC / 2.0f)), 0);
+        }
+    }
+    D_8021A909++;
+    return gfx;
+}
 
 Gfx *func_801FC5B8(u8 *arg0, Gfx *arg1, u8 arg2, u8 arg3) {
     f32 spAC;

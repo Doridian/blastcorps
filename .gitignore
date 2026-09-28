@@ -13,5 +13,6 @@ assets/
 build/
 expected/
 junk/
+permuter/
 .env/
 .version

@@ -144,6 +144,9 @@ so a too-wide `bin` goes unnoticed: only the sha1 decides, and it cannot tell.
   `tools/fdiff.py <module> <function>` to diff it against the original. It
   refuses to run when the last link failed, since the binary would be stale.
 - `tools/progress.py` for totals.
+- For a draft that's only registers or scheduling away,
+  `tools/permute.sh <module> <function> [draft.c]` sets up decomp-permuter
+  (`docs/DECOMPILING.md`, "The permuter").
 
 IDO quirks that have mattered so far (all `-O1`):
 

@@ -127,11 +127,11 @@ extern s32 D_803EF6E4;
 
 /* .bss, 0x80367D60-0x80368050 (tools/bss_c.py) */
 UnkStruct_80367D60 D_80367D60[20];
-u8 D_80368030[4];
+s32 D_80368030;
 s16 D_80368034;
 s16 D_80368036;
 s32 D_80368038;
-u8 D_8036803C[4];
+s32 D_8036803C;
 s32 D_80368040;
 s32 D_80368044;
 s32 D_80368048;
@@ -411,11 +411,88 @@ void func_80265B7C(s32 arg0) {
     }
 }
 
-/*
- * Close: only the registers from `i = useFar ? farthest : nearest` onwards
- * are rotated by one (t5/t6); the instructions are otherwise identical.
- */
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/20460/func_80265E48.s")
+void func_80260AB8(UnkSndState *state, s16 type, s32 param);
+
+extern u8 D_803EF32D;
+extern s32 D_803EF2EC;
+extern s32 D_803EF2F4;
+
+void func_80265E48(void) {
+    s32 i;
+    s32 nearest;
+    s32 nearestDist;
+    s32 farthest;
+    s32 farthestDist;
+    s32 dist;
+    u8 found;
+    u8 useFar;
+    s32 volume;
+
+    nearest = -1, nearestDist = 99999999, farthest = -1;
+    farthestDist = 0;
+    useFar = 0;
+    if (D_803EF32D != 0) {
+        i = 0;
+        found = 0;
+        do {
+            if (D_80367D60[i].unk15 == 2) {
+                D_80367D60[i].unk15 = 3;
+                D_80367D60[i].unk13 = 0;
+                found = 1;
+            } else {
+                i++;
+            }
+        } while (!found);
+        D_803EF32D = 0;
+        D_80368038 = 99999999;
+    } else if (--D_80368038 == 0) {
+        D_803EF32C = 6;
+        D_80367D60[D_8036803C].unk15 = 1;
+        useFar = 1;
+    }
+    if (D_803EF32C == 0) {
+        for (i = 0; i < 20; i++) {
+            if (D_80367D60[i].unk15 == 3) {
+                D_80367D60[i].unk15 = 0;
+            }
+        }
+        for (i = 0; i < 20; i++) {
+            if (D_80367D60[i].unk15 == 1) {
+                dist = func_8026A610(D_803EF2EC, D_803EF2F4, D_80367D60[i].unk0 << 5, D_80367D60[i].unk4 << 5);
+                if (dist < nearestDist) {
+                    nearest = i;
+                    nearestDist = dist;
+                }
+                if (dist > farthestDist) {
+                    farthest = i;
+                    farthestDist = dist;
+                }
+            }
+        }
+        if (nearest != -1) {
+            if (useFar) {
+                i = farthest;
+            } else {
+                i = nearest;
+            }
+            D_803EF308 = D_80367D60[i].unk0 << 5;
+            D_803EF30C = D_80367D60[i].unk4 << 5;
+            D_80368030 = D_80367D60[i].unk2 << 5;
+            D_80367D60[i].unk15 = 2;
+            D_80368038 = 600;
+            D_803EF32C = 1;
+            D_8036803C = i;
+            if (35000 - func_8026A610(D_803643E0, D_803643E8, D_803EF308, D_803EF30C) * 2 >= 0x8000) {
+                volume = 0x7FFF;
+            } else {
+                volume = 35000 - func_8026A610(D_803643E0, D_803643E8, D_803EF308, D_803EF30C) * 2;
+            }
+            if (volume > 4000) {
+                func_80260AB8(func_80260650(D_80367738, 0x25, NULL), 8, volume);
+            }
+        }
+    }
+}
 
 void func_802661EC(void) {
     D_803EF308 = D_803EF6DC;

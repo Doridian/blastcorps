@@ -264,6 +264,82 @@ If you find more, extend the generator rather than hand-editing a config.
   osCreateMesgQueue) is a `bin` subsegment, passed to the generator with
   `--bin`.
 
+## The permuter
+
+For a draft that is only register allocation or scheduling away,
+[decomp-permuter](https://github.com/simonlindholm/decomp-permuter)
+(`tools/decomp-permuter`, a submodule) tries random rewrites and keeps the
+ones that score better. It needs `toml` and `Levenshtein` in the venv
+(`.env/bin/python -m pip install toml Levenshtein`).
+
+```
+tools/permute.sh <module> <function> [draft.c]
+.env/bin/python tools/decomp-permuter/permuter.py -j24 --stop-on-zero permuter/nonmatchings/<function>
+```
+
+`permute.sh` builds `permuter/nonmatchings/<function>/` (ignored by git):
+
+- `base.c`: the function's C file run through the preprocessor, with the
+  function's `GLOBAL_ASM` replaced by `draft.c` (the definition plus any
+  declarations or macros it needs; m2c's output when there's no draft).
+  The function has to be `GLOBAL_ASM` still, for its `.s`. The other
+  `GLOBAL_ASM` lines are dropped, and the permuter keeps only what the
+  function uses.
+- `target.o`: the function's `.s` assembled alone.
+- `compile.sh`: the command make runs for that file (`make -n PERMUTER=1`
+  selects the plain recipe), so per-file `-O2`/`-O3`/`-mips3` come along.
+
+The permuter writes each improvement to `output-<score>-<n>/`; `diff` its
+`source.c` against `base.c` and carry the change back into the real file by
+hand. The score is only a guide: the build's sha1 and `tools/fdiff.py`
+decide. Things to know:
+
+- A draft's `extern` must agree with the file's own definitions (the `.bss`
+  block defines most globals now). An address cast (`*(s32 *)D_X` on a
+  `u8 D_X[4]`) is addressed differently from a real `s32 D_X`, so change
+  the block's type instead (same size; `bss_c.py --check` confirms it).
+- The target's relocations name the symbols splat made, so a field
+  reached as `D_80367D73` in the `.s` is `D_80367D60[i].unk13` in C. That
+  shows up as a constant difference in the score; rewrite the `.s`'s
+  `%lo(D_80367D73)` as `%lo(D_80367D60 + 0x13)` (and the `%hi`) and
+  reassemble with `mips-linux-gnu-as -EB -march=vr4300 -mabi=32 target.s
+  -o target.o` to get rid of it. Constants in `.rodata` don't count.
+- pycparser reads gSPVertex's `sizeof(Vtx)*(n)` as a cast. `permute.sh`
+  rewrites it as `(n * sizeof(Vtx))`, which compiles the same.
+- asm-processor has no `-O3`, so an `-O3` file can't mix C and
+  `GLOBAL_ASM`: all of its functions become C at once or none do.
+
+To score a hand variant without waiting for the permuter, compile it with
+the directory's `compile.sh` and compare `objdump -d` of `target.o` and the
+result. Scripting a sweep over small rewrites (every order of a few
+statements, both operand orders of each `+`) often gets there sooner than
+the permuter on a big function.
+
+What worked on the last three:
+
+- func_80265E48 (20460.c): the permuter found that the register numbers
+  after the search loop follow the order of the two assignments in a
+  min/max update (`farthest = i; farthestDist = dist;`, not the other way
+  round). Flipping the other update by hand, and a comma group
+  (`nearest = -1, nearestDist = 99999999, farthest = -1;`) for the order of
+  the stores at the top, finished it.
+- func_801FA74C (11530.c): about 1500 lines of FP register differences
+  came from one expression shape. IDO evaluates value-producing ternaries
+  (the `ABS`es in `$f20`-`$f30`) in source order and the arithmetic around
+  them from the right, so `ABS(t) * a + (0.5 - ABS(t)) * b` and
+  `(0.5 - ABS(t)) * b + ABS(t) * a` swap which saved register holds which
+  `ABS`, and that renumbers every temporary in the rest of the function.
+  FP register allocation depends on code much further down: cutting
+  the function short changed the register of its first instruction. The
+  permuter's partial wins (and an `if (x) {}` it added) weren't needed once
+  the three colour lines were right.
+- guRotateF (90C50.c) doesn't match yet. With 2.0I's rotate.c body and
+  `dtor` assigned each call (it's `.bss` here), everything is the same
+  except that the `lui` for the store of `dtor` in guNormalize's delay
+  slot comes three instructions late, at both -O2 and -O3. The file is
+  libultra gu, so it's `-O3` (guRotate matches only there), and an `-O3`
+  file can't keep a `GLOBAL_ASM`, so guRotate waits for it.
+
 
 These are only guesses at meaning until they're in `symbols_known.txt`:
 

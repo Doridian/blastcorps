@@ -14,8 +14,8 @@ lands in `us.v11` first.
 | module         | IDO-compiled code | handwritten asm | in C (2026-09-28) |
 | ---            | ---:              | ---:            | ---:              |
 | `init`         | ~10 KB            | ~4 KB           | 100%              |
-| `hd_code`      | ~420 KB           | ~220 KB         | 99.7% (3 left)    |
-| `hd_front_end` | ~130 KB           | ~2 KB           | 94% (1 left)      |
+| `hd_code`      | ~420 KB           | ~220 KB         | 99.9% (2 left)    |
+| `hd_front_end` | ~130 KB           | ~2 KB           | 100%              |
 
 Run `tools/progress.py` for current numbers. Its percentages are of the
 IDO-compiled code only.
@@ -60,7 +60,7 @@ decompilation.
 - [x] Per-file flag overrides in `blastcorps/Makefile` (`ll.c` is `-mips3`).
 - [x] `tools/sync_stub_names.py`: keep stubs in step with new names.
 - [ ] m2c context from `include/`, so its output uses real types.
-- [ ] decomp-permuter wiring for the few functions that won't match by hand.
+- [x] decomp-permuter wiring (`tools/permute.sh`; see `docs/DECOMPILING.md`).
 - [ ] `common.h`/`include/`: the base types, the `GLOBAL_ASM` macro, and
       libultra headers from the matching SDK version.
 
@@ -190,6 +190,8 @@ Matching C for every non-handwritten function, in this order:
 2. **libultra everywhere.** Most functions match ultralib's source directly.
    The ones that don't (`lib:fuzzy`) are an older revision and get their own
    copies. Share one source file across modules where the code is identical.
+   In us.v11 only guRotateF and guRotate (hd_code/90C50.c) are left; one
+   `lui` is out of place (see `docs/DECOMPILING.md`, "The permuter").
 3. **`hd_code`**, the game engine. Work in file-sized units (one file per
    splat split), leaves first. Generate context with m2c and grind the
    stragglers with the permuter.
