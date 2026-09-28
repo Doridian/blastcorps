@@ -1,5 +1,7 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/909C0/guPerspectiveF.s")
+/* perspective.c's pi/180, in hd_code's .rodata (not split yet). */
+extern f64 D_8030D9F0;
+#define PERSPECTIVE_DTOR D_8030D9F0
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/909C0/guPerspective.s")
+#include "src/libultra/gu/perspective.c"

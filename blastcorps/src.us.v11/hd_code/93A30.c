@@ -1,5 +1,9 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/93A30/func_802D81F0.s")
+/* func_802D81F0 is alCSPPlay, func_802D8220 alCSPSetVol. */
+#define alCSPPlay func_802D81F0
+#define alCSPSetVol func_802D8220
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/93A30/func_802D8220.s")
+/* Built -O3, which emits the files' functions in reverse order. */
+#include "src/libultra/audio/cspsetvol.c"
+#include "src/libultra/audio/cspplay.c"

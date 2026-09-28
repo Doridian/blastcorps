@@ -1,5 +1,8 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/93AA0/alCSPGetTempo.s")
+/* func_802D82A0 is alCSPSetTempo. */
+#define alCSPSetTempo func_802D82A0
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/93AA0/func_802D82A0.s")
+/* Built -O3, which emits the files' functions in reverse order. */
+#include "src/libultra/audio/cspsettempo.c"
+#include "src/libultra/audio/cspgettempo.c"

@@ -4,6 +4,6 @@
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9D920/alSavePull.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9D920/osJamMesg.s")
+#include "src/libultra/os/jammesg.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9D920/osPiGetCmdQueue.s")
+#include "src/libultra/io/pigetcmdq.c"

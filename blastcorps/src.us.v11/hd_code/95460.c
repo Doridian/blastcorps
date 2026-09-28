@@ -20,4 +20,4 @@ void func_802D9D60(void) {
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/95460/alSynNew.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/95460/osPiStartDma.s")
+#include "src/libultra/io/pidma.c"

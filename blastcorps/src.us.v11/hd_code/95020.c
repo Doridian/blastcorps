@@ -1,3 +1,6 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/95020/func_802D97E0.s")
+/* func_802D97E0 is alCSPSetBank. */
+#define alCSPSetBank func_802D97E0
+
+#include "src/libultra/audio/cspsetbank.c"

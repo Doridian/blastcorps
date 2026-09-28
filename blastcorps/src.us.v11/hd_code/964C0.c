@@ -1,9 +1,10 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/964C0/osSpTaskYielded.s")
+#include "src/libultra/io/sptaskyielded.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/964C0/func_802DAD00.s")
+/* sptask.c's static tmp_task, in hd_code's .bss. */
+extern OSTask D_803FF200;
+#define tmp_task D_803FF200
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/964C0/osSpTaskLoad.s")
+#include "src/libultra/io/sptask.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/964C0/osSpTaskStartGo.s")

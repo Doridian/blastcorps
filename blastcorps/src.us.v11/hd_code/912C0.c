@@ -1,5 +1,4 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/912C0/guScaleF.s")
+#include "src/libultra/gu/scale.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/912C0/guScale.s")

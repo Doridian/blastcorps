@@ -1,5 +1,5 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/8FF20/osSetThreadPri.s")
+#include "src/libultra/os/setthreadpri.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/8FF20/osSendMesg.s")
+#include "src/libultra/os/sendmesg.c"

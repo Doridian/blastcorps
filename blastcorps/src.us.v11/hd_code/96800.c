@@ -1,7 +1,5 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/96800/osSpTaskYield.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/96800/guMtxXFML.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/96800/guMtxCatL.s")
+/* Built -O3 for mtxcatl.c, which emits the functions in reverse order. */
+#include "src/libultra/gu/mtxcatl.c"
+#include "src/libultra/io/sptaskyield.c"

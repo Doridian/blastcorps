@@ -1,5 +1,4 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/90760/guTranslateF.s")
+#include "src/libultra/gu/translate.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/90760/guTranslate.s")

@@ -1,12 +1,28 @@
 #include "common.h"
+#include "ultra_internal.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E700/_Litob.s")
+/* xlitob.c's digit strings, in hd_code's .data (not split yet). */
+extern unsigned char D_80307B50[];
+extern unsigned char D_80307B64[];
+#define ldigs D_80307B50
+#define udigs D_80307B64
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E700/_Ldtob.s")
+#include "src/libultra/libc/xlitob.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E700/func_802E37C0.s")
+/* xldtob.c's constants, in hd_code's .rodata (not split yet). */
+extern const ldouble D_8030E2F0[];
+extern unsigned char D_8030E338[];
+extern unsigned char D_8030E33C[];
+extern unsigned char D_8030E340[];
+extern const f64 D_8030E348;
+#define pows D_8030E2F0
+#define LDTOB_NAN D_8030E338
+#define LDTOB_INF D_8030E33C
+#define LDTOB_ZERO D_8030E340
+#define LDTOB_1E8 D_8030E348
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E700/func_802E38A0.s")
+/* func_802E37C0 and func_802E38A0 are xldtob.c's static _Ldunscale and _Genld. */
+#include "src/libultra/libc/xldtob.c"
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E700/alSeqGetLoc.s")
 

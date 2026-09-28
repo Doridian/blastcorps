@@ -2,4 +2,7 @@
 
 #include "src/libultra/libc/ll.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/90390/func_802D4E10.s")
+/* func_802D4E10 is alCSPGetState. */
+#define alCSPGetState func_802D4E10
+
+#include "src/libultra/audio/cspgetstate.c"

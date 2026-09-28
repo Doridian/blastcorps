@@ -140,7 +140,7 @@ HD_FRONT_END_LDFLAGS = -T $(HD_FRONT_END_LD_SCRIPT) -Map $(HD_FRONT_END_TARGET).
 # Files not built at the default -O1 (libultra's gu and audio code, for
 # example), as paths under $(SRC_DIR).
 O2_C_FILES.us.v11 :=
-O3_C_FILES.us.v11 :=
+O3_C_FILES.us.v11 := hd_code/90760.c hd_code/90800.c hd_code/909C0.c hd_code/90E40.c hd_code/91050.c hd_code/912C0.c hd_code/92130.c hd_code/92350.c hd_code/92A30.c hd_code/92AD0.c hd_code/92B60.c hd_code/92BF0.c hd_code/92C80.c hd_code/92D20.c hd_code/939F0.c hd_code/93A30.c hd_code/93AA0.c hd_code/93B50.c hd_code/93B60.c hd_code/93BA0.c hd_code/95020.c hd_code/96800.c hd_code/97140.c hd_code/99580.c hd_code/99620.c hd_code/996A0.c hd_code/9AFF0.c hd_code/9BBF0.c hd_code/9D810.c hd_code/A0AA0.c
 $(foreach f,$(O2_C_FILES.$(VERSION)),$(BUILD_DIR)/$(SRC_DIR)/$(f).o): OPT_FLAGS := -O2
 $(foreach f,$(O3_C_FILES.$(VERSION)),$(BUILD_DIR)/$(SRC_DIR)/$(f).o): OPT_FLAGS := -O3
 

@@ -1,9 +1,9 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/96310/osViGetCurrentFramebuffer.s")
+#include "src/libultra/io/vigetcurrframebuf.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/96310/osViGetNextFramebuffer.s")
+#include "src/libultra/io/vigetnextframebuf.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/96310/osViSwapBuffer.s")
+#include "src/libultra/io/viswapbuf.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/96310/osSetTimer.s")
+#include "src/libultra/os/settimer.c"

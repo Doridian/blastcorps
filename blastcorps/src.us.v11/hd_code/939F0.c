@@ -1,3 +1,6 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/939F0/func_802D81B0.s")
+/* func_802D81B0 is alCSPSetSeq. */
+#define alCSPSetSeq func_802D81B0
+
+#include "src/libultra/audio/cspsetseq.c"

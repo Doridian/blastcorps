@@ -1,3 +1,3 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/91D90/osViSetSpecialFeatures.s")
+#include "src/libultra/io/visetspecial.c"

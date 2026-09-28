@@ -1,5 +1,4 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/90800/guOrthoF.s")
+#include "src/libultra/gu/ortho.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/90800/guOrtho.s")

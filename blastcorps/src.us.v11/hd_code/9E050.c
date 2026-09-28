@@ -1,10 +1,13 @@
 #include "common.h"
+#include "ultra_internal.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E050/__osSiCreateAccessQueue.s")
+/* siacs.c's state, in hd_code's .data (not split yet) and .bss. */
+extern OSMesg D_803FF330[1];
+extern OSMesgQueue __osSiAccessQueue;
+extern u32 __osSiAccessQueueEnabled;
+#define siAccessBuf D_803FF330
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E050/__osSiGetAccess.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E050/__osSiRelAccess.s")
+#include "src/libultra/io/siacs.c"
 
 #include "src/libultra/io/si.c"
 

@@ -1,5 +1,12 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/95240/osAiSetFrequency.s")
+#include "src/libultra/io/aisetfreq.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/95240/func_802D9B60.s")
+/* osAiSetNextBuffer's static hdwrBugFlag, in hd_code's .data (not split yet). */
+extern u8 D_80306E40;
+#define hdwrBugFlag D_80306E40
+
+/* func_802D9B60 is osAiSetNextBuffer. */
+#define osAiSetNextBuffer func_802D9B60
+
+#include "src/libultra/io/aisetnextbuf.c"

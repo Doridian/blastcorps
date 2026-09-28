@@ -1,11 +1,12 @@
 #include "common.h"
+#include "ultra_internal.h"
 
 #include "src/libultra/os/thread.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/97BB0/__osPiCreateAccessQueue.s")
+/* piacs.c's static piAccessBuf, in hd_code's .bss. */
+extern OSMesg D_803FF2D0[1];
+#define piAccessBuf D_803FF2D0
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/97BB0/__osPiGetAccess.s")
+#include "src/libultra/io/piacs.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/97BB0/__osPiRelAccess.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/97BB0/osGetThreadPri.s")
+#include "src/libultra/os/getthreadpri.c"

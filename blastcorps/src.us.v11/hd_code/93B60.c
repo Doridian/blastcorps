@@ -1,3 +1,3 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/93B60/alHeapInit.s")
+#include "src/libultra/audio/heapinit.c"

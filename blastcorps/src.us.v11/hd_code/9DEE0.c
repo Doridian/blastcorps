@@ -1,3 +1,3 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9DEE0/__osSpRawStartDma.s")
+#include "src/libultra/io/sprawdma.c"

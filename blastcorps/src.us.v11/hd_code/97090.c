@@ -1,5 +1,4 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/97090/osContStartQuery.s")
+#include "src/libultra/io/contquery.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/97090/osContGetQuery.s")

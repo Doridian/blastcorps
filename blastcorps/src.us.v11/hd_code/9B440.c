@@ -1,6 +1,6 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9B440/__osAiDeviceBusy.s")
+#include "src/libultra/io/ai.c"
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9B440/alSaveNew.s")
 
