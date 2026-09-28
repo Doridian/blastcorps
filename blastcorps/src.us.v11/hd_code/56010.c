@@ -1,5 +1,7 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/56010/func_8029A7D0.s")
+void func_8029A7D0(char *arg0, ...) {
+}
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/56010/func_8029A7E4.s")
+void func_8029A7E4(char *arg0, ...) {
+}
