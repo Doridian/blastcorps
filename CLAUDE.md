@@ -108,7 +108,7 @@ so a too-wide `bin` goes unnoticed: only the sha1 decides, and it cannot tell.
 
 ## Decompiling
 
-`docs/ROADMAP.md` has the plan. The loop for one function:
+`docs/ROADMAP.md` has the plan and `docs/DECOMPILING.md` the matching notes. The loop for one function:
 
 - `tools/m2c.sh <module> <function>` for a first draft (m2c, run from the
   project venv). Replace the `GLOBAL_ASM` line with the C.
