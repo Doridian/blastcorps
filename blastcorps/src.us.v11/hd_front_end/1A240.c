@@ -16,13 +16,44 @@ extern u8 D_802FAD50[];
 extern s32 D_80367738;
 extern s16 D_8036BB1C;
 
+/* 0x1C-byte menu entries, laid out like UnkStruct_8036BB24 in hd_front_end/E7B0.c. */
+typedef struct {
+    /* 0x00 */ u8 unk0[0xC];
+    /* 0x0C */ char *unkC;
+    /* 0x10 */ char *unk10;
+    /* 0x14 */ u8 unk14[8];
+} UnkStruct_8020C070; /* size = 0x1C */
+
+void func_8028B4C4(u8 *romStart, u8 *dst, u32 *size, u8, u8, u8);
+
+extern u8 D_0068B550[];
+extern u8 D_006A32B0[];
+extern u8 *D_80358070;
+extern char D_8020E3E8[][0x12];
+extern char *D_8020E430[];
+extern UnkStruct_8020C070 D_8020C070[];
+
 /*
  * Loads the ROM range D_0068B550..D_006A32B0, splits it into four 160x120
  * RGBA16 images at D_8021AB90 and points D_8020C070[175] at the entries for
- * arg0 in D_8020E3E8/D_8020E430.  Everything matches but the registers of
- * the last block; left as asm.
+ * arg0 in D_8020E3E8/D_8020E430.
  */
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1A240/func_80201240.s")
+void func_80201240(s32 arg0) {
+    u32 sp24;
+    s32 sp20;
+
+    sp24 = D_006A32B0 - D_0068B550;
+    func_8028B4C4(D_0068B550, D_80358070, &sp24, 13, 0, 1);
+    for (sp20 = 0; sp20 < 4; sp20++) {
+        D_8021AB90[sp20] = (u16 *)(sp20 * 160 * 120 * 2 + D_80358070);
+    }
+    D_80358070 += sp24;
+    D_8021ABA0 = arg0;
+    D_8021ABA2 = 0;
+    D_8021ABA1 = 0;
+    D_8020C070[175].unkC = D_8020E3E8[arg0];
+    D_8020C070[175].unk10 = D_8020E430[arg0];
+}
 
 Gfx *func_80201364(s32 arg0, Gfx *arg1) {
     Gfx *gfx = arg1;

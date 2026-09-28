@@ -14,8 +14,8 @@ lands in `us.v11` first.
 | module         | IDO-compiled code | handwritten asm | in C (2026-09-28) |
 | ---            | ---:              | ---:            | ---:              |
 | `init`         | ~10 KB            | ~4 KB           | 100%              |
-| `hd_code`      | ~420 KB           | ~220 KB         | 99%               |
-| `hd_front_end` | ~130 KB           | ~2 KB           | 90%               |
+| `hd_code`      | ~420 KB           | ~220 KB         | 99.7% (3 left)    |
+| `hd_front_end` | ~130 KB           | ~2 KB           | 94% (1 left)      |
 
 Run `tools/progress.py` for current numbers. Its percentages are of the
 IDO-compiled code only.
@@ -96,12 +96,9 @@ change size (a "shiftable" build), which is how we test it.
       `0x8020E440`, then the 0x800-byte DMEM image of its microcode at
       `0x80210690`). pfsHandler.c / bestTimes.c are split at `0x10850`
       (`--split`), with a data-only menu object between them (`.data`
-      `0x8020C070`, `.rodata` `0x8020F480`). Every C file owns its `.rodata`
-      except 9570 (a zero double at `0x8020F088`). That slot is most
-      likely padding: `missed_boundaries()` finds another object starting at
-      `0xC450` (its `.rodata` at `0x8020F090`), so 9570.c is two files. The
-      config keeps it joined (`--join` in `regen_code_yaml.sh`) until 9570.c
-      is split, after which 9570 can own its `.rodata`.
+      `0x8020C070`, `.rodata` `0x8020F480`). 9570.c is two files, split at `0xC450`
+      (`missed_boundaries()` finds it; 9570's `.rodata` ends in padding at
+      `0x8020F088`). Every C file owns its `.rodata`.
 - [ ] `hd_code` for us.v10/jp/eu and `hd_front_end` us.v10/jp/eu: same thing. Needs each
       version's `.rodata` start and microcode-data offset for
       `regen_code_yaml.sh` (the last `.data` is reverb.c's `L_INC`,

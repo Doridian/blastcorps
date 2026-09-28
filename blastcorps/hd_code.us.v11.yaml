@@ -125,6 +125,8 @@ segments:
     - [0x91820, asm, hd_code/91820] # handwritten
     - [0x91830, c, hd_code/91830]
     - [0x91D20, c, hd_code/91D20]
+    # 0x40 zero bytes after createmesgqueue.o; no C object ends like that
+    - [0x91D50, bin, hd_code/91D50]
     - [0x91D90, c, hd_code/91D90]
     - [0x91F50, asm, hd_code/91F50] # handwritten
     - [0x91F80, asm, hd_code/91F80] # handwritten

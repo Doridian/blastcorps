@@ -337,7 +337,36 @@ u8 func_801EF2BC(u16 arg0, u8 arg1, u8 arg2) {
     return sp7;
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/7800/func_801EF380.s")
+extern u8 D_0048F5A0[];
+extern u8 D_0048F970[];
+extern u8 D_0048F970_2[]; /* same address as D_0048F970: see undefined_syms */
+extern u8 D_0048FA70[];
+extern u8 *D_80358070;
+void func_801F4E70(s32);
+void func_8028B4C4(u8 *romStart, u8 *dst, u32 *size, u8, u8, u8);
+
+void func_801EF380(s32 arg0) {
+    u32 sp24;
+    u32 sp20;
+
+    sp24 = D_0048F970 - D_0048F5A0;
+    sp20 = D_0048FA70 - D_0048F970_2;
+    func_801F4E70(arg0);
+    if (arg0 == 2) {
+        D_802159D0 = 90;
+    } else {
+        D_802159D0 = 0;
+    }
+    func_8028B4C4(D_0048F5A0, D_80358070, &sp24, 12, 0, 1);
+    D_802159D4 = D_80358070;
+    D_80358070 += sp24;
+    func_8028B4C4(D_0048F970, D_80358070, &sp20, 12, 0, 1);
+    D_802159D8 = D_80358070;
+    D_80358070 += sp20;
+    D_802159DC = arg0;
+    D_802159E0 = 0.0f;
+    D_802159E4 = 3.0f;
+}
 
 void func_801EF4AC(void) {
     UnkStruct_803156F8 *sp12C;

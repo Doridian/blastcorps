@@ -73,7 +73,8 @@ hd_code us.v10 0xA4360 0xCADF0 0x68790 0x69040 0x7D920 0x8002C 0x8E860 0xA0B80
 # thread.c's queues (only exceptasm and other objects use them), and reverb.c's L_INC,
 # which nothing uses.
 hd_code us.v11 0xA4410 0xCAEA0 0x68810 0x690C0 0x7D9D0 0x800DC 0x8E910 0xA0C30 0xC33D0 0xC9BD0 \
-    --data-split BAF70 --data-split C2FA0:97BB0 --data-split C33C0:9FE20
+    --data-split BAF70 --data-split C2FA0:97BB0 --data-split C33C0:9FE20 \
+    --bin "0x91D50:40:0x40 zero bytes after createmesgqueue.o; no C object ends like that"
 hd_code jp     0xA47E0 0xCAF60 0x68B80 0x69430 0x7DDA0 0x804AC 0x8ECE0 0xA1000
 # eu's vi.c is PAL's, so it doesn't match the other versions' __osViInit and
 # OBJECT_STARTS can't find it: it starts after coss.c, at the osTvType load.
@@ -84,9 +85,8 @@ hd_front_end us.v10 0x21010 0x29E60 0x20060
 # the microcode data ("RSP SW Version: 2.0D") after the last .rodata.
 # 0x10850 is where bestTimes.c starts after pfsHandler.c: pfsHandler's
 # .rodata ends in func_801F58E8's jump tables and the menu strings follow.
-# 0xC450 is most likely another object start (9570's .rodata would end in
-# padding where it now has an unexplained zero double), but 9570.c is
-# decompiled as one file, so it stays joined (--join) until that file is split.
-hd_front_end us.v11 0x21040 0x29E90 0x20090 0x27440 0x29690 --split 10850 --join C450
+# 0xC450 (found by missed_boundaries) is another object start: 9570's .rodata
+# ends in 12 bytes of padding before C450's.
+hd_front_end us.v11 0x21040 0x29E90 0x20090 0x27440 0x29690 --split 10850
 hd_front_end jp     0x20F90 0x29B00 0x1FFE0
 hd_front_end eu     0x21990 0x2CAB0 0x209E0

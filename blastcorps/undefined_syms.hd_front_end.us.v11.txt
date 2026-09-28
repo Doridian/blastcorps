@@ -46,3 +46,10 @@ D_8020E3E0 = 0x8020E3E0;
 D_006AD3F0 = 0x006AD3F0;
 D_006BF2F0 = 0x006BF2F0;
 D_006D3D30 = 0x006D3D30;
+/* Two ROM ranges back to back: func_801EF380 names the end of the first and the
+   start of the second separately (two lui/addiu pairs for one address). */
+D_0048F5A0 = 0x0048F5A0;
+D_0048F970 = 0x0048F970;
+D_0048F970_2 = 0x0048F970;
+D_0048FA70 = 0x0048FA70;
+D_006A32B0 = 0x006A32B0;

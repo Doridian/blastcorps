@@ -38,8 +38,30 @@ u8 func_8028A370(void);
 s32 func_8025B300(u8 *);
 void func_80270E50(void *sc, void *client, OSMesgQueue *mq, s32 arg3, s32 arg4);
 u8 __osContDataCrc(u8 *);
-void func_801F58E8(void *);
+void func_801F58E8();
 void func_801F74B0(u8 *);
+void func_801EE390(void);
+void func_801EE398(s32);
+void func_8028A42C(void);
+s32 func_801F5FE4(void);
+s32 func_801F60C8(void);
+s32 func_801F6160(u8);
+s32 func_801F61C8(s32);
+s32 func_801F6210(u8);
+s32 func_801F6264(u8, u8);
+s32 func_801F65C4(u8, u8, u8);
+s32 func_801F67E4(u8, u8, u8);
+s32 func_801F6AF4(u8, u64);
+s32 func_801F6CA4(u8, u8, u8);
+s32 func_801F6ED4(u8);
+extern s8 D_8039C4B0;
+extern s32 D_8036BF10;
+extern s32 D_80218D24;
+extern s32 D_80219F88;
+extern OSThread D_80310BD0;
+extern u64 D_80364A98;
+extern s16 D_8036BB18;
+extern s16 D_8036BB1C;
 
 extern OSThread D_80218D30;
 extern u8 D_80218EE0[];
@@ -58,7 +80,7 @@ extern s32 D_80370C00;
 extern OSMesgQueue D_80370BF8;
 extern OSPfs D_8039B630;
 extern s32 D_8039B698[];
-extern s8 D_8039C538;
+extern u8 D_8039C538;
 extern OSPfsState D_80218B20[];
 extern s32 D_80218D28;
 extern s32 D_802E8BDC;
@@ -183,12 +205,212 @@ void func_801F57B0(void) {
     osStartThread(&D_80218D30);
 }
 
-/*
- * The Controller Pak thread (commands from D_80219EF8, replies on
- * D_80219F50).  A C version matches except for one `b` the original keeps
- * at the end of the last case of its second switch (case 1); left as asm.
- */
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/E7B0/func_801F58E8.s")
+/* The Controller Pak thread (commands from D_80219EF8, replies on D_80219F50). */
+void func_801F58E8(void) {
+    OSMesg sp3C;
+    s32 sp38;
+    s32 sp34;
+    u8 sp33; /* unused */
+    u8 sp32;
+    u8 sp31;
+    u8 sp30;
+    u8 sp2F;
+    u8 sp2E;
+    u8 sp2D;
+    s32 sp28;
+    u32 sp24;
+
+    for (;;) {
+        D_8039C4B0 = 0;
+        sp24 = 0;
+        osSetEventMesg(OS_EVENT_SI, &D_80370BF8, NULL);
+        osRecvMesg(&D_80219EF8, &sp3C, OS_MESG_BLOCK);
+        osSetEventMesg(OS_EVENT_SI, &D_80370BF8, NULL);
+        while (D_8036BF10 != 0) {
+        }
+        sp2F = (u32)sp3C & 0xFF;
+        sp31 = ((u32)sp3C >> 8) & 0xFF;
+        sp32 = ((u32)sp3C >> 16) & 0xFF;
+        sp30 = ((u32)sp3C >> 24) & 0xFF;
+        D_8020C014[0] = sp32 + 0x11;
+        D_8039C4B0 = 1;
+        func_8028A42C();
+        func_801EE390();
+        D_80218D24 = 0;
+        do {
+            sp2D = 0;
+            sp2E = 0;
+            sp28 = 0x5B;
+            sp34 = 0;
+            switch (sp2F) {
+                case 1:
+                case 2:
+                    sp38 = func_801F60C8();
+                    break;
+                case 3:
+                    sp38 = func_801F6160(sp32);
+                    break;
+                case 4:
+                    sp38 = func_801F61C8(sp32);
+                    break;
+                case 5:
+                    sp38 = func_801F6210(sp32);
+                    break;
+                case 6:
+                    sp38 = func_801F6264(sp32, 0);
+                    break;
+                case 7:
+                    sp38 = func_801F6264(sp32, 1);
+                    break;
+                case 8:
+                    sp38 = func_801F65C4(sp32, sp31, 0);
+                    break;
+                case 9:
+                    sp38 = func_801F65C4(sp32, sp31, 1);
+                    break;
+                case 10:
+                    sp38 = func_801F67E4(sp32, sp31, 0);
+                    break;
+                case 11:
+                    sp38 = func_801F67E4(sp32, sp31, 1);
+                    break;
+                case 12:
+                    sp38 = func_801F6CA4(sp32, sp31, 0);
+                    break;
+                case 13:
+                    sp38 = func_801F6CA4(sp32, sp31, 1);
+                    break;
+                case 14:
+                    sp38 = osPfsFreeBlocks(&D_8039B630, &D_80218EF0);
+                    break;
+                case 15:
+                    sp38 = func_801F5FE4();
+                    break;
+                case 16:
+                    sp2D = 1;
+                    sp38 = osEepromProbe(&D_80370BF8);
+                    break;
+                case 17:
+                    sp38 = func_801F6ED4(sp32);
+                    break;
+                case 18:
+                    sp38 = osPfsChecker(&D_8039B630);
+                    break;
+                case 19:
+                    sp38 = 10;
+                    break;
+                case 20:
+                    sp38 = func_801F6AF4(sp32, 0x2704197125121981);
+                    break;
+                case 21:
+                    sp38 = func_801F6AF4(sp32, 0x87569AB6CD076AEC);
+                    break;
+                case 22:
+                    sp38 = 0;
+                    break;
+                default:
+                    func_8029A7E4("Nonsense pak message\n");
+                    break;
+            }
+            func_8029A7E4("pak command %d returned %d\n", sp2F, sp38);
+            switch (sp38) {
+                case 0x6E382:
+                    if ((D_80364A90 & 0x10E18000) || (D_80364A98 & 0x20000000000000)) {
+                        sp2D = 1;
+                        break;
+                    }
+                    /* fallthrough */
+                case 6:
+                case 10:
+                case 11:
+                    if (sp24 >= 4) {
+                        if (sp2F != 0x13) {
+                            if (sp38 == 0x6E382) {
+                                D_80219F88 = 0x5D;
+                            } else {
+                                D_80219F88 = 0x5C;
+                            }
+                            func_801F6AF4(sp32, 0x2704197125121981);
+                            sp2E = 0x13;
+                        }
+                        sp28 = D_80219F88;
+                    } else {
+                        sp28 = 0;
+                        sp24++;
+                    }
+                    break;
+                case 0:
+                case 5:
+                case 9:
+                    sp2D = 1;
+                    break;
+                case 8:
+                    if (!(D_80364A90 & 0x10E18000) || func_801F5FE4() != 0) {
+                        break;
+                    }
+                    /* fallthrough */
+                case 7:
+                    D_8039C538 = (sp32 < D_8039C538) ? sp32 : D_8039C538;
+                    sp2D = 1;
+                    break;
+                case 3:
+                    if (sp24 >= 4) {
+                        if (sp2F != 0x13) {
+                            func_801F6AF4(sp32, 0x2704197125121981);
+                            sp2E = 0x13;
+                        }
+                        sp28 = 0x5C;
+                    } else {
+                        func_8029A7E4("trying to fix pak ...\n");
+                        if (sp2F != 0x12) {
+                            osSendMesg(&D_80219EF8, (OSMesg)(sp2F | (sp31 << 8) | (sp32 << 16) | (sp30 << 24)),
+                                       OS_MESG_NOBLOCK);
+                        }
+                        sp2E = 0x12;
+                        sp30 = 0;
+                        sp24++;
+                    }
+                    break;
+                case 2:
+                    if (sp34 == 8 && !(D_80364A90 & 0x10E18000)) {
+                        func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "1==0", "pfsHandler.c", 342);
+                        sp2D = 1;
+                    }
+                    break;
+                case 1:
+                    if (D_80364A98 & 0x20000000000000) {
+                        sp2D = 1;
+                    }
+                    break;
+            }
+            /*
+             * Dead code IDO still branches over: without it case 1's last
+             * `b` to the next instruction is dropped.  Probably a compiled-out
+             * debug macro in the original.
+             */
+            while (0) {
+                sp2D = 1;
+            }
+            sp34 = sp38;
+            if (D_8036BF10 == 0 && sp28 != 0 && sp2D == 0 && sp2E == 0 && &D_80310BD0 == D_80219F50.mtqueue) {
+                func_801EE398(sp28);
+                D_80218D24 = 1;
+            }
+            if (sp2E != 0) {
+                sp2F = sp2E;
+                sp2E = 0;
+            }
+            osRecvMesg(&D_80219F30, NULL, OS_MESG_BLOCK);
+        } while (sp2D == 0);
+        if (D_80218D24 != 0) {
+            D_8036BB1C = 1;
+            D_8036BB18 = -1;
+        }
+        if (sp30 != 0) {
+            osSendMesg(&D_80219F50, (OSMesg)sp38, OS_MESG_BLOCK);
+        }
+    }
+}
 
 s32 func_801F5FE4(void) {
     s32 sp24;
@@ -232,11 +454,16 @@ s32 func_801F60C8(void) {
     return sp18;
 }
 
-void func_801F6160(u8 arg0) {
+/*
+ * func_801F6160, func_801F61C8 and func_801F6ED4 return nothing, but the pak
+ * thread stores what they leave in $v0, so they are int functions with no
+ * return statement.
+ */
+s32 func_801F6160(u8 arg0) {
     osPfsAllocateFile(&D_8039B630, 0x3031, 0x4E424345, D_8020C000, D_8020C014, 0xE00, &D_8039B698[arg0]);
 }
 
-void func_801F61C8(s32 arg0) {
+s32 func_801F61C8(s32 arg0) {
     osPfsDeleteFile(&D_8039B630, 0x3031, 0x4E424345, D_8020C000, D_8020C014);
 }
 
@@ -454,7 +681,7 @@ s32 func_801F6CA4(u8 arg0, u8 arg1, u8 arg2) {
     return sp34;
 }
 
-void func_801F6ED4(u8 arg0) {
+s32 func_801F6ED4(u8 arg0) {
     osPfsFileState(&D_8039B630, arg0, &D_80218B20[D_80218D28]);
 }
 

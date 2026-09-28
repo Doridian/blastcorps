@@ -120,9 +120,8 @@ hd_code's and hd_front_end's (us.v11) `.data`/`.rodata` are split per object. A 
   (const globals are early `.rodata`, in source order with the strings).
   Unreferenced zero bytes among the early `.rodata` can be emulated the same
   way (`const char D_8020EFA4[12]` in hd_front_end/7800.c). A zero slot in
-  the late part (hd_front_end/9570.c, `0x8020F088`) can't, so 9570 stays on
-  asm `rodata`; that one is probably the padding before a second object at
-  `0xC450` (see ROADMAP).
+  the late part is usually the padding before another object's `.rodata`
+  (hd_front_end/9570.c's at `0x8020F088` was: C450.c starts there).
 - `.data`: only 45BB0 owns its own so far. Elsewhere, no initialized globals
   or statics. A local initialized aggregate (`char *sp24[] = {...}`) is
   `.data` too, with its strings at that point in `.rodata`.
@@ -220,7 +219,25 @@ If you find more, extend the generator rather than hand-editing a config.
   an unused static is dropped (so reverb's `L_INC` is non-static). 2.0D's
   gu.h FTOFRAC8 is double where 2.0I's is float.
 
-## Known so far
+## From the last stragglers
+
+- A dead `while (0) { stmt; }` right after a switch reproduces a `b` to the
+  next instruction at the end of the last case (`if (0)`, an empty
+  `while (0) {}` and case padding don't).
+- `switch ((u32)x)` on an `s8` local gives `lbu` with no mask; `(u8)x` gives
+  `lb` + `andi`.
+- A single-case `switch` in place of an `if` stops IDO forwarding values
+  just computed into a later call, so the call reloads its arguments.
+- `if (x % 16)` keeps the signed-remainder sequence; `x % 16 != 0` becomes
+  `& 15`.
+- Register allocation depends on later code, so fix the diffs lowest in a
+  function first.
+- Two ROM-range sizes that share an address but are built separately come
+  from two linker symbols at that address (`D_0048F970`, `D_0048F970_2`).
+- Zero padding after an object that no C produces (0x40 bytes after
+  osCreateMesgQueue) is a `bin` subsegment, passed to the generator with
+  `--bin`.
+
 
 These are only guesses at meaning until they're in `symbols_known.txt`:
 
