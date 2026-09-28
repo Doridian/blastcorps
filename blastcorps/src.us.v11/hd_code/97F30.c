@@ -4,5 +4,3 @@
 
 #define TIMERINTR_SERVICESINIT_ASM
 #include "src/libultra/os/timerintr.c"
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/97F30/__osProbeTLB.s")

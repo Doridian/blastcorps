@@ -10,7 +10,9 @@ code resumes as its own subsegment where each one ends.
 With --c, code subsegments are emitted as `c` (one GLOBAL_ASM file per function
 under asm/nonmatchings) wherever both ends are 16-byte aligned, the alignment an
 IDO object gets.  Code that starts or ends elsewhere sits between data islands,
-is handwritten, and stays `asm`.
+is handwritten, and stays `asm`.  So does code that saves $ra with sd and never
+with sw: IDO never does that, and Rare's handwritten engine code (about a
+third of hd_code) always does.
 
 Usage:
   gen_code_yaml.py <module> <version> --vram 0x... --data <off> --end <off>
@@ -25,6 +27,19 @@ import textwrap
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+
+# libultra functions that come from its handwritten .s files.  A code
+# subsegment made only of these is emitted as `asm`, and each run of them is
+# split out of whatever C it was lumped in with.
+HANDWRITTEN_LIBULTRA = {
+    "bcopy", "bzero", "sqrtf", "osGetCount", "osSetIntMask", "osMapTLBRdb",
+    "osInvalDCache", "osInvalICache", "osWritebackDCache", "osWritebackDCacheAll",
+    "__osSetSR", "__osGetSR", "__osSetFpcCsr", "__osGetCause", "__osSetCompare",
+    "__osDisableInt", "__osRestoreInt", "__osProbeTLB",
+    # exceptasm.s
+    "__osExceptionPreamble", "__osException", "send_mesg", "handle_CpU",
+    "__osEnqueueAndYield", "__osEnqueueThread", "__osPopThread", "__osDispatchThread",
+}
 SPLAT = HERE / "splat" / "split.py"
 
 
@@ -102,6 +117,31 @@ def main():
     in_bin = lambda x: any(o <= x < o + n for o, n, _ in bins)
 
     cfg = Path(f"{mod}.{ver}.yaml")
+    blob = Path(f"{mod}.{ver}.bin").read_bytes()[:args.data]
+    words = struct.unpack(f">{len(blob) // 4}I", blob)
+
+    # Function starts from the symbol file: name -> offset in this module.
+    funcs = {}
+    if args.symbols:
+        for line in Path(args.symbols).read_text().splitlines():
+            m = re.match(r"\s*(\w+)\s*=\s*0x([0-9A-Fa-f]+);", line)
+            if m and ("type:func" in line or m.group(1) in HANDWRITTEN_LIBULTRA):
+                off = int(m.group(2), 16) - args.vram
+                if 0 <= off < args.data:
+                    funcs.setdefault(off, m.group(1))
+    hand_lib = {o for o, n in funcs.items() if n in HANDWRITTEN_LIBULTRA}
+
+    def handwritten(start, end):
+        """True if [start, end) is Rare's handwritten asm.  IDO saves $ra with
+        sw; that code saves it (and everything else it touches) with sd."""
+        sd = sw = 0
+        for w in words[start // 4:end // 4]:
+            sd += (w & 0xFFFF0000) == 0xFFBF0000  # sd $ra, x($sp)
+            sw += (w & 0xFFFF0000) == 0xAFBF0000  # sw $ra, x($sp)
+        if sd > 0 and sw == 0:
+            return True
+        inside = [o for o in funcs if start <= o < end]
+        return bool(inside) and start in hand_lib and all(o in hand_lib for o in inside)
 
     def emit(starts):
         """Config lines for code split at `starts` plus the bins, in address order."""
@@ -115,9 +155,11 @@ def main():
                 lines.append(f"    - [0x{x:X}, bin, {mod}/{x:X}]")
                 continue
             nxt = next(e for e in ends if e > x)
-            kind = "c" if args.c and x % 16 == 0 and nxt % 16 == 0 else "asm"
+            hand = handwritten(x, nxt)
+            kind = "c" if args.c and x % 16 == 0 and nxt % 16 == 0 and not hand else "asm"
             name = f"{x:05X}" if x == 0 else f"{x:X}"
-            lines.append(f"    - [0x{name}, {kind}, {mod}/{name}]")
+            note = " # handwritten" if hand and args.c else ""
+            lines.append(f"    - [0x{name}, {kind}, {mod}/{name}]{note}")
         lines.append(f"    - [0x{args.data:X}, linker, data]")
         return lines
 
@@ -139,8 +181,6 @@ def main():
     # Splat's function detection trips over some of the handwritten code and
     # suggests boundaries inside a function.  No branch crosses a real object
     # boundary, so drop any suggestion one does.
-    blob = Path(f"{mod}.{ver}.bin").read_bytes()[:args.data]
-    words = struct.unpack(f">{len(blob) // 4}I", blob)
     crossed = set()
     for a, b in branch_spans(words):
         if in_bin(4 * a):
@@ -150,6 +190,29 @@ def main():
     for s in sorted(crossed):
         print(f"dropping boundary 0x{s:X}: a branch crosses it", file=sys.stderr)
     splits -= crossed
+
+    # Split each run of handwritten libultra out of the C around it: at its
+    # first function, and at the next function or split after it that isn't
+    # handwritten.  Both are object boundaries, so 16-aligned.
+    # Every function splat found in pass 1, from the glabels in its asm output
+    # (the symbol file only lists named and called ones).
+    found = set()
+    for x, _ in code:
+        asm = Path("asm", mod, f"{x:05X}.s" if x == 0 else f"{x:X}.s")
+        if not asm.exists():
+            continue
+        for m in re.finditer(r"^glabel \w+\n/\* [0-9A-F]+ ([0-9A-F]{8}) ", asm.read_text(), re.M):
+            found.add(int(m.group(1), 16) - args.vram)
+    known = sorted(set(funcs) | found | splits | {s for s, _ in code} | {e for _, e in code})
+    for off in sorted(hand_lib):
+        prev = max((k for k in known if k < off), default=None)
+        if prev is not None and prev in hand_lib:
+            continue  # inside a run; one .s file can hold several functions
+        if off % 16 == 0:
+            splits.add(off)
+        nxt = next((k for k in known if k > off and k not in hand_lib), None)
+        if nxt is not None and nxt % 16 == 0 and nxt < args.data:
+            splits.add(nxt)
     starts = sorted(splits | {s for s, _ in code})
 
     # Pass 2: the real config.

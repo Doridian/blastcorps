@@ -7,5 +7,3 @@
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/97E80/__osSetTimerIntr.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/97E80/__osInsertTimer.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/97E80/__osProbeTLB.s")

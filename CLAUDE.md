@@ -142,6 +142,8 @@ middle step the stubs keep pointing at stale `func_` files.
 Handwritten code (the game's own asm, and libultra's `.s` files) is an `asm`
 subsegment, not a `c` file full of `GLOBAL_ASM`. That keeps
 `tools/progress.py` honest and marks what a port has to replace.
+`gen_code_yaml.py` classifies it (see `docs/DECOMPILING.md`). About a third
+of hd_code is Rare's handwritten engine; it can't become matching C.
 
 Splat only symbolizes a `%hi`/`%lo` pair it can match up. A table reached
 through a `lui`/`addiu` pair split by scheduling stays a bare constant, so C

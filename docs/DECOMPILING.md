@@ -55,6 +55,26 @@ All of this is IDO 5.3 at `-O1` unless it says otherwise.
   array (`u16 (*p)[49][0x1A4]`) gives the direct multiply; `p + i * 0x5064`
   multiplies then shifts.
 
+- `X += a; if (X >= b)` and `if ((X += a) >= b)` differ; so do `X--; if (!X)`
+  and `if (--X == 0)`. A single-case `switch` can reproduce a reload after a
+  branch. `x -= k` written inside a call argument can match where a separate
+  statement doesn't.
+- IDO only reuses a loaded value if no store (even to a local) comes between.
+  Chained assignments store right to left: `a = b = x` stores `b` first; a
+  u16 field stored then read back (`sh`, `lhu`) is `a.x = a.y = 20;`.
+- Put the operand that must be evaluated first on the left: `sign * f(...)`,
+  not `f(...) * sign`; `p->unk14 + (u8 *)p` rather than the other order.
+- `D = !p;` gives `sltiu`; `p == NULL` and ternaries don't.
+- A ternary assigned to a global becomes a store in each arm; one nested in
+  another, or used as a call argument, goes in an `$s` register.
+- `&a[3][i] + 2` and `&a[3][i + 2]` compile differently.
+- `if (x > 0.0f) {} else { x = -x; }` is the abs pattern that reloads `x`.
+- A constant index into an extern array (`D_X[7].f`) is `lui/addiu` plus an
+  offset. If the asm instead loads `%lo(sym)` at a nonzero offset directly,
+  those are separate scalar globals.
+- `lw $at`/`sw` copies of an initialized local array or struct are a struct
+  assignment from an extern: `sp34 = D_80208358;`.
+
 ## Types
 
 - An argument that's `lw`'d from its stack slot and truncated at use is `s32`,
@@ -70,6 +90,9 @@ All of this is IDO 5.3 at `-O1` unless it says otherwise.
 - A `switch` on a u64 compiles to compare trees, not a jump table.
 - Storing an `s8`-converted value into a u8 (`v.cn[i] = (s8)f`) produces the
   `sll`/`sra` pair.
+- Converting a `u8` to float gives the unsigned-conversion fixup sequence; it
+  doesn't mean the variable is `u32`. A float passed in an integer register is
+  built with `lui`/`ori`, so it needs no `.rodata`.
 - libultra was built with unsigned `char`; this build passes `-signed`. Read
   through `(u8 *)` where the asm uses `lbu`.
 
@@ -121,9 +144,17 @@ casts or struct-offset tricks for them.
 
 ## Handwritten code
 
-Code that saves registers with `sd`/`ld`, uses `add`/`addi`, or has no normal
-prologue isn't IDO output. Leave it as `GLOBAL_ASM` and report it; it becomes
-an `asm` subsegment in the module's yaml.
+Code that saves registers with `sd`/`ld`, uses `add`/`addi`, passes
+arguments in `$v0`/`$v1`/`$t*`/`$s0` or has no normal prologue isn't IDO
+output. `tools/gen_code_yaml.py` makes such code an `asm` subsegment, so it
+never reaches a stub:
+
+- any code subsegment that saves `$ra` with `sd` and never with `sw` (Rare's
+  engine block, `0x56040`–`0x8F860` in us.v11 hd_code);
+- libultra's handwritten functions, by name (`HANDWRITTEN_LIBULTRA` in the
+  generator), split out of whatever C they sat next to.
+
+If you find more, extend the generator rather than hand-editing a config.
 
 ## Known so far
 

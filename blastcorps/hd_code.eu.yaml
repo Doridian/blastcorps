@@ -58,45 +58,45 @@ segments:
     - [0x57AD0, c, hd_code/57AD0]
     - [0x57DA0, c, hd_code/57DA0]
     - [0x57DD0, c, hd_code/57DD0]
-    - [0x589B0, c, hd_code/589B0]
-    - [0x5E8B0, c, hd_code/5E8B0]
-    - [0x5F4D0, c, hd_code/5F4D0]
-    - [0x626C0, c, hd_code/626C0]
-    - [0x636C0, c, hd_code/636C0]
-    - [0x638D0, c, hd_code/638D0]
-    - [0x650B0, c, hd_code/650B0]
-    - [0x6A350, c, hd_code/6A350]
+    - [0x589B0, asm, hd_code/589B0] # handwritten
+    - [0x5E8B0, asm, hd_code/5E8B0] # handwritten
+    - [0x5F4D0, asm, hd_code/5F4D0] # handwritten
+    - [0x626C0, asm, hd_code/626C0] # handwritten
+    - [0x636C0, asm, hd_code/636C0] # handwritten
+    - [0x638D0, asm, hd_code/638D0] # handwritten
+    - [0x650B0, asm, hd_code/650B0] # handwritten
+    - [0x6A350, asm, hd_code/6A350] # handwritten
     # u16 lookup table (sine) for the handwritten math routines around it
     - [0x6B180, bin, hd_code/6B180]
-    - [0x6B984, asm, hd_code/6B984]
+    - [0x6B984, asm, hd_code/6B984] # handwritten
     # second u16 lookup table of the handwritten math routines
     - [0x6BA30, bin, hd_code/6BA30]
-    - [0x6C2B4, asm, hd_code/6C2B4]
-    - [0x6C520, c, hd_code/6C520]
-    - [0x6DE10, c, hd_code/6DE10]
-    - [0x6EF50, c, hd_code/6EF50]
-    - [0x70B70, c, hd_code/70B70]
-    - [0x73AB0, c, hd_code/73AB0]
-    - [0x754F0, c, hd_code/754F0]
-    - [0x77E00, c, hd_code/77E00]
-    - [0x79C10, c, hd_code/79C10]
-    - [0x7A790, c, hd_code/7A790]
+    - [0x6C2B4, asm, hd_code/6C2B4] # handwritten
+    - [0x6C520, asm, hd_code/6C520] # handwritten
+    - [0x6DE10, asm, hd_code/6DE10] # handwritten
+    - [0x6EF50, asm, hd_code/6EF50] # handwritten
+    - [0x70B70, asm, hd_code/70B70] # handwritten
+    - [0x73AB0, asm, hd_code/73AB0] # handwritten
+    - [0x754F0, asm, hd_code/754F0] # handwritten
+    - [0x77E00, asm, hd_code/77E00] # handwritten
+    - [0x79C10, asm, hd_code/79C10] # handwritten
+    - [0x7A790, asm, hd_code/7A790] # handwritten
     # data with code pointers, ahead of a block of handwritten routines
     - [0x80340, bin, hd_code/80340]
-    - [0x82220, asm, hd_code/82220]
+    - [0x82220, asm, hd_code/82220] # handwritten
     # more data with code pointers, after that block
     - [0x82A4C, bin, hd_code/82A4C]
-    - [0x82BF0, c, hd_code/82BF0]
-    - [0x86280, c, hd_code/86280]
-    - [0x87D40, c, hd_code/87D40]
-    - [0x89840, c, hd_code/89840]
-    - [0x898D0, c, hd_code/898D0]
-    - [0x8AAD0, c, hd_code/8AAD0]
-    - [0x8BBC0, c, hd_code/8BBC0]
-    - [0x8C9F0, c, hd_code/8C9F0]
-    - [0x8CC50, c, hd_code/8CC50]
-    - [0x8D850, c, hd_code/8D850]
-    - [0x90720, c, hd_code/90720]
+    - [0x82BF0, asm, hd_code/82BF0] # handwritten
+    - [0x86280, asm, hd_code/86280] # handwritten
+    - [0x87D40, asm, hd_code/87D40] # handwritten
+    - [0x89840, asm, hd_code/89840] # handwritten
+    - [0x898D0, asm, hd_code/898D0] # handwritten
+    - [0x8AAD0, asm, hd_code/8AAD0] # handwritten
+    - [0x8BBC0, asm, hd_code/8BBC0] # handwritten
+    - [0x8C9F0, asm, hd_code/8C9F0] # handwritten
+    - [0x8CC50, asm, hd_code/8CC50] # handwritten
+    - [0x8D850, asm, hd_code/8D850] # handwritten
+    - [0x90720, asm, hd_code/90720] # handwritten
     # data island; no code reaches it
     - [0x91280, bin, hd_code/91280]
     - [0x921D0, c, hd_code/921D0]
@@ -108,8 +108,9 @@ segments:
     - [0x92C00, c, hd_code/92C00]
     - [0x92D00, c, hd_code/92D00]
     - [0x92FD0, c, hd_code/92FD0]
-    - [0x93050, c, hd_code/93050]
-    - [0x930D0, c, hd_code/930D0]
+    - [0x93050, asm, hd_code/93050] # handwritten
+    - [0x930D0, asm, hd_code/930D0] # handwritten
+    - [0x93130, c, hd_code/93130]
     - [0x931E0, c, hd_code/931E0]
     - [0x93280, c, hd_code/93280]
     - [0x93440, c, hd_code/93440]
@@ -118,11 +119,11 @@ segments:
     - [0x93AD0, c, hd_code/93AD0]
     - [0x93D40, c, hd_code/93D40]
     - [0x93DE0, c, hd_code/93DE0]
-    - [0x942A0, c, hd_code/942A0]
+    - [0x942A0, asm, hd_code/942A0] # handwritten
     - [0x942B0, c, hd_code/942B0]
     - [0x94810, c, hd_code/94810]
-    - [0x949D0, c, hd_code/949D0]
-    - [0x94A00, c, hd_code/94A00]
+    - [0x949D0, asm, hd_code/949D0] # handwritten
+    - [0x94A00, asm, hd_code/94A00] # handwritten
     - [0x94AB0, c, hd_code/94AB0]
     - [0x94BB0, c, hd_code/94BB0]
     - [0x94D20, c, hd_code/94D20]
@@ -142,7 +143,7 @@ segments:
     - [0x96510, c, hd_code/96510]
     - [0x96760, c, hd_code/96760]
     - [0x97990, c, hd_code/97990]
-    - [0x979D0, c, hd_code/979D0]
+    - [0x979D0, asm, hd_code/979D0] # handwritten
     - [0x979E0, c, hd_code/979E0]
     - [0x97BC0, c, hd_code/97BC0]
     - [0x97DD0, c, hd_code/97DD0]
@@ -152,24 +153,27 @@ segments:
     - [0x98B30, c, hd_code/98B30]
     - [0x98BA0, c, hd_code/98BA0]
     - [0x98C10, c, hd_code/98C10]
-    - [0x98C80, c, hd_code/98C80]
+    - [0x98C80, asm, hd_code/98C80] # handwritten
+    - [0x98F90, c, hd_code/98F90]
     - [0x98FF0, c, hd_code/98FF0]
     - [0x99000, c, hd_code/99000]
     - [0x991B0, c, hd_code/991B0]
     - [0x994F0, c, hd_code/994F0]
     - [0x995D0, c, hd_code/995D0]
     - [0x99A00, c, hd_code/99A00]
-    - [0x99C60, c, hd_code/99C60]
-    - [0x99CE0, c, hd_code/99CE0]
+    - [0x99C60, asm, hd_code/99C60] # handwritten
+    - [0x99CE0, asm, hd_code/99CE0] # handwritten
     - [0x99D80, c, hd_code/99D80]
     - [0x99E30, c, hd_code/99E30]
-    - [0x99EC0, c, hd_code/99EC0]
-    - [0x99EE0, c, hd_code/99EE0]
-    - [0x99F90, c, hd_code/99F90]
-    - [0x9A860, c, hd_code/9A860]
+    - [0x99EC0, asm, hd_code/99EC0] # handwritten
+    - [0x99EE0, asm, hd_code/99EE0] # handwritten
+    - [0x99EF0, c, hd_code/99EF0]
+    - [0x99F90, asm, hd_code/99F90] # handwritten
+    - [0x9A860, asm, hd_code/9A860] # handwritten
     - [0x9A8A0, c, hd_code/9A8A0]
     - [0x9A9C0, c, hd_code/9A9C0]
     - [0x9AC20, c, hd_code/9AC20]
+    - [0x9B020, asm, hd_code/9B020] # handwritten
     - [0x9B0E0, c, hd_code/9B0E0]
     - [0x9C270, c, hd_code/9C270]
     - [0x9C310, c, hd_code/9C310]
@@ -193,10 +197,10 @@ segments:
     - [0x9FE50, c, hd_code/9FE50]
     - [0x9FF40, c, hd_code/9FF40]
     - [0xA03C0, c, hd_code/A03C0]
-    - [0xA04F0, c, hd_code/A04F0]
+    - [0xA04F0, asm, hd_code/A04F0] # handwritten
     - [0xA0500, c, hd_code/A0500]
     - [0xA1C20, c, hd_code/A1C20]
-    - [0xA2830, c, hd_code/A2830]
+    - [0xA2830, asm, hd_code/A2830] # handwritten
     - [0xA2840, c, hd_code/A2840]
     - [0xA28A0, c, hd_code/A28A0]
     # RSP microcode; its entry sets sp=0x110 and jumps into IMEM

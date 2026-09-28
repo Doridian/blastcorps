@@ -11,13 +11,14 @@ lands in `us.v11` first.
 
 ## Where things stand
 
-| module         | functions | instructions | in C (2026-09-27) |
-| ---            | ---:      | ---:         | ---:              |
-| `init`         | 67        | ~3.7k        | 100%              |
-| `hd_code`      | 1421      | ~160k        | 0%                |
-| `hd_front_end` | 161       | ~33k         | 0%                |
+| module         | IDO-compiled code | handwritten asm | in C (2026-09-28) |
+| ---            | ---:              | ---:            | ---:              |
+| `init`         | ~10 KB            | ~4 KB           | 100%              |
+| `hd_code`      | ~420 KB           | ~220 KB         | 56%               |
+| `hd_front_end` | ~130 KB           | (eu: one block) | 69%               |
 
-Run `tools/progress.py` for current numbers.
+Run `tools/progress.py` for current numbers. Its percentages are of the
+IDO-compiled code only.
 
 What's known that affects the port:
 
@@ -31,9 +32,15 @@ What's known that affects the port:
 - **The scheduler is SGI's sample `sched.c`** (the `sc->curRSPTask` asserts).
 - **Compiler:** IDO 5.3, with `-O1` for the code seen so far (every local is
   spilled to the stack). Per-file flags still have to be confirmed.
-- **Handwritten asm:** Rare's math routines and the block with the data
-  islands (`tools/regen_code_yaml.sh`). They stay `.s` in the matching build
-  and get C versions for the port.
+- **About a third of hd_code is handwritten asm:** everything from `0x56040`
+  to the libultra at `0x8F860`, around 220 KB and 500 functions, including
+  the code around the data islands. It's Rare's own: every function saves
+  `$ra` and everything else it touches with `sd`, arguments and results pass
+  in `$v0`/`$v1`/`$t*`/`$s0`, it uses `$gp`, and it does 64-bit math
+  (`dmult`, `dadd`). `gen_code_yaml.py` detects it (sd `$ra`, never sw) and
+  emits it as `asm`. It can't be decompiled to matching C; for the port it has
+  to be rewritten or mechanically translated (see Phase 5). The game's
+  simulation (vehicles, collision, destruction) is likely in it.
 - **All `.data`/`.rodata` is still one opaque `bin` per module**, and `.bss`
   isn't modelled at all. This is the biggest structural gap. Until it's split,
   no data pointer is a relocation, and nothing can be moved.
@@ -143,8 +150,17 @@ selected with `TARGET_PC`. The N64 build stays matching.
 - **64-bit cleanliness:** replace `K0_TO_PHYS`/TLB/`osVirtualToPhysical` use,
   make `u32` pointer fields in structs from ROM data into real pointers, and
   convert on load.
-- **Handwritten asm:** C versions of Rare's math routines, checked against the
-  asm on the N64 build (same results for the same inputs).
+- **Handwritten asm (hd_code's 220 KB engine block, plus init's boot code):**
+  the biggest port task. Two routes, which can be mixed per function:
+  - Mechanical translation: a tool that turns each asm function into C
+    operating on a register file, as N64Recomp does for whole games. It's
+    correct by construction and quick to get running, but the output is
+    unreadable and ties the port to 32-bit N64 addresses in data.
+  - Hand-written C equivalents, checked on the N64 build against the asm
+    (same results for the same inputs, e.g. by running both in an emulator
+    or a MIPS interpreter over recorded inputs).
+  A sensible order: translate mechanically first to get the port running,
+  then replace functions with readable C as they're understood.
 - Later: widescreen, higher framerate (the game loop is tied to VI retrace),
   and mod support.
 
