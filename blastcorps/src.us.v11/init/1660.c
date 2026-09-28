@@ -1,25 +1,25 @@
 #include "common.h"
-#include <ultra64.h>
+#include "gzip.h"
 
-extern s32 method;
-extern s32 D_802229E0;
-extern u8 *inbuf;
-extern s32 window;
-extern s32 bytes_in;
-extern s32 bytes_out;
-extern s32 insize;
-extern s32 inptr;
-extern s32 outcnt;
+#define DEFLATED     8
+#define ERROR        1
 
-void clear_bufs(void);
-s32  get_method(void);
-s32  inflate(void);
+#define CONTINUATION 0x02
+#define EXTRA_FIELD  0x04
+#define ORIG_NAME    0x08
+#define COMMENT      0x10
 
+/* "kiunzip: unknown method %d -- get newer version of gzip\n" */
+extern char D_802228D0[];
 
-void func_80220360(s32 *arg0, s32 *arg1, s32 arg2) {
-    inbuf = *arg0;
-    window = *arg1;
-    D_802229E0 = arg2;
+void func_80220714(const char *fmt, ...);
+
+/* Inflate the gzip member at *src to *dst, advancing both past it.  heap is
+ * where huft_build puts its tables. */
+void func_80220360(uch **src, uch **dst, struct huft *heap) {
+    inbuf = *src;
+    window = *dst;
+    huft_heap = heap;
 
     clear_bufs();
 
@@ -29,12 +29,50 @@ void func_80220360(s32 *arg0, s32 *arg1, s32 arg2) {
     method = get_method();
     if (method >= 0) {
         inflate();
-        *arg0 += inptr;
-        *arg1 += outcnt;
+        *src += inptr;
+        *dst += outcnt;
     }
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/1660/get_method.s")
+/* gzip 1.2.4, gzip.c, with the magic check, the other formats and the file
+ * name handling gone. */
+int get_method(void) {
+    uch flags;
+    unsigned len;
+
+    inptr += 2; /* magic */
+    method = -1;
+    header_bytes = 0;
+
+    method = (int)get_byte();
+    if (method != DEFLATED) {
+        func_80220714(D_802228D0, method);
+        exit_code = ERROR;
+        return -1;
+    }
+    flags = (uch)get_byte();
+
+    inptr += 6; /* time stamp, extra flags, OS type */
+
+    if ((flags & CONTINUATION) != 0) {
+        inptr += 2;
+    }
+    if ((flags & EXTRA_FIELD) != 0) {
+        len = (unsigned)get_byte();
+        len |= ((unsigned)get_byte()) << 8;
+        inptr += len;
+    }
+    if ((flags & ORIG_NAME) != 0) {
+        while (get_byte() != 0)
+            ;
+    }
+    if ((flags & COMMENT) != 0) {
+        while (get_byte() != 0)
+            ;
+    }
+    header_bytes = inptr + 2 * sizeof(long);
+    return method;
+}
 
 /* gzip 1.2.4, bits.c */
 unsigned bi_reverse(unsigned code, int len) {

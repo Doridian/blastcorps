@@ -353,6 +353,7 @@ bytes_out = 0x8036C02C; // type:data gzip
 insize = 0x8036C038; // type:data gzip
 inptr = 0x8036C03C; // type:data gzip
 outcnt = 0x8036C040; // type:data gzip
+huft_heap = 0x8039C760; // type:data gzip
 bb = 0x8039C764; // type:data gzip
 bk = 0x8039C768; // type:data gzip
 hufts = 0x8039C76C; // type:data gzip

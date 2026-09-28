@@ -1,5 +1,8 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/1A00/func_80220700.s")
+/* Empty printf-style stubs: gzip's error messages go to func_80220714. */
+void func_80220700(const char *fmt, ...) {
+}
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/1A00/func_80220714.s")
+void func_80220714(const char *fmt, ...) {
+}

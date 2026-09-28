@@ -61,6 +61,7 @@ dbits = 0x80222838; // type:data gzip
 method = 0x80222840; // type:data gzip
 exit_code = 0x80222844; // type:data gzip
 __osRunQueue = 0x802228A8; // type:data lib:ref
+huft_heap = 0x802229E0; // type:data gzip
 bb = 0x802229E4; // type:data gzip
 bk = 0x802229E8; // type:data gzip
 hufts = 0x802229EC; // type:data gzip

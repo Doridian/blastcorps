@@ -25,6 +25,9 @@
 //   clear_bufs      outcnt = 0; insize = inptr = 0; bytes_in = bytes_out = 0,
 //                   stored in that order, which is what tells the globals apart.
 //   bi_reverse      exactly gzip's bits.c version.
+//   huft_heap       where huft_build takes its tables from, in place of
+//                   malloc: q = huft_heap + hufts, then hufts += z + 1.
+//                   func_80220360 sets it from its third argument.
 // outcnt is inflate's wp (gzip: #define wp outcnt); window is where inflate
 // writes, which Rare points straight at the destination.  The table contents
 // (cplens 3..258, mask_bits 0..0xFFFF, border 16,17,18,0,8,...) and lbits = 9,
@@ -51,6 +54,7 @@ lbits = 0x80222834; // type:data gzip
 dbits = 0x80222838; // type:data gzip
 method = 0x80222840; // type:data gzip
 exit_code = 0x80222844; // type:data gzip
+huft_heap = 0x802229E0; // type:data gzip
 bb = 0x802229E4; // type:data gzip
 bk = 0x802229E8; // type:data gzip
 hufts = 0x802229EC; // type:data gzip
