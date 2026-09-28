@@ -38,6 +38,23 @@ All of this is IDO 5.3 at `-O1` unless it says otherwise.
 - In a compare-chain `switch`, the source order of the case bodies sets their
   layout.
 
+- A `sqrt.s` inline in one function while its neighbours `jal sqrtf`:
+  `#pragma intrinsic(sqrtf)` before that function and `#pragma function(sqrtf)`
+  after it.
+- IDO drops a loop's first test when the counter starts at a known constant.
+  A search loop that guards the first element and then does
+  `++i < n && ...` matched as
+  `if (a[0] != x) { do {} while (++i < n && a[i] != x); }`.
+- GBI macro temporaries take stack slots in the order they appear. Locals
+  declared between macros may need a nested `{ }` block to land in the right
+  slots. `sp7C = gfx = (Gfx *)D_80358070;` right after bumping the allocator
+  let the next macro reuse the register where other spellings reloaded it.
+- A `sizeof` in a loop bound makes the compare unsigned (`sltiu`) even with
+  an `s32` counter.
+- For a multiply by a large constant stride, a pointer to a multi-dimensional
+  array (`u16 (*p)[49][0x1A4]`) gives the direct multiply; `p + i * 0x5064`
+  multiplies then shifts.
+
 ## Types
 
 - An argument that's `lw`'d from its stack slot and truncated at use is `s32`,
@@ -96,6 +113,9 @@ casts or struct-offset tricks for them.
     `G_RDPHALF_CONT`, and `gSPScisTextureRectangle` clamps without 2.0I's
     `s16` casts and sign tests. `hd_code/17E10.c` redefines both, to move to
     `common.h` once agents are done with the files that copy them.
+- hd_front_end's `gDPSetPrimColor` with u8 struct fields ORs the colour
+  word in a different order (`b | (r | g) | a`); `hd_front_end/9570.c` has a
+  local variant.
 - Segment 2 (`D_02000000`) holds a buffer with `Mtx[8]` at 0 and vertices from
   `0x1E00`; see `hd_code/30C70.c`.
 
