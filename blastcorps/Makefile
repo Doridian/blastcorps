@@ -187,9 +187,9 @@ verify_hd_front_end: hd_front_end
 	@echo "$$(cat hd_front_end.$(VERSION).sha1)  $(HD_FRONT_END_TARGET).bin" | sha1sum --check
 
 extract: stamp
-	$(PYTHON) $(TOOLS_DIR)/splat/split.py init.$(VERSION).yaml
-	$(PYTHON) $(TOOLS_DIR)/splat/split.py hd_code.$(VERSION).yaml
-	$(PYTHON) $(TOOLS_DIR)/splat/split.py hd_front_end.$(VERSION).yaml
+	$(PYTHON) $(TOOLS_DIR)/split.py init.$(VERSION).yaml
+	$(PYTHON) $(TOOLS_DIR)/split.py hd_code.$(VERSION).yaml
+	$(PYTHON) $(TOOLS_DIR)/split.py hd_front_end.$(VERSION).yaml
 
 compress: $(BUILD_DIR)/hd_code_text.$(VERSION).gz $(BUILD_DIR)/hd_code_data.$(VERSION).gz \
           $(BUILD_DIR)/hd_front_end_text.$(VERSION).gz $(BUILD_DIR)/hd_front_end_data.$(VERSION).gz

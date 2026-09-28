@@ -48,8 +48,6 @@ s32 func_802AC4C4(s32, s32, s32, s32, s32, s32, s32, s32);
 
 extern UnkStruct_8027C4C8 D_02000000;
 extern s32 D_802E8BDC;
-extern f64 D_8030C6D0;
-extern f64 D_8030C6D8;
 extern s32 D_80358060;
 extern UnkStruct_802FC360 D_802FC360[11];
 
@@ -115,7 +113,7 @@ void func_8027BE7C(u8 arg0, s32 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, s3
     s16 bz;
 
     if (func_8027BCF0(arg6 >> 5, arg1 >> 5, arg7 >> 5) == 0) {
-        guRotateF(mf, (f32)arg8 / D_8030C6D0 * D_8030C6D8, 0.0f, 1.0f, 0.0f);
+        guRotateF(mf, (f32)arg8 / 4095.0 * 360.0, 0.0f, 1.0f, 0.0f);
         guMtxXFMF(mf, arg2, 0.0f, arg3, &x0, &y, &z0);
         guMtxXFMF(mf, arg4, 0.0f, arg5, &x1, &y, &z1);
         ax = (s32)(arg6 + x0) >> 5;

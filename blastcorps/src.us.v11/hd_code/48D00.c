@@ -72,8 +72,6 @@ extern u8 D_8039B620;
 extern u8 D_803A7424;
 extern u8 D_803F932C;
 extern Mtx D_02000000[];
-extern f64 D_8030CCE0;
-extern f64 D_8030CCE8;
 extern u8 D_803F932D;
 extern u8 D_803F932E;
 extern s32 D_802E8BDC;
@@ -405,7 +403,7 @@ void func_8028E9E4(Gfx **arg0, Mtx *arg1) {
     }
     for (i = 0; i < D_8039B610; i++) {
         if (D_8039B070[i].unk18 != 0) {
-            guRotateF(sp160, (f32)D_8039B070[i].unk2A / D_8030CCE0 * D_8030CCE8, 0.0f, 1.0f, 0.0f);
+            guRotateF(sp160, (f32)D_8039B070[i].unk2A / 4095.0 * 360.0, 0.0f, 1.0f, 0.0f);
             guTranslateF(sp120, D_8039B070[i].unk0 / 32.0f, D_8039B070[i].unk4 / 32.0f, D_8039B070[i].unk8 / 32.0f);
             guMtxCatF(sp160, sp120, sp160);
             guMtxF2L(sp160, (Mtx *)((u8 *)arg1 + i * sizeof(Mtx) + 0x600));

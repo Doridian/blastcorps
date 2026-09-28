@@ -11,8 +11,6 @@ typedef struct {
 } UnkStruct_80364460; /* size = 0x74 */
 
 extern s32 D_802FC51C;
-extern f64 D_8030C750;
-extern f64 D_8030C758;
 extern UnkStruct_80364460 D_80364460[];
 extern UnkStruct_80364460 *D_803649D0;
 extern s32 D_803649E8;
@@ -156,10 +154,6 @@ extern s16 D_80367BD6;
 extern Mtx D_02000000[];
 extern Gfx D_802FFF38[];
 extern Gfx D_80300A68[];
-extern f32 D_8030C7D8;
-extern f64 D_8030C7E0;
-extern f32 D_8030C7E8;
-extern f32 D_8030C7EC;
 extern u32 D_803156C4;
 extern u8 D_803643D6;
 extern Mtx D_8036E4D8[][2];
@@ -186,7 +180,7 @@ void func_8027D8F4(s32 arg0, s32 arg1, s32 arg2) {
     f32 angle;
 
     j = 1;
-    step = D_8030C750 / (arg1 + 1);
+    step = 6.28318 / (arg1 + 1);
     angle = D_802FC51C / 20.0;
     for (i = D_802FC51C; i < arg1 + D_802FC51C; i++) {
         s = sinf(angle);
@@ -213,7 +207,7 @@ void func_8027DA10(s32 arg0, s32 arg1, s32 arg2) {
     }
     sp64 = func_8027DB5C(sp30, sp20, arg2);
     i = 0;
-    sp5C = D_8030C758 / (arg1 + 1);
+    sp5C = 3.14159 / (arg1 + 1);
     for (; i < arg1; i++) {
         sp60 = sinf((i + 1) * sp5C);
         func_802C1F30(arg0, i + 1, 0, -sp60 * sp64, 0);
@@ -904,7 +898,7 @@ void func_8028273C(Gfx **arg0, u8 arg1) {
     if (D_803643D6 != 0) {
         if (D_803EF6FF != 0 && D_8036E4D3 == 0) {
             D_8036E4D3 = 1;
-            D_8036E5D8[0] = D_8030C7D8;
+            D_8036E5D8[0] = 0.001f;
             D_8036E4D4 = D_803156C4;
         }
         gDPPipeSync(gfx++);
@@ -919,7 +913,7 @@ void func_8028273C(Gfx **arg0, u8 arg1) {
         for (i = 0; i < D_8036E4D3; i++) {
             guTranslateF(sp9C, D_803EF6DC / 32.0f, D_803EF6E0 / 32.0f, D_803EF6E4 / 32.0f);
             guScaleF(sp5C, D_8036E5D8[i], D_8036E5D8[i], D_8036E5D8[i]);
-            D_8036E5D8[i] += D_8030C7E0;
+            D_8036E5D8[i] += 0.06;
             guMtxCatF(sp5C, sp9C, sp9C);
             guMtxF2L(sp9C, &D_8036E4D8[arg1][i]);
             gDPPipeSync(gfx++);
@@ -931,14 +925,14 @@ void func_8028273C(Gfx **arg0, u8 arg1) {
         }
         if (D_8036E4D4 + 10 < D_803156C4 && D_8036E4D3 != 0 && D_8036E4D3 < 2) {
             D_8036E4D4 = D_803156C4;
-            D_8036E5D8[D_8036E4D3] = D_8030C7E8;
+            D_8036E5D8[D_8036E4D3] = 0.001f;
             D_8036E4D3++;
         }
         gDPPipeSync(gfx++);
         gDPSetColorDither(gfx++, G_CD_MAGICSQ);
         gDPPipeSync(gfx++);
         if (D_8036E4D3 != 0) {
-            func_802AC1A0(D_8036E5D8[0] * D_8030C7EC);
+            func_802AC1A0(D_8036E5D8[0] * 283.0f);
         }
     }
     *arg0 = gfx;

@@ -63,12 +63,6 @@ extern char D_80309830[];
 extern char D_8030985C[];
 extern char D_80309864[];
 extern f64 D_80309928;
-extern f64 D_803099A0;
-extern f64 D_803099A8;
-extern f64 D_803099B0;
-extern f64 D_803099B8;
-extern f64 D_803099C0;
-extern f64 D_803099C8;
 extern u8 D_8036B8B0;
 extern s32 D_8036B8B4;
 extern s32 D_8036B8B8;
@@ -254,10 +248,10 @@ void func_8026A2E8(f32 arg0, f32 *arg1) {
     f32 d;
 
     d = *arg1 - arg0;
-    if (d > D_803099A0) {
-        *arg1 -= D_803099A8;
-    } else if (d < D_803099B0) {
-        *arg1 += D_803099B8;
+    if (d > 180.0) {
+        *arg1 -= 360.0;
+    } else if (d < -180.0) {
+        *arg1 += 360.0;
     }
 }
 
@@ -290,9 +284,9 @@ void func_8026A454(s16 x, s16 y, s16 z, s16 arg3, s16 arg4, Mtx *arg5) {
     f32 sp20[4][4];
 
     guTranslateF(sp60, -x, -y, -z);
-    guRotateF(sp20, (f32)arg3 / D_803099C0, 0.0f, 0.0f, 1.0f);
+    guRotateF(sp20, (f32)arg3 / 11.375, 0.0f, 0.0f, 1.0f);
     guMtxCatF(sp60, sp20, sp60);
-    guRotateF(sp20, (f32)arg4 / D_803099C8, 0.0f, 1.0f, 0.0f);
+    guRotateF(sp20, (f32)arg4 / 11.375, 0.0f, 1.0f, 0.0f);
     guMtxCatF(sp60, sp20, sp60);
     guTranslateF(sp20, x, y, z);
     guMtxCatF(sp60, sp20, sp60);

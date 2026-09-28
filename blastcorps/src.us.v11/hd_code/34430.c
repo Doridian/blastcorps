@@ -10,30 +10,14 @@ typedef struct {
 } UnkStruct_8036CB60; /* size = 0x18 */
 
 extern s32 D_802FC060[][2];
-extern char D_8030C610[];
-extern char D_8030C63C[];
-extern char D_8030C644[];
 extern Vtx D_802FBEE0[];
-extern f64 D_8030C688;
-extern f32 D_8030C690;
 extern Vp D_802FBED0;
 extern s32 D_80358058;
 extern Gfx D_8036D188[];
 extern Mtx D_8036D2C8;
 extern Mtx D_8036D388;
-extern char D_8030C64C[];
-extern char D_8030C678[];
-extern char D_8030C680[];
-extern f64 D_8030C6C0;
-extern f64 D_8030C6C8;
-extern f64 D_8030C6A0;
-extern f64 D_8030C6B0;
 
 extern Mtx D_8036CC70[][10];
-extern f32 D_8030C694;
-extern f64 D_8030C698;
-extern f64 D_8030C6A8;
-extern f64 D_8030C6B8;
 extern f32 D_8036D174;
 extern s32 D_8036D17C;
 extern f32 D_8036D184;
@@ -89,7 +73,7 @@ void func_80278BF0(Gfx *src, Gfx *end, Gfx **out) {
                         }
                     } while (!found && i < 3);
                     if (!found) {
-                        func_8029A7E4(D_8030C610, D_8030C63C, D_8030C644, 157);
+                        func_8029A7E4("\n --- ASSERTION FAULT - %s - %s, line %d\n\n", "found", "mb.c", 157);
                     }
                     dst->words.w1 = D_802FC060[i][1];
                     dst++, src++;
@@ -154,13 +138,13 @@ void func_80278EB0(s32 arg0, f32 arg1, s32 arg2) {
         }
         arg2 <<= 16;
         sp2C = func_802ACF3C(arg2 / dist);
-        D_8036D174 = ((f32)sp2C / 65536.0) * D_8030C688;
+        D_8036D174 = ((f32)sp2C / 65536.0) * 360.0;
     } else {
         D_8036D174 = 25.0f;
     }
     angle = D_8036D174 / 2.0;
     step = D_8036D174 / 6.0;
-    spread = angle * D_8030C690;
+    spread = angle * 1.3333334f;
     for (i = 0; i < 6; i++) {
         guRotateF(mf1, angle, 1.0f, 0.0f, 0.0f);
         guMtxXFMF(mf1, 0.0f, 0.0f, -100.0f, &v1[0], &v1[1], &v1[2]);
@@ -286,7 +270,7 @@ void func_80279778(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, G
         gDPSetFillColor(gfx++, 0);
         gDPFillRectangle(gfx++, 0, 0, 119, 89);
         gDPPipeSync(gfx++);
-        guPerspective(&D_8036D2C8, &perspNorm, D_8036D174, 4.0f / 3.0f, 100.0f, D_8030C694, 1.0f);
+        guPerspective(&D_8036D2C8, &perspNorm, D_8036D174, 4.0f / 3.0f, 100.0f, 5e+03f, 1.0f);
         gSPMatrix(gfx++, K0_TO_PHYS(&D_8036D2C8), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
         gSPPerspNormalize(gfx++, perspNorm);
         atX = arg0 / 32.0f;
@@ -402,7 +386,7 @@ void func_80279EE8(Gfx **gfxp, s32 arg1, u8 arg2) {
             }
             ok = func_8027B87C(mf, lookAt);
             if (!ok) {
-                func_8029A7E4(D_8030C64C, D_8030C678, D_8030C680, 547);
+                func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "flag", "mb.c", 547);
             }
             guMtxF2L(mf, &D_8036CC70[arg2][i]);
             gSPMatrix(gfx++, K0_TO_PHYS(&D_8036CC70[arg2][i]), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
@@ -520,7 +504,7 @@ s32 func_8027AC00(f32 a[3][3], f32 b[3][3], s32 col) {
     } else {
         q = r1;
     }
-    if (a[p][1] < D_8030C698 && a[p][1] > D_8030C6A0) {
+    if (a[p][1] < 1e-08 && a[p][1] > -1e-08) {
         return 0;
     }
     f = 1.0 / a[p][1];
@@ -537,7 +521,7 @@ s32 func_8027AC00(f32 a[3][3], f32 b[3][3], s32 col) {
             b[i][col] += f * b[p][col];
         }
     }
-    if (a[q][2] < D_8030C6A8 && a[q][2] > D_8030C6B0) {
+    if (a[q][2] < 1e-08 && a[q][2] > -1e-08) {
         return 0;
     }
     f = 1.0 / a[q][2];
@@ -591,7 +575,7 @@ s32 func_8027B200(f32 a[3][3], f32 b[3][3]) {
     } else {
         p = 2;
     }
-    if (a[p][0] < D_8030C6B8 && a[p][0] > D_8030C6C0) {
+    if (a[p][0] < 1e-08 && a[p][0] > -1e-08) {
         return 0;
     }
     f = 1.0 / a[p][0];
@@ -621,7 +605,7 @@ s32 func_8027B5D0(f32 m[4][4], f32 *arg1, f32 *arg2, s32 *arg3) {
     f32 max;
 
     *arg3 = -1;
-    if (((m[3][3] > 0.0f) ? m[3][3] : -m[3][3]) < D_8030C6C8) {
+    if (((m[3][3] > 0.0f) ? m[3][3] : -m[3][3]) < 1e-08) {
         max = 0.0f;
         for (i = 0; i < 4; i++) {
             if (m[i][3] > max) {

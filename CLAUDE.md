@@ -1,9 +1,10 @@
 # Blast Corps decompilation
 
-A matching decompilation of Blast Corps / Blastdozer. Nothing is decompiled to C
-yet beyond one proof-of-concept function; the repo currently guarantees that the
-disassembly, split one function per file, reassembles into the original ROMs
-byte for byte.
+A matching decompilation of Blast Corps / Blastdozer, aimed at a PC port. All
+four ROMs rebuild byte for byte. us.v11 is the working version: most of its
+IDO-compiled code is C (`tools/progress.py`); about a third of hd_code is
+Rare's handwritten asm, which stays asm. The other versions are still
+disassembly.
 
 ## Build
 
@@ -144,6 +145,20 @@ subsegment, not a `c` file full of `GLOBAL_ASM`. That keeps
 `tools/progress.py` honest and marks what a port has to replace.
 `gen_code_yaml.py` classifies it (see `docs/DECOMPILING.md`). About a third
 of hd_code is Rare's handwritten engine; it can't become matching C.
+
+## Data
+
+Extraction goes through `tools/split.py`, a wrapper around the splat
+submodule that fixes its data output (exact string escapes, `dlabel`, pointer
+words between subsegments as symbols, working rodata migration). `init` and
+`hd_code` us.v11 have their `.data`/`.rodata` split per object, in link order:
+all `.data`, then all `.rodata`, each block 16-aligned. `gen_code_yaml.py`
+works out hd_code's split (see `docs/ROADMAP.md`, Phase 1). A C file owns
+its data with a `.data`/`.rodata` subsegment; its remaining `GLOBAL_ASM`
+functions then carry their own rodata into the `.s`, and asm-processor places
+it. `tools/inline_rodata.py` turns a file's `extern` string/float uses into
+literals when switching it to own its `.rodata`. hd_front_end and the other
+versions still have one data `bin`; `.bss` is still absolute symbols.
 
 Splat only symbolizes a `%hi`/`%lo` pair it can match up. A table reached
 through a `lui`/`addiu` pair split by scheduling stays a bare constant, so C

@@ -20,7 +20,6 @@ extern u64 D_80210690[];
 extern u64 D_802E53F0[];
 extern u64 D_802E6820[];
 extern u64 D_802E68F0[];
-extern char D_8030C890[];
 extern u64 D_8030E390[];
 extern OSMesgQueue D_803153D8;
 extern OSMesgQueue D_80315440;
@@ -102,7 +101,7 @@ void func_80285110(u32 arg0) {
         D_8036E68C[msg >> 16] = 0;
         msg &= 0xFFFF;
         if (msg != arg0) {
-            func_8029A7E4(D_8030C890, arg0, msg);
+            func_8029A7E4("Task %d received message %d\n", arg0, msg);
         }
     } while (msg != arg0);
 }

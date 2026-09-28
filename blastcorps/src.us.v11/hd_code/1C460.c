@@ -18,7 +18,6 @@ typedef struct {
 extern s16 D_802E8D00[];
 extern u8 D_802E8D8C[];
 extern UnkStruct_802E8F94 D_802E8F94[];
-extern f32 D_803092A8;
 extern u64 D_80364A90;
 extern u8 D_802E8D84;
 extern f32 D_802E8D88;
@@ -28,13 +27,6 @@ extern u8 D_802E8E04[];
 extern u8 D_802E8E40[];
 extern u16 D_802E8E7C[];
 extern s32 D_802E8EB4[][6];
-extern char D_803091F0[];
-extern char D_80309224[];
-extern char D_80309234[];
-extern char D_80309240[];
-extern char D_80309250[];
-extern char D_80309280[];
-extern f64 D_803092A0;
 extern s32 D_803156C4;
 extern UnkStruct_80366C30 D_80366C30[];
 extern UnkStruct_80366C30 *D_80367400;
@@ -122,9 +114,9 @@ void func_80260EC0(void) {
 
 void func_80260EE0(u8 arg0) {
     if (D_80367728 != 0) {
-        func_8029A7E4(D_803091F0);
+        func_8029A7E4("OH DEAR - pushing tune but we're still popping!\n");
     } else {
-        func_8029A7E4(D_80309224, arg0);
+        func_8029A7E4("push tune %d\n", arg0);
         D_80367400->unk1F0 = D_80367708;
         D_80367708 = arg0;
         D_80367730 = 0;
@@ -133,7 +125,7 @@ void func_80260EE0(u8 arg0) {
 }
 
 void func_80260F60(f32 arg0) {
-    func_8029A7E4(D_80309234);
+    func_8029A7E4("1 pop tune");
     if (D_80366C30 == D_80367400) {
         return;
     }
@@ -141,7 +133,7 @@ void func_80260F60(f32 arg0) {
     if (D_80366C30 == D_80367400) {
         D_80367730 = 1;
     }
-    func_8029A7E4(D_80309240, D_80367400->unk1F0);
+    func_8029A7E4("2 pop tune %d\n", D_80367400->unk1F0);
     D_80367708 = D_80367400->unk1F0;
     func_802D76C0(D_80367734);
     D_80367728 = 2;
@@ -189,7 +181,7 @@ void func_802611F0(void) {
 
     alCSeqGetLoc(&D_80367518[D_802E8D84], &sp1C);
     if ((D_80367729 == 0) && (D_80367728 == 0) && (func_802D4E10(D_80367734) == 0) && (sp1C.lastTicks != 0)) {
-        func_8029A7E4(D_80309250);
+        func_8029A7E4("auto popping\n");
         func_8026101C();
     }
 }
@@ -228,7 +220,7 @@ void func_802613C8(void) {
 
     sp2C = alCSPGetVol(D_80367734);
     sp28 = D_802E8D00[D_80367708] * D_802E8D88;
-    sp26 = sp2C + (sp28 * D_8036770C - sp2C) * D_803092A0;
+    sp26 = sp2C + (sp28 * D_8036770C - sp2C) * 0.075;
     if (ABS(sp26 - sp28 * D_8036770C) < 10.0f) {
         sp26 = sp28 * D_8036770C;
         D_8036772A = 0;
@@ -252,7 +244,7 @@ void func_80261570(f32 arg0) {
 
 void func_802619D0(u32 arg0) {
     if (arg0 >= 0x1C) {
-        func_8029A7E4(D_80309280, arg0);
+        func_8029A7E4("effect id %d out of range!\n", arg0);
     } else if (D_802E8E7C[arg0] != 0) {
         func_80260650(D_80367738, D_802E8E7C[arg0], 0);
     }
@@ -329,7 +321,7 @@ u8 func_80261A44(u64 arg0) {
             sp27 = D_802E8D8C[D_802E8BDC];
             sp26 = 1;
             if (D_802E8BDC == 0x26) {
-                D_80367710 = D_803092A8;
+                D_80367710 = 0.7f;
             }
             break;
         case 0x4000000000000:

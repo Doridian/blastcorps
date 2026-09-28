@@ -14,11 +14,20 @@ is handwritten, and stays `asm`.  So does code that saves $ra with sd and never
 with sw: IDO never does that, and Rare's handwritten engine code (about a
 third of hd_code) always does.
 
+With --rodata, .data and .rodata are split per object too (see
+split_data below); without it they stay one bin.  --tail gives the regions
+after .rodata that belong to no object's .data or .rodata (hd_code's RSP
+microcode data).  A data subsegment the existing config gives to a C file
+(`.data`/`.rodata`) keeps that type when it is regenerated at the same offset.
+
 Usage:
   gen_code_yaml.py <module> <version> --vram 0x... --data <off> --end <off>
                    [--bin off:len:note] ... [--c] [--symbols <path>]
+                   [--rodata <off> [--tail off:len:note] ...]
 """
 import argparse
+import bisect
+import collections
 import re
 import struct
 import subprocess
@@ -84,6 +93,200 @@ def branch_spans(words):
             yield i, i + 1 + (off - 0x10000 if off & 0x8000 else off)
 
 
+def chain(points):
+    """The largest subset of (object index, address) points in which
+    addresses rise with the object index.  Objects lay out their .data (and
+    their .rodata) in link order, so an address outside the chain is one
+    object reaching into another's data."""
+    points = sorted(points)
+    tails, tail_idx, prev = [], [], [None] * len(points)
+    for j, (_, addr) in enumerate(points):
+        k = bisect.bisect_right(tails, addr)
+        if k == len(tails):
+            tails.append(addr)
+            tail_idx.append(j)
+        else:
+            tails[k] = addr
+            tail_idx[k] = j
+        prev[j] = tail_idx[k - 1] if k else None
+    keep = collections.defaultdict(list)
+    j = tail_idx[-1] if tail_idx else None
+    while j is not None:
+        keep[points[j][0]].append(points[j][1])
+        j = prev[j]
+    return keep
+
+
+def split_data(names, refs, pairs, blob, vram, data, rodata, tail, text_end):
+    """Per-object .data and .rodata subsegments: [(offset, kind, name)].
+
+    names: object names in link order.  refs, pairs: {(object index,
+    address, late)} for the references from code (see asm_refs); pairs,
+    being guesses, only anchor and widen blocks, like .data's pointers.  Offsets are module
+    offsets; addresses are vram.
+
+    The layout is the one init has: every object's .data in link order, then
+    every object's .rodata, each block 16-aligned.  So:
+
+    - An object is anchored by the addresses only it references, keeping
+      the largest set that rises with link order (chain()); the rest are
+      objects reaching into each other's data (an extern table, libultra's
+      globals).  An object with no such address is anchored by any address
+      it shares that falls between its anchored neighbours, and every
+      object's block is widened to its own references in the gap before it.
+      The block starts at its first address, rounded down to 16.
+    - Pointers in .data count as references by the object that owns them.
+      That is how strings reached only through a table find their object,
+      in .rodata or (for tables of tables) in .data.
+    - In .rodata an object's late part (jump tables, float and double
+      constants, after its strings) ends it.  Whatever lies between that end
+      and the next object, and in .data whatever past an object's own
+      references only others use, is a data-only object (libultra's VI
+      modes, libm's NaN) and gets a subsegment named by its offset.
+    """
+    word = lambda a: struct.unpack(">I", blob[a - vram:a - vram + 4])[0]
+    in_text = lambda w: vram <= w < vram + text_end
+    late = {a: l for _, a, l in refs | pairs if l}
+
+    def layout(lo, hi, refs, extra=()):
+        """extra: references that may anchor or widen a block but not
+        choose the chain (a table in .data can point anywhere)."""
+        users = collections.defaultdict(set)
+        for i, a in refs:
+            if lo <= a < hi:
+                users[a].add(i)
+        keep = chain([(i, a) for a, us in users.items() if len(us) == 1 for i in us])
+        for i, a in extra:
+            if lo <= a < hi:
+                users[a].add(i)
+        mine = collections.defaultdict(set)
+        for a, us in users.items():
+            for i in us:
+                mine[i].add(a)
+        blocks = {i: [min(v), max(v)] for i, v in keep.items()}
+        # anchor the rest on shared addresses between their neighbours
+        for i in range(len(names)):
+            if i in blocks or not mine[i]:
+                continue
+            prev = max((k for k in blocks if k < i), default=None)
+            nxt = min((k for k in blocks if k > i), default=None)
+            p_hi = blocks[prev][1] if prev is not None else lo - 1
+            n_lo = blocks[nxt][0] if nxt is not None else hi
+            inside = [a for a in mine[i] if p_hi < a < n_lo]
+            if inside:
+                blocks[i] = [min(inside), max(inside)]
+        order = sorted(blocks)
+        for k, i in enumerate(order):
+            p_hi = blocks[order[k - 1]][1] if k else lo - 1
+            p = order[k - 1] if k else None
+            early = [a for a in mine[i] if p_hi < a < blocks[i][0] and p not in users[a]]
+            if early:
+                blocks[i][0] = min(early)
+        res = []
+        for k, i in enumerate(order):
+            first, last = blocks[i]
+            if not res:
+                start = lo
+            else:
+                start = first & ~15
+                if start <= res[-1][2]:
+                    start = first & ~3
+            res.append([start, i, last, users])
+        return res
+
+    out = []
+
+    # .data: once from code alone, then again with .data's own pointers
+    lo, hi = vram + data, vram + rodata
+    code_refs = [(i, a) for i, a, _ in refs]
+    pair_refs = [(i, a) for i, a, _ in pairs]
+    dblocks = layout(lo, hi, code_refs, pair_refs)
+    owner = lambda blocks, a: next((i for s, i, _, _ in reversed(blocks) if s <= a), None)
+    ptrs = [(a, word(a)) for a in range(lo, hi, 4)]
+    data_ptrs = [(owner(dblocks, a), w) for a, w in ptrs if lo <= w < hi and owner(dblocks, a) is not None]
+    dblocks = layout(lo, hi, code_refs, pair_refs + data_ptrs)
+    for k, (start, i, last, users) in enumerate(dblocks):
+        end = dblocks[k + 1][0] if k + 1 < len(dblocks) else hi
+        out.append((start - vram, "data", names[i]))
+        for a in sorted(users):
+            if last < a < end and a % 16 == 0 and i not in users[a]:
+                out.append((a - vram, "data", f"{a - vram:X}"))
+                break
+
+    # .rodata
+    lo, hi = vram + rodata, vram + tail
+    ro_ptrs = [(owner(dblocks, a), w) for a, w in ptrs if lo <= w < hi and owner(dblocks, a) is not None]
+    rblocks = layout(lo, hi, code_refs, pair_refs + ro_ptrs)
+    for k, (start, i, last, users) in enumerate(rblocks):
+        if k:
+            p_last = rblocks[k - 1][2]
+            if p_last in late:
+                # the previous object ends after its last constant; a jump
+                # table runs as long as its words point into .text
+                e = p_last + (8 if late[p_last] == "d" else 4)
+                while e < start and in_text(word(e)):
+                    e += 4
+                e = (e + 15) & ~15
+                if e < start and any(blob[e - vram:start - vram]):
+                    out.append((e - vram, "rodata", f"{e - vram:X}"))
+        out.append((start - vram, "rodata", names[i]))
+    return out
+
+
+LUI_RE = re.compile(r"^lui\s+\$(\w+), (0x[0-9A-Fa-f]+)$")
+LO_RE = re.compile(r"^(\w+)\s+\$\w+, (?:\$(\w+), (-?0x[0-9A-Fa-f]+|-?\d+)$|(-?0x[0-9A-Fa-f]+|-?\d+)?\(\$(\w+)\)$)")
+NO_DEST = re.compile(r"^(s[bhwd]|swc1|sdc1|swl|swr|b\w*|j|jr|jal|jalr|mt\w+|ctc1|nop|syscall|break|cache|sync|eret)$")
+
+
+def asm_refs(mod, names, symbols, lo, hi):
+    """References to [lo, hi) in the asm splat wrote for each object:
+    {(object index, address, late)} for %hi/%lo symbols, and a second set
+    for lui/addiu and lui/load pairs splat left as numbers (scheduling split
+    them), which are only a guess.  late is "j" for a jump table, "f" or
+    "d" for a float or double load or store, else None."""
+    refs, pairs = set(), set()
+    for i, name in enumerate(names):
+        path = Path("asm", mod, f"{name}.s")
+        if not path.exists():
+            continue
+        hi_regs = {}
+        for line in path.read_text().splitlines():
+            if line.startswith("glabel ") or line.startswith(".L"):
+                hi_regs = {}
+                continue
+            if "*/" not in line:
+                continue
+            body = line.split("*/")[-1].strip()
+            insn = body.split()
+            op = insn[0] if insn else ""
+            kind = "f" if op in ("lwc1", "swc1") else "d" if op in ("ldc1", "sdc1") else None
+            syms = re.findall(r"%(?:hi|lo)\((\w+)", body)
+            for sym in syms:
+                m = re.search(r"_([0-9A-F]{8})$", sym)
+                addr = symbols.get(sym, int(m.group(1), 16) if m else None)
+                if addr is not None and lo <= addr < hi:
+                    refs.add((i, addr, "j" if sym.startswith("jtbl_") else kind))
+            m = LUI_RE.search(body)
+            if m and not syms:
+                hi_regs[m.group(1)] = int(m.group(2), 16) << 16
+                continue
+            m = LO_RE.search(body)
+            if m and not syms:
+                base, imm = (m.group(2), m.group(3)) if m.group(2) else (m.group(5), m.group(4) or "0")
+                if base in hi_regs and (op == "addiu" or m.group(5)):
+                    addr = (hi_regs[base] + int(imm, 0)) & 0xFFFFFFFF
+                    if lo <= addr < hi:
+                        pairs.add((i, addr, kind))
+            dest = re.match(r"\$(\w+)", insn[1]) if len(insn) > 1 else None
+            if dest and not NO_DEST.match(op):
+                srcs = [r for r in re.findall(r"\$(\w+)", body)[1:] if r in hi_regs]
+                if op == "addu" and len(srcs) == 1:
+                    hi_regs[dest.group(1)] = hi_regs[srcs[0]]  # base + index
+                else:
+                    hi_regs.pop(dest.group(1), None)
+    return refs, pairs
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("module")
@@ -97,6 +300,10 @@ def main():
     ap.add_argument("--note", default="")
     ap.add_argument("--c", action="store_true", help="emit aligned code as c subsegments")
     ap.add_argument("--symbols", help="symbol_addrs file to use")
+    ap.add_argument("--rodata", type=lambda s: int(s, 16),
+                    help="offset where .rodata starts; splits .data/.rodata per object")
+    ap.add_argument("--tail", action="append", default=[], metavar="OFF:LEN:NOTE",
+                    help="region after .rodata that belongs to no object")
     args = ap.parse_args()
 
     mod, ver = args.module, args.version
@@ -117,6 +324,11 @@ def main():
     in_bin = lambda x: any(o <= x < o + n for o, n, _ in bins)
 
     cfg = Path(f"{mod}.{ver}.yaml")
+    # Data the C owns already (.data/.rodata subsegments), by (offset, kind, name).
+    owned = set()
+    if cfg.exists():
+        for m in re.finditer(r"- \[0x([0-9A-F]+), \.(data|rodata), (\S+)\]", cfg.read_text()):
+            owned.add((int(m.group(1), 16), m.group(2), m.group(3)))
     blob = Path(f"{mod}.{ver}.bin").read_bytes()[:args.data]
     words = struct.unpack(f">{len(blob) // 4}I", blob)
 
@@ -215,10 +427,44 @@ def main():
             splits.add(nxt)
     starts = sorted(splits | {s for s, _ in code})
 
-    # Pass 2: the real config.
+    data_lines = [f"    - [0x{args.data:X}, bin, {mod}/{mod}_data] # .data"]
+    if args.rodata is not None:
+        # Pass 3: every object as asm, to see what each one references.
+        tails = sorted((int(o, 16), int(n, 16), note) for o, n, note in
+                       (t.split(":", 2) for t in args.tail))
+        tail = tails[0][0] if tails else args.end
+        probe = header(mod, ver, args.vram, args.note, args.symbols)
+        probe += [line.replace(", c,", ", asm,") for line in emit(starts)]
+        probe += data_lines + [f"  - [0x{args.end:X}]"]
+        cfg.write_text("\n".join(probe) + "\n")
+        proc = subprocess.run([sys.executable, str(SPLAT), str(cfg)],
+                              capture_output=True, text=True)
+        if proc.returncode:
+            sys.exit(proc.stderr)
+        symbols = {}
+        for path in [args.symbols, f"undefined_syms_auto.{mod}.{ver}.txt"]:
+            if path and Path(path).exists():
+                for m in re.finditer(r"^\s*(\w+)\s*=\s*0x([0-9A-Fa-f]+);", Path(path).read_text(), re.M):
+                    symbols.setdefault(m.group(1), int(m.group(2), 16))
+        names = [f"{x:05X}" if x == 0 else f"{x:X}" for x in starts]
+        full = Path(f"{mod}.{ver}.bin").read_bytes()
+        refs, pairs = asm_refs(mod, names, symbols, args.vram + args.data, args.vram + tail)
+        layout = split_data(names, refs, pairs, full, args.vram,
+                            args.data, args.rodata, tail, args.data)
+        data_lines = ["    # .data, then .rodata, of each object in link order (see split_data"
+                      " in tools/gen_code_yaml.py)"]
+        for off, kind, name in layout:
+            if (off, kind, f"{mod}/{name}") in owned:
+                kind = "." + kind
+            data_lines.append(f"    - [0x{off:X}, {kind}, {mod}/{name}]")
+        for off, _, note in tails:
+            data_lines += [f"    # {line}" for line in textwrap.wrap(note, 72)]
+            data_lines.append(f"    - [0x{off:X}, bin, {mod}/{off:X}]")
+
+    # The real config.
     out = header(mod, ver, args.vram, args.note, args.symbols)
     out += emit(starts)
-    out.append(f"    - [0x{args.data:X}, bin, {mod}/{mod}_data] # .data")
+    out += data_lines
     out.append(f"  - [0x{args.end:X}] # EOF")
     cfg.write_text("\n".join(out) + "\n")
     print(f"{cfg}: {len(starts)} code subsegments, {len(bins)} bin")

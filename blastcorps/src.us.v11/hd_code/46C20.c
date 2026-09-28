@@ -2,7 +2,6 @@
 
 extern u32 *D_802FDB30;
 extern u32 *D_802FDB34;
-extern char D_8030CCA0[];
 extern u8 D_80370C50;
 extern OSIoMesg D_80370C58;
 extern OSMesgQueue D_803150A0;
@@ -25,7 +24,7 @@ void func_8028B3E0(void) {
         bzero((u8 *) 0x801E7000 + sp24, 0x37D00 - sp24);
         D_80370C50 = 1;
         func_801F57B0();
-        func_8029A7E4(D_8030CCA0);
+        func_8029A7E4("got front end\n");
     }
 }
 

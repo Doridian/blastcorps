@@ -5,12 +5,11 @@
  * message is in hd_code's .data, which isn't split yet. */
 
 /* "kiunzip: unknown method %d -- get newer version of gzip\n" */
-extern char D_80309030[];
 
 void func_8029A7E4(char *, ...);
 
 #define GZIP_UNZIP          func_8025C230
 #define GZIP_PRINTF         func_8029A7E4
-#define GZIP_UNKNOWN_METHOD D_80309030
+#define GZIP_UNKNOWN_METHOD "kiunzip: unknown method %d -- get newer version of gzip\n"
 
 #include "src/gzip_unzip.inc.c"

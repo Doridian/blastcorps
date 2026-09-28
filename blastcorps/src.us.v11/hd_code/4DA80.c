@@ -51,10 +51,6 @@ extern s32 D_802E8BE8;
 extern UnkStruct_802FE3C0 D_802FE3C0[];
 extern void *D_80367738;
 extern UnkStruct_8039C960 D_8039C960[4];
-extern f64 D_8030CD10;
-extern f64 D_8030CD18;
-extern f64 D_8030CD20;
-extern f64 D_8030CD28;
 extern u8 D_803643D9;
 extern s16 D_803A7410;
 extern s16 D_803A7412;
@@ -63,10 +59,6 @@ extern s32 D_803BE710;
 extern u16 D_803BE714;
 extern u16 D_803BE716;
 extern u8 D_803F932D;
-extern f64 D_8030CCF0;
-extern f64 D_8030CCF8;
-extern f64 D_8030CD00;
-extern f64 D_8030CD08;
 
 void func_80292240(void) {
     s32 i;
@@ -115,16 +107,16 @@ s32 func_80292288(s16 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s3
         dist = 1.0f;
     }
     if (arg4 >= arg1 && arg6 >= arg3) {
-        D_8039C960[i].unk14 = func_802AD7D4((arg4 - arg1) * D_8030CCF0 / dist) >> 4;
+        D_8039C960[i].unk14 = func_802AD7D4((arg4 - arg1) * 65535.0 / dist) >> 4;
     }
     if (arg4 >= arg1 && arg6 < arg3) {
-        D_8039C960[i].unk14 = (func_802AD7D4((arg3 - arg6) * D_8030CCF8 / dist) >> 4) + 0x400;
+        D_8039C960[i].unk14 = (func_802AD7D4((arg3 - arg6) * 65535.0 / dist) >> 4) + 0x400;
     }
     if (arg4 < arg1 && arg6 < arg3) {
-        D_8039C960[i].unk14 = (func_802AD7D4((arg1 - arg4) * D_8030CD00 / dist) >> 4) + 0x800;
+        D_8039C960[i].unk14 = (func_802AD7D4((arg1 - arg4) * 65535.0 / dist) >> 4) + 0x800;
     }
     if (arg4 < arg1 && arg6 >= arg3) {
-        D_8039C960[i].unk14 = (func_802AD7D4((arg6 - arg3) * D_8030CD08 / dist) >> 4) + 0xC00;
+        D_8039C960[i].unk14 = (func_802AD7D4((arg6 - arg3) * 65535.0 / dist) >> 4) + 0xC00;
     }
     return 1;
 }
@@ -213,9 +205,9 @@ void func_80292EB8(Gfx **arg0, UnkStruct_80292EB8 *arg1) {
     for (i = 0; i < 4; i++) {
         if (D_8039C960[i].unk28 != 0 && D_8039C960[i].unk24 >= 2) {
             guScaleF(mf, 0.5f, 0.5f, 0.35f);
-            guRotateF(tmp, D_8039C960[i].unk16 / D_8030CD10 * D_8030CD18, 1.0f, 0.0f, 0.0f);
+            guRotateF(tmp, D_8039C960[i].unk16 / 4095.0 * 360.0, 1.0f, 0.0f, 0.0f);
             guMtxCatF(mf, tmp, mf);
-            guRotateF(tmp, D_8039C960[i].unk14 / D_8030CD20 * D_8030CD28, 0.0f, 1.0f, 0.0f);
+            guRotateF(tmp, D_8039C960[i].unk14 / 4095.0 * 360.0, 0.0f, 1.0f, 0.0f);
             guMtxCatF(mf, tmp, mf);
             guTranslateF(tmp, D_8039C960[i].x / 32.0f, D_8039C960[i].y / 32.0f, D_8039C960[i].z / 32.0f);
             guMtxCatF(mf, tmp, mf);

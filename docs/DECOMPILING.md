@@ -96,24 +96,30 @@ All of this is IDO 5.3 at `-O1` unless it says otherwise.
 - libultra was built with unsigned `char`; this build passes `-signed`. Read
   through `(u8 *)` where the asm uses `lbu`.
 
-## Data, and what has to wait for the data split
+## Data
 
-hd_code's and hd_front_end's `.data`/`.rodata` are still one `bin` each, so C
-in those modules must not create data:
+hd_code's `.data`/`.rodata` are split per object (hd_front_end's are still one
+`bin`). A C file whose subsegment is `.rodata` in the yaml owns its `.rodata`:
 
-- No string literals, and no float or double constants that IDO puts in
-  `.rodata`. Floats whose low 16 bits are zero (`1.0f`, `45.0f`, `32.0f`) are
-  fine: they're loaded with `lui`. Otherwise use `extern f32 D_...;` with the
-  value in a comment.
-- No `switch` that compiles to a jump table. Leave those functions as
-  `GLOBAL_ASM`.
-- No initialized globals or statics.
+- Write strings, float/double literals and `switch`es in C. The GLOBAL_ASM
+  functions still in the file get their share put into their `.s` as
+  `.rdata`/`.late_rodata` by `tools/split.py`, so only functions that are C
+  must produce theirs. A constant used twice by one extern was probably two
+  literals; IDO doesn't merge them.
+- To switch a file: `tools/inline_rodata.py hd_code <file>` (turns
+  `extern char/f32/f64` uses into literals), change its `rodata` line to
+  `.rodata`, remove `blastcorps/asm` and re-extract.
+- A file still on asm `rodata` must keep using externs: no string literals,
+  no float or double constants that IDO puts in `.rodata` (floats with the low
+  16 bits zero are fine: `lui`), no jump-table `switch`.
+- `.data`: only 45BB0 owns its own so far. Elsewhere, no initialized globals
+  or statics. A local initialized aggregate (`char *sp24[] = {...}`) is
+  `.data` too, with its strings at that point in `.rodata`.
 - A global defined in the same file is addressed differently from an extern
   one: neighbouring globals, or a u64's two halves, share one `lui`. If that
   global is in `.bss` (hd_code's starts at `0x8030F660`), define it without an
   initializer. The absolute linker symbol still pins its address; see the
-  `OSTime` block in `hd_code/26570.c`. If it's `.data` or `.rodata`, the
-  function waits for the split.
+  `OSTime` block in `hd_code/26570.c`.
 
 Addresses reached through a `lui`/`addiu` pair that splat didn't match up
 (including segment and ROM addresses like `0x02000000` or `0x00487050`) get a

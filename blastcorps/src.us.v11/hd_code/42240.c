@@ -17,8 +17,6 @@ extern Vtx *D_8036EC24;
 extern s16 D_8036EC28;
 extern s16 D_80367BD6;
 extern u8 D_803EE3B1;
-extern f64 D_8030CBA0;
-extern f64 D_8030CBA8;
 /* Segment 2 base, reached through a relocation, not a constant. */
 extern Mtx D_02000000[];
 
@@ -112,7 +110,7 @@ void func_80286C60(Gfx **arg0, s32 arg1, u8 arg2, u8 arg3) {
         gDPSetCombineMode(gfx++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
         guTranslate(&D_8036EC0C[arg2], 56.0f, 151.0f, 0.0f);
         gSPMatrix(gfx++, OS_K0_TO_PHYSICAL(&D_8036EC0C[arg2]), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-        guRotate(&D_8036EC08[arg2], (D_803EE3B1 / 100.0f) * D_8030CBA0 + D_8030CBA8, 0.0f, 0.0f, 1.0f);
+        guRotate(&D_8036EC08[arg2], (D_803EE3B1 / 100.0f) * 180.0 + 270.0, 0.0f, 0.0f, 1.0f);
         gSPMatrix(gfx++, OS_K0_TO_PHYSICAL(&D_8036EC08[arg2]), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         gSPVertex(gfx++, OS_K0_TO_PHYSICAL(&D_8036EC04[4]), 4, 0);
         gSP1Triangle(gfx++, 0, 1, 2, 0);

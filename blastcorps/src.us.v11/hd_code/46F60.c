@@ -2,12 +2,6 @@
 
 #define ABS(x) ((x) > 0 ? (x) : -(x))
 
-extern f64 D_8030CCB0;
-extern f64 D_8030CCB8;
-extern f64 D_8030CCC0;
-extern f64 D_8030CCC8;
-extern f64 D_8030CCD0;
-extern f64 D_8030CCD8;
 extern f32 D_80364414;
 extern s16 D_8036443C;
 extern u16 D_80370C70;
@@ -43,8 +37,8 @@ void func_8028B734(s8 *arg0, s8 *arg1, u8 arg2) {
     sp30 = -D_80370C70 * 16 + 0x7FF0;
     sp37 = *arg0;
     sp36 = *arg1;
-    sp34 = (s16) ((D_8030CCC0 - (D_80364414 + D_8030CCB8)) / D_8030CCC8 * 65536.0) +
-           (func_8028BBF4(0, 0, sp37, -sp36) * 65536.0 / D_8030CCB0 + 32768.0);
+    sp34 = (s16) ((360.0 - (D_80364414 + 180.0)) / 360.0 * 65536.0) +
+           (func_8028BBF4(0, 0, sp37, -sp36) * 65536.0 / 360.0 + 32768.0);
     sp32 = sqrtf(sp37 * sp37 + sp36 * sp36);
     *arg1 = sp32;
     D_80370C74 = 0;
@@ -128,7 +122,7 @@ f32 func_8028BD88(f32 arg0, f32 arg1) {
     }
     sp18 = arg0 / sqrtf(arg0 * arg0 + arg1 * arg1);
     sp1C = func_802AD7D4(sp18 * 65536.0);
-    return (f32) sp1C / 65536.0 * D_8030CCD0;
+    return (f32) sp1C / 65536.0 * 360.0;
 }
 
 void func_8028BE70(u16 *arg0, s8 arg1, s8 arg2) {
@@ -155,7 +149,7 @@ void func_8028BF34(u16 *arg0, s8 arg1, s8 arg2, u8 arg3) {
     s16 sp2A;
     u16 sp28;
 
-    sp2E = func_8028BBF4(0, 0, arg1, -arg2) * 65536.0 / D_8030CCD8 + 32768.0;
+    sp2E = func_8028BBF4(0, 0, arg1, -arg2) * 65536.0 / 360.0 + 32768.0;
     sp2C = sqrtf(arg1 * arg1 + arg2 * arg2);
     sp28 = 0;
     sp2A = -D_80370C70 * 16 + 0x7FF0;

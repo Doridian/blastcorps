@@ -15,17 +15,13 @@ typedef struct {
 } UnkStruct_80370C30;
 
 typedef struct {
-    /* 0x0 */ s32 unk0[3];
-} UnkStruct_802FDB18; /* size = 0xC */
-
-typedef struct {
     /* 0x0000 */ u8 unk0[0x2E18];
     /* 0x2E18 */ char *unk2E18;
     /* 0x2E1C */ s32 unk2E1C;
     /* 0x2E20 */ u8 unk2E20[0xE];
     /* 0x2E2E */ s16 unk2E2E;
     /* 0x2E30 */ u8 unk2E30[4];
-    /* 0x2E34 */ s32 unk2E34;
+    /* 0x2E34 */ char *unk2E34;
 } UnkStruct_802F5804;
 
 typedef struct {
@@ -65,14 +61,8 @@ extern u16 D_80370C2A;
 extern s8 D_80370C2C;
 extern s8 D_80370C2D;
 extern s32 D_80370C38;
-extern UnkStruct_802FDB18 D_802FDB18;
-extern s32 D_802FDB24[];
 extern UnkStruct_802F5804 D_802F5804[];
 extern UnkStruct_802F8BDC D_802F8BDC[];
-extern char D_8030CC2C[];
-extern char D_8030CC3C[];
-extern char D_8030CC68[];
-extern char D_8030CC70[];
 extern u8 D_80364456;
 extern u8 D_80364AE8;
 extern s32 D_80364BE0[][0x40];
@@ -94,7 +84,6 @@ extern s8 D_80370C75;
 extern u8 D_803ED40A;
 extern s16 D_803F7C34;
 extern u8 D_803F7C3F;
-extern char D_8030CBD0[];
 
 void func_8026AF6C(s32);
 void func_8029A7E4(char *, ...);
@@ -106,6 +95,9 @@ void func_8028ADF0(u8, u8, u16 *, s8 *, s8 *);
 void func_8028AFA4(u16, s8 *, s8 *);
 void func_8028B0E8(u16 *, s8, s8);
 void func_8028B190(s8 *, s8 *);
+
+s32 D_802FDB10 = 0;
+u8 D_802FDB14 = 0;
 
 u8 func_8028A370(void) {
     s32 unused;
@@ -146,7 +138,7 @@ void func_8028A470(void) {
             osRecvMesg(&D_80370BF8, NULL, OS_MESG_BLOCK);
             osContGetReadData(sp44);
             if (sp44->unk4 != 0) {
-                func_8029A7E4(D_8030CBD0);
+                func_8029A7E4("pad read error - zeroing data\n");
                 sp44->unk0 = 0;
                 sp44->unk2 = sp44->unk3 = ((s8 *) sp44)[1];
             }
@@ -391,7 +383,36 @@ void func_8028AFA4(u16 arg0, s8 *arg1, s8 *arg2) {
     }
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/45BB0/func_8028B000.s")
+void func_8028B000(s8 *arg0, s8 *arg1) {
+    switch (D_80364456) {
+        case 1:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+            if (*arg0 < 51 && *arg0 >= -50) {
+                *arg0 = 0;
+            } else {
+                if (*arg0 >= 51) {
+                    *arg0 = 80;
+                }
+                if (*arg0 < -50) {
+                    *arg0 = -80;
+                }
+            }
+            if (*arg1 < 51 && *arg1 >= -50) {
+                *arg1 = 0;
+                return;
+            }
+            if (*arg1 >= 51) {
+                *arg1 = 80;
+            }
+            if (*arg1 < -50) {
+                *arg1 = -80;
+            }
+            break;
+    }
+}
 
 void func_8028B0E8(u16 *arg0, s8 arg1, s8 arg2) {
     if (!(*arg0 & 0x200) && arg1 < -50) {
@@ -430,13 +451,13 @@ void func_8028B190(s8 *arg0, s8 *arg1) {
 }
 
 void func_8028B240(void) {
-    UnkStruct_802FDB18 sp24;
+    char *sp24[3] = { "SPEED ON 3D STICK?", "360 DEGREE MODE?", "AIRBORNE 360' MODE?" };
+    static s32 D_802FDB24[3] = { 0xEDBA, 0x10005, 0x200 };
     char *sp20;
     s32 sp1C;
     s32 sp18;
 
-    sp24 = D_802FDB18;
-    sp20 = D_8030CC2C;
+    sp20 = "CONTROL METHOD:";
     sp1C = 0;
     sp18 = 0;
     do {
@@ -447,11 +468,11 @@ void func_8028B240(void) {
         }
     } while (sp18 < 3 && sp1C == 0);
     if (sp1C == 0) {
-        func_8029A7E4(D_8030CC3C, D_8030CC68, D_8030CC70, 0x203);
+        func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "found", "controller.c", 0x203);
     }
     D_802F5804[0].unk2E18 = sp20;
     D_802F5804[0].unk2E1C = 0;
-    D_802F5804[0].unk2E34 = sp24.unk0[sp18];
+    D_802F5804[0].unk2E34 = sp24[sp18];
     D_802F5804[0].unk2E2E = 0x13;
     if ((D_80364BE0[D_80364AE8][0] ^ 0x10205) & (1 << D_80364456)) {
         D_802F8BDC[0].unk9B8 = 0x1A8;

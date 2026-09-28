@@ -41,20 +41,7 @@ extern char *D_802F5804[];
 extern u8 D_802E8F30[];
 extern UnkStruct_802E8F68 D_802E8F68[];
 extern UnkStruct_802E8F94 D_802E8F94[];
-extern char D_8030934C[];
-extern char D_80309354[];
-extern char D_8030935C[];
-extern char D_80309364[];
-extern char D_8030936C[];
-extern char D_80309374[];
-extern char D_80309380[];
-extern char D_80309390[];
-extern char D_803093A4[];
-extern char D_803093B0[];
-extern char D_803093C0[];
-extern f64 D_80309588;
 extern s32 D_803156C0;
-extern char D_803093D8[];
 extern s32 D_80358064;
 extern f32 D_80364438;
 extern s8 D_803643D9;
@@ -166,7 +153,7 @@ void func_80262FD0(void) {
     if (D_8036EA7C >= D_80367C04->unk18) {
         D_803643DA = 1;
     }
-    sprintf(D_80367B60, D_8030934C, D_8036EA7C, D_80367C04->unk18);
+    sprintf(D_80367B60, "%d/%d", D_8036EA7C, D_80367C04->unk18);
 }
 
 void func_8026303C(void) {
@@ -184,7 +171,7 @@ void func_8026303C(void) {
     } else if (D_80367C04->unk24 > (D_803643E4 >> 5)) {
         D_803643D9 = 1;
     }
-    sprintf(D_80367B60, D_80309354, D_8036EA78, D_8036EB92);
+    sprintf(D_80367B60, "%d/%d", D_8036EA78, D_8036EB92);
 }
 
 void func_80263140(void) {
@@ -213,13 +200,13 @@ void func_80263140(void) {
     }
     switch (D_80364AA8) {
         case 0x20:
-            sprintf(D_80367B60, D_8030935C, D_8036EA78, D_8036EB92);
+            sprintf(D_80367B60, "%d/%d", D_8036EA78, D_8036EB92);
             break;
         case 0x80:
             if (D_802E8BDC == 0x32) {
-                sprintf(D_80367B60, D_80309364, D_8036EA78, D_8036EB92);
+                sprintf(D_80367B60, "%d/%d", D_8036EA78, D_8036EB92);
             } else {
-                sprintf(D_80367B60, D_8030936C, func_802C1B1C(), D_8036EB92);
+                sprintf(D_80367B60, "%d/%d", func_802C1B1C(), D_8036EB92);
             }
             break;
     }
@@ -236,7 +223,7 @@ void func_80263358(void) {
     if (sp1C < 0) {
         sp1C = 0;
     }
-    sprintf(D_80367B60, D_80309374, sp1C);
+    sprintf(D_80367B60, "$%d LEFT", sp1C);
 }
 
 void func_802633E0(void) {
@@ -262,13 +249,13 @@ void func_802633E0(void) {
             D_80367B58[D_80367B54 - 1] -= D_80367B58[i];
         }
         if (D_80370C28 & 0x2000) {
-            func_8029A7E4(D_80309380, D_80367BFA);
+            func_8029A7E4("box number=%d\n", D_80367BFA);
         }
         if (D_80367BF8 == 4) {
             if (func_8026394C(D_803643E0 >> 5, D_803643E8 >> 5, D_80367C04->unkA, D_80367C04->unkC, D_80367C04->unkE,
                               D_80367C04->unk10) != 0) {
                 if (D_80367B58[D_80367B54 - 1] < D_80367BFC) {
-                    func_8029A7E4(D_80309390, D_80367BFC, D_80367B58[D_80367B54 - 1]);
+                    func_8029A7E4("new best lap %d %d\n", D_80367BFC, D_80367B58[D_80367B54 - 1]);
                     D_80367BFB = D_80367B54;
                     D_80367BFC = D_80367B58[D_80367B54 - 1];
                 }
@@ -280,20 +267,20 @@ void func_802633E0(void) {
                         func_8026AF6C(0x8008);
                     }
                     if (sp33 == 1) {
-                        sprintf(D_80367D10, D_803093A4);
+                        sprintf(D_80367D10, "1 LAP LEFT!");
                     } else {
-                        sprintf(D_80367D10, D_803093B0, sp33);
+                        sprintf(D_80367D10, "%d LAPS LEFT!", sp33);
                     }
                     D_802F5804[0x3E0 / 4] = D_80367D10;
                     D_802F5804[0x3E4 / 4] = D_80367D28;
-                    alCSPSetTempo(D_80367734, alCSPGetTempo(D_80367734) * D_80309588);
+                    alCSPSetTempo(D_80367734, alCSPGetTempo(D_80367734) * 0.95);
                 }
                 D_80367B54++;
                 D_80367BF8 = 0;
             }
         } else if (D_80367C04->unk12[D_80367BF8] == D_80367BF9 &&
                    D_80367C04->unk12[(D_80367BF8 + 1) % 4] == D_80367BFA) {
-            func_8029A7E4(D_803093C0, D_80367BF9, D_80367BFA);
+            func_8029A7E4("box cross: %d to %d\n", D_80367BF9, D_80367BFA);
             D_80367BF8++;
         }
         D_80367BF9 = D_80367BFA;
@@ -321,7 +308,7 @@ s32 func_8026394C(x, y, x0, y0, x1, y1)
 
 void func_8026420C(void) {
     if (D_80367BFE != 0 && D_80358064 == D_80367B50) {
-        func_8029A7E4(D_803093D8);
+        func_8029A7E4("Replay turbo ....\n");
         D_80367BFF = 1;
     }
 }
@@ -359,4 +346,28 @@ void func_80264AEC(void) {
     }
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/1D990/func_80264BA4.s")
+u8 func_80264BA4(u8 arg0) {
+    u8 ret;
+
+    switch (arg0) {
+        case 40:
+            ret = 0;
+            break;
+        case 43:
+            ret = 5;
+            break;
+        case 44:
+            ret = 4;
+            break;
+        case 45:
+            ret = 2;
+            break;
+        case 46:
+            ret = 1;
+            break;
+        default:
+            ret = 3;
+            break;
+    }
+    return ret;
+}

@@ -1,13 +1,5 @@
 #include "common.h"
 
-extern f64 D_8030C850;
-extern f64 D_8030C858;
-extern f64 D_8030C860;
-extern f64 D_8030C868;
-extern f64 D_8030C870;
-extern f64 D_8030C878;
-extern f64 D_8030C880;
-extern f64 D_8030C888;
 
 extern Mtx D_02000000[];
 extern u16 D_802FCEB0[];
@@ -35,11 +27,6 @@ extern Vtx D_802FD7B0[];
 extern Vtx D_802FD7F0[];
 extern Vtx D_802FD830[][12];
 extern f32 D_802FD9B0;
-extern f64 D_8030C828;
-extern f64 D_8030C830;
-extern f64 D_8030C838;
-extern f64 D_8030C840;
-extern f64 D_8030C848;
 extern u8 D_803643DB;
 extern f32 D_80364414;
 extern Mtx D_8036E5E0[];
@@ -88,7 +75,7 @@ void func_8028376C(Gfx **arg0, Mtx *arg1, u8 arg2, s32 arg3, s32 arg4, s32 arg5,
         shift = 10;
         scale = 1200;
     }
-    guRotateF(sp188, D_8030C830 - (D_80364414 - D_8030C828), 0.0f, 1.0f, 0.0f);
+    guRotateF(sp188, 360.0 - (D_80364414 - 180.0), 0.0f, 1.0f, 0.0f);
     guMtxXFMF(sp188, (arg3 - arg5) / scale, 0.0f, (arg4 - arg6) / scale, &ox, &oy, &oz);
     x = 58.0f + ox;
     y = 195.0f + oz;
@@ -161,7 +148,7 @@ void func_8028376C(Gfx **arg0, Mtx *arg1, u8 arg2, s32 arg3, s32 arg4, s32 arg5,
         }
     }
     angle = func_80284ADC(arg3 >> 5, arg4 >> 5, D_803F767C, D_803F7680);
-    guRotateF(sp188, -((D_8030C840 - (D_80364414 - D_8030C838)) + (angle + D_8030C848)), 0.0f, 0.0f, 1.0f);
+    guRotateF(sp188, -((360.0 - (D_80364414 - 180.0)) + (angle + 180.0)), 0.0f, 0.0f, 1.0f);
     guTranslateF(sp148, 58.0f, 195.0f, 0.0f);
     guMtxCatF(sp188, sp148, sp188);
     guMtxF2L(sp188, &D_8036E5E0[arg2]);
@@ -212,15 +199,15 @@ f32 func_80284ADC(arg0, arg1, arg2, arg3)
         return 0.0f;
     }
     if (arg2 >= arg0 && arg3 >= arg1) {
-        return func_802AD7D4((arg2 - arg0) * D_8030C850 / dist) / 65536.0 * D_8030C858;
+        return func_802AD7D4((arg2 - arg0) * 65535.9 / dist) / 65536.0 * 360.0;
     }
     if (arg2 >= arg0 && arg3 < arg1) {
-        return (func_802AD7D4((arg1 - arg3) * D_8030C860 / dist) + 0x4000) / 65536.0 * D_8030C868;
+        return (func_802AD7D4((arg1 - arg3) * 65535.9 / dist) + 0x4000) / 65536.0 * 360.0;
     }
     if (arg2 < arg0 && arg3 < arg1) {
-        return (func_802AD7D4((arg0 - arg2) * D_8030C870 / dist) + 0x8000) / 65536.0 * D_8030C878;
+        return (func_802AD7D4((arg0 - arg2) * 65535.9 / dist) + 0x8000) / 65536.0 * 360.0;
     }
     if (arg2 < arg0 && arg3 >= arg1) {
-        return (func_802AD7D4((arg3 - arg1) * D_8030C880 / dist) + 0xC000) / 65536.0 * D_8030C888;
+        return (func_802AD7D4((arg3 - arg1) * 65535.9 / dist) + 0xC000) / 65536.0 * 360.0;
     }
 }

@@ -74,18 +74,6 @@ extern u8 D_8039C53C[];
 extern s32 D_803156C0;
 extern u8 D_80370C50;
 extern OSMesgQueue D_80219F50;
-extern char D_8030C8B0[];
-extern char D_8030C8C0[];
-extern char D_8030C8C8[];
-extern char D_8030C8D8[];
-extern char D_8030C8E8[];
-extern char D_8030C8F0[];
-extern char D_8030C91C[];
-extern char D_8030C92C[];
-extern char D_8030C93C[];
-extern char D_8030C954[];
-extern char D_8030C980[];
-extern char D_8030C9B4[];
 
 void func_80255DC8(void);
 void func_80256A34(UnkStruct_8039C4B8 *);
@@ -147,12 +135,12 @@ u32 func_802852EC(void) {
     } else {
         sp54 = 100;
     }
-    sprintf(D_8036B9A8[0], D_8030C8B0, D_8036EA78, sp5C, '%');
-    sprintf(D_8036B9A8[1], D_8030C8C0, D_8036EA70);
-    sprintf(D_8036B9A8[2], D_8030C8C8, D_8036EA79, sp58, '%');
-    sprintf(D_8036B9A8[3], D_8030C8D8, D_8036EA7C, sp54, '%');
+    sprintf(D_8036B9A8[0], "***%2d (%d%c)*", D_8036EA78, sp5C, '%');
+    sprintf(D_8036B9A8[1], "***$%d*", D_8036EA70);
+    sprintf(D_8036B9A8[2], "***%2d (%d%c)*", D_8036EA79, sp58, '%');
+    sprintf(D_8036B9A8[3], "***%2d (%d%c)*", D_8036EA7C, sp54, '%');
     func_80264A34(sp24, D_8036EA74, 0);
-    sprintf(D_8036B9A8[4], D_8030C8E8, sp24);
+    sprintf(D_8036B9A8[4], "***%s*", sp24);
     for (i = 18; i < 23; i++) {
         D_802F5804[i].unk0 = 0x400;
     }
@@ -206,7 +194,7 @@ u8 func_80285814(void) {
 
     sp27 = 0;
     if (D_80370C50 == 0) {
-        func_8029A7E4(D_8030C8F0, D_8030C91C, D_8030C92C, 0x8C);
+        func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "frontEndPresent", "stats_perm.c", 0x8C);
     }
     D_80370C50 = 1;
     func_80255DC8();
@@ -217,13 +205,13 @@ u8 func_80285814(void) {
         if (D_802E8F94[D_802E8BDC].unk0 == 1) {
             if (D_8039C4B8[0].unk0 == 0x1234567887654321) {
                 func_80256A34(NULL);
-                func_8029A7E4(D_8030C93C);
+                func_8029A7E4("Creating status ...\n");
                 sp26 = D_80364AF0[D_80364AE8].unk18[D_802E8BDC];
                 if (sp26 == 5) {
                     sp26 = 4;
                 }
                 if (func_802C4E58(D_8039C4B8, sp26) > 60) {
-                    func_8029A7E4(D_8030C954, D_8030C980, D_8030C9B4, 0xA1);
+                    func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "create_status(pakBuffer,coin)<=LEVEL_SAVE_SIZE-4", "stats_perm.c", 0xA1);
                 }
                 func_802C4BF0(D_8039C4B8);
                 func_802C1DD0(0);

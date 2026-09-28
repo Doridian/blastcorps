@@ -30,12 +30,25 @@ UC="RSP microcode; its entry sets sp=0x110 and jumps into IMEM"
 FE="RSP microcode (0xFB0 bytes, fits IMEM): sets sp=0x110 and loads from DMEM 0xFC4, so it is not r4300 code"
 FE_NOTE="hd_front_end_text is inflated to 0x801E7000 by func_8028B3E0 in hd_code"
 
-hd_code() {  # version data end t1 t2 d1 d2 d3 uc
+UD1="RSP microcode data (DMEM image), used by the graphics task setup in 405F0"
+UD2="RSP microcode data (DMEM image), used by the audio task setup in 20460"
+UD3="RSP microcode data (DMEM image), used by the handwritten code at 5FD50"
+
+hd_code() {  # version data end t1 t2 d1 d2 d3 uc [rodata ucode-data]
     local v=$1
+    local split=()
+    if [ -n "${10:-}" ]; then
+        # .data/.rodata per object; the three microcode DMEM images follow .rodata
+        local u=$((${11}))
+        split=(--rodata "${10}"
+               --tail "$(printf %X $u):800:$UD1"
+               --tail "$(printf %X $((u + 0x800))):2D0:$UD2"
+               --tail "$(printf %X $((u + 0xAD0))):800:$UD3")
+    fi
     $GEN hd_code "$v" --vram 0x802447C0 --data "$2" --end "$3" \
         --bin "$4:804:$T1" --bin "$5:884:$T2" --bin "$6:1EE0:$D1" \
         --bin "$7:1A4:$D2" --bin "$8:F50:$D3" --bin "$9:37E0:$UC" \
-        ${SYMS:+--symbols symbol_addrs.hd_code.$v.txt} "${EXTRA[@]}"
+        ${SYMS:+--symbols symbol_addrs.hd_code.$v.txt} "${split[@]}" "${EXTRA[@]}"
 }
 
 hd_front_end() {  # version data end ucode
@@ -46,7 +59,9 @@ hd_front_end() {  # version data end ucode
 }
 
 hd_code us.v10 0xA4360 0xCADF0 0x68790 0x69040 0x7D920 0x8002C 0x8E860 0xA0B80
-hd_code us.v11 0xA4410 0xCAEA0 0x68810 0x690C0 0x7D9D0 0x800DC 0x8E910 0xA0C30
+# us.v11 also splits .data/.rodata: .rodata starts after reverb.c's L_INC
+# (the last .data), and the microcode data after the last .rodata.
+hd_code us.v11 0xA4410 0xCAEA0 0x68810 0x690C0 0x7D9D0 0x800DC 0x8E910 0xA0C30 0xC33D0 0xC9BD0
 hd_code jp     0xA47E0 0xCAF60 0x68B80 0x69430 0x7DDA0 0x804AC 0x8ECE0 0xA1000
 hd_code eu     0xA6210 0xCD2D0 0x6B180 0x6BA30 0x80340 0x82A4C 0x91280 0xA2A30
 

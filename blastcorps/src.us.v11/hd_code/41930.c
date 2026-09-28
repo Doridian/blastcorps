@@ -26,7 +26,6 @@ extern u8 D_80364B81[][0x100];
 extern UnkStruct_802E8F38 D_802E8F38[];
 extern UnkStruct_8020C070 D_8020C070[];
 extern char D_8036EBA0[];
-extern char D_8030C9D0[];
 extern s32 D_80358060;
 
 void func_801ECC8C(void);
@@ -58,7 +57,7 @@ void func_802860F0(void) {
                         }
                     }
                 }
-                sprintf(D_8036EBA0, D_8030C9D0, D_8020D7E4[sp30].unk0);
+                sprintf(D_8036EBA0, "IN %s.", D_8020D7E4[sp30].unk0);
                 D_8020C070[0].unk904 = D_8036EBA0;
                 break;
             case 6:

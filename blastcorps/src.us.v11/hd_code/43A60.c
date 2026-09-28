@@ -65,9 +65,6 @@ extern s16 D_80370B98[];
 extern s32 D_80370BB0;
 extern s32 D_80370BB4;
 
-extern f64 D_8030CBB0;
-extern f64 D_8030CBB8;
-extern f64 D_8030CBC0;
 extern s32 D_803643F8;
 extern s32 D_803643FC;
 extern s32 D_80364400;
@@ -364,8 +361,8 @@ void func_80288DF0(arg0, arg1)
             if (sp264 > 0) {
                 sp268 = -sp268;
             }
-            guRotateF(sp2B4, (f32)sp268 / 65536.0 * D_8030CBB0, 1.0f, 0.0f, 0.0f);
-            guRotateF(sp274, (f32)D_80364452 / D_8030CBB8 * D_8030CBC0, 0.0f, 1.0f, 0.0f);
+            guRotateF(sp2B4, (f32)sp268 / 65536.0 * 360.0, 1.0f, 0.0f, 0.0f);
+            guRotateF(sp274, (f32)D_80364452 / 4095.0 * 360.0, 0.0f, 1.0f, 0.0f);
             guMtxCatF(sp2B4, sp274, sp2B4);
             guTranslateF(sp274, D_8036EC38[sp2FC].unk4 / 32.0f, D_8036EC38[sp2FC].unk8 / 32.0f,
                          D_8036EC38[sp2FC].unkC / 32.0f);
