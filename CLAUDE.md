@@ -106,6 +106,30 @@ so a too-wide `bin` goes unnoticed: only the sha1 decides, and it cannot tell.
   target it would miss is listed as `func_XXXXXXXX ... called`; a new one that
   isn't shows up as a jal into the middle of a function.
 
+## Decompiling
+
+`docs/ROADMAP.md` has the plan. The loop for one function:
+
+- `m2c` (`tools/mips_to_c/m2c.py`, needs `pycparser<3`) on its `.s` for a
+  first draft. Replace the `GLOBAL_ASM` line with the C.
+- `make VERSION=us.v11 -C blastcorps <module>`, then
+  `tools/fdiff.py <module> <function>` to diff it against the original. It
+  refuses to run when the last link failed, since the binary would be stale.
+- `tools/progress.py` for totals.
+
+IDO quirks that have mattered so far (all `-O1`):
+
+- `register` variables get `$s` registers in declaration order, and each
+  still gets a stack slot at the point where it's declared. Declaration order
+  moves both the register assignment and the offsets of the other locals.
+- Statement spelling changes the scheduling: `p = c + 1, xp = x + 2;` and the
+  same two statements separated by `;` don't compile the same.
+- m2c drops some early returns; check the function's size.
+
+Splat only symbolizes a `%hi`/`%lo` pair it can match up. A table reached
+through a `lui`/`addiu` pair split by scheduling stays a bare constant, so C
+that names it needs a line in `undefined_syms.<module>.<VERSION>.txt`.
+
 ## Conventions
 
 - Straight to `main`; this project does not use branches.
