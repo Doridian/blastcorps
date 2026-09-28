@@ -1,5 +1,9 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1F5C0/__osContRamRead.s")
+/* func_80203404 is this libultra's __osPfsGetStatus (in its pfsinit.c). */
+#define __osPfsGetStatus func_80203404
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1F5C0/func_80206804.s")
+/* func_80206804 is contramread.c's static __osPackRamReadData. */
+#define __osPackRamReadData func_80206804
+
+#include "src/libultra/io/contramread.c"

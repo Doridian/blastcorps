@@ -1,3 +1,6 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B880/func_80202880.s")
+#define osEepromProbe func_80202880
+#define __osEepStatus func_80204ECC
+
+#include "src/libultra/io/conteepprobe.c"

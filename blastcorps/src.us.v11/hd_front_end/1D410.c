@@ -1,3 +1,11 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1D410/func_80204410.s")
+/* controller.c's EEPROM timer, in hd_code's .bss (ultra_internal.h declares them). */
+#define __osEepromTimer D_803FF288
+#define __osEepromTimerQ D_803FF2A8
+#define __osEepromTimerMsg D_803FF2C0
+
+#define osEepromLongRead func_80204410
+#define osEepromRead func_802050F0
+
+#include "src/libultra/io/conteeplongread.c"

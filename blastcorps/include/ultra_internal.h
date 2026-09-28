@@ -172,6 +172,173 @@ extern void __osSiGetAccess(void);
 extern void __osSiRelAccess(void);
 extern void __osSiCreateAccessQueue(void);
 
+/* The controller pak file system (controller.h and os_pfs.h, as 2.0I has them). */
+#define ARRLEN(x) ((s32)(sizeof(x) / sizeof(x[0])))
+
+#define CONT_CMD_READ_PAK 2
+#define CONT_CMD_WRITE_PAK 3
+#define CONT_CMD_REQUEST_STATUS_TX 1
+#define CONT_CMD_REQUEST_STATUS_RX 3
+#define CONT_CMD_READ_PAK_TX 3
+#define CONT_CMD_READ_PAK_RX 33
+#define CONT_CMD_WRITE_PAK_TX 35
+#define CONT_CMD_WRITE_PAK_RX 1
+
+#define DIR_STATUS_EMPTY 0
+#define DIR_STATUS_UNKNOWN 1
+#define DIR_STATUS_OCCUPIED 2
+
+#define CONT_ADDR_DETECT 0x8000
+#define CONT_BLOCKS(x) ((x) / BLOCKSIZE)
+#define CONT_BLOCK_DETECT CONT_BLOCKS(CONT_ADDR_DETECT)
+
+#define PFS_INODE_SIZE_PER_PAGE 128
+#define PFS_EOF 1
+#define PFS_PAGE_NOT_EXIST 2
+#define PFS_PAGE_NOT_USED 3
+#define PFS_WRITTEN 2
+#define DEF_DIR_PAGES 2
+#define PFS_ID_0AREA 1
+#define PFS_ID_1AREA 3
+#define PFS_ID_2AREA 4
+#define PFS_ID_3AREA 6
+#define PFS_LABEL_AREA 7
+#define PFS_BANK_LAPPED_BY 8
+#define PFS_SECTOR_PER_BANK 32
+#define PFS_INODE_DIST_MAP (PFS_BANK_LAPPED_BY * PFS_SECTOR_PER_BANK)
+#define PFS_SECTOR_SIZE (PFS_INODE_SIZE_PER_PAGE / PFS_SECTOR_PER_BANK)
+
+typedef struct {
+    /* 0x0 */ u8 txsize;
+    /* 0x1 */ u8 rxsize;
+    /* 0x2 */ u8 cmd;
+    /* 0x3 */ u8 typeh;
+    /* 0x4 */ u8 typel;
+    /* 0x5 */ u8 status;
+} __OSContRequesFormatShort;
+
+typedef struct {
+    /* 0x00 */ u8 dummy;
+    /* 0x01 */ u8 txsize;
+    /* 0x02 */ u8 rxsize;
+    /* 0x03 */ u8 cmd;
+    /* 0x04 */ u16 address;
+    /* 0x06 */ u8 data[BLOCKSIZE];
+    /* 0x26 */ u8 datacrc;
+} __OSContRamReadFormat;
+
+typedef union {
+    /* 0x0 */ struct {
+        /* 0x0 */ u8 bank;
+        /* 0x1 */ u8 page;
+    } inode_t;
+    /* 0x0 */ u16 ipage;
+} __OSInodeUnit;
+
+typedef struct {
+    /* 0x00 */ u32 game_code;
+    /* 0x04 */ u16 company_code;
+    /* 0x06 */ __OSInodeUnit start_page;
+    /* 0x08 */ u8 status;
+    /* 0x09 */ s8 reserved;
+    /* 0x0A */ u16 data_sum;
+    /* 0x0C */ u8 ext_name[PFS_FILE_EXT_LEN];
+    /* 0x10 */ u8 game_name[PFS_FILE_NAME_LEN];
+} __OSDir;
+
+typedef struct {
+    /* 0x0 */ __OSInodeUnit inode_page[128];
+} __OSInode;
+
+typedef struct {
+    /* 0x00 */ u32 repaired;
+    /* 0x04 */ u32 random;
+    /* 0x08 */ u64 serial_mid;
+    /* 0x10 */ u64 serial_low;
+    /* 0x18 */ u16 deviceid;
+    /* 0x1A */ u8 banks;
+    /* 0x1B */ u8 version;
+    /* 0x1C */ u16 checksum;
+    /* 0x1E */ u16 inverted_checksum;
+} __OSPackId;
+
+typedef struct {
+    /* 0x000 */ __OSInode inode;
+    /* 0x100 */ u8 bank;
+    /* 0x101 */ u8 map[PFS_INODE_DIST_MAP];
+} __OSInodeCache;
+
+typedef struct {
+    /* 0x0 */ u8 txsize;
+    /* 0x1 */ u8 rxsize;
+    /* 0x2 */ u8 cmd;
+    /* 0x3 */ u8 address;
+    /* 0x4 */ u8 data[EEPROM_BLOCK_SIZE];
+} __OSContEepromFormat;
+
+#define CONT_CMD_READ_EEPROM 4
+#define CONT_CMD_WRITE_EEPROM 5
+#define CONT_CMD_READ_EEPROM_TX 2
+#define CONT_CMD_READ_EEPROM_RX 8
+#define CONT_CMD_WRITE_EEPROM_TX 10
+#define CONT_CMD_WRITE_EEPROM_RX 1
+
+extern OSPifRam __osPfsPifRam;
+extern OSPifRam __osEepPifRam;
+extern OSTimer __osEepromTimer;
+extern OSMesgQueue __osEepromTimerQ;
+extern OSMesg __osEepromTimerMsg;
+extern s32 __osEepStatus(OSMesgQueue *, OSContStatus *);
+
+extern u16 __osSumcalc(u8 *ptr, int length);
+extern s32 __osIdCheckSum(u16 *ptr, u16 *csum, u16 *icsum);
+extern s32 __osRepairPackId(OSPfs *pfs, __OSPackId *badid, __OSPackId *newid);
+extern s32 __osCheckPackId(OSPfs *pfs, __OSPackId *temp);
+extern s32 __osGetId(OSPfs *pfs);
+extern s32 __osCheckId(OSPfs *pfs);
+extern s32 __osPfsRWInode(OSPfs *pfs, __OSInode *inode, u8 flag, u8 bank);
+extern s32 __osPfsSelectBank(OSPfs *pfs);
+extern s32 __osPfsDeclearPage(OSPfs *pfs, __OSInode *inode, int file_size_in_pages, int *first_page, u8 bank,
+                              int *decleared, int *last_page);
+extern s32 __osPfsReleasePages(OSPfs *pfs, __OSInode *inode, u8 start_page, u16 *sum, u8 bank,
+                               __OSInodeUnit *last_page, int flag);
+extern s32 __osBlockSum(OSPfs *pfs, u8 page_no, u16 *sum, u8 bank);
+extern s32 __osContRamRead(OSMesgQueue *mq, int channel, u16 address, u8 *buffer);
+extern s32 __osContRamWrite(OSMesgQueue *mq, int channel, u16 address, u8 *buffer, int force);
+extern void __osPfsRequestData(u8 cmd);
+extern void __osPfsGetInitData(u8 *pattern, OSContStatus *data);
+extern u8 __osContAddressCrc(u16 addr);
+extern u8 __osContDataCrc(u8 *data);
+extern s32 __osPfsGetStatus(OSMesgQueue *queue, int channel);
+
+#define ERRCK(fn) \
+    ret = fn;     \
+    if (ret != 0) \
+    return ret
+
+#define SELECT_BANK(pfs, bank) (pfs->activebank = (bank), __osPfsSelectBank((pfs)))
+
+#define SET_ACTIVEBANK_TO_ZERO()           \
+    if (pfs->activebank != 0) {            \
+        pfs->activebank = 0;               \
+        ERRCK(__osPfsSelectBank(pfs));     \
+    } (void)0
+
+#define PFS_CHECK_ID()                        \
+    if (__osCheckId(pfs) == PFS_ERR_NEW_PACK) \
+    return PFS_ERR_NEW_PACK
+
+#define PFS_CHECK_STATUS()                    \
+    if ((pfs->status & PFS_INITIALIZED) == 0) \
+    return PFS_ERR_INVALID
+
+#define PFS_GET_STATUS()                    \
+    __osSiGetAccess();                      \
+    ret = __osPfsGetStatus(queue, channel); \
+    __osSiRelAccess();                      \
+    if (ret != 0)                           \
+    return ret
+
 /* Device managers and clocks (piint.h, and aisetfreq.c's own extern). */
 extern OSDevMgr __osPiDevMgr;
 extern OSMesgQueue *osPiGetCmdQueue(void);

@@ -1,3 +1,3 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1D550/osPfsFindFile.s")
+#include "src/libultra/io/pfssearchfile.c"

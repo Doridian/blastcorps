@@ -1,17 +1,13 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B8F0/osPfsChecker.s")
+/* This libultra's osPfsInit and __osPfsGetStatus, both in its pfsinit.c. */
+#define osPfsInit func_80203350
+#define __osPfsGetStatus func_80203404
+/* func_80203BF8 is pfsallocatefile.c's static __osClearPage. */
+#define __osClearPage func_80203BF8
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B8F0/corrupted_init.s")
+#include "src/libultra/io/pfschecker.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B8F0/corrupted.s")
+#include "src/libultra/io/pfsinit.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B8F0/func_80203350.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B8F0/func_80203404.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B8F0/osPfsAllocateFile.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B8F0/__osPfsDeclearPage.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B8F0/func_80203BF8.s")
+#include "src/libultra/io/pfsallocatefile.c"

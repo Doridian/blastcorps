@@ -1,5 +1,7 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1D710/func_80204710.s")
+/* func_80204710 is pfsreadwritefile.c's static __osPfsGetNextPage. */
+#define __osPfsGetNextPage func_80204710
+#define osPfsReadWriteFile func_8020480C
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1D710/func_8020480C.s")
+#include "src/libultra/io/pfsreadwritefile.c"
