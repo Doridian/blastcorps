@@ -134,8 +134,7 @@ casts or struct-offset tricks for them.
   - `gSPPerspNormalize` is its own command, `0xB4`. `common.h` fixes this.
   - Texture rectangles send s/t with `G_RDPHALF_2` and dsdx/dtdy with
     `G_RDPHALF_CONT`, and `gSPScisTextureRectangle` clamps without 2.0I's
-    `s16` casts and sign tests. `hd_code/17E10.c` redefines both, to move to
-    `common.h` once agents are done with the files that copy them.
+    `s16` casts and sign tests. `common.h` redefines both.
 - hd_front_end's `gDPSetPrimColor` with u8 struct fields ORs the colour
   word in a different order (`b | (r | g) | a`); `hd_front_end/9570.c` has a
   local variant.

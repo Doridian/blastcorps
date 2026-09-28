@@ -1,22 +1,5 @@
 #include "common.h"
 
-/*
- * The game's older gbi.h sends a texture rectangle's s/t with G_RDPHALF_2
- * and dsdx/dtdy with G_RDPHALF_CONT (2.0I uses G_RDPHALF_1 and G_RDPHALF_2).
- */
-#undef gSPTextureRectangle
-#define gSPTextureRectangle(pkt, xl, yl, xh, yh, tile, s, t, dsdx, dtdy)    \
-{                                                                           \
-    Gfx *_g = (Gfx *)(pkt);                                                 \
-                                                                            \
-    _g->words.w0 = (_SHIFTL(G_TEXRECT, 24, 8) | _SHIFTL(xh, 12, 12) |       \
-                    _SHIFTL(yh, 0, 12));                                    \
-    _g->words.w1 = (_SHIFTL(tile, 24, 3) | _SHIFTL(xl, 12, 12) |            \
-                    _SHIFTL(yl, 0, 12));                                    \
-    gImmp1(pkt, G_RDPHALF_2, (_SHIFTL(s, 16, 16) | _SHIFTL(t, 0, 16)));     \
-    gImmp1(pkt, G_RDPHALF_CONT, (_SHIFTL(dsdx, 16, 16) | _SHIFTL(dtdy, 0, 16))); \
-}
-
 /* Per-frame buffer, double-buffered by D_8035805C. */
 typedef struct {
     /* 0x00000 */ u8 unk0[0x140];
