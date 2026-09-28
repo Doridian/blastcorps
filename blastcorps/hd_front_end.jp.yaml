@@ -32,6 +32,7 @@ segments:
     - [0x19640, c, hd_front_end/19640]
     - [0x1A190, c, hd_front_end/1A190]
     - [0x1ADD0, c, hd_front_end/1ADD0]
+    - [0x1B050, asm, hd_front_end/1B050] # handwritten
     - [0x1B680, c, hd_front_end/1B680]
     - [0x1B7D0, c, hd_front_end/1B7D0]
     - [0x1B840, c, hd_front_end/1B840]

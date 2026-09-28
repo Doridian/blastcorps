@@ -98,8 +98,7 @@ All of this is IDO 5.3 at `-O1` unless it says otherwise.
 
 ## Data
 
-hd_code's `.data`/`.rodata` are split per object (hd_front_end's are still one
-`bin`). A C file whose subsegment is `.rodata` in the yaml owns its `.rodata`:
+hd_code's and hd_front_end's (us.v11) `.data`/`.rodata` are split per object. A C file whose subsegment is `.rodata` in the yaml owns its `.rodata`:
 
 - Write strings, float/double literals and `switch`es in C. The GLOBAL_ASM
   functions still in the file get their share put into their `.s` as
@@ -112,6 +111,17 @@ hd_code's `.data`/`.rodata` are split per object (hd_front_end's are still one
 - A file still on asm `rodata` must keep using externs: no string literals,
   no float or double constants that IDO puts in `.rodata` (floats with the low
   16 bits zero are fine: `lui`), no jump-table `switch`.
+- A string or constant nobody references can be a folded-away assert:
+  IDO still emits the literals of `if (sizeof(x) > 512) { printf(...); }`
+  (hd_front_end/E7B0.c, "sizeof(playerInfo)<=512").
+- Strings that asm `.data` points to (menu tables, local initialized
+  aggregates) must keep their names: define them as
+  `const char D_X[] = "...";` at the point in the file where they fall
+  (const globals are early `.rodata`, in source order with the strings).
+  Unreferenced zero bytes among the early `.rodata` can be emulated the same
+  way (`const char D_8020EFA4[12]` in hd_front_end/7800.c). A zero slot in
+  the late part (hd_front_end/9570.c, `0x8020F088`) can't, so 9570 stays on
+  asm `rodata`.
 - `.data`: only 45BB0 owns its own so far. Elsewhere, no initialized globals
   or statics. A local initialized aggregate (`char *sp24[] = {...}`) is
   `.data` too, with its strings at that point in `.rodata`.
@@ -156,6 +166,10 @@ never reaches a stub:
 
 - any code subsegment that saves `$ra` with `sd` and never with `sw` (Rare's
   engine block, `0x56040`–`0x8F860` in us.v11 hd_code);
+- a run of such sd-`$ra` functions inside otherwise-IDO code, split out at
+  its first function and at the next IDO one (both must be 16-aligned; a
+  leaf function at either end of the run stays with the C). hd_front_end's
+  `0x1B100`–`0x1B730` in us.v11 is one;
 - libultra's handwritten functions, by name (`HANDWRITTEN_LIBULTRA` in the
   generator), split out of whatever C they sat next to.
 

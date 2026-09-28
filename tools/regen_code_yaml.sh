@@ -51,11 +51,19 @@ hd_code() {  # version data end t1 t2 d1 d2 d3 uc [rodata ucode-data]
         ${SYMS:+--symbols symbol_addrs.hd_code.$v.txt} "${split[@]}" "${EXTRA[@]}"
 }
 
-hd_front_end() {  # version data end ucode
+FD="RSP microcode data (DMEM image) for the microcode at the end of .text"
+
+hd_front_end() {  # version data end ucode [rodata ucode-data [split...]]
     local v=$1
+    local split=()
+    if [ -n "${5:-}" ]; then
+        # .data/.rodata per object; the microcode's DMEM image follows .rodata
+        split=(--rodata "$5" --tail "$(printf %X $(($6))):800:$FD")
+        for s in "${@:7}"; do split+=(--split "$s"); done
+    fi
     $GEN hd_front_end "$v" --vram 0x801E7000 --data "$2" --end "$3" \
         --bin "$4:FB0:$FE" --note "$FE_NOTE" \
-        ${SYMS:+--symbols symbol_addrs.hd_front_end.$v.txt} "${EXTRA[@]}"
+        ${SYMS:+--symbols symbol_addrs.hd_front_end.$v.txt} "${split[@]}" "${EXTRA[@]}"
 }
 
 hd_code us.v10 0xA4360 0xCADF0 0x68790 0x69040 0x7D920 0x8002C 0x8E860 0xA0B80
@@ -66,6 +74,10 @@ hd_code jp     0xA47E0 0xCAF60 0x68B80 0x69430 0x7DDA0 0x804AC 0x8ECE0 0xA1000
 hd_code eu     0xA6210 0xCD2D0 0x6B180 0x6BA30 0x80340 0x82A4C 0x91280 0xA2A30
 
 hd_front_end us.v10 0x21010 0x29E60 0x20060
-hd_front_end us.v11 0x21040 0x29E90 0x20090
+# us.v11 also splits .data/.rodata: .rodata starts at "SELECT VEHICLE!",
+# the microcode data ("RSP SW Version: 2.0D") after the last .rodata.
+# 0x10850 is where bestTimes.c starts after pfsHandler.c: pfsHandler's
+# .rodata ends in func_801F58E8's jump tables and the menu strings follow.
+hd_front_end us.v11 0x21040 0x29E90 0x20090 0x27440 0x29690 0x10850
 hd_front_end jp     0x20F90 0x29B00 0x1FFE0
 hd_front_end eu     0x21990 0x2CAB0 0x209E0

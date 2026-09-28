@@ -8,6 +8,13 @@
 extern u32 __additional_scanline;
 extern u8 D_8021AB84;
 extern u64 D_80364A90;
+extern u8 *D_80358070;
+extern u8 D_006AD3F0[];
+extern u8 D_006BF2F0[];
+extern u8 D_006D3D30[];
+extern u8 D_006E8980[];
+
+void func_8028B4C4(u8 *romStart, u8 *dst, u32 *size, u8, u8, u8);
 
 void func_80200714(u8);
 
@@ -15,7 +22,81 @@ void func_802006F0(void) {
     func_80200714(D_8021AB84);
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/196F0/func_80200714.s")
+/*
+ * Loads one of three RGBA16 images into D_80358070 and tints it for arg0:
+ * 3/7/9 and 2/6/8 shift the colours, the rest keep them.
+ */
+void func_80200714(u8 arg0) {
+    u8 *romStart;
+    u8 *romEnd;
+    u32 size;
+    u16 *img;
+    u32 i;
+    u8 r;
+    u8 g;
+    u8 b;
+    u8 t;
+
+    __additional_scanline = (u32)D_80358070;
+    D_8021AB84 = arg0;
+    switch (arg0) {
+        case 1:
+        case 2:
+        case 3:
+            romStart = D_006AD3F0;
+            romEnd = D_006BF2F0;
+            break;
+        case 4:
+        case 7:
+        case 8:
+            romStart = D_006BF2F0;
+            romEnd = D_006D3D30;
+            break;
+        case 5:
+        case 6:
+        case 9:
+            romStart = D_006D3D30;
+            romEnd = D_006E8980;
+            break;
+        default:
+            return;
+    }
+    size = romEnd - romStart;
+    func_8028B4C4(romStart, D_80358070, &size, 0xD, 0, 2);
+    img = (u16 *)D_80358070;
+    for (i = 0; i < size >> 1; i++) {
+        r = img[i] >> 11;
+        g = (img[i] >> 6) & 0x1F;
+        b = (img[i] >> 1) & 0x1F;
+        switch (arg0) {
+            case 3:
+            case 7:
+            case 9:
+                r = (31.0 < (f32)r * 1.25) ? 31.0 : (f32)r * 1.25;
+                if (b < 3) {
+                    g = b;
+                } else {
+                    g = 3;
+                }
+                b = b / 4;
+                break;
+            case 2:
+            case 6:
+            case 8:
+                if (b < 2) {
+                    g = b;
+                } else {
+                    g = 2;
+                }
+                t = r;
+                r = b / 3;
+                b = (f32)t * 0.8125;
+                break;
+        }
+        img[i] = (r << 11) | (g << 6) | (b << 1) | 1;
+    }
+    D_80358070 += size;
+}
 
 void osViExtendVStart(u32 value) {
     __additional_scanline = value;

@@ -104,15 +104,6 @@ extern UnkStruct_802081A8 D_802081A8;
 extern s32 D_802081AC;
 extern s16 D_802081B0;
 extern s8 D_802081B4;
-extern char D_8020E450[];
-extern char D_8020E47C[];
-extern char D_8020E484[];
-extern char D_8020E494[];
-extern f64 D_8020E4A8;
-extern f64 D_8020E4B0;
-extern f64 D_8020E4B8;
-extern f64 D_8020E4C0;
-extern f64 D_8020E4C8;
 extern UnkStruct_80210E90 *D_80210E90[];
 extern u8 *D_80210EE0[][2];
 extern Gfx *D_80210F78[][4];
@@ -164,6 +155,8 @@ extern u16 D_80370C2A;
 extern s8 D_80370C2C;
 extern s8 D_80370C2E;
 
+const char D_8020E440[] = "SELECT VEHICLE!";
+
 s32 func_801E7000(void) {
     s32 spA4;
     s32 spA0;
@@ -187,7 +180,7 @@ s32 func_801E7000(void) {
             (D_80364AE8 == D_80364AEA || D_80364EF0[D_80364AEA][D_802E8C44[spA4]] != 0)) {
             func_80202100(spA4, &D_80210E90[D_80211A6A], D_80210EE0[D_80211A6A], D_80210F78[D_80211A6A]);
             D_80211A70[spA4] = sp9C;
-            sp9C += D_8020E4A8;
+            sp9C += 380.0;
             guTranslate(&D_802110A8[D_80211A6A], D_80211A70[spA4], D_8020816C[spA4], 0.0f);
             guScale(&D_80211568[D_80211A6A], D_802FDAC0[spA4], D_802FDAC0[spA4], D_802FDAC0[spA4]);
             func_80202270(D_80210E90[D_80211A6A], D_80210EE0[D_80211A6A], D_80211AC0[D_80211A6A]);
@@ -214,10 +207,10 @@ s32 func_801E7000(void) {
         case 0x4000:
             break;
         default:
-            func_8029A7E4(D_8020E450, D_8020E47C, D_8020E484, 0x8B);
+            func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "1==0", "digger_loop.c", 0x8B);
             break;
     }
-    func_8029A7E4(D_8020E494, sp90, sp8C);
+    func_8029A7E4("default %d auto %d\n", sp90, sp8C);
     func_801E74E8((sp8C == -1) ? sp90 : sp8C);
     D_802153D8 = D_802153D4;
     D_802153E0 = D_802153DC * 4.0;
@@ -342,8 +335,8 @@ void func_801E7598(void) {
     if (D_80358060 < 2) {
         guPerspective(&sp140->unk1240, &D_8035807C, 45.0f, 4.0f / 3.0f, 40.0f, 4000.0f, 1.0f);
     }
-    D_802153D8 += (D_802153D4 - D_802153D8) * D_8020E4B0 * 60.0 / 60.0;
-    D_802153E0 += (D_802153DC - D_802153E0) * D_8020E4B8 * 60.0 / 60.0;
+    D_802153D8 += (D_802153D4 - D_802153D8) * 0.1 * 60.0 / 60.0;
+    D_802153E0 += (D_802153DC - D_802153E0) * 0.1 * 60.0 / 60.0;
     guLookAtReflect(&sp140->unk140, &sp140->unk3C00, D_802153D8, 1.0f, D_802153E0, D_802153D8, 0.0f, 0.0f, 0.0f,
                     1.0f, 0.0f);
     gSPPerspNormalize(gfx++, D_8035807C);
@@ -360,7 +353,7 @@ void func_801E7598(void) {
         spEF = D_8035805C & (sp148 == D_80211A68);
         if (((D_802153D8 - D_80211A70[D_802153C0[sp148]] > 0.0f) ? D_802153D8 - D_80211A70[D_802153C0[sp148]]
                                                                   : -(D_802153D8 - D_80211A70[D_802153C0[sp148]])) <
-            D_8020E4C0) {
+            570.0) {
             spE8 = D_80210E90[sp148]->unk14 + (u8 *)D_80210E90[sp148];
             if (D_80211A68 == sp148) {
                 spE4 = ((UnkStruct_80210E90_18 *)(D_80210E90[sp148]->unk18 + (u8 *)D_80210E90[sp148]))->unk4;
@@ -368,7 +361,7 @@ void func_801E7598(void) {
                 func_802021FC(D_80211AC0[sp148], D_80210EE0[sp148][D_8035805C], D_80210EE0[sp148][D_8035805C ^ 1]);
                 guRotate((Mtx *)spE0, (D_802153F0[sp148] += 4) % 360, 0.0f, 1.0f, 0.0f);
                 osWritebackDCache(spE0, 0x40);
-                func_802025D0(D_802153C0[sp148], (f32)((D_802153F0[sp148] + 180) % 360) * D_8020E4C8);
+                func_802025D0(D_802153C0[sp148], (f32)((D_802153F0[sp148] + 180) % 360) * 11.37778);
             }
             gSPSegment(gfx++, 6, spE8);
             gSPSegment(gfx++, 7, D_80210EE0[sp148][spEF]);

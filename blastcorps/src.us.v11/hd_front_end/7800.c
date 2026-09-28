@@ -87,20 +87,6 @@ extern char *D_802084D0[];
 extern u16 *D_802084E0[];
 extern UnkStruct_8020C070 D_8020C070[];
 extern UnkStruct_8020D810 D_8020D810[];
-extern char D_8020EDB0[];
-extern char D_8020EDF8[];
-extern char D_8020EE40[];
-extern char D_8020EE88[];
-extern char D_8020EED0[];
-extern char D_8020EEDC[];
-extern char D_8020EEE8[];
-extern char D_8020EEEC[];
-extern char D_8020EF18[];
-extern char D_8020EF30[];
-extern char D_8020EF38[];
-extern char D_8020EF88[];
-extern char D_8020EF90[];
-extern f64 D_8020EFB0;
 extern u16 D_802159D0;
 extern u8 *D_802159D4;
 extern u8 *D_802159D8;
@@ -172,15 +158,15 @@ u8 func_801EE800(u8 *arg0, u8 arg1, u8 arg2) {
 
     sp3C = &D_80364AF0[D_80364AE8];
     sp38 = &D_802E8F94[D_802E8BDC];
-    func_8029A7E4(D_8020EDB0, D_8036EA70, D_8036EA74, D_8036EA78, D_8036EA79,
+    func_8029A7E4("new ip=%8d : tc=%5d : bd=%2d : cr=%2d : rt=%3d : coin=%1d : bdn=%1d\n", D_8036EA70, D_8036EA74, D_8036EA78, D_8036EA79,
                   D_8036EA7C, D_8036EA7A, D_8036EA7B);
-    func_8029A7E4(D_8020EDF8, D_8036EA60, D_8036EA64, D_8036EA68, D_8036EA69,
+    func_8029A7E4("old ip=%8d : tc=%5d : bd=%2d : cr=%2d : rt=%3d : coin=%1d : bdn=%1d\n", D_8036EA60, D_8036EA64, D_8036EA68, D_8036EA69,
                   D_8036EA6C, D_8036EA6A, D_8036EA6B);
-    func_8029A7E4(D_8020EE40, D_8036EA80, D_8036EA84, D_8036EA88, D_8036EA89,
+    func_8029A7E4("res ip=%8d : tc=%5d : bd=%2d : cr=%2d : rt=%3d : coin=%1d : bdn=%1d\n", D_8036EA80, D_8036EA84, D_8036EA88, D_8036EA89,
                   D_8036EA8C, D_8036EA8A, D_8036EA8B);
-    func_8029A7E4(D_8020EE88, D_8036EA90, D_8036EA94, D_8036EA98, D_8036EA99,
+    func_8029A7E4("rs2 ip=%8d : tc=%5d : bd=%2d : cr=%2d : rt=%3d : coin=%1d : bdn=%1d\n", D_8036EA90, D_8036EA94, D_8036EA98, D_8036EA99,
                   D_8036EA9C, D_8036EA9A, D_8036EA9B);
-    func_8029A7E4(D_8020EED0, sp3C->unkA);
+    func_8029A7E4("units %d\n", sp3C->unkA);
     if (D_802E8F94[D_802E8BDC].unk0 == 1) {
         sp34 = func_802852EC();
         if (arg2) {
@@ -195,7 +181,7 @@ u8 func_801EE800(u8 *arg0, u8 arg1, u8 arg2) {
                     D_8036EA7A = 5;
                 }
                 if (D_803643D5 != 0) {
-                    func_8029A7E4(D_8020EEDC);
+                    func_8029A7E4("Units up 3\n");
                     sp3C->unkA += 3;
                 }
                 D_8036EA7B = 1;
@@ -207,17 +193,17 @@ u8 func_801EE800(u8 *arg0, u8 arg1, u8 arg2) {
     } else {
         sp33 = func_801EEDB4(D_802E8BDC, arg1, arg2);
     }
-    sprintf(D_8036B980, D_8020EEE8, D_8020D810[D_802E8BDC].unk4);
+    sprintf(D_8036B980, "%s", D_8020D810[D_802E8BDC].unk4);
     *arg0 = 0;
     if (arg1 && arg2) {
         if (D_802E8BDC == 0x31 || D_802E8BDC == 0x2F || D_802E8BDC == 0x26) {
-            func_8029A7E4(D_8020EEEC, D_8020EF18, D_8020EF30, 0x5E);
+            func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "!DUMMY_LEVELS(levelno)", "stats.c", 0x5E);
         }
         if (D_802E8F94[D_802E8BDC].unk0 == 1) {
             sp3C->unk14 = D_803649F0;
         }
         if (sp3C->unkA < 360) {
-            func_8029A7E4(D_8020EF38, D_8036EA7A % 5 - D_8036EA6A % 5);
+            func_8029A7E4("UNITS UP %d\n", D_8036EA7A % 5 - D_8036EA6A % 5);
             sp3C->unkA += D_8036EA7A % 5 - D_8036EA6A % 5;
         }
         if (sp3C->unkA == 354) {
@@ -239,6 +225,14 @@ u8 func_801EE800(u8 *arg0, u8 arg1, u8 arg2) {
     }
     return sp33;
 }
+
+const char D_8020EF48[] = "YOUR NEW BEST!";
+
+const char D_8020EF58[] = "BEST TO DATE";
+
+const char D_8020EF68[] = "YOUR BEST STAYS";
+
+const char D_8020EF78[] = "GUEST BEST IS";
 
 u8 func_801EEDB4(u8 arg0, u8 arg1, u8 arg2) {
     s32 sp6C;
@@ -281,11 +275,11 @@ u8 func_801EEDB4(u8 arg0, u8 arg1, u8 arg2) {
         sp6C = 0x480;
     }
     func_80264A34(sp34, D_8036EA74, 0);
-    sprintf(D_8036B9A8 + 0x80, D_8020EF88, sp34);
+    sprintf(D_8036B9A8 + 0x80, "****%s*", sp34);
     if (arg1) {
         sp54 = &D_8020C070[25];
         D_8020C070[25].unk0 = sp6C;
-        func_8029A7E4(D_8020EF90, D_8036EA7B);
+        func_8029A7E4("getting icon %d\n", D_8036EA7B);
         sp54->unk14[0] = D_8036EA7B + 0x22;
         sp58 = &D_802F49F4[sp54->unk14[0]];
         sp54->unk1A = func_80272C5C(sp58->unk6, NULL, sp58->unk4, sp58->unk2C, sp58->unk2D | 4, 1.0f);
@@ -303,6 +297,9 @@ u8 func_801EEDB4(u8 arg0, u8 arg1, u8 arg2) {
     }
     return D_8036EA7A;
 }
+
+/* Nothing references these; the original .rodata has 12 zero bytes here. */
+const char D_8020EFA4[12] = { 0 };
 
 s8 func_801EF1E0(void) {
     UnkStruct_8020D810 *spC;
@@ -407,7 +404,7 @@ void func_801EF4AC(void) {
             func_80260650(D_80367738, 0xBD, 0);
         }
         if (D_80358060 < 80) {
-            D_802159E0 = (80 - D_80358060) * D_8020EFB0 / 60.0 + 400.0;
+            D_802159E0 = (80 - D_80358060) * 7600.0 / 60.0 + 400.0;
         }
         if (D_80358060 == 75 && D_802159DC == 2) {
             func_80260650(D_80367738, 0xB8, 0);

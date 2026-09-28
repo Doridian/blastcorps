@@ -93,8 +93,8 @@ def main():
     src = c_path.read_text()
 
     externs = {m.group(2): m.group(1) for m in re.finditer(
-        r"^extern (?:const )?(char|f32|f64) (D_[0-9A-F]{8})(?:\[\])?;$", src, re.M)}
-    body = re.sub(r"^extern [^;]*;\n", "", src, flags=re.M)
+        r"^extern (?:const )?(char|f32|f64) (D_[0-9A-F]{8})(?:\[\])?;(?:\s*/\*.*\*/)?$", src, re.M)}
+    body = re.sub(r"^extern [^;]*;[^\n]*\n", "", src, flags=re.M)
     uses = Counter(re.findall(r"\b(D_[0-9A-F]{8})\b", body))
     done = []
     for sym, ctype in externs.items():
@@ -106,7 +106,7 @@ def main():
         if uses[sym] > 1:
             print(f"{sym}: used {uses[sym]} times, left as extern", file=sys.stderr)
             continue
-        src = re.sub(rf"^extern [^;]*\b{sym}\b[^;]*;\n", "", src, flags=re.M)
+        src = re.sub(rf"^extern [^;]*\b{sym}\b[^;]*;[^\n]*\n", "", src, flags=re.M)
         src = re.sub(rf"\b{sym}\b", lambda m: lit, src)
         done.append(sym)
     c_path.write_text(src)

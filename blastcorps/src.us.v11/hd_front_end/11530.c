@@ -99,61 +99,6 @@ extern u16 D_8020E350[];
 extern u16 D_8020E39C[];
 extern Lights1 D_8020E3A8[];
 extern f32 D_8020E3D8;
-extern char D_802102DC[]; /* "selected level %d\n" */
-extern char D_802102F0[]; /* "angd %f\n" */
-extern char D_802102FC[]; /* "dmm %f\n" */
-extern char D_80210304[]; /* "mmm %f\n" */
-extern f32 D_8021030C; /* 20000.0f */
-extern f32 D_80210310; /* 0.915f */
-extern f32 D_80210314; /* 0.009f */
-extern f32 D_80210318; /* 26100.0f */
-extern f32 D_8021031C; /* 6250.0f */
-extern f64 D_80210320; /* 925.0 */
-extern f32 D_80210328; /* 925.0f */
-extern f64 D_80210330; /* 300.0 */
-extern f32 D_80210338; /* 925.0f */
-extern f32 D_8021033C; /* 10000.0f */
-extern f32 D_80210340; /* 10000.0f */
-extern f64 D_80210348; /* 0.01 */
-extern f64 D_80210350; /* 0.01 */
-extern f64 D_80210358; /* 0.001 */
-extern f64 D_80210360; /* 0.001 */
-extern f64 D_80210430; /* 250.0 */
-extern f64 D_80210438; /* 250.0 */
-extern f64 D_80210440; /* 65535.0 */
-extern f64 D_80210448; /* 11.377777 */
-extern f64 D_80210450; /* 90.0 */
-extern f64 D_80210458; /* 180.0 */
-extern f64 D_80210460; /* 180.0 */
-extern f64 D_80210468; /* -180.0 */
-extern f64 D_80210470; /* 180.0 */
-extern f64 D_80210478; /* M_PI / 180 */
-extern f64 D_80210480; /* 0.4 */
-extern f64 D_80210488; /* 510.0 */
-extern f64 D_80210490; /* 3.141592653 */
-extern f32 D_80210498;
-extern f64 D_802104A0; /* 0.1 */
-extern f32 D_802104A8; /* 0.1f */
-extern f64 D_802104B0; /* 0.1 */
-extern f32 D_802104B8; /* 0.1f */
-extern f64 D_802104C0; /* 90.0 */
-extern f64 D_802104C8; /* -90.0 */
-extern f64 D_802104D0; /* 90.0 */
-extern f64 D_802104D8; /* 180.0 */
-extern f64 D_802104E0; /* -180.0 */
-extern f64 D_802104E8; /* 180.0 */
-extern f64 D_802104F0; /* 180.0 */
-extern f64 D_802104F8; /* 360.0 */
-extern f64 D_80210500; /* -180.0 */
-extern f64 D_80210508; /* 360.0 */
-extern f64 D_80210510; /* M_PI / 180 */
-extern f64 D_80210518; /* M_PI / 180 */
-extern f64 D_80210520; /* M_PI / 180 */
-extern f64 D_80210528; /* M_PI / 180 */
-extern f64 D_80210530; /* M_PI / 180 */
-extern f64 D_80210538; /* 925.0 */
-extern f64 D_80210540; /* 231250.0 */
-extern f64 D_80210548; /* 231250.0 */
 extern u8 D_802159F0[];
 extern u16 *D_80215A70[];
 extern s32 D_80217B6C;
@@ -267,7 +212,7 @@ void func_801F8530(s32 arg0) {
     D_8021A8F8 = func_801F2E20();
     for (sp38 = 0; sp38 < 2; sp38++) {
         sp3C = D_803156F8 + sp38 * 0x21498;
-        guPerspective((Mtx *)(sp3C + 0x80), &D_8035807C, 45.0f, 4.0f / 3.0f, 100.0f, D_8021030C, 1.0f);
+        guPerspective((Mtx *)(sp3C + 0x80), &D_8035807C, 45.0f, 4.0f / 3.0f, 100.0f, 2e+04f, 1.0f);
         guTranslate((Mtx *)(sp3C + 0x1280), 0.0f, -50.0f, 0.0f);
     }
     D_80217B6C = 6;
@@ -282,9 +227,9 @@ void func_801F8530(s32 arg0) {
     D_8021AB28 = 0.0f;
     D_8021AB38 = 0;
     D_8021AB2C = 0;
-    D_8021AB40 = D_80210310;
-    D_8021AB44 = D_80210314;
-    D_8021AB48 = D_80210318;
+    D_8021AB40 = 0.915f;
+    D_8021AB44 = 0.009f;
+    D_8021AB48 = 2.61e+04f;
     func_801FDE50();
     D_8021AB20 = func_80272C5C(D_8020E39C, 0, 4, 1, 1, 1.0f);
     for (sp38 = 0; sp38 < 0x3C; sp38++) {
@@ -303,7 +248,7 @@ void func_801F885C(s32 arg0) {
     D_8021A905 = arg0;
     if (sp1F != D_80217B6C) {
         D_8021A924 = 0;
-        D_8021A918 = D_8021031C;
+        D_8021A918 = 6.25e+03f;
         if (D_80217B6C != 6) {
             if (D_80217B6C == 3) {
                 func_80261FB0(0x13);
@@ -322,6 +267,126 @@ void func_801F885C(s32 arg0) {
     D_80217B6C = sp1F;
     D_8021AB34 = &D_802E8F94[D_8021A905];
 }
+
+const char D_8020FF80[] = "SIMIAN ACRES";
+
+const char D_8020FF90[] = "ANGEL CITY";
+
+const char D_8020FF9C[] = "OUTLAND FARM";
+
+const char D_8020FFAC[] = "BLACKRIDGE WORKS";
+
+const char D_8020FFC0[] = "GLORY CROSSING";
+
+const char D_8020FFD0[] = "SHUTTLE GULLY";
+
+const char D_8020FFE0[] = "SALVAGE WHARF";
+
+const char D_8020FFF0[] = "SKYFALL";
+
+const char D_8020FFF8[] = "TWILIGHT FOUNDRY";
+
+const char D_8021000C[] = "CRYSTAL RIFT";
+
+const char D_8021001C[] = "ARGENT TOWERS";
+
+const char D_8021002C[] = "SKERRIES";
+
+const char D_80210038[] = "DIAMOND SANDS";
+
+const char D_80210048[] = "EBONY COAST";
+
+const char D_80210054[] = "OYSTER HARBOR";
+
+const char D_80210064[] = "CARRICK POINT";
+
+const char D_80210074[] = "HAVOC DISTRICT";
+
+const char D_80210084[] = "IRONSTONE MINE";
+
+const char D_80210094[] = "BEETON TRACKS";
+
+const char D_802100A4[] = "J-BOMB";
+
+const char D_802100AC[] = "JADE PLATEAU";
+
+const char D_802100BC[] = "MARINE QUARTER";
+
+const char D_802100CC[] = "COOTER CREEK";
+
+const char D_802100DC[] = "GIBBON'S GATE";
+
+const char D_802100EC[] = "BABOON CATACOMB";
+
+const char D_802100FC[] = "SLEEK STREETS";
+
+const char D_8021010C[] = "OBSIDIAN MILE";
+
+const char D_8021011C[] = "CORVINE BLUFF";
+
+const char D_8021012C[] = "SIDESWIPE";
+
+const char D_80210138[] = "ECHO MARCHES";
+
+const char D_80210148[] = "KIPLING PLANT";
+
+const char D_80210158[] = "FALCHION FIELD";
+
+const char D_80210168[] = "MORGAN HALL";
+
+const char D_80210174[] = "TEMPEST CITY";
+
+const char D_80210184[] = "ORION PLAZA";
+
+const char D_80210190[] = "GLANDER'S RANCH";
+
+const char D_802101A0[] = "DAGGER PASS";
+
+const char D_802101AC[] = "GEODE SQUARE";
+
+const char D_802101BC[] = "SHUTTLE ISLAND";
+
+const char D_802101CC[] = "MICA PARK";
+
+const char D_802101D8[] = "MOON";
+
+const char D_802101E0[] = "COBALT QUARRY";
+
+const char D_802101F0[] = "MORAINE CHASE";
+
+const char D_80210200[] = "MERCURY";
+
+const char D_80210208[] = "VENUS";
+
+const char D_80210210[] = "MARS";
+
+const char D_80210218[] = "NEPTUNE";
+
+const char D_80210220[] = "CMO INTRO";
+
+const char D_8021022C[] = "SILVER JUNCTION";
+
+const char D_8021023C[] = "END SEQUENCE";
+
+const char D_8021024C[] = "SHUTTLE CLEAR";
+
+const char D_8021025C[] = "DARK HEARTLAND";
+
+const char D_8021026C[] = "MAGMA PEAK";
+
+const char D_80210278[] = "THUNDERFIST";
+
+const char D_80210284[] = "SALINE WATCH";
+
+const char D_80210294[] = "BACKLASH";
+
+const char D_802102A0[] = "BISON RIDGE";
+
+const char D_802102AC[] = "EMBER HAMLET";
+
+const char D_802102BC[] = "CROMLECH COURT";
+
+const char D_802102CC[] = "LIZARD ISLAND";
 
 void func_801F8980(void) {
     s16 sp46;
@@ -350,7 +415,7 @@ void func_801F8980(void) {
             func_80260A10();
             func_80260650(D_80367738, 0x1E, 0);
             D_8021A924 = 2;
-            func_8029A7E4(D_802102DC, D_8021A905);
+            func_8029A7E4("selected level %d\n", D_8021A905);
             D_802E8BDC = D_8021A905;
             func_801ECB18();
             D_8021AB2E = 0;
@@ -390,9 +455,9 @@ void func_801F8980(void) {
                 D_8021AB21 += 10;
             }
             D_8021A918 -= 200.0f;
-            if (D_8021A918 <= D_80210320) {
+            if (D_8021A918 <= 925.0) {
                 D_8021A924 = 1;
-                D_8021A918 = D_80210328;
+                D_8021A918 = 925.0f;
                 D_8021AB24 = D_803156C4;
             }
             break;
@@ -408,7 +473,7 @@ void func_801F8980(void) {
             } else {
                 D_8021AB2C -= 0x40;
             }
-            if (D_8021A918 <= D_80210330) {
+            if (D_8021A918 <= 300.0) {
                 D_80364A98 = func_80299FE8(D_802E8BDC);
             }
             break;
@@ -428,13 +493,13 @@ void func_801F8980(void) {
     }
     sp46 = D_8021A90C;
     sp44 = D_8021A910;
-    func_801FD484(&D_8021A920, &D_8021A91C, &D_8021A90C, &D_8021A910, &D_8021A914, D_80210338);
+    func_801FD484(&D_8021A920, &D_8021A91C, &D_8021A90C, &D_8021A910, &D_8021A914, 925.0f);
     D_8021A934 = D_8021A90C - sp46;
     D_8021A938 = D_8021A910 - sp44;
     D_8021AB60 = D_8020D810[D_8021A905].unk14;
     D_8021AB64 = D_8020D810[D_8021A905].unk10;
-    D_8021A934 = func_801FD6B8(D_8021AB60, D_8021A91C, 180.0f) * ((sp3C >> 2 < 500) ? 500 : sp3C >> 2) / D_8021033C;
-    D_8021A938 = func_801FD6B8(D_8021AB64, D_8021A920, 180.0f) * ((sp3C >> 2 < 500) ? 500 : sp3C >> 2) / D_80210340;
+    D_8021A934 = func_801FD6B8(D_8021AB60, D_8021A91C, 180.0f) * ((sp3C >> 2 < 500) ? 500 : sp3C >> 2) / 1e+04f;
+    D_8021A938 = func_801FD6B8(D_8021AB64, D_8021A920, 180.0f) * ((sp3C >> 2 < 500) ? 500 : sp3C >> 2) / 1e+04f;
     D_8021A91C -= D_8021A934;
     D_8021A920 -= D_8021A938;
     D_8021AB68 = func_801F9258((Gfx *)(sp38 + 0x48B0), sp38, &D_80358078);
@@ -563,22 +628,22 @@ Gfx *func_801F9B84(Gfx *arg0, u8 *arg1, s32 *arg2) {
     gSPEndDisplayList(gfx++);
     if (D_802FA264 != 0) {
         if (D_80370C28 & 0x800) {
-            D_8021AB40 += D_80210348;
+            D_8021AB40 += 0.01;
         }
         if (D_80370C28 & 0x400) {
-            D_8021AB40 -= D_80210350;
+            D_8021AB40 -= 0.01;
         }
         if (D_80370C28 & 0xC00) {
-            func_8029A7E4(D_802102F0, D_8021AB40);
+            func_8029A7E4("angd %f\n", D_8021AB40);
         }
         if (D_80370C28 & 0x100) {
-            D_8021AB44 += D_80210358;
+            D_8021AB44 += 0.001;
         }
         if (D_80370C28 & 0x200) {
-            D_8021AB44 -= D_80210360;
+            D_8021AB44 -= 0.001;
         }
         if (D_80370C28 & 0x300) {
-            func_8029A7E4(D_802102FC, D_8021AB44);
+            func_8029A7E4("dmm %f\n", D_8021AB44);
         }
         if (D_80370C28 & 0x10) {
             D_8021AB48 += 100.0f;
@@ -587,7 +652,7 @@ Gfx *func_801F9B84(Gfx *arg0, u8 *arg1, s32 *arg2) {
             D_8021AB48 -= 100.0f;
         }
         if (D_80370C28 & 0x30) {
-            func_8029A7E4(D_80210304, D_8021AB48);
+            func_8029A7E4("mmm %f\n", D_8021AB48);
         }
     }
     *arg2 = gfx - arg0;
@@ -711,25 +776,25 @@ Gfx *func_801FC5B8(u8 *arg0, Gfx *arg1, u8 arg2, u8 arg3) {
             }
             D_8021A8E8 = 0.0f;
             D_8021A8E0 = ((D_8021A8C4 * D_8021A8C8) + (D_8021A8CC * D_8021A8D0) + (D_8021A8D4 * D_8021A8D8)) /
-                         D_80210430 / D_80210438;
-            D_8021A8E4 = D_80210450 - (((D_8021A8E0 >= 0.0f) ? 1 : -1) *
-                                       func_802AD7D4(((D_8021A8E0 > 0.0f) ? D_8021A8E0 : -D_8021A8E0) * D_80210440)) /
-                                          16.0 / D_80210448;
-            if (D_8021A8E4 >= D_80210458) {
-                D_8021A8E4 -= D_80210460;
+                         250.0 / 250.0;
+            D_8021A8E4 = 90.0 - (((D_8021A8E0 >= 0.0f) ? 1 : -1) *
+                                       func_802AD7D4(((D_8021A8E0 > 0.0f) ? D_8021A8E0 : -D_8021A8E0) * 65535.0)) /
+                                          16.0 / 11.377777;
+            if (D_8021A8E4 >= 180.0) {
+                D_8021A8E4 -= 180.0;
             }
-            if (D_8021A8E4 < D_80210468) {
-                D_8021A8E4 += D_80210470;
+            if (D_8021A8E4 < -180.0) {
+                D_8021A8E4 += 180.0;
             }
-            D_8021A8E4 *= D_80210478;
+            D_8021A8E4 *= 0.017453292519943295;
             break;
         case 2:
-            D_8021A8E8 += D_80210480 / D_8021A8C0;
+            D_8021A8E8 += 0.4 / D_8021A8C0;
             if (D_8021A8E8 > 1.0) {
                 D_8021A926 = 0;
                 D_8021A8E8 = 1.0f;
             }
-            D_8021AB2C = (((0.5 - D_8021A8E8) > 0.0) ? (0.5 - D_8021A8E8) : -(0.5 - D_8021A8E8)) * D_80210488;
+            D_8021AB2C = (((0.5 - D_8021A8E8) > 0.0) ? (0.5 - D_8021A8E8) : -(0.5 - D_8021A8E8)) * 510.0;
             if (D_8021A8E8 >= 0.5) {
                 D_8021A908 = D_8021A905;
             }
@@ -737,7 +802,7 @@ Gfx *func_801FC5B8(u8 *arg0, Gfx *arg1, u8 arg2, u8 arg3) {
     }
     spAC = func_802574F0((1.0 - D_8021A8E8) * D_8021A8E4) / func_802574F0(D_8021A8E4);
     spA8 = func_802574F0(D_8021A8E8 * D_8021A8E4) / func_802574F0(D_8021A8E4);
-    D_8021A8EC = func_802574F0(D_8021A8E8 * D_80210490) * D_8021A8C0 / 64.0 + 1.0;
+    D_8021A8EC = func_802574F0(D_8021A8E8 * 3.141592653) * D_8021A8C0 / 64.0 + 1.0;
     D_8021AB4C = ((spAC * D_8021A8C4) + (spA8 * D_8021A8C8)) * D_8021A8EC;
     D_8021AB50 = ((spAC * D_8021A8CC) + (spA8 * D_8021A8D0)) * D_8021A8EC;
     D_8021AB54 = ((spAC * D_8021A8D4) + (spA8 * D_8021A8D8)) * D_8021A8EC;
@@ -763,7 +828,7 @@ void func_801FCE74(Vtx *arg0, u8 arg1, f32 arg2, f32 arg3, u8 arg4, u8 arg5, f32
     sp3C = &D_8020D810[arg1];
     sp38 = sp3C->unk10 + arg2;
     sp34 = sp3C->unk14 + arg3;
-    func_801FD484(&sp38, &sp34, &sp30, &sp2C, &sp28, D_80210498);
+    func_801FD484(&sp38, &sp34, &sp30, &sp2C, &sp28, 248.75f);
     func_801FCF38(arg0, sp30, sp2C, sp28, arg4, arg5, arg6, arg7);
 }
 
@@ -797,15 +862,15 @@ void func_801FCF38(Vtx *arg0, f32 arg1, f32 arg2, f32 arg3, u8 arg4, u8 arg5, f3
     sp8C = -((arg1 * arg1) + (arg3 * arg3));
     sp88 = arg2 * arg3;
     sp84 = sqrtf((sp9C * sp9C) + (sp98 * sp98) + (sp94 * sp94)) / 50.0 * 2.0 / arg6;
-    if (sp84 < D_802104A0) {
-        sp84 = D_802104A8;
+    if (sp84 < 0.1) {
+        sp84 = 0.1f;
     }
     sp9C /= sp84;
     sp98 /= sp84;
     sp94 /= sp84;
     sp80 = sqrtf((sp90 * sp90) + (sp8C * sp8C) + (sp88 * sp88)) / 50.0 * 2.0 / arg6;
-    if (sp80 < D_802104B0) {
-        sp80 = D_802104B8;
+    if (sp80 < 0.1) {
+        sp80 = 0.1f;
     }
     sp90 /= sp80;
     sp8C /= sp80;
@@ -850,22 +915,22 @@ void func_801FCF38(Vtx *arg0, f32 arg1, f32 arg2, f32 arg3, u8 arg4, u8 arg5, f3
 }
 
 void func_801FD484(f32 *arg0, f32 *arg1, f32 *arg2, f32 *arg3, f32 *arg4, f32 arg5) {
-    if ((*arg0 >= D_802104C0) || (*arg0 < D_802104C8)) {
-        if (*arg0 >= D_802104D0) {
-            *arg0 = D_802104D8 - *arg0;
+    if ((*arg0 >= 90.0) || (*arg0 < -90.0)) {
+        if (*arg0 >= 90.0) {
+            *arg0 = 180.0 - *arg0;
         } else {
-            *arg0 = D_802104E0 - *arg0;
+            *arg0 = -180.0 - *arg0;
         }
-        *arg1 = *arg1 + D_802104E8;
+        *arg1 = *arg1 + 180.0;
     }
-    if (*arg1 >= D_802104F0) {
-        *arg1 = *arg1 - D_802104F8;
-    } else if (*arg1 < D_80210500) {
-        *arg1 = *arg1 + D_80210508;
+    if (*arg1 >= 180.0) {
+        *arg1 = *arg1 - 360.0;
+    } else if (*arg1 < -180.0) {
+        *arg1 = *arg1 + 360.0;
     }
-    *arg2 = func_80257514(-*arg1 * D_80210510) * func_80257514(*arg0 * D_80210518) * arg5;
-    *arg3 = func_802574F0(*arg0 * D_80210520) * arg5;
-    *arg4 = func_802574F0(-*arg1 * D_80210528) * func_80257514(*arg0 * D_80210530) * arg5;
+    *arg2 = func_80257514(-*arg1 * 0.017453292519943295) * func_80257514(*arg0 * 0.017453292519943295) * arg5;
+    *arg3 = func_802574F0(*arg0 * 0.017453292519943295) * arg5;
+    *arg4 = func_802574F0(-*arg1 * 0.017453292519943295) * func_80257514(*arg0 * 0.017453292519943295) * arg5;
 }
 
 f32 func_801FD6B8(f32 arg0, f32 arg1, f32 arg2) {
@@ -911,7 +976,7 @@ void func_801FD748(void) {
             sp6C = sp74 * 4 + sp70;
             sp68 = sp38[sp6C].v.ob[0] = sp34[sp6C].v.ob[0] - ((D_80217B6C == 3) ? D_8021A934 * 40.0f : 0.0f);
             sp64 = sp38[sp6C].v.ob[1] = sp34[sp6C].v.ob[1] + ((D_80217B6C == 3) ? D_8021A938 * 40.0f : 0.0f);
-            sp60 = sp38[sp6C].v.ob[2] = sp34[sp6C].v.ob[2] - D_802159F0[sp74] * D_8021A918 / D_80210538;
+            sp60 = sp38[sp6C].v.ob[2] = sp34[sp6C].v.ob[2] - D_802159F0[sp74] * D_8021A918 / 925.0;
             if (((sp68 > 0) ? sp68 : -sp68) > 4000) {
                 sp54 = sp68;
             }
@@ -946,7 +1011,7 @@ void func_801FD748(void) {
                 }
             } while (++sp70 < 4);
         }
-        if ((sp44 != 0) || (sp60 < 0) || ((sp4C < D_80210540 / D_8021A918) && (sp48 < D_80210548 / D_8021A918))) {
+        if ((sp44 != 0) || (sp60 < 0) || ((sp4C < 231250.0 / D_8021A918) && (sp48 < 231250.0 / D_8021A918))) {
             func_801FDCA4(sp38, sp74, 25000);
         }
     } while (++sp74 < 0x80);

@@ -92,7 +92,13 @@ change size (a "shiftable" build), which is how we test it.
 - [ ] `.data` ownership for the other C files. Start/end of a C file's
       `.data` block is less certain than `.rodata` (see below), so check the
       ends against the bytes before switching one.
-- [ ] `hd_code` for us.v10/jp/eu and `hd_front_end`: same thing. Needs each
+- [x] `hd_front_end` us.v11: split the same way (`.rodata` from
+      `0x8020E440`, then the 0x800-byte DMEM image of its microcode at
+      `0x80210690`). pfsHandler.c / bestTimes.c are split at `0x10850`
+      (`--split`), with a data-only menu object between them (`.data`
+      `0x8020C070`, `.rodata` `0x8020F480`). Every C file owns its `.rodata`
+      except 9570 (an unexplained zero double at `0x8020F088`).
+- [ ] `hd_code` for us.v10/jp/eu and `hd_front_end` us.v10/jp/eu: same thing. Needs each
       version's `.rodata` start and microcode-data offset for
       `regen_code_yaml.sh` (the last `.data` is reverb.c's `L_INC`,
       `{0x10, 0x10, 0x20}`, the microcode data three DMEM images of

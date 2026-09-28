@@ -75,13 +75,6 @@ extern s32 D_8021AB7C;
 extern s32 D_80367738;
 extern s16 D_8036BB1C;
 extern OSMesgQueue D_80219F50;
-extern char D_80210550[]; /* "\n\a --- ASSERTION FAULT - %s - %s, line %d\n\n" */
-extern char D_8021057C[]; /* "MQ_IS_EMPTY(&pakToGameMessageQ)" */
-extern char D_8021059C[]; /* "back_loop.c" */
-extern char D_802105A8[]; /* "yoshiSelection in back_loop is %d %d\n" */
-extern char D_802105D0[]; /* "backdrop illegal yoshi selection\n" */
-extern char D_802105F4[]; /* "%d" */
-extern char D_802105F8[]; /* "illegal yoshi wait game mode %d\n" */
 extern u8 D_8021AB70;
 extern u16 D_8036BB16;
 extern s16 D_8036BB18;
@@ -131,7 +124,7 @@ void func_801FE990(void) {
         if (D_8036BB1C == 2) {
             osRecvMesg(&D_80219F50, &spD4, OS_MESG_BLOCK);
             if (!MQ_IS_EMPTY(&D_80219F50)) {
-                func_8029A7E4(D_80210550, D_8021057C, D_8021059C, 62);
+                func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "MQ_IS_EMPTY(&pakToGameMessageQ)", "back_loop.c", 62);
             }
             D_8021AB70 = !spD4;
             if (D_80364A90 == 0x10000000) {
@@ -147,7 +140,7 @@ void func_801FE990(void) {
         }
     }
     if (D_8036BB16 != 0) {
-        func_8029A7E4(D_802105A8, D_8036BB16, func_8026F92C(D_80364A90));
+        func_8029A7E4("yoshiSelection in back_loop is %d %d\n", D_8036BB16, func_8026F92C(D_80364A90));
         switch (D_80364A90) {
             case 0x10000:
                 if (D_8036BB16 == 0xFFFF) {
@@ -257,7 +250,7 @@ void func_801FE990(void) {
                 }
                 break;
             default:
-                func_8029A7E4(D_802105D0);
+                func_8029A7E4("backdrop illegal yoshi selection\n");
                 break;
         }
         D_8021AB76 = D_8036BB16;
@@ -357,7 +350,7 @@ void func_801FE990(void) {
         s32 sp70;
 
         sp74 = 0x118, sp70 = 0x8C;
-        sprintf(D_8021AB72, D_802105F4, D_80364A71);
+        sprintf(D_8021AB72, "%d", D_80364A71);
         func_80259CCC(&D_803156F8[D_8035805C * 0x21498], D_8021AB72, 0, 1, 0, sp74, sp70, 0x1A, 0x16, 1, 0, 0, 0,
                       D_8036BB20);
         func_80259DC8(&D_803156F8[D_8035805C * 0x21498], D_8021AB72, 0, 1, 0, sp74 + 2, sp70 + 2, 0x12, 0x12, 1, 0xFF,
@@ -479,7 +472,7 @@ void func_801FE990(void) {
                 }
                 break;
             default:
-                func_8029A7E4(D_802105F8, func_8026F92C(D_80364A90));
+                func_8029A7E4("illegal yoshi wait game mode %d\n", func_8026F92C(D_80364A90));
                 break;
         }
     }

@@ -29,6 +29,7 @@ segments:
     - [0x196C0, c, hd_front_end/196C0]
     - [0x1A210, c, hd_front_end/1A210]
     - [0x1AE50, c, hd_front_end/1AE50]
+    - [0x1B0D0, asm, hd_front_end/1B0D0] # handwritten
     - [0x1B700, c, hd_front_end/1B700]
     - [0x1B850, c, hd_front_end/1B850]
     - [0x1B8C0, c, hd_front_end/1B8C0]

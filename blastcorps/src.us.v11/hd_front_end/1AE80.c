@@ -15,7 +15,6 @@ typedef struct {
 void func_801F8354(u8);
 void func_8029A7E4(char *, ...);
 
-extern char D_80210670[];
 extern OSMesgQueue D_80219EF8;
 extern OSMesgQueue D_80219F50;
 extern u8 D_802E8C44[];
@@ -31,7 +30,7 @@ s32 func_80201E80(void) {
     s32 ret;
 
     ret = 0;
-    func_8029A7E4(D_80210670);
+    func_8029A7E4("restoring from EE memory\n");
     for (i = 0; i < 60 && ret == 0; i++) {
         if (!(i & 1)) {
             osSendMesg(&D_80219EF8, (OSMesg)((i << 8) | 0xA | (D_80364AE8 << 16) | 0x01000000), OS_MESG_BLOCK);
@@ -54,14 +53,3 @@ s32 func_80201E80(void) {
     return ret;
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1AE80/func_80202100.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1AE80/func_802021FC.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1AE80/func_80202270.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1AE80/func_802022EC.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1AE80/func_80202380.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1AE80/func_802025D0.s")

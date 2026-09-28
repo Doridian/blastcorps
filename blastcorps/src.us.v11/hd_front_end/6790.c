@@ -33,14 +33,6 @@ extern u8 *D_802084B4;
 extern u16 *D_802084B8;
 extern u16 *D_802084BC;
 extern s8 D_802084C0;
-extern f64 D_8020ED68;
-extern f64 D_8020ED70;
-extern f64 D_8020ED78;
-extern f32 D_8020ED80;
-extern f64 D_8020ED88;
-extern f64 D_8020ED90;
-extern f64 D_8020ED98;
-extern f64 D_8020EDA0;
 extern s32 D_80215960;
 extern s32 D_80215964;
 extern f32 D_80215968;
@@ -71,6 +63,10 @@ void func_801ED790(void) {
     D_80215978 = D_80364AF0[D_80364AE8].unkC;
 }
 
+const char D_8020ED40[] = "CONGRATULATIONS";
+
+const char D_8020ED50[] = "ON YOUR PROMOTION!";
+
 Gfx *func_801ED800(Gfx *arg0, UnkStruct_803156F8 *arg1, u8 arg2, s32 *arg3) {
     Gfx *sp74;
     s32 sp70;
@@ -85,9 +81,9 @@ Gfx *func_801ED800(Gfx *arg0, UnkStruct_803156F8 *arg1, u8 arg2, s32 *arg3) {
     }
     switch (D_80215960) {
         case 0:
-            D_8021596C = sins(D_80358060 * 0x4000 * 60 / 60 / 90) * D_8020ED68 / D_8020ED70;
-            if (D_8021596C >= D_8020ED78) {
-                D_8021596C = D_8020ED80;
+            D_8021596C = sins(D_80358060 * 0x4000 * 60 / 60 / 90) * 2.85 / 32767.0;
+            if (D_8021596C >= 2.84) {
+                D_8021596C = 2.84f;
                 D_80215960 = 1;
                 D_80215970 = 145;
             }
@@ -98,7 +94,7 @@ Gfx *func_801ED800(Gfx *arg0, UnkStruct_803156F8 *arg1, u8 arg2, s32 *arg3) {
             }
             break;
         case 2:
-            D_8021596C *= D_8020ED88;
+            D_8021596C *= 0.9;
             break;
         case 3:
             break;
@@ -187,8 +183,8 @@ Gfx *func_801ED800(Gfx *arg0, UnkStruct_803156F8 *arg1, u8 arg2, s32 *arg3) {
                       D_80215976, 0xFF, D_802159B0, 0, D_80215976);
     }
     D_80215968 += 12.0 - D_8021596C * 2.0f;
-    if (D_80215968 > D_8020ED90) {
-        D_80215968 -= D_8020ED98;
+    if (D_80215968 > 360.0) {
+        D_80215968 -= 360.0;
     }
     if (D_80358060 < 2) {
         guPerspective(&arg1->unk1240, &D_8035807C, 45.0f, 4.0f / 3.0f, 40.0f, 4000.0f, 1.0f);
@@ -198,7 +194,7 @@ Gfx *func_801ED800(Gfx *arg0, UnkStruct_803156F8 *arg1, u8 arg2, s32 *arg3) {
     }
     guScale(&arg1->unk1300, D_8021596C / 8.0f, D_8021596C / 8.0f, D_8021596C / 8.0f);
     guRotate(&D_802182D0[arg2], D_80215968, 1.0f, 1.0f, 1.0f);
-    if (D_8021596C > D_8020EDA0) {
+    if (D_8021596C > 0.2) {
         sp74 = func_801F4FBC(arg1, sp74);
     }
     *arg3 += sp74 - arg0;

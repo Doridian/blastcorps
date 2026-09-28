@@ -12,7 +12,9 @@ under asm/nonmatchings) wherever both ends are 16-byte aligned, the alignment an
 IDO object gets.  Code that starts or ends elsewhere sits between data islands,
 is handwritten, and stays `asm`.  So does code that saves $ra with sd and never
 with sw: IDO never does that, and Rare's handwritten engine code (about a
-third of hd_code) always does.
+third of hd_code) always does.  A run of such functions inside otherwise-IDO
+code is split out as its own asm subsegment, as are libultra's handwritten
+functions (HANDWRITTEN_LIBULTRA).
 
 With --rodata, .data and .rodata are split per object too (see
 split_data below); without it they stay one bin.  --tail gives the regions
@@ -23,7 +25,7 @@ microcode data).  A data subsegment the existing config gives to a C file
 Usage:
   gen_code_yaml.py <module> <version> --vram 0x... --data <off> --end <off>
                    [--bin off:len:note] ... [--c] [--symbols <path>]
-                   [--rodata <off> [--tail off:len:note] ...]
+                   [--rodata <off> [--tail off:len:note] ...] [--split <off>] ...
 """
 import argparse
 import bisect
@@ -215,6 +217,7 @@ def split_data(names, refs, pairs, blob, vram, data, rodata, tail, text_end):
 
     # .rodata
     lo, hi = vram + rodata, vram + tail
+    ro_only = []
     ro_ptrs = [(owner(dblocks, a), w) for a, w in ptrs if lo <= w < hi and owner(dblocks, a) is not None]
     rblocks = layout(lo, hi, code_refs, pair_refs + ro_ptrs)
     for k, (start, i, last, users) in enumerate(rblocks):
@@ -229,8 +232,22 @@ def split_data(names, refs, pairs, blob, vram, data, rodata, tail, text_end):
                 e = (e + 15) & ~15
                 if e < start and any(blob[e - vram:start - vram]):
                     out.append((e - vram, "rodata", f"{e - vram:X}"))
+                    ro_only.append((e, start))
         out.append((start - vram, "rodata", names[i]))
-    return out
+
+    # A data-only object's .rodata holds the strings its .data points to, so
+    # the .data that points into it is that object's too: from the first
+    # such word (rounded down to 16) to the last, whoever else uses it.
+    for e, start in ro_only:
+        at = [a for a, w in ptrs if e <= w < start]
+        if not at:
+            continue
+        d, last = min(at) & ~15, max(at)
+        out = [x for x in out if not (x[1] == "data" and d <= x[0] + vram <= last
+                                      and x[2] == f"{x[0]:X}")]
+        if not any(x[1] == "data" and x[0] + vram == d for x in out):
+            out.append((d - vram, "data", f"{d - vram:X}"))
+    return sorted(out, key=lambda x: (x[1] == "rodata", x[0]))
 
 
 LUI_RE = re.compile(r"^lui\s+\$(\w+), (0x[0-9A-Fa-f]+)$")
@@ -302,6 +319,8 @@ def main():
     ap.add_argument("--symbols", help="symbol_addrs file to use")
     ap.add_argument("--rodata", type=lambda s: int(s, 16),
                     help="offset where .rodata starts; splits .data/.rodata per object")
+    ap.add_argument("--split", action="append", default=[], type=lambda s: int(s, 16),
+                    help="an object boundary in .text that splat misses")
     ap.add_argument("--tail", action="append", default=[], metavar="OFF:LEN:NOTE",
                     help="region after .rodata that belongs to no object")
     args = ap.parse_args()
@@ -343,13 +362,18 @@ def main():
                     funcs.setdefault(off, m.group(1))
     hand_lib = {o for o, n in funcs.items() if n in HANDWRITTEN_LIBULTRA}
 
-    def handwritten(start, end):
-        """True if [start, end) is Rare's handwritten asm.  IDO saves $ra with
-        sw; that code saves it (and everything else it touches) with sd."""
+    def ra_saves(start, end):
+        """How often [start, end) saves $ra with sd and with sw."""
         sd = sw = 0
         for w in words[start // 4:end // 4]:
             sd += (w & 0xFFFF0000) == 0xFFBF0000  # sd $ra, x($sp)
             sw += (w & 0xFFFF0000) == 0xAFBF0000  # sw $ra, x($sp)
+        return sd, sw
+
+    def handwritten(start, end):
+        """True if [start, end) is Rare's handwritten asm.  IDO saves $ra with
+        sw; that code saves it (and everything else it touches) with sd."""
+        sd, sw = ra_saves(start, end)
         if sd > 0 and sw == 0:
             return True
         inside = [o for o in funcs if start <= o < end]
@@ -402,6 +426,7 @@ def main():
     for s in sorted(crossed):
         print(f"dropping boundary 0x{s:X}: a branch crosses it", file=sys.stderr)
     splits -= crossed
+    splits |= set(args.split)
 
     # Split each run of handwritten libultra out of the C around it: at its
     # first function, and at the next function or split after it that isn't
@@ -425,6 +450,37 @@ def main():
         nxt = next((k for k in known if k > off and k not in hand_lib), None)
         if nxt is not None and nxt % 16 == 0 and nxt < args.data:
             splits.add(nxt)
+
+    # Likewise split each run of Rare's handwritten functions (sd $ra, never
+    # sw $ra) out of an otherwise-IDO subsegment.  A leaf function (neither)
+    # between two of them belongs to the run; one at either end stays with
+    # the C, as it may well be IDO's.  Only runs whose both ends are object
+    # boundaries (16-aligned) can be split.
+    bounds = sorted(splits | {s for s, _ in code} | {e for _, e in code}
+                    | {o for o, _, _ in bins} | {o + n for o, n, _ in bins} | {args.data})
+    for s, e in zip(bounds, bounds[1:]):
+        if in_bin(s) or handwritten(s, e):
+            continue
+        fns = sorted({s} | {k for k in known if s < k < e})
+        kinds = []
+        for f, g in zip(fns, fns[1:] + [e]):
+            sd, sw = ra_saves(f, g)
+            kinds.append("hand" if sd and not sw else "ido" if sw else "leaf")
+        k = 0
+        while k < len(fns):
+            if kinds[k] != "hand":
+                k += 1
+                continue
+            j = k
+            for m in range(k + 1, len(fns)):
+                if kinds[m] == "ido":
+                    break
+                if kinds[m] == "hand":
+                    j = m
+            lo, hi = fns[k], fns[j + 1] if j + 1 < len(fns) else e
+            if lo % 16 == 0 and hi % 16 == 0 and (lo, hi) != (s, e):
+                splits |= {lo, hi} - {e}
+            k = j + 1
     starts = sorted(splits | {s for s, _ in code})
 
     data_lines = [f"    - [0x{args.data:X}, bin, {mod}/{mod}_data] # .data"]
