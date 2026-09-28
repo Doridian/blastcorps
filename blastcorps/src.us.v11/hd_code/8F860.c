@@ -2,4 +2,5 @@
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/8F860/osInitialize.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/8F860/osPiRawReadIo.s")
+#include "src/libultra/io/pirawread.c"
+

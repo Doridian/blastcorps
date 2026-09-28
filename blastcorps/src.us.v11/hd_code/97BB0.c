@@ -1,6 +1,6 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/97BB0/__osDequeueThread.s")
+#include "src/libultra/os/thread.c"
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/97BB0/__osPiCreateAccessQueue.s")
 

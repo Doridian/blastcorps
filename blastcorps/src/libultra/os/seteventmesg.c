@@ -1,0 +1,13 @@
+/* libultra os/seteventmesg.c: the functions.  Its data, if any, is defined by the includer. */
+#include "common.h"
+#include "ultra_internal.h"
+
+void osSetEventMesg(OSEvent event, OSMesgQueue *mq, OSMesg msg) {
+    register u32 saveMask = __osDisableInt();
+    __OSEventState *es;
+
+    es = &__osEventStateTab[event];
+    es->messageQueue = mq;
+    es->message = msg;
+    __osRestoreInt(saveMask);
+}

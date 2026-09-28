@@ -1,15 +1,12 @@
 #include "common.h"
+#include "ultra_internal.h"
+#include <PR/rdb.h>
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E140/u32_to_string.s")
+/* kdebugserver.c's state, in hd_code's .data (not split yet) and .bss. */
+extern u32 debugState;
+extern s32 numChars;
+extern s32 numCharsToReceive;
+extern u8 debugBuffer[0x100];
+extern OSThread __osThreadSave;
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E140/string_to_u32.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E140/send_packet.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E140/send.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E140/process_command_memory.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E140/process_command_register.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E140/kdebugserver.s")
+#include "src/libultra/debug/kdebugserver.c"

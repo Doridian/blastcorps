@@ -2,6 +2,7 @@
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/971F0/__osSetFpcCsr.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/971F0/__osSiRawReadIo.s")
+#include "src/libultra/io/sirawread.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/971F0/__osSiRawWriteIo.s")
+#include "src/libultra/io/sirawwrite.c"
+

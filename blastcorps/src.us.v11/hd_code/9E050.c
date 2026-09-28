@@ -6,4 +6,5 @@
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E050/__osSiRelAccess.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E050/__osSiDeviceBusy.s")
+#include "src/libultra/io/si.c"
+

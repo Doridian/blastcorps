@@ -138,7 +138,7 @@ HD_FRONT_END_LDFLAGS = -T $(HD_FRONT_END_LD_SCRIPT) -Map $(HD_FRONT_END_TARGET).
 ### Optimisation Overrides
 
 # libultra's ll.c (the long long helpers) is built -mips3 -32, as in the SDK.
-MIPS3_C_FILES.us.v11 := init/2D60.c
+MIPS3_C_FILES.us.v11 := init/2D60.c hd_code/90390.c
 # ld won't mix it with the -mips2 objects, so it's relabelled mips2 after.
 $(foreach f,$(MIPS3_C_FILES.$(VERSION)),$(BUILD_DIR)/$(SRC_DIR)/$(f).o): MIPSISET := -mips3 -32
 $(foreach f,$(MIPS3_C_FILES.$(VERSION)),$(BUILD_DIR)/$(SRC_DIR)/$(f).o): POSTCC := $(PYTHON) $(TOOLS_DIR)/elf_mips2.py
@@ -229,6 +229,7 @@ $(GLOBAL_ASM_INIT_O_FILES): $(BUILD_DIR)/%.c.o: %.c
 	$(CC) -c -32 $(CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $(BUILD_DIR)/$<
 	$(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py $(OPT_FLAGS) $< --post-process $@ \
 		--assembler "$(AS) $(ASFLAGS)" --asm-prelude $(ASM_PROCESSOR_DIR)/prelude.s
+	$(if $(POSTCC),$(POSTCC) $@)
 	$(write_deps)
 
 $(GLOBAL_ASM_HD_CODE_O_FILES): $(BUILD_DIR)/%.c.o: %.c
@@ -236,6 +237,7 @@ $(GLOBAL_ASM_HD_CODE_O_FILES): $(BUILD_DIR)/%.c.o: %.c
 	$(CC) -c -32 $(CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $(BUILD_DIR)/$<
 	$(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py $(OPT_FLAGS) $< --post-process $@ \
 		--assembler "$(AS) $(ASFLAGS)" --asm-prelude $(ASM_PROCESSOR_DIR)/prelude.s
+	$(if $(POSTCC),$(POSTCC) $@)
 	$(write_deps)
 
 $(GLOBAL_ASM_HD_FRONT_END_O_FILES): $(BUILD_DIR)/%.c.o: %.c
@@ -243,6 +245,7 @@ $(GLOBAL_ASM_HD_FRONT_END_O_FILES): $(BUILD_DIR)/%.c.o: %.c
 	$(CC) -c -32 $(CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $(BUILD_DIR)/$<
 	$(PYTHON) $(ASM_PROCESSOR_DIR)/asm_processor.py $(OPT_FLAGS) $< --post-process $@ \
 		--assembler "$(AS) $(ASFLAGS)" --asm-prelude $(ASM_PROCESSOR_DIR)/prelude.s
+	$(if $(POSTCC),$(POSTCC) $@)
 	$(write_deps)
 endif
 

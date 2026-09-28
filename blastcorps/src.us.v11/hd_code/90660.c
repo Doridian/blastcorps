@@ -1,3 +1,4 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/90660/osVirtualToPhysical.s")
+#include "src/libultra/os/virtualtophysical.c"
+
