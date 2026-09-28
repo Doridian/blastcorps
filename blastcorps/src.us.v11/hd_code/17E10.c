@@ -72,21 +72,13 @@ typedef struct {
     /* 0x8 */ UnkSndState *freeList;
 } UnkStruct_802E8CE0;
 
-void func_8029A7E4(char *, ...);
 void func_8024FC2C(Gfx **gfxp, s32 arg1);
 Gfx *func_8025D2B4(Gfx *gfx, s32 arg1, s32 *arg2);
 void func_8025E1E0(Gfx **gfxp);
-ALMicroTime func_8025F044(void *node);
-void func_8025F0F0(UnkSndPlayer *sndp, UnkSndEvent *event);
-void func_80260148(ALEventQueue *evtq, UnkSndState *state, u16 eventType);
-UnkSndState *func_80260300(UnkSndBank *bank, ALSound *sound);
 UnkSndState *func_80260650(UnkSndBank *bank, s16 id, UnkSndState **handle);
 void func_802609D0(void);
 void func_802609F0(void);
 void func_80260A10(void);
-void func_802604FC(UnkSndState *state);
-void func_802608C8(UnkSndState *state);
-void func_80260934(u8 arg0);
 void func_80260DFC(void);
 void func_80261570(f32);
 s32 func_8026B10C(void);
@@ -110,17 +102,11 @@ extern u8 D_00489E70[];
 extern u8 D_0048F5A0[];
 extern s8 D_802E8BD8;
 extern u8 D_802E8BF0;
-extern UnkSndState *D_802E8CE0;
-extern UnkSndState *D_802E8CE4;
-extern UnkSndState *D_802E8CE8;
-extern UnkSndPlayer *D_802E8CEC;
-extern s16 D_802E8CF0;
 extern u32 D_802E8CD0[];
 extern UnkStruct_802E8F94 D_802E8F94[];
 extern u8 D_803643D6;
 extern u8 D_803643D7;
 extern u8 D_803643D8;
-extern f64 D_80309098;
 extern s32 D_80364AA8;
 extern u8 D_80364AE8;
 extern UnkStruct_80364AF0 D_80364AF0[];
@@ -136,9 +122,6 @@ extern s16 D_8036BB18;
 extern s16 D_8036BB1A;
 extern s16 D_8036BB1C;
 extern s32 D_802E8BDC;
-extern char D_80309124[];
-extern char D_8030914C[];
-extern char D_8030917C[];
 extern Vtx D_802FA8B0[][4];
 extern u32 D_803156C4;
 extern u32 D_80358060;
@@ -159,9 +142,89 @@ extern s32 D_80366BA8;
 extern u32 D_80366BB0[];
 extern s16 D_8039CAA0;
 extern u32 D_80366BBC;
-extern u16 *D_80366C28;
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/17E10/func_8025C5D0.s")
+extern u32 D_802E8BEC;
+extern s8 D_80366A18;
+
+void func_8025C5D0(void) {
+    switch (D_802E8BEC) {
+        case 0:
+            if (D_80364A90 == 2) {
+                if (D_80358060 == 0x96) {
+                    func_8026AF6C(0x803E);
+                }
+                if (D_80358060 == 0x190) {
+                    func_8026AF6C(0x8025);
+                }
+                if (D_80358060 == 0x2BC) {
+                    func_8026AF6C(0x8026);
+                }
+            } else {
+                if (D_80358060 == 0x64) {
+                    func_8026AF6C(0x8027);
+                }
+                if (D_80358060 == 0x12C) {
+                    func_8026AF6C(0x8028);
+                }
+                if (D_80358060 == 0x1F4) {
+                    func_8026AF6C(0x8029);
+                }
+                if (D_80358060 == 0x2BC) {
+                    func_8026AF6C(0x802A);
+                }
+            }
+            break;
+        case 1:
+            if (D_80358060 == 0xB4) {
+                func_8026AF6C(0x802B);
+            }
+            if (D_80358060 == 0x1D6) {
+                func_8026AF6C(0x802C);
+            }
+            break;
+        case 2:
+            if (D_80358060 == 0xB4) {
+                func_8026AF6C(0x802D);
+            }
+            break;
+        case 3:
+            if (D_80358060 == 0xB4) {
+                func_8026AF6C(0x802E);
+            }
+            break;
+        case 4:
+            if (D_80358060 == 0xB4) {
+                func_8026AF6C(0x802F);
+            }
+            break;
+        case 5:
+            if (D_80358060 == 0xB4) {
+                func_8026AF6C(0x8030);
+            }
+            break;
+        case 6:
+            if (D_80358060 == 0xB4) {
+                func_8026AF6C(0x8031);
+            }
+            if (D_80358060 == 0x1D6) {
+                func_8026AF6C(0x8032);
+            }
+            break;
+        case 7:
+            if (D_80358060 == 0xB4) {
+                func_8026AF6C(0x8033);
+            }
+            break;
+        case 8:
+            if (D_80358060 == 0xB4) {
+                func_8026AF6C(0x8034);
+            }
+            break;
+    }
+    if (D_80358060 == 0x82) {
+        D_80366A18 = 1;
+    }
+}
 
 Gfx *func_8025C878(Gfx *arg0, s32 arg1, u8 arg2, s32 *arg3) {
     u8 *sp6C;
@@ -585,7 +648,7 @@ void func_8025E67C(Gfx **gfxp, s32 arg1, u8 arg2) {
                     gDPPipeSync(gfx++);
                     if (func_802753C0() == 0) {
                         if (now - D_80366BB8 - 180 < 90) {
-                            alpha = (now - D_80366BB8 - 180) * D_80309098;
+                            alpha = (now - D_80366BB8 - 180) * 2.8333333333333335;
                             for (i = 0; i < 4; i++) {
                                 for (j = 0; j < 4; j++) {
                                     D_802FA8B0[arg2][i].v.cn[j] = alpha;
@@ -612,349 +675,4 @@ void func_8025E67C(Gfx **gfxp, s32 arg1, u8 arg2) {
         }
     }
     *gfxp = gfx;
-}
-
-void func_8025EDF0(UnkSndConfig *c) {
-    u32 i;
-    u8 *ptr;
-    UnkSndEvent evt;
-    UnkSndState *sState;
-
-    D_802E8CEC->unk48 = c->unk8;
-    D_802E8CEC->unk40 = NULL;
-    D_802E8CEC->frameTime = 33000;
-    ptr = alHeapAlloc(c->heap, 1, c->maxSounds * sizeof(UnkSndState));
-    D_802E8CEC->unk44 = (UnkSndState *)ptr;
-    ptr = alHeapAlloc(c->heap, 1, c->maxEvents * sizeof(ALEventListItem));
-    alEvtqNew(&D_802E8CEC->evtq, (ALEventListItem *)ptr, c->maxEvents);
-    D_802E8CE8 = D_802E8CEC->unk44;
-    for (i = 1; i < c->maxSounds; i++) {
-        sState = D_802E8CEC->unk44;
-        alLink((ALLink *)(sState + i), (ALLink *)(sState + i - 1));
-    }
-    D_80366C28 = alHeapAlloc(c->heap, 2, c->unk10);
-    for (i = 0; i < c->unk10; i++) {
-        D_80366C28[i] = 0x7FFF;
-    }
-    D_802E8CEC->drvr = &alGlobals->drvr;
-    D_802E8CEC->node.next = NULL;
-    D_802E8CEC->node.handler = func_8025F044;
-    D_802E8CEC->node.clientData = D_802E8CEC;
-    alSynAddPlayer(D_802E8CEC->drvr, &D_802E8CEC->node);
-    evt.type = 0x20;
-    alEvtqPostEvent(&D_802E8CEC->evtq, (ALEvent *)&evt, D_802E8CEC->frameTime);
-    D_802E8CEC->nextDelta = alEvtqNextEvent(&D_802E8CEC->evtq, &D_802E8CEC->nextEvent);
-}
-
-ALMicroTime func_8025F044(void *node) {
-    UnkSndPlayer *sndp = (UnkSndPlayer *)node;
-    UnkSndEvent evt;
-
-    do {
-        switch (sndp->nextEvent.type) {
-            case 0x20:
-                evt.type = 0x20;
-                alEvtqPostEvent(&sndp->evtq, (ALEvent *)&evt, sndp->frameTime);
-                break;
-            default:
-                func_8025F0F0(sndp, (UnkSndEvent *)&sndp->nextEvent);
-                break;
-        }
-        sndp->nextDelta = alEvtqNextEvent(&sndp->evtq, &sndp->nextEvent);
-    } while (sndp->nextDelta == 0);
-    sndp->curTime += sndp->nextDelta;
-    return sndp->nextDelta;
-}
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/17E10/func_8025F0F0.s")
-
-void func_8026005C(UnkSndState *state) {
-    if (state->unk3E & 4) {
-        alSynStopVoice(D_802E8CEC->drvr, &state->voice);
-        alSynFreeVoice(D_802E8CEC->drvr, &state->voice);
-    }
-    func_802604FC(state);
-    func_80260148(&D_802E8CEC->evtq, state, 0xFFFF);
-}
-
-void func_802600D8(UnkSndState *state) {
-    UnkSndEvent evt;
-    f32 pitch;
-
-    pitch = alCents2Ratio(state->sound->keyMap->detune) * state->pitch;
-    evt.type = 0x10;
-    evt.state = state;
-    evt.param = *(s32 *)&pitch;
-    alEvtqPostEvent(&D_802E8CEC->evtq, (ALEvent *)&evt, 0x8235);
-}
-
-void func_80260148(ALEventQueue *evtq, UnkSndState *state, u16 eventType) {
-    ALLink *thisNode;
-    ALLink *nextNode;
-    ALEventListItem *thisItem;
-    ALEventListItem *nextItem;
-    UnkSndEvent *thisEvent;
-    OSIntMask mask;
-
-    mask = osSetIntMask(OS_IM_NONE);
-    thisNode = evtq->allocList.next;
-    while (thisNode != NULL) {
-        nextNode = thisNode->next;
-        thisItem = (ALEventListItem *)thisNode;
-        nextItem = (ALEventListItem *)nextNode;
-        thisEvent = (UnkSndEvent *)&thisItem->evt;
-        if (thisEvent->state == state && (thisEvent->type & eventType)) {
-            if (nextItem != NULL) {
-                nextItem->delta += thisItem->delta;
-            }
-            alUnlink(thisNode);
-            alLink(thisNode, &evtq->freeList);
-        }
-        thisNode = nextNode;
-    }
-    osSetIntMask(mask);
-}
-
-u16 func_80260210(u16 *arg0, u16 *arg1) {
-    OSIntMask mask;
-    u16 count1;
-    u16 count2;
-    u16 count3;
-    UnkSndState *p1;
-    UnkSndState *p2;
-    UnkSndState *p3;
-
-    mask = osSetIntMask(OS_IM_NONE);
-    count1 = 0;
-    p1 = D_802E8CE0;
-    p2 = D_802E8CE8;
-    p3 = D_802E8CE4;
-    if (p1 != NULL) {
-        do {
-            count1++;
-        } while ((p1 = (UnkSndState *)p1->node.next) != NULL);
-    }
-    count2 = 0;
-    if (p2 != NULL) {
-        do {
-            count2++;
-        } while ((p2 = (UnkSndState *)p2->node.next) != NULL);
-    }
-    count3 = 0;
-    if (p3 != NULL) {
-        do {
-            count3++;
-        } while ((p3 = (UnkSndState *)p3->node.prev) != NULL);
-    }
-    *arg0 = count2;
-    *arg1 = count1;
-    osSetIntMask(mask);
-    return count3;
-}
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/17E10/func_80260300.s")
-
-void func_802604FC(UnkSndState *state) {
-    if (D_802E8CE0 == state) {
-        D_802E8CE0 = (UnkSndState *)state->node.next;
-    }
-    if (D_802E8CE4 == state) {
-        D_802E8CE4 = (UnkSndState *)state->node.prev;
-    }
-    alUnlink(&state->node);
-    if (D_802E8CE8 != NULL) {
-        state->node.next = &D_802E8CE8->node;
-        state->node.prev = NULL;
-        D_802E8CE8->node.prev = &state->node;
-        D_802E8CE8 = state;
-    } else {
-        state->node.next = state->node.prev = NULL;
-        D_802E8CE8 = state;
-    }
-    if (state->unk3E & 4) {
-        D_802E8CF0--;
-    }
-    state->unk3F = 0;
-    if (state->unk30 != NULL) {
-        if (*state->unk30 == state) {
-            *state->unk30 = NULL;
-        }
-        state->unk30 = NULL;
-    }
-}
-
-void func_80260618(UnkSndState *state, u8 arg1) {
-    if (state != NULL) {
-        state->unk36 = (s16)arg1;
-    }
-}
-
-u8 func_80260634(UnkSndState *state) {
-    if (state != NULL) {
-        return state->unk3F;
-    }
-    return 0;
-}
-
-UnkSndState *func_80260650(UnkSndBank *bank, s16 id, UnkSndState **handle) {
-    UnkSndState *state;
-    UnkSndState *result;
-    ALKeyMap *keyMap;
-    ALSound *sound;
-    s16 firstId;
-    s32 sp40;
-    s32 sp3C;
-    s32 sp38;
-    UnkSndEvent evt;
-    UnkSndEvent evt2;
-
-    result = NULL;
-    firstId = 0;
-    sp38 = 0;
-    if (id == 0 || (D_80358060 == 0 && id == 0xC) ||
-        ((id == 0x14 || id == 0x15) && (D_802E8BDC == 0x26 || D_802E8BDC == 0x31))) {
-        return NULL;
-    }
-    do {
-        sound = bank->unkC->soundArray[id];
-        state = func_80260300(bank, sound);
-        if (state != NULL) {
-            D_802E8CEC->unk40 = state;
-            evt.type = 1;
-            evt.state = state;
-            sp3C = sound->keyMap->velocityMax * 33333;
-            if (state->unk3E & 0x10) {
-                state->unk3E &= ~0x10;
-                alEvtqPostEvent(&D_802E8CEC->evtq, (ALEvent *)&evt, sp38 + 1);
-                sp40 = sp3C + 1;
-                firstId = id;
-            } else {
-                alEvtqPostEvent(&D_802E8CEC->evtq, (ALEvent *)&evt, sp3C + 1);
-            }
-            result = state;
-        } else {
-            func_8029A7E4(D_80309124, id);
-        }
-        sp38 += sp3C;
-        keyMap = sound->keyMap;
-        id = keyMap->velocityMin + (keyMap->keyMin & 0xC0) * 4;
-    } while (id != 0 && state != NULL);
-    if (result != NULL) {
-        result->unk3E |= 1;
-        result->unk30 = handle;
-        if (firstId != 0) {
-            result->unk3E |= 0x10;
-            evt2.type = 0x200;
-            evt2.state = result;
-            evt2.param = firstId;
-            evt2.unkC = bank;
-            alEvtqPostEvent(&D_802E8CEC->evtq, (ALEvent *)&evt2, sp40);
-        }
-    }
-    if (handle != NULL) {
-        *handle = result;
-    }
-    return result;
-}
-
-void func_802608C8(UnkSndState *state) {
-    UnkSndEvent evt;
-
-    evt.type = 0x400;
-    evt.state = state;
-    if (state != NULL) {
-        state->unk3E &= ~0x10;
-        alEvtqPostEvent(&D_802E8CEC->evtq, (ALEvent *)&evt, 0);
-    } else {
-        func_8029A7E4(D_8030914C);
-    }
-}
-
-void func_80260934(u8 arg0) {
-    OSIntMask mask;
-    UnkSndEvent evt;
-    UnkSndState *state;
-
-    mask = osSetIntMask(OS_IM_NONE);
-    state = D_802E8CE0;
-    while (state != NULL) {
-        evt.type = 0x400;
-        evt.state = state;
-        if ((state->unk3E & arg0) == arg0) {
-            state->unk3E &= ~0x10;
-            alEvtqPostEvent(&D_802E8CEC->evtq, (ALEvent *)&evt, 0);
-        }
-        state = (UnkSndState *)state->node.next;
-    }
-    osSetIntMask(mask);
-}
-
-void func_802609D0(void) {
-    func_80260934(1);
-}
-
-void func_802609F0(void) {
-    func_80260934(0x11);
-}
-
-void func_80260A10(void) {
-    func_80260934(3);
-}
-
-void func_80260A30(u8 arg0) {
-    OSIntMask mask;
-    UnkSndState *state;
-    s32 i;
-
-    mask = osSetIntMask(OS_IM_NONE);
-    i = 0;
-    state = D_802E8CE0;
-    if (state != NULL) {
-        do {
-            if ((state->sound->keyMap->keyMin & 0x3F) == arg0) {
-                func_802608C8(state);
-            }
-            i++;
-        } while ((state = (UnkSndState *)state->node.next) != NULL);
-    }
-    osSetIntMask(mask);
-}
-
-void func_80260AB8(UnkSndState *state, s16 type, s32 param) {
-    UnkSndEvent evt;
-
-    evt.type = type;
-    evt.state = state;
-    evt.param = param;
-    if (state != NULL) {
-        alEvtqPostEvent(&D_802E8CEC->evtq, (ALEvent *)&evt, 0);
-    } else {
-        func_8029A7E4(D_8030917C);
-    }
-}
-
-u16 func_80260B24(u8 arg0) {
-    return D_80366C28[arg0];
-}
-
-void func_80260B40(u8 arg0, u16 arg1) {
-    OSIntMask mask;
-    UnkSndState *state;
-    s32 i;
-    UnkSndEvent evt;
-
-    mask = osSetIntMask(OS_IM_NONE);
-    state = D_802E8CE0;
-    D_80366C28[arg0] = arg1;
-    i = 0;
-    while (state != NULL) {
-        if ((state->sound->keyMap->keyMin & 0x3F) == arg0) {
-            evt.type = 0x800;
-            evt.state = state;
-            alEvtqPostEvent(&D_802E8CEC->evtq, (ALEvent *)&evt, 0);
-        }
-        i++;
-        state = (UnkSndState *)state->node.next;
-    }
-    osSetIntMask(mask);
 }

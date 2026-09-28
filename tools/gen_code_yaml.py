@@ -22,6 +22,8 @@ after .rodata that belong to no object's .data or .rodata (hd_code's RSP
 microcode data), --data-split the start of an object's block (or of a
 data-only object) that no reference reveals.  A data subsegment the existing config gives to a C file
 (`.data`/`.rodata`) keeps that type when it is regenerated at the same offset.
+The .rodata layout also finds .text boundaries splat misses (two objects'
+.rodata in one block, see missed_boundaries), and splits the code there.
 
 Usage:
   gen_code_yaml.py <module> <version> --vram 0x... --data <off> --end <off>
@@ -278,18 +280,87 @@ def split_data(names, refs, pairs, blob, vram, data, rodata, tail, text_end):
     return sorted(out, key=lambda x: (x[1] == "rodata", x[0]))
 
 
+def missed_boundaries(layout, names, by_func, blob, vram, text_end, compiled):
+    """Module offsets of .text boundaries splat missed, found in .rodata.
+
+    Within one object's .rodata IDO puts its strings (and other early
+    data) first and its late rodata (jump tables, float and double
+    constants) after, so a string after a late constant in one block starts
+    another object.  So does a late constant that sits on a 16-byte boundary
+    with zeros before it, beyond the natural alignment after the previous
+    constant: that gap is the padding at the end of an object.  The new
+    object starts at the first 16-aligned function after the last one that
+    uses the earlier data, and no later than the first that uses the new.
+    Only compiled objects (names in `compiled`) are looked at, and a float
+    or double followed by more than padding is left out: it may be a table
+    (xldtob.c's pows is early data), or a constant whose neighbour splat
+    could not symbolize."""
+    word = lambda a: struct.unpack(">I", blob[a - vram:a - vram + 4])[0]
+    ro = [(off, name) for off, kind, name in layout if kind == "rodata"]
+    index = {n: i for i, n in enumerate(names)}
+    found = set()
+    for k, (off, name) in enumerate(ro):
+        i = index.get(name)
+        if i is None or i not in by_func or name not in compiled:
+            continue
+        lo = vram + off
+        hi = vram + ro[k + 1][0] if k + 1 < len(ro) else None
+        items = collections.defaultdict(lambda: [None, set()])
+        for f, uses in by_func[i].items():
+            for a, late in uses:
+                if a >= lo and (hi is None or a < hi):
+                    items[a][0] = items[a][0] or late
+                    items[a][1].add(f)
+        starts = sorted(f for f in by_func[i] if (f - vram) % 16 == 0)
+        addrs = sorted(items)
+        for n, a in enumerate(addrs):
+            late = items[a][0]
+            if late in ("f", "d"):
+                size = 8 if late == "d" else 4
+                stop = addrs[n + 1] if n + 1 < len(addrs) else (hi or a + size)
+                if any(blob[a + size - vram:stop - vram]):
+                    items[a][0] = "table"
+        prev = None  # (end, alignment, users) of the last late item
+        for a in addrs:
+            late, users = items[a]
+            if late == "table":
+                continue  # early or late, it proves nothing
+            cut = None
+            if prev is not None and not late:
+                cut = prev[2]
+            elif prev is not None and a % 16 == 0:
+                natural = (prev[0] + prev[1] - 1) & ~(prev[1] - 1)
+                if a - natural >= 8 and not any(blob[prev[0] - vram:a - vram]):
+                    cut = prev[2]
+            if cut is not None:
+                s = next((s for s in starts if max(cut) < s <= min(users)), None)
+                if s is not None:
+                    found.add(s - vram)
+                    break
+            if late:
+                end = a + (8 if late == "d" else 4)
+                while late == "j" and vram <= word(end) < vram + text_end:
+                    end += 4
+                prev = (end, 8 if late == "d" else 4, users)
+    return found
+
+
 LUI_RE = re.compile(r"^lui\s+\$(\w+), (0x[0-9A-Fa-f]+)$")
 LO_RE = re.compile(r"^(\w+)\s+\$\w+, (?:\$(\w+), (-?0x[0-9A-Fa-f]+|-?\d+)$|(-?0x[0-9A-Fa-f]+|-?\d+)?\(\$(\w+)\)$)")
 LIKELY = re.compile(r"^(beql|bnel|blezl|bgtzl|bltzl|bgezl|bltzall|bgezall|bc1fl|bc1tl)$")
 NO_DEST = re.compile(r"^(s[bhwd]|swc1|sdc1|swl|swr|b\w*|j|jr|jal|jalr|mt\w+|ctc1|nop|syscall|break|cache|sync|eret)$")
 
 
-def asm_refs(mod, names, symbols, lo, hi):
+def asm_refs(mod, names, symbols, lo, hi, by_func=None):
     """References to [lo, hi) in the asm splat wrote for each object:
     {(object index, address, late)} for %hi/%lo symbols, and a second set
     for lui/addiu and lui/load pairs splat left as numbers (scheduling split
     them), which are only a guess.  late is "j" for a jump table, "f" or
-    "d" for a float or double load or store, else None."""
+    "d" for a float or double load or store, else None.
+
+    by_func, if given, is filled with {object index: {function vram:
+    {(address, late)}}} for the %hi/%lo references, every function of the
+    object present (see missed_boundaries)."""
     refs, pairs = set(), set()
     for i, name in enumerate(names):
         path = Path("asm", mod, f"{name}.s")
@@ -297,12 +368,22 @@ def asm_refs(mod, names, symbols, lo, hi):
             continue
         hi_regs = {}
         op = ""
+        func, new_func = None, False
         for line in path.read_text().splitlines():
             if line.startswith("glabel ") or line.startswith(".L"):
                 hi_regs = {}
+                # jump table targets are glabels too: L<vram>_<offset>
+                if line.startswith("glabel ") and not re.match(r"glabel L[0-9A-F]{8}_", line):
+                    new_func = True
                 continue
             if "*/" not in line:
                 continue
+            if new_func:
+                m = re.match(r"/\* [0-9A-F]+ ([0-9A-F]{8}) ", line)
+                if m:
+                    func, new_func = int(m.group(1), 16), False
+                    if by_func is not None:
+                        by_func.setdefault(i, {}).setdefault(func, set())
             body = line.split("*/")[-1].strip()
             insn = body.split()
             # A branch-likely's delay slot only runs when the branch is
@@ -316,6 +397,8 @@ def asm_refs(mod, names, symbols, lo, hi):
                 addr = symbols.get(sym, int(m.group(1), 16) if m else None)
                 if addr is not None and lo <= addr < hi:
                     refs.add((i, addr, "j" if sym.startswith("jtbl_") else kind))
+                    if by_func is not None and func is not None:
+                        by_func[i][func].add((addr, "j" if sym.startswith("jtbl_") else kind))
             m = LUI_RE.search(body)
             if m and not syms:
                 if not likely:
@@ -528,31 +611,45 @@ def main():
         tails = sorted((int(o, 16), int(n, 16), note) for o, n, note in
                        (t.split(":", 2) for t in args.tail))
         tail = tails[0][0] if tails else args.end
-        probe = header(mod, ver, args.vram, args.note, args.symbols)
-        probe += [line.replace(", c,", ", asm,") for line in emit(starts)]
-        probe += data_lines + [f"  - [0x{args.end:X}]"]
-        cfg.write_text("\n".join(probe) + "\n")
-        proc = subprocess.run([sys.executable, str(SPLAT), str(cfg)],
-                              capture_output=True, text=True)
-        if proc.returncode:
-            sys.exit(proc.stderr)
         symbols = {}
-        for path in [args.symbols, f"undefined_syms_auto.{mod}.{ver}.txt"]:
-            if path and Path(path).exists():
-                for m in re.finditer(r"^\s*(\w+)\s*=\s*0x([0-9A-Fa-f]+);", Path(path).read_text(), re.M):
-                    symbols.setdefault(m.group(1), int(m.group(2), 16))
-        names = [f"{x:05X}" if x == 0 else f"{x:X}" for x in starts]
         full = Path(f"{mod}.{ver}.bin").read_bytes()
-        refs, pairs = asm_refs(mod, names, symbols, args.vram + args.data, args.vram + tail)
-        layout = split_data(names, refs, pairs, full, args.vram,
-                            args.data, args.rodata, tail, args.data)
-        have = {off for off, _, _ in layout}
-        for spec in args.data_split:
-            off, _, obj = spec.partition(":")
-            off = int(off, 16)
-            if off not in have:
-                layout.append((off, "data" if off < args.rodata else "rodata", obj or f"{off:X}"))
-        layout.sort(key=lambda x: x[0])
+        while True:
+            probe = header(mod, ver, args.vram, args.note, args.symbols)
+            probe += [line.replace(", c,", ", asm,") for line in emit(starts)]
+            probe += data_lines + [f"  - [0x{args.end:X}]"]
+            cfg.write_text("\n".join(probe) + "\n")
+            proc = subprocess.run([sys.executable, str(SPLAT), str(cfg)],
+                                  capture_output=True, text=True)
+            if proc.returncode:
+                sys.exit(proc.stderr)
+            for path in [args.symbols, f"undefined_syms_auto.{mod}.{ver}.txt"]:
+                if path and Path(path).exists():
+                    for m in re.finditer(r"^\s*(\w+)\s*=\s*0x([0-9A-Fa-f]+);", Path(path).read_text(), re.M):
+                        symbols.setdefault(m.group(1), int(m.group(2), 16))
+            names = [f"{x:05X}" if x == 0 else f"{x:X}" for x in starts]
+            by_func = {}
+            refs, pairs = asm_refs(mod, names, symbols, args.vram + args.data, args.vram + tail, by_func)
+            layout = split_data(names, refs, pairs, full, args.vram,
+                                args.data, args.rodata, tail, args.data)
+            have = {off for off, _, _ in layout}
+            for spec in args.data_split:
+                off, _, obj = spec.partition(":")
+                off = int(off, 16)
+                if off not in have:
+                    layout.append((off, "data" if off < args.rodata else "rodata", obj or f"{off:X}"))
+            layout.sort(key=lambda x: x[0])
+            # A .text boundary splat missed shows up as two objects' .rodata
+            # in one block; split there and lay the data out again.
+            ends = sorted({e for _, e in code} | set(starts) | {o for o, _, _ in bins} | {args.data})
+            compiled = {n for x, n in zip(starts, names)
+                        if not handwritten(x, next(e for e in ends if e > x))}
+            missed = missed_boundaries(layout, names, by_func, full, args.vram, args.data,
+                                       compiled) - set(starts)
+            if not missed:
+                break
+            for s in sorted(missed):
+                print(f"splitting at 0x{s:X}: its .rodata starts a new object", file=sys.stderr)
+            starts = sorted(set(starts) | missed)
         data_lines = ["    # .data, then .rodata, of each object in link order (see split_data"
                       " in tools/gen_code_yaml.py)"]
         for off, kind, name in layout:

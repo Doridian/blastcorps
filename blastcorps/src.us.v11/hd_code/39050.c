@@ -18,7 +18,7 @@ extern s32 D_803649E8;
 f32 func_8027DB5C(s32 *arg0, s32 *arg1, s32 arg2);
 f32 func_8027DD88(s32 arg0, s32 arg1, s32 *arg2, s32 *arg3);
 s32 func_8027E164(s32 arg0, s32 arg1, s32 *arg2, s32 *arg3);
-f32 func_8027E228(s32);
+f32 func_8027E228();
 s16 *func_802C1EE0(s32);
 void func_802C1F30(s32, s32, s32, s32, s32);
 s32 func_802AC4C4(s32, s32, s32, s32, s32, s32, s32, s32);
@@ -170,7 +170,30 @@ void func_802A0B00(u16, s32);
 s32 func_8029DBF0(u8);
 void func_802AC1A0(s32);
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/39050/func_8027D810.s")
+void func_8027DA10(s32 arg0, s32 arg1, s32 arg2);
+
+void func_8027D810(s32 arg0) {
+    switch (arg0) {
+    case 0:
+        func_8027DA10(1, 7, 0x320000);
+        break;
+    case 4:
+        func_8027DA10(1, 7, 0xA00000);
+        break;
+    case 16:
+        func_8027DA10(1, 7, 0x3C0000);
+        func_8027DA10(2, 7, 0x3C0000);
+        break;
+    case 20:
+        func_8027DA10(1, 7, 0x820000);
+        func_8027DA10(2, 7, 0x820000);
+        break;
+    case 15:
+        func_8027DA10(1, 7, 0x410000);
+        func_8027DA10(2, 7, 0x410000);
+        break;
+    }
+}
 
 void func_8027D8F4(s32 arg0, s32 arg1, s32 arg2) {
     s32 i;
@@ -247,7 +270,64 @@ f32 func_8027DB5C(s32 *arg0, s32 *arg1, s32 arg2) {
     return arg2 * max;
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/39050/func_8027DD88.s")
+f32 func_8027DD88(s32 arg0, s32 arg1, s32 *arg2, s32 *arg3) {
+    f32 a1;
+    f32 a2;
+    f32 b1;
+    f32 b2;
+    f32 c1;
+    f32 c2;
+    f32 r1;
+    f32 r2;
+    f32 r3;
+    f32 r4;
+    f32 denom;
+    f32 offset;
+    f32 num;
+    f32 t;
+    f32 ret;
+    f32 x1;
+    f32 y1;
+    f32 x2;
+    f32 y2;
+    f32 x3;
+    f32 y3;
+    f32 x4;
+    f32 y4;
+
+    x1 = arg2[0];
+    y1 = arg3[0];
+    x2 = arg2[1];
+    y2 = arg3[1];
+    x3 = (arg2[1] - arg2[2]) + arg0;
+    y3 = (arg3[1] - arg3[2]) + arg1;
+    x4 = arg0 - (arg2[1] - arg2[2]);
+    y4 = arg1 - (arg3[1] - arg3[2]);
+    a1 = y2 - y1, b1 = x1 - x2, c1 = x2 * y1 - x1 * y2;
+    r3 = a1 * x3 + b1 * y3 + c1;
+    r4 = a1 * x4 + b1 * y4 + c1;
+    a2 = y4 - y3;
+    b2 = x3 - x4;
+    c2 = x4 * y3 - x3 * y4;
+    r1 = a2 * x1 + b2 * y1 + c2;
+    r2 = a2 * x2 + b2 * y2 + c2;
+    denom = a1 * b2 - a2 * b1;
+    if (denom < 0.0f) {
+        offset = -denom / 2.0f;
+    } else {
+        offset = denom / 2.0f;
+    }
+    if (((x2 - x1 >= 0.0f) ? x2 - x1 : -(x2 - x1)) > ((y2 - y1 >= 0.0f) ? y2 - y1 : -(y2 - y1))) {
+        num = b1 * c2 - b2 * c1;
+        t = ((num < 0.0f) ? num - offset : num + offset) / denom;
+        ret = (t - x1) / (x2 - x1);
+    } else {
+        num = a2 * c1 - a1 * c2;
+        t = ((num < 0.0f) ? num - offset : num + offset) / denom;
+        ret = (t - y1) / (y2 - y1);
+    }
+    return ret;
+}
 
 s32 func_8027E164(s32 arg0, s32 arg1, s32 *arg2, s32 *arg3) {
     if (func_802AC4C4(arg0, arg1, arg2[0], arg3[0], arg2[1], arg3[1], arg2[2], arg3[2]) != 0) {
@@ -259,7 +339,44 @@ s32 func_8027E164(s32 arg0, s32 arg1, s32 *arg2, s32 *arg3) {
     return 0;
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/39050/func_8027E228.s")
+void func_8029A7E4(char *, ...);
+
+f32 func_8027E228(arg0)
+    u8 arg0;
+{
+    switch (arg0) {
+    case 0x0:
+        return 0.3f;
+    case 0x1:
+        return 0.8f;
+    case 0x5:
+        return 0.8f;
+    case 0x4:
+        return 0.8f;
+    case 0x2:
+        return 0.8f;
+    case 0x10:
+        return 0.4f;
+    case 0x3:
+        return 0.8f;
+    case 0x8:
+        return 0.6f;
+    case 0xA:
+        return 0.6f;
+    case 0xD:
+        return 0.8f;
+    case 0xE:
+        return 0.6f;
+    case 0xF:
+        return 0.6f;
+    case 0x9:
+        return 0.0f;
+    case 0xFF:
+        return 0.8f;
+    default:
+        func_8029A7E4("DIGGER WEIGHT NOT SET\n");
+    }
+}
 
 void func_8027E344(s32 arg0) {
     s32 dx;
@@ -382,7 +499,33 @@ void func_8027E9B8(u8 arg0) {
     }
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/39050/func_8027EED8.s")
+u8 func_8027EED8(arg0, arg1, arg2)
+    s16 arg0;
+    s16 arg1;
+    s16 *arg2;
+{
+    register f32 s;
+    f32 step;
+    f32 t;
+
+    if (D_8036DCD4 == 0) {
+        return 0;
+    }
+    if (arg0 < D_802FC3F0[D_8036DCD6].unk4 || arg0 > D_802FC3F0[D_8036DCD6].unk8 ||
+        arg1 < D_802FC3F0[D_8036DCD6].unk6 || arg1 > D_802FC3F0[D_8036DCD6].unkA) {
+        *arg2 = D_802FC3F0[D_8036DCD6].unkC;
+        return 0;
+    }
+    step = (f32)(D_802FC3F0[D_8036DCD6].unk8 - D_802FC3F0[D_8036DCD6].unk4) / D_802FC3F0[D_8036DCD6].unk1;
+    t = (arg0 - D_802FC3F0[D_8036DCD6].unk4) / step;
+    s = sinf((t + 1.0f) * step / D_802FC3F0[D_8036DCD6].unk1C + D_8036DCB0 / D_802FC3F0[D_8036DCD6].unk14);
+    *arg2 = D_802FC3F0[D_8036DCD6].unkE * s + D_802FC3F0[D_8036DCD6].unkC;
+    step = (f32)(D_802FC3F0[D_8036DCD6].unkA - D_802FC3F0[D_8036DCD6].unk6) / D_802FC3F0[D_8036DCD6].unk2;
+    t = (arg1 - D_802FC3F0[D_8036DCD6].unk6) / step;
+    s = sinf((t + 1.0f) * step / D_802FC3F0[D_8036DCD6].unk20 + D_8036DCB0 / D_802FC3F0[D_8036DCD6].unk18);
+    *arg2 += D_802FC3F0[D_8036DCD6].unk10 * s;
+    return 1;
+}
 
 void func_8027F1F8(Gfx **arg0, u8 arg1, u8 arg2) {
     Gfx *gfx = *arg0;

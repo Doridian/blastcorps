@@ -240,7 +240,115 @@ void func_80261570(f32 arg0) {
     D_8036772A = 1;
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/1C460/func_80261588.s")
+/* ALSynConfig, with a u8 fxType. */
+typedef struct {
+    /* 0x00 */ s32 maxVVoices;
+    /* 0x04 */ s32 maxPVoices;
+    /* 0x08 */ s32 maxUpdates;
+    /* 0x0C */ s32 maxFXbusses;
+    /* 0x10 */ void *dmaproc;
+    /* 0x14 */ ALHeap *heap;
+    /* 0x18 */ s32 outputRate;
+    /* 0x1C */ u8 fxType;
+    /* 0x20 */ s32 *params;
+} UnkSynConfig;
+
+typedef struct {
+    /* 0x00 */ u32 maxSounds;
+    /* 0x04 */ s32 maxEvents;
+    /* 0x08 */ s32 unk8;
+    /* 0x0C */ ALHeap *heap;
+    /* 0x10 */ u16 unk10;
+} UnkSndConfig;
+
+/* ROM addresses of the two sound banks' .ctl/.tbl and the sequence file. */
+extern u8 D_00350950[];
+extern u8 D_003539A0[];
+extern u8 D_003A1920[];
+extern u8 D_003A48C0[];
+extern u8 D_0044F5C0[];
+extern ALHeap D_80367718;
+extern ALBank *D_8036773C;
+extern u8 D_80370C80[];
+
+void func_802676A0(UnkSynConfig *c, OSPri pri);
+void func_80267A74(void);
+void func_8025EDF0(UnkSndConfig *c);
+void func_802D97E0(ALCSPlayer *, ALBank *);
+
+void func_80261588(void) {
+    UnkSndConfig sndConfig;
+    ALSeqpConfig seqConfig;
+    UnkSynConfig synConfig;
+    ALBankFile *sfxBankFile;
+    ALBankFile *musicBankFile;
+    s32 size;
+    s32 size2;
+    u32 i;
+    s32 unused[2];
+    s32 seqFileSize;
+    s32 headerSize;
+
+    alHeapInit(&D_80367718, D_80370C80, 0x2A280);
+    size = size2 = D_003539A0 - D_00350950;
+    func_8028B4C4((s32)D_00350950, (u8 *)0x8004B400, &size, 0xD, 0, 2);
+    musicBankFile = alHeapAlloc(&D_80367718, 1, size);
+    func_8028B4C4((s32)D_00350950, (u8 *)musicBankFile, &size2, 0xD, 0, 2);
+    alBnkfNew(musicBankFile, D_003539A0);
+    D_8036773C = musicBankFile->bankArray[0];
+    size = size2 = D_003A48C0 - D_003A1920;
+    func_8028B4C4((s32)D_003A1920, (u8 *)0x8004B400, &size, 0xD, 0, 2);
+    sfxBankFile = alHeapAlloc(&D_80367718, 1, size);
+    func_8028B4C4((s32)D_003A1920, (u8 *)sfxBankFile, &size2, 0xD, 0, 2);
+    alBnkfNew(sfxBankFile, D_003A48C0);
+    D_80367738 = (s32)sfxBankFile->bankArray[0];
+    D_80367514 = alHeapAlloc(&D_80367718, 1, 4);
+    headerSize = 4;
+    func_8028B4C4((s32)D_0044F5C0, (u8 *)D_80367514, &headerSize, 0, 0, 0);
+    seqFileSize = D_80367514->seqCount * 8 + 4;
+    D_80367514 = alHeapAlloc(&D_80367718, 1, 0x214);
+    func_8028B4C4((s32)D_0044F5C0, (u8 *)D_80367514, &seqFileSize, 0, 0, 0);
+    alSeqFileNew(D_80367514, D_0044F5C0);
+    D_80367510 = alHeapAlloc(&D_80367718, 1, 0x21AE);
+    for (i = 0; i < 0x42; i++) {
+        D_80367408[i] = D_80367514->seqArray[i].len;
+        if (D_80367408[i] & 1) {
+            D_80367408[i]++;
+        }
+    }
+    synConfig.maxVVoices = 0;
+    synConfig.maxPVoices = 0x18;
+    synConfig.maxUpdates = 0x80;
+    synConfig.maxFXbusses = 1;
+    synConfig.dmaproc = NULL;
+    synConfig.fxType = 6;
+    synConfig.outputRate = 0;
+    synConfig.heap = &D_80367718;
+    func_802676A0(&synConfig, 0xC);
+    seqConfig.maxVoices = 0x18;
+    seqConfig.maxEvents = 0x20;
+    seqConfig.maxChannels = 0x10;
+    seqConfig.heap = &D_80367718;
+    seqConfig.initOsc = NULL;
+    seqConfig.updateOsc = NULL;
+    seqConfig.stopOsc = NULL;
+    D_80367734 = alHeapAlloc(&D_80367718, 1, sizeof(ALCSPlayer));
+    alCSPNew(D_80367734, &seqConfig);
+    func_802D97E0(D_80367734, D_8036773C);
+    sndConfig.maxEvents = 0x40;
+    sndConfig.maxSounds = 0x20;
+    sndConfig.unk8 = 8;
+    sndConfig.unk10 = 8;
+    sndConfig.heap = &D_80367718;
+    func_8025EDF0(&sndConfig);
+    func_8029A7E4("%d bytes audio heap left over\n", D_80367718.len - (D_80367718.cur - D_80367718.base));
+    D_8036772A = 0;
+    D_80367728 = 0;
+    D_80367710 = D_8036770C = 1.0f;
+    D_80367730 = 1;
+    D_80367400 = D_80366C30;
+    func_80267A74();
+}
 
 void func_802619D0(u32 arg0) {
     if (arg0 >= 0x1C) {

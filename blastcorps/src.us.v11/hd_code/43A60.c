@@ -426,4 +426,26 @@ u32 func_8028A0A0(arg0)
     return osVirtualToPhysical(sp1C);
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/43A60/func_8028A1D0.s")
+void func_8028A1D0(UnkStruct_8028A1D0 *arg0, s32 arg1) {
+    s32 i;
+    s32 j;
+    s32 h;
+    UnkStruct_8028A1D0 tmp;
+
+    for (h = 1; h <= arg1 / 9; h = h * 3 + 1) {
+    }
+    for (; h > 0; h /= 3) {
+        for (i = h; i < arg1; i++) {
+            tmp.unk0 = arg0[i].unk0;
+            tmp.unk4 = arg0[i].unk4;
+            j = i;
+            while (j >= h && arg0[j - h].unk4 > tmp.unk4) {
+                arg0[j].unk0 = arg0[j - h].unk0;
+                arg0[j].unk4 = arg0[j - h].unk4;
+                j -= h;
+            }
+            arg0[j].unk0 = tmp.unk0;
+            arg0[j].unk4 = tmp.unk4;
+        }
+    }
+}

@@ -150,19 +150,380 @@ void func_80259C24(Gfx **arg0, s32 arg1) {
     *arg0 = gfx;
 }
 
-void func_80259EC4(s32, s32, s32, u8, s32, f32, s32, f32, s32, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8,
+void func_80259EC4(s32, u8 *, u16 *, u8, s32, f32, s32, f32, s32, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8,
                    u8, u8, u8, u8);
 
-void func_80259CCC(s32 arg0, s32 arg1, s32 arg2, u8 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8, u8 arg9,
+void func_80259CCC(s32 arg0, u8 *arg1, u16 *arg2, u8 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8, u8 arg9,
                    u8 arg10, u8 arg11, u8 arg12, u8 arg13) {
     func_80259EC4(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg10, arg11,
                   arg12, arg13, arg10, arg11, arg12, arg13, arg10, arg11, arg12, arg13);
 }
 
-void func_80259DC8(s32 arg0, s32 arg1, s32 arg2, u8 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8, u8 arg9,
+void func_80259DC8(s32 arg0, u8 *arg1, u16 *arg2, u8 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8, u8 arg9,
                    u8 arg10, u8 arg11, u8 arg12, u8 arg13, u8 arg14, u8 arg15, u8 arg16, u8 arg17) {
     func_80259EC4(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg10, arg11,
                   arg12, arg13, arg14, arg15, arg16, arg17, arg14, arg15, arg16, arg17);
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/14B30/func_80259EC4.s")
+extern f32 D_802E8C84[];
+extern u16 D_802E8C8C[];
+extern u16 D_802E8C90[];
+extern u16 D_802E8C94[];
+
+u8 *func_8025B0B8(u16);
+s32 func_8025B498(s32, u32, u8 *, u16 *);
+void func_8029A7E4(char *, ...);
+
+void func_80259EC4(s32 arg0, u8 *arg1, u16 *arg2, u8 arg3, s32 arg4, f32 arg5, s32 arg6, f32 arg7, s32 arg8,
+                   u8 arg9, u8 arg10, u8 arg11, u8 arg12, u8 arg13, u8 arg14, u8 arg15, u8 arg16, u8 arg17,
+                   u8 arg18, u8 arg19, u8 arg20, u8 arg21, u8 arg22, u8 arg23, u8 arg24, u8 arg25) {
+    u16 sp3E;
+    u8 *sp38;
+    u16 *sp34;
+    u8 sp33;
+    f32 sp2C;
+    u8 sp2B;
+    u8 sp2A;
+    s32 sp24;
+
+    sp33 = 0;
+    sp2B = 0;
+    sp2A = 0;
+    if (arg1 == NULL || *arg1 == 0) {
+        return;
+    }
+    sp38 = arg1;
+    sp34 = arg2;
+    if (arg9 == 0) {
+        if (sp2B != 0) {
+            while (*sp34 != 0xFFE) {
+                sp34++;
+            }
+            sp34--;
+        } else {
+            while (*sp38 != 0) {
+                sp38++;
+            }
+            sp38--;
+        }
+    }
+    if (arg4 != 0) {
+        arg5 = func_8025B498(arg4, arg7, arg1, arg2);
+    }
+    while (sp33 == 0) {
+        switch (sp2A) {
+            case 0:
+                sp2C = 0.21f;
+                switch (*sp38) {
+                    case '0':
+                        sp3E = 0;
+                        sp2C = 0.25f;
+                        break;
+                    case '1':
+                        sp3E = 1;
+                        sp2C = 0.25f;
+                        break;
+                    case '2':
+                        sp3E = 2;
+                        sp2C = 0.25f;
+                        break;
+                    case '3':
+                        sp3E = 3;
+                        sp2C = 0.25f;
+                        break;
+                    case '4':
+                        sp3E = 4;
+                        sp2C = 0.25f;
+                        break;
+                    case '5':
+                        sp3E = 5;
+                        sp2C = 0.25f;
+                        break;
+                    case '6':
+                        sp3E = 6;
+                        sp2C = 0.25f;
+                        break;
+                    case '7':
+                        sp3E = 7;
+                        sp2C = 0.25f;
+                        break;
+                    case '8':
+                        sp3E = 8;
+                        sp2C = 0.25f;
+                        break;
+                    case '9':
+                        sp3E = 9;
+                        sp2C = 0.25f;
+                        break;
+                    case 'A':
+                        sp3E = 10;
+                        break;
+                    case 'B':
+                        sp3E = 11;
+                        break;
+                    case 'C':
+                        sp3E = 12;
+                        break;
+                    case 'D':
+                        sp3E = 13;
+                        break;
+                    case 0x7F:
+                        sp3E = 14;
+                        sp2C = 0.05f;
+                        break;
+                    case 'E':
+                        sp3E = 15;
+                        break;
+                    case 'F':
+                        sp3E = 16;
+                        break;
+                    case 'G':
+                        sp3E = 17;
+                        break;
+                    case 'H':
+                        sp3E = 18;
+                        break;
+                    case 'I':
+                        sp3E = 19;
+                        sp2C = 0.27f;
+                        break;
+                    case 'J':
+                        sp3E = 20;
+                        break;
+                    case 'K':
+                        sp3E = 21;
+                        break;
+                    case 'L':
+                        sp3E = 22;
+                        break;
+                    case 'M':
+                        sp3E = 23;
+                        sp2C = 0.05f;
+                        break;
+                    case 'N':
+                        sp3E = 24;
+                        break;
+                    case 'O':
+                        sp3E = 25;
+                        break;
+                    case 'P':
+                        sp3E = 26;
+                        break;
+                    case 'Q':
+                        sp3E = 27;
+                        break;
+                    case 'R':
+                        sp3E = 28;
+                        break;
+                    case 'S':
+                        sp3E = 29;
+                        break;
+                    case 'T':
+                        sp3E = 30;
+                        break;
+                    case 'U':
+                        sp3E = 31;
+                        break;
+                    case 'V':
+                        sp3E = 32;
+                        break;
+                    case 'W':
+                        sp3E = 33;
+                        sp2C = 0.05f;
+                        break;
+                    case 'X':
+                        sp3E = 34;
+                        break;
+                    case 'Y':
+                        sp3E = 35;
+                        break;
+                    case 'Z':
+                        sp3E = 36;
+                        break;
+                    case '\'':
+                        sp3E = 38;
+                        sp2C = 0.25f;
+                        break;
+                    case ')':
+                        sp3E = 39;
+                        sp2C = 0.25f;
+                        break;
+                    case ':':
+                        sp3E = 40;
+                        sp2C = 0.36f;
+                        break;
+                    case ',':
+                        sp3E = 41;
+                        sp2C = 0.25f;
+                        break;
+                    case '$':
+                        sp3E = 42;
+                        break;
+                    case '!':
+                        sp3E = 43;
+                        sp2C = 0.25f;
+                        break;
+                    case '.':
+                        sp3E = 44;
+                        sp2C = 0.3f;
+                        break;
+                    case '-':
+                        sp3E = 45;
+                        sp2C = 0.25f;
+                        break;
+                    case '(':
+                        sp3E = 46;
+                        sp2C = 0.25f;
+                        break;
+                    case '%':
+                        sp3E = 47;
+                        break;
+                    case '?':
+                        sp3E = 48;
+                        break;
+                    case '#':
+                        sp3E = 49;
+                        break;
+                    case '/':
+                        sp3E = 50;
+                        break;
+                    case ' ':
+                    case '&':
+                        sp3E = 0;
+                        sp2C = 0.3f;
+                        break;
+                    case 'a':
+                    case 'b':
+                    case 'd':
+                    case 'e':
+                    case 'k':
+                    case 'm':
+                        sp3E = *sp38 - 0x22C;
+                        break;
+                    default:
+                        sp3E = 0;
+                        sp2C = 0.0f;
+                        break;
+                }
+                sp3E += 0xF4C;
+                break;
+            case 1:
+                sp2C = 1.0f;
+                if (*sp34 < 0x200) {
+                    sp3E = *sp34 + 0xD4C;
+                } else if (*sp34 == 0x1001) {
+                    sp3E = 0xF7D;
+                } else {
+                    sp3E = 0xD4C;
+                }
+                break;
+        }
+        if (arg3 == 1) {
+            if (arg9 != 0) {
+                arg5 -= sp2C * arg7;
+            } else {
+                arg5 += sp2C * arg7;
+            }
+        }
+        if (sp2B != 0) {
+            sp24 = *sp34;
+        } else {
+            sp24 = *sp38;
+        }
+        if (D_802E8C94[sp2A] != sp24 && D_802E8C90[sp2A] != sp24 && D_802E8C8C[sp2A] != sp24 &&
+            (arg13 != 0 || arg17 != 0 || arg21 != 0 || arg25 != 0)) {
+            D_80365348[D_8035805C][D_802E8C78].v.ob[0] = arg5;
+            D_80365348[D_8035805C][D_802E8C78].v.ob[1] = arg6;
+            D_80365348[D_8035805C][D_802E8C78].v.ob[2] = -10;
+            D_80365348[D_8035805C][D_802E8C78].v.flag = 0;
+            D_80365348[D_8035805C][D_802E8C78].v.tc[0] = 0;
+            D_80365348[D_8035805C][D_802E8C78].v.tc[1] = 0x3E0;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[0] = arg10;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[1] = arg11;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[2] = arg12;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[3] = arg13;
+            D_802E8C78++;
+            D_80365348[D_8035805C][D_802E8C78].v.ob[0] = arg5 + arg7;
+            D_80365348[D_8035805C][D_802E8C78].v.ob[1] = arg6;
+            D_80365348[D_8035805C][D_802E8C78].v.ob[2] = -10;
+            D_80365348[D_8035805C][D_802E8C78].v.flag = 0;
+            D_80365348[D_8035805C][D_802E8C78].v.tc[0] = 0x3E0;
+            D_80365348[D_8035805C][D_802E8C78].v.tc[1] = 0x3E0;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[0] = arg14;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[1] = arg15;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[2] = arg16;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[3] = arg17;
+            D_802E8C78++;
+            D_80365348[D_8035805C][D_802E8C78].v.ob[0] = arg5 + arg7;
+            D_80365348[D_8035805C][D_802E8C78].v.ob[1] = arg6 + arg8;
+            D_80365348[D_8035805C][D_802E8C78].v.ob[2] = -10;
+            D_80365348[D_8035805C][D_802E8C78].v.flag = 0;
+            D_80365348[D_8035805C][D_802E8C78].v.tc[0] = 0x3E0;
+            D_80365348[D_8035805C][D_802E8C78].v.tc[1] = 0;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[0] = arg18;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[1] = arg19;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[2] = arg20;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[3] = arg21;
+            D_802E8C78++;
+            D_80365348[D_8035805C][D_802E8C78].v.ob[0] = arg5;
+            D_80365348[D_8035805C][D_802E8C78].v.ob[1] = arg6 + arg8;
+            D_80365348[D_8035805C][D_802E8C78].v.ob[2] = -10;
+            D_80365348[D_8035805C][D_802E8C78].v.flag = 0;
+            D_80365348[D_8035805C][D_802E8C78].v.tc[0] = 0;
+            D_80365348[D_8035805C][D_802E8C78].v.tc[1] = 0;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[0] = arg22;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[1] = arg23;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[2] = arg24;
+            D_80365348[D_8035805C][D_802E8C78].v.cn[3] = arg25;
+            D_802E8C78++;
+            D_80365340[D_802E8C74].unk0 = sp24;
+            if (arg10 != 0 || arg12 != 0 || arg11 != 0) {
+                D_80365340[D_802E8C74].unk0 += 0x8000;
+            }
+            D_80365340[D_802E8C74].unk4 = D_802E8C74;
+            D_80365340[D_802E8C74].unk8 = (s32)func_8025B0B8(sp3E);
+            if (!(++D_802E8C74 < D_80365350)) {
+                func_8029A7E4("\n\a --- ASSERTION FAULT - %s - %s, line %d\n\n", "index<maxCharacters", "drawtext.c",
+                              435);
+            }
+            if (D_802E8C74 >= D_80365350) {
+                func_8029A7E4("%d %d\n", D_802E8C74, D_80365350);
+            }
+        }
+        if (arg3 == 1) {
+            if (arg9 != 0) {
+                arg5 += arg7 - sp2C * arg7;
+            } else {
+                arg5 -= arg7 - sp2C * arg7;
+            }
+        } else if (D_802E8C8C[sp2A] != sp24) {
+            if (arg9 != 0) {
+                arg5 += arg7 * D_802E8C84[sp2A];
+            }
+            if (arg9 == 0) {
+                arg5 -= arg7 * D_802E8C84[sp2A];
+            }
+        }
+        if (arg9 != 0) {
+            if (sp2B != 0) {
+                if (*++sp34 == 0xFFE) {
+                    sp33 = 1;
+                }
+            } else {
+                if (*++sp38 == 0) {
+                    sp33 = 1;
+                }
+            }
+        } else if (sp2B != 0) {
+            if (sp34 == arg2) {
+                sp33 = 1;
+            }
+            sp34--;
+        } else {
+            if (sp38 == arg1) {
+                sp33 = 1;
+            }
+            sp38--;
+        }
+    }
+}

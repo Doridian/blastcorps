@@ -74,6 +74,194 @@ void func_802862DC(void) {
     }
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/41930/func_80286330.s")
+extern s32 D_802E8BDC;
+extern u8 D_80364AF8[][0x100];
+extern u8 D_80370C50;
+extern u8 D_803643D5;
+void func_8029A7E4(char *, ...);
+void func_802995F0(s32);
+void func_801F8354(u8);
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/41930/func_8028653C.s")
+void func_80286330(void) {
+    switch (D_80364B81[D_80364AE8][0]) {
+        case 2:
+        case 3:
+        case 4:
+            D_80364A98 = 0x4000;
+            break;
+        case 5:
+            func_802995F0(0);
+            D_80364A98 = 0x100000000000;
+            break;
+        case 6:
+            if (D_802E8BDC != 50) {
+                func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "levelno==50", "academy.c", 140);
+            }
+            if (D_80364AF8[D_80364AE8][0] != 50) {
+                func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "players[playerNumber].levelno==50", "academy.c", 141);
+            }
+            if (D_80370C50 == 0) {
+                func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "frontEndPresent", "academy.c", 142);
+            }
+            D_80364A98 = 0x800;
+            D_803643D5 = 0;
+            func_801F8354(D_80364AE8);
+            break;
+        case 7:
+            func_802995F0(1);
+            D_80364A98 = 0x100000000000;
+            break;
+        case 9:
+            func_802995F0(3);
+            D_80364A98 = 0x100000000000;
+            break;
+        case 10:
+            D_80364A98 = 0x4000000000000;
+            break;
+        case 11:
+            D_80364A98 = 0x4000;
+            break;
+        case 12:
+            D_80364A98 = 0x4000;
+            break;
+    }
+}
+
+typedef struct {
+    /* 0x00 */ u8 pad0[0xA];
+    /* 0x0A */ u16 unkA;
+    /* 0x0C */ u8 unkC;
+    /* 0x0D */ u8 padD[0xB];
+    /* 0x18 */ u8 unk18[60];
+    /* 0x54 */ u8 pad54[0x3C];
+    /* 0x90 */ u8 unk90;
+    /* 0x91 */ u8 unk91;
+    /* 0x92 */ u8 pad92[0x6E];
+} UnkStruct_80364AF0; /* size = 0x100 */
+
+typedef struct {
+    /* 0x00 */ u8 unk0;
+    /* 0x01 */ u8 unk1;
+    /* 0x02 */ u8 pad2[0x42];
+} UnkStruct_802E8F94; /* size = 0x44 */
+
+extern UnkStruct_80364AF0 D_80364AF0[];
+extern UnkStruct_802E8F94 D_802E8F94[];
+extern u64 D_80364A90;
+extern s32 D_802FA26C;
+extern u8 D_8039C53C[];
+void func_80261570(f32);
+void func_8028B3E0(void);
+void func_801ECF5C(void);
+void func_801ED4B8(void);
+
+u8 func_8028653C(void) {
+    s32 sp34;
+    UnkStruct_80364AF0 *sp30;
+    u8 sp2F;
+    u8 sp2E;
+    u8 sp2D;
+    u8 sp2C;
+    u8 sp2B;
+
+    sp30 = &D_80364AF0[D_80364AE8];
+    sp2F = 1;
+    sp2E = 0;
+    sp2D = sp30->unk91;
+    do {
+        sp2F = 1;
+        switch (D_80364AF0[D_80364AE8].unk91) {
+            case 0:
+                if (D_80364A90 == 0x100000000000) {
+                    sp2F = 0;
+                }
+                break;
+            case 1:
+            case 2:
+            case 3:
+                for (sp34 = 0; sp34 < 60 && sp2F != 0; sp34++) {
+                    if (D_802E8F94[sp34].unk1 == D_80364AF0[D_80364AE8].unk91) {
+                        if ((((D_80364AF0[D_80364AE8].unk18[sp34] > 0 && D_80364AF0[D_80364AE8].unk18[sp34] < 6) ? 1 : 0) == 0) &&
+                            D_802E8F94[sp34].unk0 == 1) {
+                            sp2F = 0;
+                        }
+                    }
+                }
+                break;
+            case 4:
+                if (sp30->unk90 != 0x3F) {
+                    sp2F = 0;
+                }
+                break;
+            case 5:
+                if ((((D_80364AF0[D_80364AE8].unk18[49] > 0 && D_80364AF0[D_80364AE8].unk18[49] < 6) ? 1 : 0) == 0)) {
+                    sp2F = 0;
+                }
+                break;
+            case 6:
+                if ((((D_80364AF0[D_80364AE8].unk18[50] > 0 && D_80364AF0[D_80364AE8].unk18[50] < 6) ? 1 : 0) == 0)) {
+                    sp2F = 0;
+                }
+                break;
+            case 7:
+                if ((((D_80364AF0[D_80364AE8].unk18[40] > 0 && D_80364AF0[D_80364AE8].unk18[40] < 6) ? 1 : 0) == 0)) {
+                    sp2F = 0;
+                }
+                break;
+            case 8:
+                if (sp30->unkA < 222) {
+                    sp2F = 0;
+                }
+                break;
+            case 9:
+                if (sp30->unkA >= 234 || D_802FA26C != 0) {
+                    func_80261570(0.0f);
+                    func_8028B3E0();
+                    func_801ECF5C();
+                    sp2E = 1;
+                } else {
+                    sp2F = 0;
+                }
+                break;
+            case 10:
+                break;
+            case 11:
+                if (sp30->unkA < 297 || D_802FA26C != 0) {
+                    sp2F = 0;
+                } else {
+                    func_80261570(0.0f);
+                    func_8028B3E0();
+                    func_801ED4B8();
+                }
+                break;
+            case 12:
+                if (sp30->unkA >= 354 || D_802FA26C != 0) {
+                    sp30->unkA = 360;
+                    sp30->unkC = 30;
+                    func_8029A7E4(" ***** YOU CAN STOP NOW!! ***** \n");
+                } else {
+                    sp2F = 0;
+                }
+                break;
+            case 13:
+                sp2F = 0;
+                break;
+            default:
+                func_8029A7E4("Undefined gameState case !!!!\n");
+                break;
+        }
+        if (D_802FA26C != 0 && D_80364AF0[D_80364AE8].unk91 != 13) {
+            if (D_8039C53C[D_80364AE8] != 0) {
+                D_80364AF0[D_80364AE8].unk91++;
+            }
+        } else {
+            if (sp2F != 0) {
+                D_80364AF0[D_80364AE8].unk91++;
+            }
+            func_8029A7E4("going to game state %d\n", D_80364AF0[D_80364AE8].unk91);
+        }
+    } while (sp2F != 0 && sp2E == 0 && D_802FA26C == 0);
+    sp2B = D_80364AF0[D_80364AE8].unk91 != sp2D;
+    func_8029A7E4("game state %d to %d\n", sp2D, D_80364AF0[D_80364AE8].unk91);
+    return sp2B;
+}

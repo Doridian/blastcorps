@@ -100,7 +100,6 @@ typedef struct UnkSndState_s UnkSndState;
 typedef struct UnkSndBank_s UnkSndBank;
 
 UnkSndState *func_80260650(UnkSndBank *bank, s16 id, UnkSndState **handle);
-void func_80260AB8(UnkSndState *state, s16 type, s32 param);
 void func_80265428(void);
 void func_8026513C(void);
 s32 func_80265A0C(s32 arg0);
@@ -109,67 +108,10 @@ void func_80265E48(void);
 s32 func_8026A610(s32, s32, s32, s32);
 s32 func_8026A8E0(s32, s32);
 void func_8026AD30(s32);
-void func_80267A9C(void *arg);
-void func_80267CDC(UnkAudioInfo *info, UnkAudioInfo *lastInfo);
-void func_80267F88(UnkAudioInfo *info);
-void func_80261068(void);
-void func_802611F0(void);
-void func_80261284(void);
-void func_802613C8(void);
-void func_80261528(void);
-void func_802682A4(void);
-OSMesgQueue *func_80270F74(void *sc);
-void func_80270E50(void *sc, void *client, OSMesgQueue *mq, s32 arg3, s32 arg4);
-void func_8029A7E4(char *, ...);
-ALDMAproc func_80268254(UnkDMAState **state);
-s32 func_80267FE0(s32 addr, s32 len, void *state);
 
-extern s32 D_80000300;
 extern s32 osViClock;
 extern u8 D_802E8BD0;
-extern u64 D_802E6820[];
-extern u64 D_802E68F0[];
-extern u32 D_802F3AF0;
-extern u32 D_802F3AF4;
-extern s32 D_802F3AF8;
-extern s32 D_802F3C04;
-extern char D_80309714[];
-extern char D_80309740[];
-extern char D_80309758[];
-extern char D_80309760[];
-extern char D_8030978C[];
-extern char D_803097CC[];
-extern char D_803097D4[];
-extern char D_803097F0[];
-extern char D_80309818[];
-extern u64 D_8030EB90[];
-extern s32 D_8036A8C4;
-extern UnkFxParams D_802F3AFC;
-extern char D_80309700[];
-extern s32 D_803156A4;
-extern u8 D_80315440[];
-extern u8 D_80367728;
-extern u8 D_80367729;
-extern u8 D_8036772A;
-extern s32 D_8036772C;
-extern u8 D_80367730;
-extern u64 D_80368058;
-extern u64 D_80368060;
-extern u64 D_80368068;
-extern u8 D_803682F8[];
 extern u16 D_803C30A8[];
-extern UnkAudioMgr D_80368070;
-extern u64 D_80368308[];
-extern UnkDMAState D_8036A308;
-extern UnkDMABuffer D_8036A318[];
-extern UnkIoMesg D_8036A8C8[];
-extern s32 D_8036AFA0;
-extern u32 D_8036A8B8;
-extern u32 D_8036A8BC;
-extern u32 D_8036A8C0;
-extern OSMesgQueue D_8036AE68;
-extern OSMesg D_8036AE80[];
-extern f32 D_80309640;
 extern s32 D_803643E0;
 extern s32 D_803643E8;
 extern s16 D_8036443C;
@@ -178,20 +120,15 @@ extern s16 D_80368034;
 extern s16 D_80368036;
 extern UnkSndBank *D_80367738;
 extern UnkStruct_80367D60 D_80367D60[20];
-extern s32 D_80368030;
 extern s32 D_80368038;
-extern s32 D_8036803C;
 extern s32 D_80368040;
 extern s32 D_80368044;
 extern s32 D_80368048;
 extern s32 D_8036B968;
 extern u8 D_8036EA79;
-extern s32 D_803EF2EC;
-extern s32 D_803EF2F4;
 extern s32 D_803EF308;
 extern s32 D_803EF30C;
 extern u8 D_803EF32C;
-extern u8 D_803EF32D;
 extern s32 D_803EF6DC;
 extern s32 D_803EF6E4;
 
@@ -256,7 +193,7 @@ void func_80264CB4(s16 arg0, s16 arg1, s16 arg2, s16 arg3, u8 arg4, s32 arg5) {
             D_80367D60[i].unk1C = 0;
             D_80367D60[i].unk15 = 5;
             D_80367D60[i].unk18 = 4000;
-            D_80367D60[i].unk20 = D_80309640;
+            D_80367D60[i].unk20 = 1e+08f;
             D_80367D60[i].unk1B = 0;
         }
         i++;
@@ -470,6 +407,10 @@ void func_80265B7C(s32 arg0) {
     }
 }
 
+/*
+ * Close: only the registers from `i = useFar ? farthest : nearest` onwards
+ * are rotated by one (t5/t6); the instructions are otherwise identical.
+ */
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/20460/func_80265E48.s")
 
 void func_802661EC(void) {
@@ -481,7 +422,317 @@ void func_802661EC(void) {
     D_80368038 = 2000;
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/20460/func_80266248.s")
+/* The segment 2 buffer as this function uses it. */
+typedef struct {
+    /* 0x0000 */ Mtx unk0[8];
+    /* 0x0200 */ Mtx unk200;
+    /* 0x0240 */ u8 pad240[0x16C0];
+    /* 0x1900 */ Vtx unk1900[1];
+} UnkStruct_80266248;
+
+extern UnkStruct_80266248 D_02000000;
+extern Vtx D_802E9FB0[4];
+extern u16 D_802E9FF0[];
+extern u16 D_802EA4F0[];
+extern u16 D_802EA9F0[];
+extern u16 D_802EAEF0[];
+extern u16 D_802EB3F0[];
+extern u16 D_802EB8F0[];
+extern u16 D_802EBDF0[];
+extern u16 D_802EC2F0[];
+extern u16 D_802EC7F0[];
+extern u16 D_802ECCF0[];
+extern u16 D_802ED1F0[];
+extern u16 D_802ED6F0[];
+extern u16 D_802EDBF0[];
+extern u16 D_802EE0F0[];
+extern u16 D_802EE5F0[];
+extern u16 D_802EEAF0[];
+extern u16 D_802EEFF0[];
+extern u16 D_802EF4F0[];
+extern u16 D_802EF9F0[];
+extern u16 D_802EFEF0[];
+extern u16 D_802F03F0[];
+extern u16 D_802F08F0[];
+extern u16 D_802F0DF0[];
+extern u16 D_802F12F0[];
+extern u16 D_802F17F0[];
+extern u16 D_802F1CF0[];
+extern u16 D_802F21F0[];
+extern u16 D_802F26F0[];
+extern u16 D_802F2BF0[];
+extern u16 D_802F30F0[];
+extern u16 D_802F35F0[];
+extern f32 D_80364414;
+extern s32 D_803EF310;
+extern s32 D_803EF314;
+extern s32 D_803EF318;
+extern u8 D_803EF32E;
+
+s32 func_80267614(UnkStruct_80267614 *arg0);
+void func_8026A5CC(u64 *dst, u64 *src, s32 size);
+
+void func_80266248(Gfx **gfxp, UnkStruct_80266248 *arg1) {
+    Gfx *gfx;
+    s32 vtxIdx;
+    s32 i;
+    s32 k;
+    s32 j;
+    u8 found;
+    u8 frame;
+    u16 *tex;
+    u32 phys;
+    u8 flip;
+    f32 mf[4][4];
+    f32 x[4];
+    f32 y[4];
+    f32 z[4];
+    s16 angle;
+
+    gfx = *gfxp;
+    vtxIdx = 0;
+    guRotateF(mf, D_80364414 - 135.0, 0.0f, 1.0f, 0.0f);
+    for (k = 0; k < 4; k++) {
+        guMtxXFMF(mf, D_802E9FB0[k].v.ob[0], D_802E9FB0[k].v.ob[1], D_802E9FB0[k].v.ob[2], &x[k], &y[k], &z[k]);
+    }
+    gSPClearGeometryMode(gfx++, 0xFFFFFFFF);
+    gSPSetGeometryMode(gfx++, G_ZBUFFER | G_SHADE | G_SHADING_SMOOTH);
+    gDPPipeSync(gfx++);
+    gDPSetCycleType(gfx++, G_CYC_1CYCLE);
+    gDPSetRenderMode(gfx++, G_RM_ZB_XLU_SURF, G_RM_ZB_XLU_SURF2);
+    gDPSetCombineMode(gfx++, G_CC_MODULATEIA, G_CC_MODULATEIA);
+    gSPTexture(gfx++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON);
+    for (i = 0; i < 20; i++) {
+        if (func_80267614((UnkStruct_80267614 *)&D_80367D60[i]) &&
+            (D_80367D60[i].unk15 == 1 || D_80367D60[i].unk15 == 2 ||
+             (D_80367D60[i].unk15 == 4 && D_80367D60[i].unk1C == 0))) {
+            D_80367D60[i].unk14++;
+            if (D_80367D60[i].unk14 >= 6) {
+                D_80367D60[i].unk13++;
+                D_80367D60[i].unk14 = 0;
+            }
+            if (D_80367D60[i].unk13 >= 6) {
+                D_80367D60[i].unk13 = 0;
+            }
+            switch (D_80367D60[i].unk13) {
+                case 0:
+                    tex = D_802EA4F0;
+                    break;
+                case 1:
+                    tex = D_802EA9F0;
+                    break;
+                case 2:
+                    tex = D_802EAEF0;
+                    break;
+                case 3:
+                    tex = D_802EB3F0;
+                    break;
+                case 4:
+                    tex = D_802EB8F0;
+                    break;
+                case 5:
+                    tex = D_802EBDF0;
+                    break;
+            }
+            phys = osVirtualToPhysical(tex);
+            gDPPipeSync(gfx++);
+            gDPLoadTextureBlock(gfx++, phys, G_IM_FMT_RGBA, G_IM_SIZ_16b, 20, 32, 0, G_TX_NOMIRROR | G_TX_CLAMP,
+                                G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
+            func_8026A5CC((u64 *)&arg1->unk1900[vtxIdx], (u64 *)D_802E9FB0, 0x40);
+            for (j = 0; j < 4; j++) {
+                arg1->unk1900[vtxIdx + j].v.ob[0] = x[j] + D_80367D60[i].unk0;
+                arg1->unk1900[vtxIdx + j].v.ob[1] = y[j] + D_80367D60[i].unk2;
+                arg1->unk1900[vtxIdx + j].v.ob[2] = z[j] + D_80367D60[i].unk4;
+            }
+            gSPVertex(gfx++, &D_02000000.unk1900[vtxIdx], 4, 0);
+            vtxIdx += 4;
+            gSP1Triangle(gfx++, 0, 1, 2, 0);
+            gSP1Triangle(gfx++, 0, 2, 3, 0);
+        }
+    }
+    for (i = 0; i < 20; i++) {
+        if (((D_80367D60[i].unk15 == 4 && D_80367D60[i].unk1C != 0) || D_80367D60[i].unk15 == 5) &&
+            func_80267614((UnkStruct_80267614 *)&D_80367D60[i])) {
+            D_80367D60[i].unk14 += D_80367D60[i].unk1C;
+            if (D_80367D60[i].unk14 >= 11) {
+                D_80367D60[i].unk13++;
+                D_80367D60[i].unk14 = 0;
+            }
+            if (D_80367D60[i].unk13 >= 8) {
+                D_80367D60[i].unk13 = 0;
+            }
+            frame = D_80367D60[i].unk13;
+            flip = 0;
+            angle = D_80367D60[i].unk18 - (D_80364414 - 135.0) / 360.0 * 4095.0;
+            if (angle < 0) {
+                angle += 0xFFF;
+            }
+            if (angle >= 0xC00) {
+                switch (frame) {
+                    case 0:
+                        tex = D_802EEAF0;
+                        break;
+                    case 1:
+                        tex = D_802EEFF0;
+                        break;
+                    case 2:
+                        tex = D_802EF4F0;
+                        break;
+                    case 3:
+                        tex = D_802EF9F0;
+                        break;
+                    case 4:
+                        tex = D_802EFEF0;
+                        break;
+                    case 5:
+                        tex = D_802F03F0;
+                        break;
+                    case 6:
+                        tex = D_802F08F0;
+                        break;
+                    case 7:
+                        tex = D_802F0DF0;
+                        break;
+                }
+            }
+            if (angle >= 0x800 && angle < 0xC00) {
+                flip = 1;
+                switch (frame) {
+                    case 0:
+                        tex = D_802F12F0;
+                        break;
+                    case 1:
+                        tex = D_802F17F0;
+                        break;
+                    case 2:
+                        tex = D_802F1CF0;
+                        break;
+                    case 3:
+                        tex = D_802F21F0;
+                        break;
+                    case 4:
+                        tex = D_802F26F0;
+                        break;
+                    case 5:
+                        tex = D_802F2BF0;
+                        break;
+                    case 6:
+                        tex = D_802F30F0;
+                        break;
+                    case 7:
+                        tex = D_802F35F0;
+                        break;
+                }
+            }
+            if (angle >= 0x400 && angle < 0x800) {
+                switch (frame) {
+                    case 0:
+                        tex = D_802EC2F0;
+                        break;
+                    case 1:
+                        tex = D_802EC7F0;
+                        break;
+                    case 2:
+                        tex = D_802ECCF0;
+                        break;
+                    case 3:
+                        tex = D_802ED1F0;
+                        break;
+                    case 4:
+                        tex = D_802ED6F0;
+                        break;
+                    case 5:
+                        tex = D_802EDBF0;
+                        break;
+                    case 6:
+                        tex = D_802EE0F0;
+                        break;
+                    case 7:
+                        tex = D_802EE5F0;
+                        break;
+                }
+            }
+            if (angle < 0x400) {
+                switch (frame) {
+                    case 0:
+                        tex = D_802F12F0;
+                        break;
+                    case 1:
+                        tex = D_802F17F0;
+                        break;
+                    case 2:
+                        tex = D_802F1CF0;
+                        break;
+                    case 3:
+                        tex = D_802F21F0;
+                        break;
+                    case 4:
+                        tex = D_802F26F0;
+                        break;
+                    case 5:
+                        tex = D_802F2BF0;
+                        break;
+                    case 6:
+                        tex = D_802F30F0;
+                        break;
+                    case 7:
+                        tex = D_802F35F0;
+                        break;
+                }
+            }
+            phys = osVirtualToPhysical(tex);
+            gDPPipeSync(gfx++);
+            gDPLoadTextureBlock(gfx++, phys, G_IM_FMT_RGBA, G_IM_SIZ_16b, 20, 32, 0, G_TX_NOMIRROR | G_TX_CLAMP,
+                                G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
+            func_8026A5CC((u64 *)&arg1->unk1900[vtxIdx], (u64 *)D_802E9FB0, 0x40);
+            if (flip) {
+                arg1->unk1900[vtxIdx].v.tc[0] = 0x260;
+                arg1->unk1900[vtxIdx + 1].v.tc[0] = 0;
+                arg1->unk1900[vtxIdx + 2].v.tc[0] = 0;
+                arg1->unk1900[vtxIdx + 3].v.tc[0] = 0x260;
+            }
+            for (j = 0; j < 4; j++) {
+                arg1->unk1900[vtxIdx + j].v.ob[0] = x[j] + D_80367D60[i].unk0;
+                arg1->unk1900[vtxIdx + j].v.ob[1] = y[j] + D_80367D60[i].unk2;
+                arg1->unk1900[vtxIdx + j].v.ob[2] = z[j] + D_80367D60[i].unk4;
+            }
+            gSPVertex(gfx++, &D_02000000.unk1900[vtxIdx], 4, 0);
+            vtxIdx += 4;
+            gSP1Triangle(gfx++, 0, 1, 2, 0);
+            gSP1Triangle(gfx++, 0, 2, 3, 0);
+        }
+    }
+    if (D_803EF32E == 0) {
+        i = 0;
+        found = 0;
+        do {
+            if (D_80367D60[i].unk15 == 3) {
+                found = 1;
+                gDPPipeSync(gfx++);
+                gDPLoadTextureBlock(gfx++, osVirtualToPhysical(D_802E9FF0), G_IM_FMT_RGBA, G_IM_SIZ_16b, 20, 32, 0,
+                                    G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK,
+                                    G_TX_NOLOD, G_TX_NOLOD);
+                func_8026A5CC((u64 *)&arg1->unk1900[vtxIdx], (u64 *)D_802E9FB0, 0x40);
+                for (j = 0; j < 4; j++) {
+                    arg1->unk1900[vtxIdx + j].v.ob[0] = x[j];
+                    arg1->unk1900[vtxIdx + j].v.ob[1] = y[j];
+                    arg1->unk1900[vtxIdx + j].v.ob[2] = z[j];
+                }
+                guTranslate(&arg1->unk200, D_803EF310 / 32.0f, D_803EF314 / 32.0f, D_803EF318 / 32.0f);
+                gSPMatrix(gfx++, &D_02000000.unk200, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+                gSPVertex(gfx++, &D_02000000.unk1900[vtxIdx], 4, 0);
+                vtxIdx += 4;
+                gSP1Triangle(gfx++, 0, 1, 2, 0);
+                gSP1Triangle(gfx++, 0, 2, 3, 0);
+                gSPPopMatrix(gfx++, G_MTX_MODELVIEW);
+            } else {
+                i++;
+            }
+        } while (i < 20 && found == 0);
+    }
+    gDPPipeSync(gfx++);
+    *gfxp = gfx;
+}
 
 s32 func_80267614(UnkStruct_80267614 *arg0) {
     s32 i;
@@ -495,222 +746,4 @@ s32 func_80267614(UnkStruct_80267614 *arg0) {
         }
     }
     return 0;
-}
-
-void func_802676A0(UnkSynConfig *c, OSPri pri) {
-    s32 i;
-    f32 fsize;
-    s32 unused;
-    UnkFxParams params;
-
-    c->dmaproc = func_80268254;
-    if (D_80000300 != 1) {
-        osViClock = 0x02E6025C;
-    }
-    c->outputRate = osAiSetFrequency(22050);
-    fsize = (f32)c->outputRate * 2.0f / 60.0f;
-    D_8036A8BC = (s32)fsize;
-    if (D_8036A8BC < fsize) {
-        D_8036A8BC++;
-    }
-    if (D_8036A8BC & 0xF) {
-        D_8036A8BC = (D_8036A8BC & ~0xF) + 0x10;
-    }
-    D_8036A8B8 = D_8036A8BC - 16;
-    D_8036A8C0 = D_8036A8BC + 53;
-    if (c->fxType == AL_FX_CUSTOM) {
-        unused = 0;
-        params = D_802F3AFC;
-        c->params = params.v;
-        alInit(&D_80368070.g, (ALSynConfig *)c);
-    } else {
-        alInit(&D_80368070.g, (ALSynConfig *)c);
-    }
-    D_8036A318[0].node.prev = NULL;
-    D_8036A318[0].node.next = NULL;
-    for (i = 0; i < 71; i++) {
-        alLink(&D_8036A318[i + 1].node, &D_8036A318[i].node);
-        D_8036A318[i].ptr = alHeapAlloc(c->heap, 1, 0x200);
-    }
-    D_8036A318[i].ptr = alHeapAlloc(c->heap, 1, 0x200);
-    for (i = 0; i < 2; i++) {
-        D_80368070.ACMDList[i] = alHeapAlloc(c->heap, 1, 0x55F0);
-    }
-    for (i = 0; i < 3; i++) {
-        D_80368070.audioInfo[i] = alHeapAlloc(c->heap, 1, sizeof(UnkAudioInfo));
-        D_80368070.audioInfo[i]->data = alHeapAlloc(c->heap, 1, D_8036A8C0 * 4);
-    }
-    osCreateMesgQueue(&D_80368070.audioReplyMsgQ, D_80368070.audioReplyMsgBuf, 8);
-    osCreateMesgQueue(&D_80368070.audioFrameMsgQ, D_80368070.audioFrameMsgBuf, 8);
-    osCreateMesgQueue(&D_8036AE68, D_8036AE80, 0x48);
-    osCreateThread(&D_80368070.thread, 4, func_80267A9C, NULL, &D_80368308[0x2000 / sizeof(u64)], pri);
-}
-
-void func_80267A74(void) {
-    osStartThread(&D_80368070.thread);
-}
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/20460/func_80267A9C.s")
-
-void func_80267CDC(UnkAudioInfo *info, UnkAudioInfo *lastInfo) {
-    s16 *audioPtr;
-    Acmd *cmdp;
-    u32 samplesLeft;
-    UnkScTask *t;
-
-    samplesLeft = 0;
-    func_802682A4();
-    audioPtr = (s16 *)osVirtualToPhysical(info->data);
-    if (lastInfo != NULL) {
-        osAiSetNextBuffer(lastInfo->data, lastInfo->frameSamples << 2);
-    }
-    samplesLeft = osAiGetLength() >> 2;
-    info->frameSamples = (D_8036A8BC - samplesLeft + 53) & ~0xF;
-    if (info->frameSamples < D_8036A8B8) {
-        info->frameSamples = D_8036A8B8;
-    }
-    cmdp = alAudioFrame(D_80368070.ACMDList[D_802F3AF8], &D_8036A8C4, audioPtr, info->frameSamples);
-    if (D_8036A8C4 > 2750) {
-        func_8029A7E4(D_80309714, D_80309740, D_80309758, 0x150);
-    }
-    t = &info->task;
-    t->next = NULL;
-    t->msgQ = &D_80368070.audioReplyMsgQ;
-    t->msg = (OSMesg)info;
-    t->flags = 1;
-    t->unk50 = D_803682F8;
-    t->list.t.data_ptr = (u64 *)D_80368070.ACMDList[D_802F3AF8];
-    t->list.t.data_size = (cmdp - D_80368070.ACMDList[D_802F3AF8]) * sizeof(Acmd);
-    t->list.t.type = M_AUDTASK;
-    t->list.t.ucode_boot = D_802E6820;
-    t->list.t.ucode_boot_size = (s32)D_802E68F0 - (s32)D_802E6820;
-    t->list.t.flags = 0;
-    t->list.t.ucode = D_802E68F0;
-    t->list.t.ucode_data = D_8030EB90;
-    t->list.t.ucode_data_size = 0x800;
-    t->list.t.yield_data_ptr = NULL;
-    t->list.t.yield_data_size = 0;
-    osWritebackDCache(t, sizeof(UnkScTask));
-    osWritebackDCache(t->list.t.data_ptr, t->list.t.data_size);
-    if (osSendMesg(func_80270F74(D_80315440), t, OS_MESG_NOBLOCK) == -1) {
-        func_8029A7E4(D_80309760, D_8030978C, D_803097CC, 0x169);
-    }
-    D_802F3AF8 ^= 1;
-}
-
-void func_80267F88(UnkAudioInfo *info) {
-    u32 samplesLeft;
-
-    samplesLeft = osAiGetLength() >> 2;
-    if (samplesLeft == 0 && D_802F3C04 == 0) {
-        func_8029A7E4(D_803097D4);
-        D_802F3C04 = 0;
-    }
-}
-
-s32 func_80267FE0(s32 addr, s32 len, void *state) {
-    void *foundBuffer;
-    s32 delta;
-    s32 addrEnd;
-    s32 buffEnd;
-    UnkDMABuffer *dmaPtr;
-    UnkDMABuffer *lastDmaPtr;
-    UnkDMABuffer *cur;
-    s32 count;
-
-    count = 0;
-    lastDmaPtr = NULL;
-    dmaPtr = D_8036A308.firstUsed;
-    addrEnd = addr + len;
-    delta = addr & 1;
-    while (dmaPtr != NULL) {
-        cur = dmaPtr;
-        buffEnd = dmaPtr->startAddr + 0x200;
-        if (dmaPtr->startAddr > addr) {
-            break;
-        } else if (addrEnd <= buffEnd) {
-            dmaPtr->lastFrame = D_802F3AF0;
-            foundBuffer = dmaPtr->ptr + addr - dmaPtr->startAddr;
-            return osVirtualToPhysical(foundBuffer);
-        }
-        lastDmaPtr = dmaPtr;
-        dmaPtr = (UnkDMABuffer *)dmaPtr->node.next;
-        count++;
-    }
-    if (count > D_8036AFA0) {
-        D_8036AFA0 = count;
-    }
-    dmaPtr = D_8036A308.firstFree;
-    if (dmaPtr == NULL) {
-        func_8029A7E4(D_803097F0);
-    }
-    if (dmaPtr == NULL) {
-        return osVirtualToPhysical(D_8036A308.firstUsed);
-    }
-    D_8036A308.firstFree = (UnkDMABuffer *)dmaPtr->node.next;
-    alUnlink(&dmaPtr->node);
-    if (lastDmaPtr != NULL) {
-        alLink(&dmaPtr->node, &lastDmaPtr->node);
-    } else if (D_8036A308.firstUsed != NULL) {
-        lastDmaPtr = D_8036A308.firstUsed;
-        D_8036A308.firstUsed = dmaPtr;
-        dmaPtr->node.next = &lastDmaPtr->node;
-        dmaPtr->node.prev = NULL;
-        lastDmaPtr->node.prev = &dmaPtr->node;
-    } else {
-        D_8036A308.firstUsed = dmaPtr;
-        dmaPtr->node.next = NULL;
-        dmaPtr->node.prev = NULL;
-    }
-    foundBuffer = dmaPtr->ptr;
-    addr -= delta;
-    dmaPtr->startAddr = addr;
-    dmaPtr->lastFrame = D_802F3AF0;
-    osPiStartDma((OSIoMesg *)&D_8036A8C8[D_802F3AF4++], OS_MESG_PRI_NORMAL, OS_READ, addr, foundBuffer, 0x200, &D_8036AE68);
-    return osVirtualToPhysical(foundBuffer) + delta;
-}
-
-ALDMAproc func_80268254(UnkDMAState **state) {
-    s32 unused;
-
-    if (!D_8036A308.initialized) {
-        D_8036A308.firstUsed = NULL;
-        D_8036A308.firstFree = D_8036A318;
-        D_8036A308.initialized = 1;
-    }
-    *state = &D_8036A308;
-    return (ALDMAproc)func_80267FE0;
-}
-
-void func_802682A4(void) {
-    u32 i;
-    OSIoMesg *iomsg;
-    UnkDMABuffer *dmaPtr;
-    UnkDMABuffer *nextPtr;
-
-    for (i = 0; i < D_802F3AF4; i++) {
-        if (osRecvMesg(&D_8036AE68, (OSMesg *)&iomsg, OS_MESG_NOBLOCK) == -1) {
-            func_8029A7E4(D_80309818);
-        }
-    }
-    dmaPtr = D_8036A308.firstUsed;
-    while (dmaPtr != NULL) {
-        nextPtr = (UnkDMABuffer *)dmaPtr->node.next;
-        if (dmaPtr->lastFrame + 1 < D_802F3AF0) {
-            if (D_8036A308.firstUsed == dmaPtr) {
-                D_8036A308.firstUsed = (UnkDMABuffer *)dmaPtr->node.next;
-            }
-            alUnlink(&dmaPtr->node);
-            if (D_8036A308.firstFree != NULL) {
-                alLink(&dmaPtr->node, &D_8036A308.firstFree->node);
-            } else {
-                D_8036A308.firstFree = dmaPtr;
-                dmaPtr->node.next = NULL;
-                dmaPtr->node.prev = NULL;
-            }
-        }
-        dmaPtr = nextPtr;
-    }
-    D_802F3AF4 = 0;
-    D_802F3AF0++;
 }

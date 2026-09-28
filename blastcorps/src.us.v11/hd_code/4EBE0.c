@@ -55,76 +55,88 @@ typedef struct {
     /* 0x28 */ u8 unk28;
 } UnkStruct_802FF150;
 
-extern s32 func_802AC4C4(s32, s32, s32, s32, s32, s32, s32, s32);
 typedef struct {
     /* 0x0000 */ Mtx unk0[8];
     /* 0x0200 */ u8 unk200[0x12C0];
     /* 0x14C0 */ Mtx unk14C0;
 } UnkStruct_02000000;
 
-extern UnkStruct_02000000 D_02000000;
 
-void func_80295394(s32 *arg0, s32 *arg1, s32 *arg2, s16 *arg3, s16 *arg4, s16 *arg5);
-extern void func_802AA6D0(s32, s32, s32, s16, s32, s32, s32, Mtx *);
-s16 func_80295924(s16 arg0, s16 arg1, f32 arg2);
 void func_802949B0(s32 arg0);
 f32 func_80294840(f32 arg0, f32 arg1, f32 arg2, f32 arg3);
 extern void func_8026A2E8(f32, f32 *);
 extern u8 func_8027EED8(s32, s32, s16 *);
 extern void func_802608C8(void *);
-extern void func_8029A7E4(char *, ...);
-extern s32 func_80286038(s32);
 
 extern u8 D_802E8BD0;
 extern UnkStruct_802FE980 D_802FE980[];
-extern char D_8030CD60[];
-extern f32 D_8030CD50;
-extern s32 D_803156C0;
 extern u32 D_803156C4;
-extern u64 D_80364A90;
 extern s32 D_803643E0;
-extern s32 D_803643E4;
 extern s32 D_803643E8;
-extern u8 D_803643D4;
 extern f32 D_8039CA10[4][4];
 extern f32 D_8039CA50;
 extern f32 D_8039CA54;
 extern f32 D_8039CA58;
-extern u8 D_8039CA61;
-extern u8 D_8039CA62;
-extern UnkStruct_8039CA68 *D_8039CA68[2];
-extern s32 D_8039CA70[2];
-extern s32 D_8039CA78;
-extern u8 D_8039CA7C;
-extern u8 D_8039CA7D;
-extern u8 D_8039CA7E;
-extern s32 D_8039CA80;
-extern s32 D_8039CA84;
-extern u32 D_8039CA88;
-extern u8 D_8039CA8C;
-extern s16 D_803ED390[3];
 extern s32 D_802E8BDC;
 extern UnkStruct_802FEDA0 D_802FEDA0[];
 extern void *D_8036DCD8;
 extern s16 D_8036E4C8;
 extern u8 D_8036E4CA;
-extern f64 D_8030CD48;
-extern s32 D_802FF0D0[];
-extern void *D_803BDB00;
-extern void *D_803BDB04;
-extern void *D_803BDB08;
-extern UnkStruct_802FF150 D_802FF150[];
-extern u16 D_803C30A8[];
-extern UnkStruct_802FF11C D_802FF11C[6];
-extern char D_8030CD7C[];
-extern char D_8030CDA8[];
-extern char D_8030CDB0[];
-extern f64 D_8030CDC0;
-extern f64 D_8030CDC8;
-extern f64 D_8030CDD0;
 
-/* Needs a jump table, which would go in the unsplit .rodata. */
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/4EBE0/func_802933A0.s")
+extern s32 D_803F7664;
+extern s32 D_803F7668;
+extern s32 D_803F766C;
+void func_80294C50(f32 arg0[4][4], s16 *arg1, s16 *arg2, s16 *arg3, s32 *arg4, s32 arg5);
+void func_80294D24(f32 arg0[4][4], s16 *arg1, s16 *arg2, s16 *arg3, s32 *arg4, s32 arg5);
+void func_80293F84(f32 arg0[4][4], s16 arg1, s16 arg2, s16 *arg3, s16 *arg4, s16 *arg5, UnkStruct_80293F84 *arg6,
+                   s32 arg7);
+void func_802936AC(f32 arg0[4][4], s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 *arg5, s16 *arg6, s16 *arg7,
+                   UnkStruct_802936AC *arg8, s32 arg9);
+void func_80294B64(f32 arg0[4][4], s32 arg1, s16 *arg2, s16 *arg3, s16 *arg4, UnkStruct_80294B64 *arg5, s32 arg6);
+
+void func_802933A0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, Mtx *arg4, void *arg5, Gfx *arg6, Gfx *arg7, s32 arg8,
+                   s32 arg9, s32 arg10, s32 arg11) {
+    s16 spBE;
+    s16 spBC;
+    s16 spBA;
+    f32 sp78[4][4];
+    f32 sp38[4][4];
+
+    spBE = 0;
+    spBC = 0;
+    spBA = 0;
+    switch (arg3) {
+        case 1:
+            func_80294C50(sp78, &spBE, &spBC, &spBA, arg5, arg8);
+            break;
+        case 2:
+            func_80294D24(sp78, &spBE, &spBC, &spBA, arg5, arg8);
+            break;
+        case 3:
+            func_80293F84(sp78, arg0 >> 5, arg2 >> 5, &spBE, &spBC, &spBA, arg5, arg8);
+            break;
+        case 4:
+            func_802936AC(sp78, arg0 >> 5, arg2 >> 5, arg9 >> 5, arg11 >> 5, &spBE, &spBC, &spBA, arg5, arg8);
+            break;
+        case 5:
+            func_80294B64(sp78, 90, &spBE, &spBC, &spBA, arg5, arg8);
+            break;
+        default:
+            guTranslateF(sp78, 0.0f, 0.0f, 0.0f);
+            break;
+    }
+    if (arg3 == 3 && D_802FE980[arg8].mode == 1) {
+        arg1 = 0;
+    }
+    guTranslateF(sp38, arg0 / 32.0f, arg1 / 32.0f, arg2 / 32.0f);
+    guMtxCatF(sp78, sp38, sp78);
+    guMtxF2L(sp78, arg4);
+    D_803F7664 = (spBE << 5) + arg0;
+    D_803F7668 = (spBC << 5) + arg1;
+    D_803F766C = (spBA << 5) + arg2;
+    gSPMatrix(arg6++, osVirtualToPhysical(arg4), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gSPMatrix(arg7++, osVirtualToPhysical(arg4), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+}
 
 void func_802936AC(f32 arg0[4][4], s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 *arg5, s16 *arg6, s16 *arg7,
                    UnkStruct_802936AC *arg8, s32 arg9) {
@@ -375,7 +387,7 @@ void func_80293F84(f32 arg0[4][4], s16 arg1, s16 arg2, s16 *arg3, s16 *arg4, s16
     } else {
         idx[3] = cur + 2;
     }
-    D_8039CA50 = (f32) arg6->unk4 / D_8030CD48;
+    D_8039CA50 = (f32) arg6->unk4 / 1000.0;
     D_8039CA54 = D_8039CA50 * D_8039CA50;
     D_8039CA58 = D_8039CA54 * D_8039CA50;
     p0 = D_802FE980[arg7].pts[idx[0]][3];
@@ -497,235 +509,10 @@ void func_80294D24(f32 arg0[4][4], s16 *arg1, s16 *arg2, s16 *arg3, s32 *arg4, s
     if (D_802E8BD0 == 0) {
         *arg4 += arg5;
     }
-    guRotateF(mf, *arg4, 0.2f, 0.7f, D_8030CD50);
+    guRotateF(mf, *arg4, 0.2f, 0.7f, 0.1f);
     guMtxXFMF(mf, 90.0f, 0.0f, 0.0f, &x, &y, &z);
     *arg1 = x;
     *arg2 = y;
     *arg3 = z;
     guTranslateF(arg0, x, y, z);
-}
-
-void func_80294E30(void) {
-    D_8039CA68[0] = (UnkStruct_8039CA68 *) 0x80055400;
-    D_8039CA68[1] = (UnkStruct_8039CA68 *) 0x80065400;
-    D_8039CA88 = func_80286038(0xFFFF) - 1;
-    D_8039CA7D = 0;
-}
-
-void func_80294E88(void) {
-    D_8039CA70[1] = 0;
-    D_8039CA80 = -1;
-    D_8039CA62 = 1;
-    D_8039CA8C = 0;
-}
-
-void func_80294EB8(void) {
-    if (D_8039CA7D != 0) {
-        D_8039CA61 = 1;
-        D_8039CA84 = -1;
-        D_8039CA78 = 0;
-        D_8039CA7E = D_8039CA7C;
-    }
-}
-
-void func_80294F00(void) {
-    if (D_80364A90 & 0x104) {
-        if (D_8039CA80 == -1) {
-            D_8039CA80 = D_803156C0;
-        }
-        if ((u32) D_8039CA70[1] < 0xCCC) {
-            D_8039CA68[1][D_8039CA70[1]].x = D_803643E0;
-            D_8039CA68[1][D_8039CA70[1]].y = D_803643E4;
-            D_8039CA68[1][D_8039CA70[1]].z = D_803643E8;
-            D_8039CA68[1][D_8039CA70[1]].unkC = D_803ED390[0];
-            D_8039CA68[1][D_8039CA70[1]].unkE = D_803ED390[1];
-            D_8039CA68[1][D_8039CA70[1]].unk10 = D_803ED390[2];
-            D_8039CA68[1][D_8039CA70[1]].unk12 = D_803156C0 - D_8039CA80;
-            D_8039CA70[1]++;
-        } else {
-            D_8039CA8C = 1;
-            func_8029A7E4(D_8030CD60);
-        }
-    }
-}
-
-void func_80295120(Gfx **arg0, UnkStruct_02000000 *arg1) {
-    Gfx *gfx;
-    s32 x;
-    s32 y;
-    s32 z;
-    s16 rx;
-    s16 ry;
-    s16 rz;
-
-    gfx = *arg0;
-    if (D_8039CA61 != 0) {
-        func_80295394(&x, &y, &z, &rx, &ry, &rz);
-        func_802AA6D0(x, y, z, rx, ry, rz, D_802FF0D0[D_8039CA7C], &arg1->unk14C0);
-        gSPSegment(gfx++, 6, osVirtualToPhysical(D_803BDB04));
-        gSPSegment(gfx++, 7, osVirtualToPhysical(D_803BDB00));
-        gSPMatrix(gfx++, &D_02000000.unk14C0, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-        gDPPipeSync(gfx++);
-        gDPSetEnvColor(gfx++, 0, 0, 0, 255);
-        gDPSetPrimColor(gfx++, 0, 0, 255, 255, 255, 100);
-        gSPClearGeometryMode(gfx++, 0xFFFFFFFF);
-        gSPDisplayList(gfx++, osVirtualToPhysical(D_803BDB08));
-        gSPMatrix(gfx++, &D_02000000.unk0[7], G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
-        gDPPipeSync(gfx++);
-    }
-    *arg0 = gfx;
-}
-
-void func_80295394(s32 *arg0, s32 *arg1, s32 *arg2, s16 *arg3, s16 *arg4, s16 *arg5) {
-    u8 found;
-    s32 t;
-    s32 j;
-    s32 span;
-    s32 elapsed;
-    f32 frac;
-
-    t = D_803156C0 - D_8039CA84;
-    if (D_80364A90 == 0x2000) {
-        *arg0 = D_8039CA68[0][0].x;
-        *arg1 = D_8039CA68[0][0].y;
-        *arg2 = D_8039CA68[0][0].z;
-        *arg3 = D_8039CA68[0][0].unkC;
-        *arg4 = D_8039CA68[0][0].unkE;
-        *arg5 = D_8039CA68[0][0].unk10;
-        D_8039CA84 = D_803156C0;
-        return;
-    }
-    found = 0;
-    while (D_8039CA78 < D_8039CA70[0] - 2 && found == 0) {
-        if (t >= D_8039CA68[0][D_8039CA78].unk12 && t < D_8039CA68[0][D_8039CA78 + 1].unk12) {
-            found = 1;
-        } else {
-            D_8039CA78++;
-        }
-    }
-    found = 0;
-    j = D_8039CA78 + 1;
-    while (j < D_8039CA70[0] - 2 && found == 0) {
-        if (t <= D_8039CA68[0][j].unk12) {
-            found = 1;
-        } else {
-            j++;
-        }
-    }
-    span = D_8039CA68[0][j].unk12 - D_8039CA68[0][D_8039CA78].unk12;
-    if (j >= D_8039CA70[0] - 2) {
-        elapsed = D_8039CA68[0][j].unk12 - D_8039CA68[0][D_8039CA78].unk12;
-    } else {
-        elapsed = t - D_8039CA68[0][D_8039CA78].unk12;
-    }
-    frac = (f32) elapsed / (f32) span;
-    *arg0 = (D_8039CA68[0][j].x - D_8039CA68[0][D_8039CA78].x) * frac + D_8039CA68[0][D_8039CA78].x;
-    *arg1 = (D_8039CA68[0][j].y - D_8039CA68[0][D_8039CA78].y) * frac + D_8039CA68[0][D_8039CA78].y;
-    *arg2 = (D_8039CA68[0][j].z - D_8039CA68[0][D_8039CA78].z) * frac + D_8039CA68[0][D_8039CA78].z;
-    *arg3 = func_80295924(D_8039CA68[0][D_8039CA78].unkC, D_8039CA68[0][j].unkC, frac);
-    *arg4 = func_80295924(D_8039CA68[0][D_8039CA78].unkE, D_8039CA68[0][j].unkE, frac);
-    *arg5 = func_80295924(D_8039CA68[0][D_8039CA78].unk10, D_8039CA68[0][j].unk10, frac);
-}
-
-s16 func_80295924(s16 arg0, s16 arg1, f32 arg2) {
-    s16 d;
-
-    d = arg1 - arg0;
-    if (d >= -0x800) {
-        if (d > 0x800) {
-            d -= 0xFFF;
-        }
-    } else {
-        d += 0xFFF;
-    }
-    arg2 *= d;
-    arg2 += arg0;
-    if (arg2 < 0.0) {
-        arg2 += D_8030CDC0;
-    }
-    if (arg2 > D_8030CDC8) {
-        arg2 -= D_8030CDD0;
-    }
-    return arg2;
-}
-
-void func_80295A20(u32 arg0) {
-    u8 *dst;
-    u8 *src;
-    s32 i;
-
-    if (arg0 <= D_8039CA88) {
-        if (D_8039CA8C == 0) {
-            D_8039CA7D = 1;
-        } else {
-            D_8039CA7D = 0;
-        }
-        dst = (u8 *) D_8039CA68[0];
-        src = (u8 *) D_8039CA68[1];
-        for (i = 0; i < 0x10000; i++) {
-            dst[i] = src[i];
-        }
-        D_8039CA7C = D_803643D4;
-        D_8039CA70[0] = D_8039CA70[1];
-        D_8039CA88 = arg0;
-    }
-}
-
-void func_80295AE0(Gfx *gfx, Gfx *end) {
-    s8 cmd;
-    s32 sft;
-    u8 found;
-    s32 i;
-    u32 w1;
-
-    while (gfx != end) {
-        switch (cmd = gfx->words.w0 >> 24) {
-            case (s8) G_SETCOMBINE:
-                gDPSetCombineMode(gfx++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
-                break;
-            case (s8) G_SETOTHERMODE_L:
-                sft = (gfx->words.w0 >> 8) & 0xFFFF;
-                if (sft == G_MDSFT_RENDERMODE) {
-                    w1 = gfx->words.w1;
-                    i = 0;
-                    found = 0;
-                    do {
-                        if (D_802FF11C[i].from == w1) {
-                            found = 1;
-                        } else {
-                            i++;
-                        }
-                    } while (!found && i < 6);
-                    if (!found) {
-                        func_8029A7E4(D_8030CD7C, D_8030CDA8, D_8030CDB0, 0x152);
-                    }
-                    gfx->words.w1 = D_802FF11C[i].to;
-                }
-                gfx++;
-                break;
-            default:
-                gfx++;
-                break;
-        }
-    }
-}
-
-void func_80295C70(u8 arg0, s32 arg1, s32 arg2) {
-    s32 i;
-    s32 j;
-
-    for (i = 0; i < 1; i++) {
-        if (D_802FF150[i].unk28 == arg0 &&
-            (func_802AC4C4(arg1, arg2, D_802FF150[i].x[0], D_802FF150[i].z[0], D_802FF150[i].x[1],
-                           D_802FF150[i].z[1], D_802FF150[i].x[2], D_802FF150[i].z[2]) != 0 ||
-             func_802AC4C4(arg1, arg2, D_802FF150[i].x[0], D_802FF150[i].z[0], D_802FF150[i].x[2],
-                           D_802FF150[i].z[2], D_802FF150[i].x[3], D_802FF150[i].z[3]) != 0)) {
-            j = 0;
-            while (D_802FF150[i].list[j] != -1) {
-                D_803C30A8[j] = D_802FF150[i].list[j];
-                j++;
-            }
-            D_803C30A8[j] = 0xFFFF;
-        }
-    }
 }

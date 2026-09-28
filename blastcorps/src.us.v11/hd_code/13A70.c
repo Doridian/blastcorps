@@ -171,4 +171,113 @@ void func_80258544(void *image, s32 x, s32 y, s32 z, f32 dist, Gfx *dl, void *se
     func_80284E54(D_803650B0, gfx - D_803650B0, 1, 0, 0x61F, 0);
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/13A70/func_80258B78.s")
+/* 0xFC-byte records, D_803F4030 up to D_803F7654. */
+typedef struct {
+    /* 0x00 */ u8 pad0[0x10];
+    /* 0x10 */ s32 unk10;
+    /* 0x14 */ s32 unk14;
+    /* 0x18 */ s32 unk18;
+    /* 0x1C */ u8 pad1C[0x14];
+    /* 0x30 */ s32 unk30;
+    /* 0x34 */ u8 pad34[0x10];
+    /* 0x44 */ s32 unk44;
+    /* 0x48 */ u8 pad48[0xA2];
+    /* 0xEA */ u8 unkEA;
+    /* 0xEB */ u8 padEB[0x11];
+} UnkStruct_803F4030; /* size = 0xFC */
+
+/* The per-frame buffer (UnkStruct_02000000 in 00000.c); only the part used here. */
+typedef struct {
+    /* 0x0000 */ u8 pad0[0x3900];
+    /* 0x3900 */ Vtx unk3900[48];
+} UnkStruct_80258B78;
+
+extern UnkStruct_803F4030 D_803F4030[];
+extern UnkStruct_803F4030 *D_803F7654;
+extern UnkStruct_80258B78 D_02000000;
+extern u8 *D_80365330;
+extern s32 D_802E8BDC;
+
+void func_80258B78(Gfx **arg0, UnkStruct_80258B78 *arg1) {
+    Gfx *gfx;
+    s32 sp70;
+    s32 sp6C;
+    s32 sp68;
+    s16 sp66;
+    s16 sp64;
+    s16 sp62;
+    s16 sp60;
+
+    gfx = *arg0;
+    sp70 = 0;
+    sp6C = 0;
+    sp60 = 0;
+    gDPPipeSync(gfx++);
+    gDPSetCycleType(gfx++, G_CYC_1CYCLE);
+    gSPClearGeometryMode(gfx++, 0xFFFFFFFF);
+    gSPSetGeometryMode(gfx++, G_SHADE | G_SHADING_SMOOTH);
+    gSPTexture(gfx++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON);
+    gDPSetCombineMode(gfx++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
+    gDPSetPrimColor(gfx++, 0, 0, 200, 200, 200, 200);
+    while (&D_803F4030[sp70] != D_803F7654) {
+        if (D_803F4030[sp70].unkEA == 0) {
+            switch (D_803F4030[sp70].unk30) {
+                case 0xBA:
+                case 0xBB:
+                case 0xBC:
+            sp68 = 60 - (D_803F4030[sp70].unk14 - D_803F4030[sp70].unk44) / 800;
+            if (sp68 < 0) {
+                sp68 = 0;
+            }
+            sp66 = D_803F4030[sp70].unk10 >> 5;
+            sp64 = D_803F4030[sp70].unk44 >> 5;
+            sp62 = D_803F4030[sp70].unk18 >> 5;
+            arg1->unk3900[sp6C].v.ob[0] = sp66 - sp68;
+            arg1->unk3900[sp6C].v.ob[1] = sp64;
+            arg1->unk3900[sp6C].v.ob[2] = sp62 - sp68;
+            arg1->unk3900[sp6C].v.tc[0] = 0;
+            arg1->unk3900[sp6C].v.tc[1] = 0;
+            sp6C++;
+            arg1->unk3900[sp6C].v.ob[0] = sp66 + sp68;
+            arg1->unk3900[sp6C].v.ob[1] = sp64;
+            arg1->unk3900[sp6C].v.ob[2] = sp62 - sp68;
+            arg1->unk3900[sp6C].v.tc[0] = 0x7E0;
+            arg1->unk3900[sp6C].v.tc[1] = 0;
+            sp6C++;
+            arg1->unk3900[sp6C].v.ob[0] = sp66 + sp68;
+            arg1->unk3900[sp6C].v.ob[1] = sp64;
+            arg1->unk3900[sp6C].v.ob[2] = sp62 + sp68;
+            arg1->unk3900[sp6C].v.tc[0] = 0x7E0;
+            arg1->unk3900[sp6C].v.tc[1] = 0x7E0;
+            sp6C++;
+            arg1->unk3900[sp6C].v.ob[0] = sp66 - sp68;
+            arg1->unk3900[sp6C].v.ob[1] = sp64;
+            arg1->unk3900[sp6C].v.ob[2] = sp62 + sp68;
+            arg1->unk3900[sp6C].v.tc[0] = 0;
+            arg1->unk3900[sp6C].v.tc[1] = 0x7E0;
+            sp6C++;
+            if (sp60 == 0) {
+                gDPLoadTextureBlock(gfx++, OS_K0_TO_PHYSICAL(D_80365330), G_IM_FMT_IA, G_IM_SIZ_8b, 64, 64, 0,
+                                    G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMASK,
+                                    G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
+                sp60 = 1;
+            }
+            gDPPipeSync(gfx++);
+            if (D_802E8BDC == 16 && sp66 == 0x19B7 && sp62 == 0xF99) {
+                gSPSetGeometryMode(gfx++, G_ZBUFFER);
+                gDPSetRenderMode(gfx++, G_RM_ZB_CLD_SURF, G_RM_ZB_CLD_SURF2);
+            } else {
+                gSPClearGeometryMode(gfx++, G_ZBUFFER);
+                gDPSetRenderMode(gfx++, G_RM_CLD_SURF, G_RM_CLD_SURF2);
+            }
+            gSPVertex(gfx++, &D_02000000.unk3900[sp6C - 4], 4, 0);
+            gSP1Triangle(gfx++, 0, 1, 3, 0);
+            gSP1Triangle(gfx++, 1, 2, 3, 0);
+            break;
+            }
+        }
+        sp70++;
+    }
+    gDPPipeSync(gfx++);
+    *arg0 = gfx;
+}

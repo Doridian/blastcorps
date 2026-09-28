@@ -4,14 +4,6 @@
 extern Mtx D_02000000[];
 extern u16 D_802FCEB0[];
 extern Vtx D_802FD9B8[];
-extern f64 D_8030C7F0;
-extern f64 D_8030C7F8;
-extern f64 D_8030C800;
-extern f64 D_8030C808;
-extern f64 D_8030C810;
-extern f64 D_8030C818;
-extern f32 D_8030C820;
-extern f32 D_8030C824;
 extern u32 D_803156C4;
 extern u16 D_8035807C;
 extern s16 D_80364452;
@@ -38,8 +30,105 @@ s32 func_8026A610(s32, s32, s32, s32);
 void func_802C1B9C(void);
 f32 func_80284ADC();
 
-/* Nearly matches; IDO reloads the operands of the second (arg7 - pz) in the second sqrtf. */
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/3E4C0/func_80282C80.s")
+void func_80282C80(Gfx **arg0, Mtx *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    Gfx *gfx;
+    f32 dist;
+    f32 angle;
+    u8 r;
+    u8 g;
+    s16 v;
+    f32 mf[4][4];
+    f32 mf2[4][4];
+    s32 px;
+    s32 pz;
+    u8 near;
+
+    gfx = *arg0;
+    arg2 >>= 5;
+    arg3 >>= 5;
+    arg4 >>= 5;
+    arg5 >>= 5;
+    arg6 >>= 5;
+    arg7 >>= 5;
+    px = D_803F7670 >> 5;
+    pz = D_803F7678 >> 5;
+    dist = sqrtf((px - arg2) * (px - arg2) + (pz - arg4) * (pz - arg4));
+    if (dist < 1.0) {
+        dist = 1.0f;
+    }
+    if (px >= arg2 && pz >= arg4) {
+        angle = func_802AD7D4((px - arg2) / dist * 65536.0) >> 4;
+    }
+    if (px >= arg2 && pz < arg4) {
+        angle = (func_802AD7D4((arg4 - pz) / dist * 65536.0) >> 4) + 0x400;
+    }
+    if (px < arg2 && pz < arg4) {
+        angle = (func_802AD7D4((arg2 - px) / dist * 65536.0) >> 4) + 0x800;
+    }
+    if (px < arg2 && pz >= arg4) {
+        angle = (func_802AD7D4((pz - arg4) / dist * 65536.0) >> 4) + 0xC00;
+    }
+    angle = angle * (360.0 / 4095.0);
+    angle = 360.0 - angle - 45.0;
+    angle += D_80364452 * 360.0 / 4095.0 - 135.0;
+    dist = sqrtf((arg5 - px) * (arg5 - px) + (arg7 - pz) * (arg7 - pz));
+    if (dist > 1500.0f) {
+        g = 0xFF;
+        r = 0;
+    } else if (dist < 500.0f) {
+        r = 0xFF;
+        g = 0;
+    } else {
+        v = (dist - 500.0f) / 1000.0f * 511.0f;
+        if (v < 0x100) {
+            g = v, r = 0xFF;
+        } else {
+            g = 0xFF, r = 0x1FE - v;
+        }
+    }
+    if (dist < 250.0f) {
+        near = 1;
+    } else {
+        near = 0;
+    }
+    if ((D_803156C4 % 30 >= 16 || near == 0) && D_803F7660 != 9999999) {
+        guRotateF(mf, 20.0f, 1.0f, 0.0f, 0.0f);
+        guRotateF(mf2, -angle, 0.0f, 0.0f, 1.0f);
+        guMtxCatF(mf, mf2, mf);
+        guTranslateF(mf2, -150.0f, -230.0f, -800.0f);
+        guMtxCatF(mf, mf2, mf);
+        guMtxF2L(mf, &arg1[86]);
+        gSPMatrix(gfx++, &D_02000000[2], G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
+        gSPPerspNormalize(gfx++, D_8035807C);
+        gSPMatrix(gfx++, &D_02000000[86], G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
+        gSPClearGeometryMode(gfx++, 0xFFFFFFFF);
+        gSPSetGeometryMode(gfx++, G_SHADE | G_SHADING_SMOOTH | G_CULL_FRONT | G_LIGHTING | G_TEXTURE_GEN);
+        gDPPipeSync(gfx++);
+        gDPSetCycleType(gfx++, G_CYC_1CYCLE);
+        if (D_80367BD6 == 0xFF) {
+            gDPSetRenderMode(gfx++, G_RM_RA_OPA_SURF, G_RM_RA_OPA_SURF2);
+        } else {
+            gDPSetRenderMode(gfx++, G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2);
+        }
+        gDPSetCombineMode(gfx++, G_CC_MODULATERGBA_PRIM, G_CC_MODULATERGBA_PRIM);
+        gDPSetPrimColor(gfx++, 0, 0, r, g, 0, D_80367BD6);
+        gSPTexture(gfx++, 0x07C0, 0x07C0, 0, G_TX_RENDERTILE, G_ON);
+        gDPLoadTextureBlock(gfx++, OS_K0_TO_PHYSICAL(D_802FCEB0), G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0,
+                            G_TX_CLAMP, G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
+        gSPVertex(gfx++, osVirtualToPhysical(D_802FD9B8), 10, 0);
+        gSP1Triangle(gfx++, 0, 1, 2, 0);
+        gSP1Triangle(gfx++, 0, 2, 3, 0);
+        gSP1Triangle(gfx++, 3, 1, 0, 0);
+        gSP1Triangle(gfx++, 1, 4, 2, 0);
+        gSP1Triangle(gfx++, 4, 5, 2, 0);
+        gSP1Triangle(gfx++, 5, 3, 2, 0);
+        gSP1Triangle(gfx++, 6, 7, 8, 0);
+        gSP1Triangle(gfx++, 9, 6, 8, 0);
+        gSP1Triangle(gfx++, 7, 9, 8, 0);
+        gDPPipeSync(gfx++);
+    }
+    *arg0 = gfx;
+}
 
 void func_8028376C(Gfx **arg0, Mtx *arg1, u8 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     Gfx *gfx = *arg0;
