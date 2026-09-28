@@ -1,10 +1,10 @@
 #include "common.h"
 #include "ultra_internal.h"
 
-/* siacs.c's state, in hd_code's .data (not split yet) and .bss. */
+/* siacs.c's state; the queue and its buffer are in hd_code's .bss. */
 extern OSMesg D_803FF330[1];
 extern OSMesgQueue __osSiAccessQueue;
-extern u32 __osSiAccessQueueEnabled;
+u32 __osSiAccessQueueEnabled = 0;
 #define siAccessBuf D_803FF330
 
 #include "src/libultra/io/siacs.c"

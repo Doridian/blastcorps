@@ -1,5 +1,4 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/91360/guLookAtReflectF.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/91360/guLookAtReflect.s")
+/* Built -O3, which emits the functions in reverse order. */
+#include "src/libultra/gu/lookatref.c"

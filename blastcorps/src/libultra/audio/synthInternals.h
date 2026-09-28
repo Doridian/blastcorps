@@ -29,6 +29,19 @@
 
 #include <libaudio.h>
 
+/* ultralib's os_version.h.  This libultra predates everything ultralib
+ * builds; its audio library takes the oldest (VERSION_D) paths. */
+#define VERSION_D 1
+#define VERSION_E 2
+#define VERSION_F 3
+#define VERSION_G 4
+#define VERSION_H 5
+#define VERSION_I 6
+#define VERSION_J 7
+#define VERSION_K 8
+#define VERSION_L 9
+#define BUILD_VERSION VERSION_D
+
 /*
  * filter message ids
  */

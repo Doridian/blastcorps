@@ -1,9 +1,7 @@
-/* libultra libc/xprintf.c: the functions.  Its data, if any, is defined by the includer. */
+/* libultra libc/xprintf.c, with its data. */
 /*
  * Older than ultralib's _Printf: the scan for '%' runs while the (unsigned)
- * character is > 0, as in the libultra SM64 links.  The includer provides
- * spaces, zeroes, fchar and fbit, the "hlL" string as PRINTF_QUALS, and
- * _Putfld (its switch is a jump table, so it is still asm).
+ * character is > 0, as in the libultra SM64 links.
  */
 #include "common.h"
 #include "ultra_internal.h"
@@ -34,11 +32,12 @@
             PUT(s, j);                                        \
         }
 
-#ifndef PRINTF_QUALS
-#define PRINTF_QUALS "hlL"
-#endif
+#define LDSIGN(x) (((unsigned short *)&(x))[0] & 0x8000)
 
-void _Putfld(_Pft *px, va_list *pap, unsigned char code, unsigned char *ac);
+static char spaces[] = "                                ";
+static char zeroes[] = "00000000000000000000000000000000";
+
+static void _Putfld(_Pft *px, va_list *pap, unsigned char code, unsigned char *ac);
 
 int _Printf(void *pfn(void *, const char *, size_t), void *arg, const char *fmt, va_list ap) {
     _Pft x;
@@ -47,6 +46,8 @@ int _Printf(void *pfn(void *, const char *, size_t), void *arg, const char *fmt,
     const char *t;
     unsigned char ac[32];
     int i0, j0, i1, j1, i2, j2, i3, j3, i4, j4;
+    static const char fchar[] = { ' ', '+', '-', '#', '0', '\0' };
+    static const unsigned int fbit[] = { FLAGS_SPACE, FLAGS_PLUS, FLAGS_MINUS, FLAGS_HASH, FLAGS_ZERO, 0 };
 
     x.nchar = 0;
     while (TRUE) {
@@ -87,7 +88,7 @@ int _Printf(void *pfn(void *, const char *, size_t), void *arg, const char *fmt,
                 ATOI(x.prec, s);
             }
         }
-        x.qual = strchr(PRINTF_QUALS, *s) != NULL ? *s++ : '\0';
+        x.qual = strchr("hlL", *s) != NULL ? *s++ : '\0';
         if (x.qual == 'l' && *s == 'l') {
             x.qual = 'L';
             s++;
@@ -103,5 +104,118 @@ int _Printf(void *pfn(void *, const char *, size_t), void *arg, const char *fmt,
         PAD(j3, x.nz2, i3, zeroes, 1);
         PAD(j4, x.width, i4, spaces, x.flags & FLAGS_MINUS);
         fmt = (const char *)s + 1;
+    }
+}
+
+static void _Putfld(_Pft *px, va_list *pap, unsigned char code, unsigned char *ac) {
+    px->n0 = px->nz0 = px->n1 = px->nz1 = px->n2 = px->nz2 = 0;
+
+    switch (code) {
+        case 'c':
+            ac[px->n0++] = va_arg(*pap, int);
+            break;
+        case 'd':
+        case 'i':
+            if (px->qual == 'l') {
+                px->v.ll = va_arg(*pap, long);
+            } else if (px->qual == 'L') {
+                px->v.ll = va_arg(*pap, long long);
+            } else {
+                px->v.ll = va_arg(*pap, int);
+            }
+
+            if (px->qual == 'h') {
+                px->v.ll = (short)px->v.ll;
+            }
+
+            if (px->v.ll < 0) {
+                ac[px->n0++] = '-';
+            } else if (px->flags & FLAGS_PLUS) {
+                ac[px->n0++] = '+';
+            } else if (px->flags & FLAGS_SPACE) {
+                ac[px->n0++] = ' ';
+            }
+
+            px->s = &ac[px->n0];
+
+            _Litob(px, code);
+            break;
+        case 'x':
+        case 'X':
+        case 'u':
+        case 'o':
+            if (px->qual == 'l') {
+                px->v.ll = va_arg(*pap, long);
+            } else if (px->qual == 'L') {
+                px->v.ll = va_arg(*pap, long long);
+            } else {
+                px->v.ll = va_arg(*pap, int);
+            }
+
+            if (px->qual == 'h') {
+                px->v.ll = (unsigned short)px->v.ll;
+            } else if (px->qual == 0) {
+                px->v.ll = (unsigned int)px->v.ll;
+            }
+
+            if (px->flags & FLAGS_HASH) {
+                ac[px->n0++] = '0';
+
+                if (code == 'x' || code == 'X') {
+                    ac[px->n0++] = code;
+                }
+            }
+
+            px->s = &ac[px->n0];
+            _Litob(px, code);
+            break;
+        case 'e':
+        case 'f':
+        case 'g':
+        case 'E':
+        case 'G':
+            px->v.ld = px->qual == 'L' ? va_arg(*pap, ldouble) : va_arg(*pap, double);
+
+            if (LDSIGN(px->v.ld)) {
+                ac[px->n0++] = '-';
+            } else if (px->flags & FLAGS_PLUS) {
+                ac[px->n0++] = '+';
+            } else if (px->flags & FLAGS_SPACE) {
+                ac[px->n0++] = ' ';
+            }
+
+            px->s = &ac[px->n0];
+            _Ldtob(px, code);
+            break;
+        case 'n':
+            if (px->qual == 'h') {
+                *va_arg(*pap, unsigned short *) = px->nchar;
+            } else if (px->qual == 'l') {
+                *va_arg(*pap, unsigned long *) = px->nchar;
+            } else if (px->qual == 'L') {
+                *va_arg(*pap, unsigned long long *) = px->nchar;
+            } else {
+                *va_arg(*pap, unsigned int *) = px->nchar;
+            }
+            break;
+        case 'p':
+            px->v.ll = (long)va_arg(*pap, void *);
+            px->s = &ac[px->n0];
+            _Litob(px, 'x');
+            break;
+        case 's':
+            px->s = va_arg(*pap, unsigned char *);
+            px->n1 = strlen((char *)px->s);
+
+            if (px->prec >= 0 && px->prec < px->n1) {
+                px->n1 = px->prec;
+            }
+            break;
+        case '%':
+            ac[px->n0++] = '%';
+            break;
+        default:
+            ac[px->n0++] = code;
+            break;
     }
 }

@@ -2,10 +2,10 @@
 #include "ultra_internal.h"
 #include <PR/rdb.h>
 
-/* kdebugserver.c's state, in hd_code's .data (not split yet) and .bss. */
-extern u32 debugState;
-extern s32 numChars;
-extern s32 numCharsToReceive;
+/* libultra kdebugserver.c; its buffer and saved thread are in hd_code's .bss. */
+static u32 debugState = 0;
+static s32 numChars = 0;
+static s32 numCharsToReceive = 0;
 extern u8 debugBuffer[0x100];
 extern OSThread __osThreadSave;
 

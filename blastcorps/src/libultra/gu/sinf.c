@@ -1,11 +1,25 @@
-/* libultra gu/sinf.c: the functions.  Its data, if any, is defined by the includer. */
+/* libultra gu/sinf.c, with its constants. */
 /*
  * This libultra has only the name sinf (ultralib makes it __sinf with weak
- * fsin and sinf).  The includer provides the P, rpi, pihi, pilo and zero
- * constants.
+ * fsin and sinf).
  */
 #include "common.h"
 #include "ultra_internal.h"
+
+/* coefficients for polynomial approximation of sin on +/- pi/2 */
+
+static const du P[] = {
+    { 0x3ff00000, 0x00000000 }, { 0xbfc55554, 0xbc83656d }, { 0x3f8110ed, 0x3804c2a0 },
+    { 0xbf29f6ff, 0xeea56814 }, { 0x3ec5dbdf, 0x0e314bfe },
+};
+
+static const du rpi = { 0x3fd45f30, 0x6dc9c883 };
+
+static const du pihi = { 0x400921fb, 0x50000000 };
+
+static const du pilo = { 0x3e6110b4, 0x611a6263 };
+
+static const fu zero = { 0x00000000 };
 
 float sinf(float x) {
     double dx, xsq, poly;

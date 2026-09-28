@@ -1,6 +1,12 @@
 #include "common.h"
+#include "ultra_internal.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/97F30/__osTimerServicesInit.s")
+/*
+ * libultra timerintr.c.  __osCurrentTime is in hd_code's .bss, but defining
+ * it here makes IDO store both halves through one lui; the absolute symbol
+ * still gives its address.
+ */
+OSTime __osCurrentTime;
+OSTimer *__osTimerList = &__osBaseTimer;
 
-#define TIMERINTR_SERVICESINIT_ASM
 #include "src/libultra/os/timerintr.c"

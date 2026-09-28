@@ -1,5 +1,5 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/92DA0/alSynFreeVoice.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/92DA0/alCents2Ratio.s")
+/* Built -O3, which emits the files' functions in reverse order. */
+#include "src/libultra/audio/cents2ratio.c"
+#include "src/libultra/audio/synfreevoice.c"

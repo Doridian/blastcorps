@@ -1,10 +1,13 @@
-/* libultra libc/xlitob.c: the functions.  Its data, if any, is defined by the includer. */
-/* char is spelled unsigned char, as libultra was built.  The includer provides ldigs and udigs. */
+/* libultra libc/xlitob.c, with its data. */
+/* char is spelled unsigned char, as libultra was built. */
 #include "common.h"
 #include "ultra_internal.h"
 #include <stdlib.h>
 
 #define BUFF_LEN 0x18
+
+static unsigned char ldigs[] = "0123456789abcdef";
+static unsigned char udigs[] = "0123456789ABCDEF";
 
 void _Litob(_Pft *px, unsigned char code) {
     unsigned char buff[BUFF_LEN];

@@ -19,13 +19,14 @@ functions (HANDWRITTEN_LIBULTRA).
 With --rodata, .data and .rodata are split per object too (see
 split_data below); without it they stay one bin.  --tail gives the regions
 after .rodata that belong to no object's .data or .rodata (hd_code's RSP
-microcode data).  A data subsegment the existing config gives to a C file
+microcode data), --data-split the start of an object's block (or of a
+data-only object) that no reference reveals.  A data subsegment the existing config gives to a C file
 (`.data`/`.rodata`) keeps that type when it is regenerated at the same offset.
 
 Usage:
   gen_code_yaml.py <module> <version> --vram 0x... --data <off> --end <off>
                    [--bin off:len:note] ... [--c] [--symbols <path>]
-                   [--rodata <off> [--tail off:len:note] ...] [--split <off>] ...
+                   [--rodata <off> [--tail off:len:note] ... [--data-split off[:obj]] ...] [--split <off>] ...
 """
 import argparse
 import bisect
@@ -50,6 +51,26 @@ HANDWRITTEN_LIBULTRA = {
     # exceptasm.s
     "__osExceptionPreamble", "__osException", "send_mesg", "handle_CpU",
     "__osEnqueueAndYield", "__osEnqueueThread", "__osPopThread", "__osDispatchThread",
+}
+# First functions of objects that splat's boundary suggestions miss (no
+# padding between them and the object before).
+OBJECT_STARTS = {
+    "huft_build",               # gzip's inflate.c, after hd_code's dialogue code
+    "osCreateMesgQueue",        # after sinf.c; -O1 where gu is -O3
+    "__osPiCreateAccessQueue",  # piacs.c, after thread.c
+    "alCSeqGetLoc",             # cseq.c, after cspstop.c
+    "alUnlink",                 # sl.c, after event.c (-O3 would inline alLink)
+    "alSynAddPlayer",           # synaddplayer.c, after sl.c
+    "_allocatePVoice",          # synallocvoice.c, after synaddplayer.c
+    "coss",                     # coss.c, after sins.c
+    "__osViInit",               # vi.c (-O1), after coss.c (-O3)
+    "alSaveNew",                # drvrnew.c (-O3), after ai.c (-O1)
+    "osJamMesg",                # jammesg.c (-O1), after save.c (-O3)
+    "alLoadParam",              # load.c, after mainbus.c
+    "alSynSetPriority",         # synsetpriority.c, after seq.c
+    "alFilterNew",              # filter.c, after synsetpriority.c
+    "osPiStartDma",             # pidma.c (-O1), after synthesizer.c (-O3)
+    "alSeqGetLoc",              # seq.c (-O3), after xldtob.c (-O1)
 }
 SPLAT = HERE / "splat" / "split.py"
 
@@ -184,6 +205,13 @@ def split_data(names, refs, pairs, blob, vram, data, rodata, tail, text_end):
             early = [a for a in mine[i] if p_hi < a < blocks[i][0] and p not in users[a]]
             if early:
                 blocks[i][0] = min(early)
+        # and forward to what only it references before the next block (a
+        # constant reached through a pair splat couldn't match)
+        for k, i in enumerate(order):
+            n_lo = blocks[order[k + 1]][0] if k + 1 < len(order) else hi
+            late = [a for a in mine[i] if blocks[i][1] < a < n_lo and users[a] == {i}]
+            if late:
+                blocks[i][1] = max(late)
         res = []
         for k, i in enumerate(order):
             first, last = blocks[i]
@@ -252,6 +280,7 @@ def split_data(names, refs, pairs, blob, vram, data, rodata, tail, text_end):
 
 LUI_RE = re.compile(r"^lui\s+\$(\w+), (0x[0-9A-Fa-f]+)$")
 LO_RE = re.compile(r"^(\w+)\s+\$\w+, (?:\$(\w+), (-?0x[0-9A-Fa-f]+|-?\d+)$|(-?0x[0-9A-Fa-f]+|-?\d+)?\(\$(\w+)\)$)")
+LIKELY = re.compile(r"^(beql|bnel|blezl|bgtzl|bltzl|bgezl|bltzall|bgezall|bc1fl|bc1tl)$")
 NO_DEST = re.compile(r"^(s[bhwd]|swc1|sdc1|swl|swr|b\w*|j|jr|jal|jalr|mt\w+|ctc1|nop|syscall|break|cache|sync|eret)$")
 
 
@@ -267,6 +296,7 @@ def asm_refs(mod, names, symbols, lo, hi):
         if not path.exists():
             continue
         hi_regs = {}
+        op = ""
         for line in path.read_text().splitlines():
             if line.startswith("glabel ") or line.startswith(".L"):
                 hi_regs = {}
@@ -275,6 +305,9 @@ def asm_refs(mod, names, symbols, lo, hi):
                 continue
             body = line.split("*/")[-1].strip()
             insn = body.split()
+            # A branch-likely's delay slot only runs when the branch is
+            # taken, so it doesn't clobber a %hi on the fall-through path.
+            likely = bool(LIKELY.match(op))
             op = insn[0] if insn else ""
             kind = "f" if op in ("lwc1", "swc1") else "d" if op in ("ldc1", "sdc1") else None
             syms = re.findall(r"%(?:hi|lo)\((\w+)", body)
@@ -285,7 +318,8 @@ def asm_refs(mod, names, symbols, lo, hi):
                     refs.add((i, addr, "j" if sym.startswith("jtbl_") else kind))
             m = LUI_RE.search(body)
             if m and not syms:
-                hi_regs[m.group(1)] = int(m.group(2), 16) << 16
+                if not likely:
+                    hi_regs[m.group(1)] = int(m.group(2), 16) << 16
                 continue
             m = LO_RE.search(body)
             if m and not syms:
@@ -295,7 +329,7 @@ def asm_refs(mod, names, symbols, lo, hi):
                     if lo <= addr < hi:
                         pairs.add((i, addr, kind))
             dest = re.match(r"\$(\w+)", insn[1]) if len(insn) > 1 else None
-            if dest and not NO_DEST.match(op):
+            if dest and not NO_DEST.match(op) and not likely:
                 srcs = [r for r in re.findall(r"\$(\w+)", body)[1:] if r in hi_regs]
                 if op == "addu" and len(srcs) == 1:
                     hi_regs[dest.group(1)] = hi_regs[srcs[0]]  # base + index
@@ -323,6 +357,9 @@ def main():
                     help="an object boundary in .text that splat misses")
     ap.add_argument("--tail", action="append", default=[], metavar="OFF:LEN:NOTE",
                     help="region after .rodata that belongs to no object")
+    ap.add_argument("--data-split", action="append", default=[], metavar="OFF[:OBJ]",
+                    help="start of a block in .data/.rodata that no reference shows: "
+                    "object OBJ's, or a data-only object's")
     args = ap.parse_args()
 
     mod, ver = args.module, args.version
@@ -356,7 +393,8 @@ def main():
     if args.symbols:
         for line in Path(args.symbols).read_text().splitlines():
             m = re.match(r"\s*(\w+)\s*=\s*0x([0-9A-Fa-f]+);", line)
-            if m and ("type:func" in line or m.group(1) in HANDWRITTEN_LIBULTRA):
+            if m and ("type:func" in line or m.group(1) in HANDWRITTEN_LIBULTRA
+                      or m.group(1) in OBJECT_STARTS):
                 off = int(m.group(2), 16) - args.vram
                 if 0 <= off < args.data:
                     funcs.setdefault(off, m.group(1))
@@ -481,6 +519,7 @@ def main():
             if lo % 16 == 0 and hi % 16 == 0 and (lo, hi) != (s, e):
                 splits |= {lo, hi} - {e}
             k = j + 1
+    splits |= {o for o, n in funcs.items() if n in OBJECT_STARTS and o % 16 == 0}
     starts = sorted(splits | {s for s, _ in code})
 
     data_lines = [f"    - [0x{args.data:X}, bin, {mod}/{mod}_data] # .data"]
@@ -507,6 +546,13 @@ def main():
         refs, pairs = asm_refs(mod, names, symbols, args.vram + args.data, args.vram + tail)
         layout = split_data(names, refs, pairs, full, args.vram,
                             args.data, args.rodata, tail, args.data)
+        have = {off for off, _, _ in layout}
+        for spec in args.data_split:
+            off, _, obj = spec.partition(":")
+            off = int(off, 16)
+            if off not in have:
+                layout.append((off, "data" if off < args.rodata else "rodata", obj or f"{off:X}"))
+        layout.sort(key=lambda x: x[0])
         data_lines = ["    # .data, then .rodata, of each object in link order (see split_data"
                       " in tools/gen_code_yaml.py)"]
         for off, kind, name in layout:

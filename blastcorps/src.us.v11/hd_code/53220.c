@@ -43,15 +43,301 @@ typedef struct {
 
 extern UnkStruct_802F49F4 D_802F49F4[];
 extern UnkStruct_802F8BDC D_802F8BDC[];
-extern u8 D_802FF180[6];
-extern UnkStruct_802FF188 D_802FF188[][20];
-extern u8 D_802FF5E8[][5];
 extern u8 *D_80358070;
 extern u8 D_80364AE8;
 extern u8 D_80364B80[][0x100];
 extern UnkStruct_8036BB10 *D_8036BB24;
 extern u8 D_8039CAB6;
 extern u8 D_8039CAD0;
+
+/* The second line of each entry, in the data after gzip's. */
+extern u16 D_80303B9C[];
+extern u16 D_80303BB4[];
+extern u16 D_80303BC8[];
+extern u16 D_80303BCC[];
+extern u16 D_80303BD0[];
+extern u16 D_80303BE4[];
+extern u16 D_80303BF8[];
+extern u16 D_80303C14[];
+extern u16 D_80303C18[];
+extern u16 D_80303C2C[];
+extern u16 D_80303C48[];
+extern u16 D_80303C4C[];
+extern u16 D_80303C50[];
+extern u16 D_80303C5C[];
+extern u16 D_80303C70[];
+extern u16 D_80303C74[];
+extern u16 D_80303C78[];
+extern u16 D_80303C88[];
+extern u16 D_80303C98[];
+extern u16 D_80303CAC[];
+extern u16 D_80303CB0[];
+extern u16 D_80303CC0[];
+extern u16 D_80303CD8[];
+extern u16 D_80303CF0[];
+extern u16 D_80303CF4[];
+extern u16 D_80303D0C[];
+extern u16 D_80303D28[];
+extern u16 D_80303D40[];
+extern u16 D_80303D44[];
+extern u16 D_80303D58[];
+extern u16 D_80303D70[];
+extern u16 D_80303D80[];
+extern u16 D_80303D98[];
+extern u16 D_80303DA4[];
+extern u16 D_80303DA8[];
+extern u16 D_80303DAC[];
+extern u16 D_80303DC0[];
+extern u16 D_80303DDC[];
+extern u16 D_80303DE0[];
+extern u16 D_80303DE4[];
+extern u16 D_80303DFC[];
+extern u16 D_80303E14[];
+extern u16 D_80303E18[];
+extern u16 D_80303E30[];
+extern u16 D_80303E48[];
+extern u16 D_80303E60[];
+extern u16 D_80303E70[];
+extern u16 D_80303E84[];
+extern u16 D_80303E88[];
+extern u16 D_80303E8C[];
+extern u16 D_80303EA0[];
+extern u16 D_80303EB8[];
+extern u16 D_80303EBC[];
+extern u16 D_80303ED0[];
+extern u16 D_80303EE4[];
+extern u16 D_80303EF4[];
+extern u16 D_80303EF8[];
+extern u16 D_80303F14[];
+extern u16 D_80303F18[];
+extern u16 D_80303F1C[];
+extern u16 D_80303F20[];
+extern u16 D_80303F24[];
+extern u16 D_80303F28[];
+extern u16 D_80303F34[];
+extern u16 D_80303F4C[];
+extern u16 D_80303F50[];
+extern u16 D_80303F54[];
+extern u16 D_80303F6C[];
+extern u16 D_80303F84[];
+extern u16 D_80303F88[];
+extern u16 D_80303F8C[];
+extern u16 D_80303F9C[];
+extern u16 D_80303FB0[];
+extern u16 D_80303FB4[];
+extern u16 D_80303FB8[];
+extern u16 D_80303FD4[];
+extern u16 D_80303FF0[];
+extern u16 D_80303FF4[];
+extern u16 D_80303FF8[];
+extern u16 D_80303FFC[];
+extern u16 D_80304000[];
+extern u16 D_80304004[];
+extern u16 D_8030401C[];
+extern u16 D_8030402C[];
+extern u16 D_80304030[];
+extern u16 D_80304034[];
+extern u16 D_8030404C[];
+extern u16 D_80304064[];
+extern u16 D_80304080[];
+extern u16 D_80304084[];
+extern u16 D_80304094[];
+extern u16 D_803040A4[];
+extern u16 D_803040A8[];
+extern u16 D_803040AC[];
+extern u16 D_803040B0[];
+extern u16 D_803040B4[];
+extern u16 D_803040CC[];
+extern u16 D_803040DC[];
+extern u16 D_803040E0[];
+extern u16 D_803040E4[];
+extern u16 D_803040F4[];
+extern u16 D_80304108[];
+extern u16 D_80304118[];
+extern u16 D_8030411C[];
+extern u16 D_80304138[];
+extern u16 D_80304154[];
+extern u16 D_80304164[];
+extern u16 D_80304168[];
+extern u16 D_8030417C[];
+extern u16 D_80304190[];
+extern u16 D_803041A8[];
+extern u16 D_803041AC[];
+extern u16 D_803041B0[];
+extern u16 D_803041B4[];
+
+u8 D_802FF180[6] = { 0x04, 0x0A, 0x0D, 0x21, 0x0E, 0x11 };
+UnkStruct_802FF188 D_802FF188[7][20] = {
+    {
+        { (u8 *)"WELL, IT'S ABOUT TIME!", D_80303B9C },
+        { (u8 *)"DOES IT LOOK LIKE I'M", D_80303BB4 },
+        { (u8 *)"ENJOYING MYSELF HERE?", D_80303BC8 },
+        { (u8 *)" ", D_80303BCC },
+        { (u8 *)"AND YOU'VE STILL GOT", D_80303BD0 },
+        { (u8 *)"0 OF THE OTHERS", D_80303BE4 },
+        { (u8 *)"LEFT TO TRACK DOWN.", D_80303BF8 },
+        { (u8 *)" ", D_80303C14 },
+        { (u8 *)"VISIT GLORY CROSSING -", D_80303C18 },
+        { (u8 *)"THERE'S BOUND TO BE", D_80303C2C },
+        { (u8 *)"ONE HOLED UP THERE.", D_80303C48 },
+        { (u8 *)" ", D_80303C4C },
+        { (u8 *)"IT SHOULDN'T TAKE YOU", D_80303C50 },
+        { (u8 *)"TOO LONG TO FIND HIM.", D_80303C5C },
+        { (u8 *)" ", D_80303C70 },
+        { (u8 *)" ", D_80303C74 },
+        { NULL, NULL },
+        { NULL, NULL },
+        { NULL, NULL },
+        { NULL, NULL },
+    },
+    {
+        { (u8 *)"THIS IS IT, I TELL YOU!", D_80303C78 },
+        { (u8 *)"THE END! WE'RE ALL", D_80303C88 },
+        { (u8 *)"GOING TO ... OH.", D_80303C98 },
+        { (u8 *)" ", D_80303CAC },
+        { (u8 *)"WHAT ABOUT THE REST", D_80303CB0 },
+        { (u8 *)"OF MY FRIENDS?", D_80303CC0 },
+        { (u8 *)"ONLY 0 MORE LEFT ...", D_80303CD8 },
+        { (u8 *)" ", D_80303CF0 },
+        { (u8 *)"WANT TO MAKE AN", D_80303CF4 },
+        { (u8 *)"EXTRA SUBWAY STOP", D_80303D0C },
+        { (u8 *)"AT ARGENT TOWERS?", D_80303D28 },
+        { (u8 *)" ", D_80303D40 },
+        { (u8 *)"JUST KEEP YOUR EYE", D_80303D44 },
+        { (u8 *)"ON THE MARKER.", D_80303D58 },
+        { (u8 *)"I HOPE THAT HELPS!", D_80303D70 },
+        { NULL, NULL },
+        { NULL, NULL },
+        { NULL, NULL },
+        { NULL, NULL },
+        { NULL, NULL },
+    },
+    {
+        { (u8 *)"YOU'VE MANAGED TO KEEP", D_80303D80 },
+        { (u8 *)"THE CARRIER SAFE? THAT'S", D_80303D98 },
+        { (u8 *)"PRETTY GOOD GOING!", D_80303DA4 },
+        { (u8 *)" ", D_80303DA8 },
+        { (u8 *)"ALL WE HAVE TO DO NOW IS", D_80303DAC },
+        { (u8 *)"TRACK DOWN THE OTHER 0.", D_80303DC0 },
+        { (u8 *)" ", D_80303DDC },
+        { (u8 *)"I'M SURE I REMEMBER", D_80303DE0 },
+        { (u8 *)"HEARING ONE HAD MOVED", D_80303DE4 },
+        { (u8 *)"TO THE EBONY COAST...", D_80303DFC },
+        { (u8 *)" ", D_80303E14 },
+        { (u8 *)"YOU'LL HAVE TO STRIKE", D_80303E18 },
+        { (u8 *)"OUT AHEAD AND GET ", D_80303E30 },
+        { (u8 *)"AIRBORNE TO FIND HIM.", D_80303E48 },
+        { NULL, NULL },
+        { NULL, NULL },
+        { NULL, NULL },
+        { NULL, NULL },
+        { NULL, NULL },
+        { NULL, NULL },
+    },
+    {
+        { (u8 *)"WHERE'S EVERYONE GONE?", D_80303E60 },
+        { (u8 *)"THERE WAS A LOT OF FUSS", D_80303E70 },
+        { (u8 *)"OUT THERE A WHILE BACK.", D_80303E84 },
+        { (u8 *)" ", D_80303E88 },
+        { (u8 *)"WHAT'S THAT? YOU'VE", D_80303E8C },
+        { (u8 *)"GOT 0 OF MY FRIENDS", D_80303EA0 },
+        { (u8 *)"LEFT TO FIND?", D_80303EB8 },
+        { (u8 *)" ", D_80303EBC },
+        { (u8 *)"I KNOW ONE OF THEM", D_80303ED0 },
+        { (u8 *)"LIVES AT TEMPEST CITY,", D_80303EE4 },
+        { (u8 *)" ", D_80303EF4 },
+        { (u8 *)"BUT THE NOISE IS TOO", D_80303EF8 },
+        { (u8 *)"MUCH FOR HIM.", D_80303F14 },
+        { (u8 *)" ", D_80303F18 },
+        { (u8 *)"HE LIKES TO GET ABOVE", D_80303F1C },
+        { (u8 *)"IT ALL AND SHUT", D_80303F20 },
+        { (u8 *)"HIMSELF AWAY.", D_80303F24 },
+        { NULL, NULL },
+        { NULL, NULL },
+        { NULL, NULL },
+    },
+    {
+        { (u8 *)"HELP? OF COURSE I'LL", D_80303F28 },
+        { (u8 *)"HELP. FINALLY, SOMEONE'S", D_80303F34 },
+        { (u8 *)"MAKING A STAND!", D_80303F4C },
+        { (u8 *)" ", D_80303F50 },
+        { (u8 *)"THIS IS GOING TO TAKE", D_80303F54 },
+        { (u8 *)"ALL SIX OF US, SO", D_80303F6C },
+        { (u8 *)"YOU'LL NEED 0 MORE.", D_80303F84 },
+        { (u8 *)" ", D_80303F88 },
+        { (u8 *)" ", D_80303F8C },
+        { (u8 *)"TRY OYSTER HARBOR.", D_80303F9C },
+        { (u8 *)" ", D_80303FB0 },
+        { (u8 *)" ", D_80303FB4 },
+        { (u8 *)"THIS UPROAR HAS LEFT", D_80303FB8 },
+        { (u8 *)"MY COLLEAGUE THERE", D_80303FD4 },
+        { (u8 *)"ALL OUT AT SEA,", D_80303FF0 },
+        { (u8 *)" ", D_80303FF4 },
+        { (u8 *)"BUT YOU MUSTN'T LET", D_80303FF8 },
+        { (u8 *)"ANYTHING STAND IN", D_80303FFC },
+        { (u8 *)"YOUR WAY!", D_80304000 },
+        { NULL, NULL },
+    },
+    {
+        { (u8 *)"WELL, IT'S GOOD TO SEE", D_80304004 },
+        { (u8 *)"SOME NEW FACES! DON'T", D_8030401C },
+        { (u8 *)"MIND ME, LET'S MOVE OUT.", D_8030402C },
+        { (u8 *)" ", D_80304030 },
+        { (u8 *)"0 OF THE OTHER CHAPS", D_80304034 },
+        { (u8 *)"LEFT TO FIND, AFTER ALL.", D_8030404C },
+        { (u8 *)" ", D_80304064 },
+        { (u8 *)" ", D_80304080 },
+        { (u8 *)"I EXPECT THEY'VE DUCKED", D_80304084 },
+        { (u8 *)"FOR COVER UNDERGROUND", D_80304094 },
+        { (u8 *)"AT IRONSTONE MINE...", D_803040A4 },
+        { (u8 *)" ", D_803040A8 },
+        { (u8 *)"YOU MIGHT NEED", D_803040AC },
+        { (u8 *)"TO BLAST YOUR WAY DOWN.", D_803040B0 },
+        { NULL, NULL },
+        { NULL, NULL },
+        { NULL, NULL },
+        { NULL, NULL },
+        { NULL, NULL },
+        { NULL, NULL },
+    },
+    {
+        { (u8 *)"I CAN HARDLY BELIEVE", D_803040B4 },
+        { (u8 *)"THE WORLD'S STILL IN", D_803040CC },
+        { (u8 *)"ONE PIECE!", D_803040DC },
+        { (u8 *)" ", D_803040E0 },
+        { (u8 *)"STILL, AT LEAST NOW", D_803040E4 },
+        { (u8 *)"WE'RE ALL BACK", D_803040F4 },
+        { (u8 *)"TOGETHER ...", D_80304108 },
+        { (u8 *)" ", D_80304118 },
+        { (u8 *)"MAYBE WE FINALLY", D_8030411C },
+        { (u8 *)"STAND A CHANCE OF", D_80304138 },
+        { (u8 *)"CLEARING UP THIS MESS.", D_80304154 },
+        { (u8 *)" ", D_80304164 },
+        { (u8 *)"NO TIME TO LOSE. LET'S", D_80304168 },
+        { (u8 *)"HEAD FOR THE DETONATION ", D_8030417C },
+        { (u8 *)"SITE AND GET SET UP.", D_80304190 },
+        { (u8 *)" ", D_803041A8 },
+        { (u8 *)"WHEN IT COMES TO THE", D_803041AC },
+        { (u8 *)"CRUNCH, EVERYTHING'S", D_803041B0 },
+        { (u8 *)"GOING TO DEPEND ON US.", D_803041B4 },
+        { NULL, NULL },
+    },};
+u8 D_802FF5E8[14][5] = {
+    { 0x01, 0x05, 0x09, 0x0D, 0x00 },
+    { 0x01, 0x05, 0x09, 0x0E, 0x00 },
+    { 0x01, 0x05, 0x08, 0x0C, 0x00 },
+    { 0x01, 0x05, 0x09, 0x0C, 0x0F },
+    { 0x01, 0x05, 0x09, 0x0D, 0x11 },
+    { 0x01, 0x05, 0x09, 0x0D, 0x00 },
+    { 0x01, 0x05, 0x09, 0x0D, 0x11 },
+    { 0x00, 0x01, 0x05, 0x09, 0x0D },
+    { 0x00, 0x01, 0x05, 0x09, 0x0D },
+    { 0x00, 0x01, 0x05, 0x09, 0x0C },
+    { 0x00, 0x01, 0x05, 0x08, 0x0B },
+    { 0x0E, 0x01, 0x05, 0x09, 0x0D },
+    { 0x11, 0x01, 0x05, 0x09, 0x00 },
+    { 0x00, 0x01, 0x05, 0x09, 0x0D },
+};
 
 s32 func_8025B300(u8 *);
 s8 func_80272C5C(u8 *, s32, s32, s32, s32, f32);
@@ -172,15 +458,3 @@ u8 func_80297F74(void) {
     }
     return sp0;
 }
-
-/* hd_code's copy of Rare's gzip inflate, for hd_front_end.  Its tables are
- * in hd_code's .data, which isn't split yet. */
-#include "gzip.h"
-
-extern uch border[];
-extern ush cplens[];
-extern uch cplext[];
-extern ush cpdist[];
-extern uch cpdext[];
-
-#include "src/gzip_inflate.inc.c"

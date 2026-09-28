@@ -1,6 +1,10 @@
 #include "common.h"
+#include "ultra_internal.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/8F860/osInitialize.s")
+/* libultra initialize.c, from before 2.0J and before osViClock. */
+OSTime osClockRate = OS_CLOCK_RATE;
+u32 __osShutdown = 0;
+
+#include "src/libultra/os/initialize.c"
 
 #include "src/libultra/io/pirawread.c"
-

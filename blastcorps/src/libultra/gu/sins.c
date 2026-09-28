@@ -1,7 +1,8 @@
-/* libultra gu/sins.c: the functions.  Its data, if any, is defined by the includer. */
-/* The includer provides sintable (sintable.h's table). */
+/* libultra gu/sins.c, with its table. */
 #include "common.h"
 #include "ultra_internal.h"
+
+#include "src/libultra/gu/sintable.h"
 
 signed short sins(unsigned short x) {
     /* 0 <= x < 0x10000  ==>  0 <= x < 2PI */

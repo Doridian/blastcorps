@@ -1,17 +1,7 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9FE20/_doModFunc.s")
+/* alFxParamHdl is func_802E4C78. */
+#define alFxParamHdl func_802E4C78
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9FE20/_filterBuffer.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9FE20/_saveBuffer.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9FE20/_loadBuffer.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9FE20/_loadOutputBuffer.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9FE20/func_802E4C78.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9FE20/alFxParam.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9FE20/alFxPull.s")
+/* Built -O3, which emits the functions in reverse order. */
+#include "src/libultra/audio/reverb.c"

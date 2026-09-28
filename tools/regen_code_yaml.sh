@@ -34,7 +34,7 @@ UD1="RSP microcode data (DMEM image), used by the graphics task setup in 405F0"
 UD2="RSP microcode data (DMEM image), used by the audio task setup in 20460"
 UD3="RSP microcode data (DMEM image), used by the handwritten code at 5FD50"
 
-hd_code() {  # version data end t1 t2 d1 d2 d3 uc [rodata ucode-data]
+hd_code() {  # version data end t1 t2 d1 d2 d3 uc [rodata ucode-data [--data-split off ...]]
     local v=$1
     local split=()
     if [ -n "${10:-}" ]; then
@@ -43,7 +43,7 @@ hd_code() {  # version data end t1 t2 d1 d2 d3 uc [rodata ucode-data]
         split=(--rodata "${10}"
                --tail "$(printf %X $u):800:$UD1"
                --tail "$(printf %X $((u + 0x800))):2D0:$UD2"
-               --tail "$(printf %X $((u + 0xAD0))):800:$UD3")
+               --tail "$(printf %X $((u + 0xAD0))):800:$UD3" "${@:12}")
     fi
     $GEN hd_code "$v" --vram 0x802447C0 --data "$2" --end "$3" \
         --bin "$4:804:$T1" --bin "$5:884:$T2" --bin "$6:1EE0:$D1" \
@@ -68,8 +68,13 @@ hd_front_end() {  # version data end ucode [rodata ucode-data [split...]]
 
 hd_code us.v10 0xA4360 0xCADF0 0x68790 0x69040 0x7D920 0x8002C 0x8E860 0xA0B80
 # us.v11 also splits .data/.rodata: .rodata starts after reverb.c's L_INC
-# (the last .data), and the microcode data after the last .rodata.
-hd_code us.v11 0xA4410 0xCAEA0 0x68810 0x690C0 0x7D9D0 0x800DC 0x8E910 0xA0C30 0xC33D0 0xC9BD0
+# (the last .data), and the microcode data after the last .rodata.  No
+# reference shows where three blocks start: the data after gzip's tables
+# (reached from 26570 and 39050, and from the dialogue table's pointers),
+# thread.c's queues (only exceptasm and other objects use them), and reverb.c's L_INC,
+# which nothing uses.
+hd_code us.v11 0xA4410 0xCAEA0 0x68810 0x690C0 0x7D9D0 0x800DC 0x8E910 0xA0C30 0xC33D0 0xC9BD0 \
+    --data-split BAF70 --data-split C2FA0:97BB0 --data-split C33C0:9FE20
 hd_code jp     0xA47E0 0xCAF60 0x68B80 0x69430 0x7DDA0 0x804AC 0x8ECE0 0xA1000
 hd_code eu     0xA6210 0xCD2D0 0x6B180 0x6BA30 0x80340 0x82A4C 0x91280 0xA2A30
 

@@ -3,12 +3,9 @@
 #include "ultra_internal.h"
 
 /*
- * With __osCurrentTime defined in the same file, IDO stores both halves
- * through one lui.  An includer that only has it extern (hd_code, until its
- * .data is split) can't match this one and defines TIMERINTR_SERVICESINIT_ASM
- * to keep it as asm.
+ * With __osCurrentTime and __osTimerList defined in the same file, IDO stores
+ * both halves of the time through one lui, so the includer defines them.
  */
-#ifndef TIMERINTR_SERVICESINIT_ASM
 void __osTimerServicesInit(void) {
     __osCurrentTime = 0;
     __osBaseCounter = 0;
@@ -18,7 +15,6 @@ void __osTimerServicesInit(void) {
     __osTimerList->mq = NULL;
     __osTimerList->msg = 0;
 }
-#endif
 
 void __osTimerInterrupt(void) {
     OSTimer *t;

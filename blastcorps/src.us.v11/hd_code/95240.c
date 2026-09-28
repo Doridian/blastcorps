@@ -2,9 +2,8 @@
 
 #include "src/libultra/io/aisetfreq.c"
 
-/* osAiSetNextBuffer's static hdwrBugFlag, in hd_code's .data (not split yet). */
-extern u8 D_80306E40;
-#define hdwrBugFlag D_80306E40
+/* osAiSetNextBuffer's static hdwrBugFlag. */
+static u8 hdwrBugFlag = 0;
 
 /* osAiSetNextBuffer is osAiSetNextBuffer. */
 

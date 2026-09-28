@@ -1,15 +1,10 @@
-/* libultra libc/xldtob.c: the functions.  Its data, if any, is defined by the includer. */
-/* char is spelled unsigned char, as libultra was built.  An includer whose .data isn't split provides pows and the string and 1e8 constants. */
+/* libultra libc/xldtob.c, with its data. */
+/* char is spelled unsigned char, as libultra was built. */
 #include "common.h"
 #include "ultra_internal.h"
 #include <stdlib.h>
 
-#ifndef LDTOB_NAN
-#define LDTOB_NAN "NaN"
-#define LDTOB_INF "Inf"
-#define LDTOB_ZERO "0"
-#define LDTOB_1E8 1e8
-#endif
+static const ldouble pows[] = { 10e0L, 10e1L, 10e3L, 10e7L, 10e15L, 10e31L, 10e63L, 10e127L, 10e255L };
 
 #undef BUFF_LEN
 #define BUFF_LEN 0x20
@@ -67,7 +62,7 @@ void _Ldtob(_Pft *px, unsigned char code) {
 
     err = _Ldunscale(&xexp, &px->v.ld);
     if (err > 0) {
-        memcpy(px->s, err == 2 ? LDTOB_NAN : LDTOB_INF, px->n1 = 3);
+        memcpy(px->s, err == 2 ? "NaN" : "Inf", px->n1 = 3);
         return;
     } else if (err == 0) {
         nsig = 0;
@@ -116,7 +111,7 @@ void _Ldtob(_Pft *px, unsigned char code) {
                 long lo = ldval;
 
                 if ((gen -= 8) > 0) {
-                    ldval = (ldval - lo) * LDTOB_1E8;
+                    ldval = (ldval - lo) * 1e8;
                 }
 
                 for (p += 8, j = 8; lo > 0 && --j >= 0;) {
@@ -188,7 +183,7 @@ static void _Genld(_Pft *px, unsigned char code, unsigned char *p, short nsig, s
     const unsigned char point = '.';
 
     if (nsig <= 0) {
-        nsig = 1, p = LDTOB_ZERO;
+        nsig = 1, p = "0";
     }
 
     if (code == 'f' || (code == 'g' || code == 'G') && xexp >= -4 && xexp < px->prec) {
