@@ -21,7 +21,7 @@ typedef struct {
 
 void func_801F4E70(s32);
 Gfx *func_801F4FBC(UnkStruct_803156F8 *, Gfx *);
-void func_80259CCC(UnkStruct_803156F8 *, u8 *, u16 *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+void func_80259CCC(UnkStruct_803156F8 *, char *, u16 *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 
 /* .bss, 0x80215960-0x802159C0 (tools/bss_c.py) */
 s32 D_80215960;
@@ -38,14 +38,14 @@ u8 D_80215980[0x18];
 u8 D_80215998[0x18];
 s16 D_802159B0;
 
-void func_80259DC8(UnkStruct_803156F8 *, u8 *, u16 *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32,
+void func_80259DC8(UnkStruct_803156F8 *, char *, u16 *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32,
                    s32, s32, s32);
 s32 func_8025B300(u8 *);
 
 extern u8 *D_802081C0[][2];
 extern u8 D_802082B8[];
-extern u8 *D_802084B0;
-extern u8 *D_802084B4;
+extern char *D_802084B0;
+extern char *D_802084B4;
 extern u16 *D_802084B8;
 extern u16 *D_802084BC;
 extern s8 D_802084C0;
@@ -79,9 +79,14 @@ void func_801ED790(void) {
     D_80215978 = D_80364AF0[D_80364AE8].unkC;
 }
 
-const char D_8020ED40[] = "CONGRATULATIONS";
-
-const char D_8020ED50[] = "ON YOUR PROMOTION!";
+extern u16 D_80303B78[];
+extern u16 D_80303B88[];
+/* .data, 0x802084B0-0x802084D0 (tools/data_c.py) */
+char *D_802084B0 = "CONGRATULATIONS";
+char *D_802084B4 = "ON YOUR PROMOTION!";
+u16 *D_802084B8 = D_80303B78;
+u16 *D_802084BC = D_80303B88;
+s8 D_802084C0 = 1;
 
 Gfx *func_801ED800(Gfx *arg0, UnkStruct_803156F8 *arg1, u8 arg2, s32 *arg3) {
     Gfx *sp74;
@@ -178,8 +183,8 @@ Gfx *func_801ED800(Gfx *arg0, UnkStruct_803156F8 *arg1, u8 arg2, s32 *arg3) {
         } else {
             sp64 = 33;
         }
-        func_80259CCC(arg1, D_80215980, NULL, 0, 0x9D, 0, 0x58, sp64, sp64, 1, 0, 0, 0, D_80215976 / 2);
-        func_80259CCC(arg1, D_80215998, NULL, 0, 0x9D, 0, 0x76, sp64, sp64, 1, 0, 0, 0, D_80215976 / 2);
+        func_80259CCC(arg1, (char *)D_80215980, NULL, 0, 0x9D, 0, 0x58, sp64, sp64, 1, 0, 0, 0, D_80215976 / 2);
+        func_80259CCC(arg1, (char *)D_80215998, NULL, 0, 0x9D, 0, 0x76, sp64, sp64, 1, 0, 0, 0, D_80215976 / 2);
         D_802159B0 += D_802084C0 * 15;
         if (D_802159B0 >= 0x100) {
             D_802159B0 -= 30;
@@ -193,9 +198,9 @@ Gfx *func_801ED800(Gfx *arg0, UnkStruct_803156F8 *arg1, u8 arg2, s32 *arg3) {
                       D_80215974, 0xFF, D_802159B0, 0, D_80215974);
         func_80259DC8(arg1, D_802084B4, D_802084BC, 0, 0xA0, 0, 0xC8, 0x16, 0x16, 1, 0xFF, 0xFF - D_802159B0, 0,
                       D_80215974, 0xFF, D_802159B0, 0, D_80215974);
-        func_80259DC8(arg1, D_80215980, NULL, 0, 0xA0, 0, 0x55, sp64, sp64, 1, 0xFF, 0xFF - D_802159B0, 0,
+        func_80259DC8(arg1, (char *)D_80215980, NULL, 0, 0xA0, 0, 0x55, sp64, sp64, 1, 0xFF, 0xFF - D_802159B0, 0,
                       D_80215976, 0xFF, D_802159B0, 0, D_80215976);
-        func_80259DC8(arg1, D_80215998, NULL, 0, 0xA0, 0, 0x73, sp64, sp64, 1, 0xFF, 0xFF - D_802159B0, 0,
+        func_80259DC8(arg1, (char *)D_80215998, NULL, 0, 0xA0, 0, 0x73, sp64, sp64, 1, 0xFF, 0xFF - D_802159B0, 0,
                       D_80215976, 0xFF, D_802159B0, 0, D_80215976);
     }
     D_80215968 += 12.0 - D_8021596C * 2.0f;

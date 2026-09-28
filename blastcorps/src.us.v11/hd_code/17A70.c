@@ -25,4 +25,8 @@ unsigned insize;
 unsigned inptr;
 unsigned outcnt;
 
+/* .data, 0x802E8CC0-0x802E8CD0 (tools/data_c.py) */
+int method = 8;
+int exit_code = 0;
+
 #include "src/gzip_unzip.inc.c"

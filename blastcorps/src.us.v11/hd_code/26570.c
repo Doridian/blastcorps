@@ -84,7 +84,7 @@ typedef struct {
     /* 0x06 */ u16 unk6;
     /* 0x08 */ u16 unk8;
     /* 0x0A */ u8 padA[2];
-    /* 0x0C */ u8 *unkC;
+    /* 0x0C */ char *unkC;
     /* 0x10 */ u16 *unk10;
     /* 0x14 */ u8 unk14;
     /* 0x15 */ u8 pad15;
@@ -135,7 +135,7 @@ typedef struct {
 typedef struct {
     /* 0x00 */ u8 unk0;
     /* 0x01 */ char unk1[0xF];
-    /* 0x10 */ s32 unk10;
+    /* 0x10 */ u16 *unk10;
 } UnkStruct_802F9934; /* size = 0x14 */
 
 typedef struct {
@@ -150,8 +150,6 @@ typedef struct {
 
 extern s32 D_802E8BDC;
 extern f32 D_80364414;
-extern Vtx D_802F9A00[];
-extern Vtx D_802F9E00[];
 extern u16 D_802E8C8C[];
 extern u16 D_802E8C90[];
 extern u16 D_802E8C94[];
@@ -160,30 +158,21 @@ extern u16 D_802E8C9C[];
 extern u32 D_803156C4;
 extern u16 D_803C30A8[];
 extern UnkStruct_8036BB10 D_8020C070[];
-extern u8 D_802F4868[];
-extern u8 D_802F4870[];
-extern UnkStruct_802F49F4 D_802F49F4[];
-extern UnkStruct_8036BB10 D_802F5804[];
-extern UnkStruct_802F8BDC D_802F8BDC[];
 extern u64 D_80364A98;
 extern u32 D_80364AA8;
-extern UnkStruct_802F9934 D_802F9934[];
 extern s32 D_803F7684;
 extern u8 D_802E8BD0;
-extern s32 D_802FA200[];
 extern s32 D_803643E0;
 extern s32 D_803643E4;
 extern s32 D_803643E8;
 extern u8 D_80364456;
 extern s32 D_80367738;
-extern Vtx D_802F99C0[4];
 extern u8 *D_80358070;
 extern u16 D_8036EA7C;
 extern u16 D_8036EB90;
 extern s32 D_803BE70C;
 extern s32 D_803BE710;
 extern s16 D_803BE714;
-extern UnkStruct_802F48D0 D_802F48D0[];
 extern u8 D_802F499A[];
 extern u64 D_80364A90;
 extern u8 D_80364AE8;
@@ -195,7 +184,7 @@ s32 func_80270A54(UnkStruct_8036BED8 *arg0);
 char *func_8025B558(u16 *);
 void func_8026BA7C(UnkStruct_802F8BDC *arg0);
 s32 func_8026F92C(u64);
-u8 func_8026FA38(char **, s32 *);
+u8 func_8026FA38(char **, u16 **);
 void func_8026FB50(UnkStruct_802F8BDC *);
 u16 func_8026F8A8(u16, u16, u16, u16);
 void func_8026A5CC(u64 *dst, u64 *src, s32 size);
@@ -209,400 +198,25 @@ s8 func_80272C5C(u8 *, s32, s32, s32, s32, f32);
  * file's .data (still asm), so they are defined here to keep their place at
  * the start of the .rodata.
  */
-const char D_803099D0[] = "SELECT OPTION";
-const char D_803099E0[] = "MORE";
-const char D_803099E8[] = "VIEW STATS";
-const char D_803099F4[] = "RESTART";
-const char D_803099FC[] = "QUIT LEVEL";
-const char D_80309A08[] = "SELECT OPTION";
-const char D_80309A18[] = "CONTINUE";
-const char D_80309A24[] = "CONTROL MODE";
-const char D_80309A34[] = "MISSION BRIEFING";
-const char D_80309A48[] = "MUSIC VOLUME";
-const char D_80309A58[] = "COLLISION IMMINENT!";
-const char D_80309A6C[] = "WARNING!";
-const char D_80309A78[] = "REACTOR MELTDOWN!";
-const char D_80309A8C[] = "ABORTING MISSION";
-const char D_80309AA0[] = "CONGRATULATIONS!";
-const char D_80309AB4[] = "MISSION COMPLETE";
-const char D_80309AC8[] = "PRESS START";
-const char D_80309AD4[] = "";
-const char D_80309AD8[] = "******MISSION";
-const char D_80309AE8[] = "FAILED!*****";
-const char D_80309AF8[] = "SET MUSIC VOLUME";
-const char D_80309B0C[] = "QUIET";
-const char D_80309B14[] = "LOUD";
-const char D_80309B1C[] = "**MISSION FAILED!**";
-const char D_80309B30[] = "CONGRATULATIONS!!";
-const char D_80309B44[] = "MIRACULOUSLY, THE SHUTTLE";
-const char D_80309B60[] = "COMPLETES ITS RETURN";
-const char D_80309B78[] = "TO EARTH WITHOUT A";
-const char D_80309B8C[] = "SINGLE CASUALTY.";
-const char D_80309BA0[] = "BLAST CORPS HAS COME";
-const char D_80309BB8[] = "THROUGH WITH FLYING";
-const char D_80309BCC[] = "COLORS YET AGAIN.";
-const char D_80309BE0[] = "THEIR POPULARITY GIVEN";
-const char D_80309BF8[] = "A FURTHER BOOST, THE";
-const char D_80309C10[] = "TEAM FIND NEW OFFERS";
-const char D_80309C28[] = "OF WORK POURING IN -";
-const char D_80309C40[] = "BUT DECIDE THAT MAYBE,";
-const char D_80309C58[] = "FOR NOW, IT'S TIME";
-const char D_80309C6C[] = "FOR A HOLIDAY.";
-const char D_80309C7C[] = "BATTERED AND CRIPPLED AFTER";
-const char D_80309C98[] = "ITS LONG VOYAGE, THE LATEST";
-const char D_80309CB4[] = "SPACE SHUTTLE IS THROWN OFF";
-const char D_80309CD0[] = "COURSE DURING RE-ENTRY AND";
-const char D_80309CEC[] = "FORCED INTO DESPERATE";
-const char D_80309D04[] = "MEASURES.";
-const char D_80309D10[] = "A MAJOR CITY IS SEIZED BY";
-const char D_80309D2C[] = "PANIC WHEN THE RESIDENTS";
-const char D_80309D48[] = "FIND OUT THAT THEIR HOMES";
-const char D_80309D64[] = "ARE ABOUT TO BECOME AN";
-const char D_80309D7C[] = "EMERGENCY LANDING STRIP ...";
-const char D_80309D98[] = "TIME IS OF THE ESSENCE AS";
-const char D_80309DB4[] = "BLAST CORPS RISES ONCE";
-const char D_80309DCC[] = "MORE TO THE CHALLENGE.";
-const char D_80309DE4[] = "EVEN AS THE SHUTTLE";
-const char D_80309DF8[] = "BLAZES DOWN THROUGH";
-const char D_80309E0C[] = "THE SKIES, A RUNWAY";
-const char D_80309E20[] = "MUST BE CLEARED.";
-const char D_80309E34[] = "SITUATION:";
-const char D_80309E40[] = "********CARRIER LOCKED ON COURSE********";
-const char D_80309E6C[] = "SOLUTION:";
-const char D_80309E78[] = "********CLEAR PATH TO GROUND ZERO!************";
-const char D_80309EA8[] = "AGENTS:";
-const char D_80309EB0[] = "********BLAST CORPS********";
-const char D_80309ECC[] = "CHANCES:";
-const char D_80309ED8[] = "********SLIM*!******************";
-const char D_80309EFC[] = "******MISSION 1:**";
-const char D_80309F10[] = "CLEAR PATH FOR CARRIER";
-const char D_80309F28[] = "ON EACH MAIN LEVEL.";
-const char D_80309F3C[] = "******MISSION 2:**";
-const char D_80309F50[] = "ACTIVATE ALL RDUS AND";
-const char D_80309F68[] = "DESTROY ALL BUILDINGS";
-const char D_80309F80[] = "TO EARN SECOND GOLD.";
-const char D_80309F98[] = "******MISSION 3:**";
-const char D_80309FAC[] = "AFTER COMPLETING MAIN LEVELS,";
-const char D_80309FCC[] = "FIND ALL 6 SCIENTISTS TO";
-const char D_80309FE8[] = "ENSURE A CONTROLLED DETONATION.";
-const char D_8030A008[] = "******MISSION 4:**";
-const char D_8030A01C[] = "ACHIEVE GOLD ON ALL LEVELS";
-const char D_8030A038[] = "TO COMMENCE TIME ATTACK.";
-const char D_8030A054[] = "BLAST CORPS : LEADERS IN";
-const char D_8030A070[] = "THE FIELD OF HEAVY DUTY";
-const char D_8030A088[] = "DEMOLITION THROUGH A";
-const char D_8030A0A0[] = "COMBINATION OF SKILL,";
-const char D_8030A0B8[] = "EXPERIENCE AND CUTTING-";
-const char D_8030A0D0[] = "EDGE TECHNOLOGY.";
-const char D_8030A0E4[] = "SINCE ITS BIRTH THE COMPANY";
-const char D_8030A100[] = "HAS APPLIED ITS UNIQUE TALENTS";
-const char D_8030A120[] = "TO THE PROBLEM OF URBAN DECAY,";
-const char D_8030A140[] = "RENOVATING AND REVITALIZING";
-const char D_8030A15C[] = "CITIES FROM ONE END OF THE";
-const char D_8030A178[] = "COUNTRY TO THE OTHER.";
-const char D_8030A190[] = "A FAR CRY FROM THE SENSELESS";
-const char D_8030A1B0[] = "WARFARE AMIDST WHICH THE";
-const char D_8030A1CC[] = "SEEDS OF THE PROJECT WERE";
-const char D_8030A1E8[] = "SOWN, IN THE HEAVY VEHICLE";
-const char D_8030A204[] = "DEVELOPMENT BAY AT THE";
-const char D_8030A21C[] = "MILITARY BASE CALLED RAFTERS.";
-const char D_8030A23C[] = "WHILE DEMONSTRATING A GREAT";
-const char D_8030A258[] = "NATURAL FLAIR, THE FOUNDING";
-const char D_8030A274[] = "MEMBERS OF THE TEAM - AMBER,";
-const char D_8030A294[] = "CLARK, WESLEY AND SPIKE - WERE";
-const char D_8030A2B4[] = "NEVER HAPPY WITH THE ULTIMATE";
-const char D_8030A2D4[] = "PURPOSE OF THEIR MACHINES ...";
-const char D_8030A2F4[] = "SO WHEN WESLEY WAS CRUELLY";
-const char D_8030A310[] = "REJECTED FOLLOWING THE FIELD";
-const char D_8030A330[] = "ACCIDENT THAT LEFT HIM";
-const char D_8030A348[] = "DISABLED, HIS FRIENDS FINALLY";
-const char D_8030A368[] = "REBELLED AND LED THE";
-const char D_8030A380[] = "INFAMOUS RAFTERS WALKOUT.";
-const char D_8030A39C[] = "BLAST CORPS CAME INTO BEING";
-const char D_8030A3B8[] = "SOON AFTER. THAT WAS FIVE";
-const char D_8030A3D4[] = "YEARS AGO. BUT NOW, IN";
-const char D_8030A3EC[] = "THE PRESENT DAY, WORLD PEACE";
-const char D_8030A40C[] = "IS SHATTERED AS MANKIND FACES";
-const char D_8030A42C[] = "CRISIS ON A WORLDWIDE SCALE.";
-const char D_8030A44C[] = "A PAIR OF DEFECTIVE NUCLEAR";
-const char D_8030A468[] = "MISSILES, EN ROUTE TO A SAFE";
-const char D_8030A488[] = "DETONATION SITE, HAVE BEGUN";
-const char D_8030A4A4[] = "TO LEAK. BADLY DAMAGED, THE";
-const char D_8030A4C0[] = "CARRIER AUTOMATICALLY LOCKS";
-const char D_8030A4DC[] = "ONTO THE MOST DIRECT ROUTE.";
-const char D_8030A4F8[] = "BAD MEMORIES RESURFACE FOR";
-const char D_8030A514[] = "THE BLAST CORPS TEAM WHEN,";
-const char D_8030A530[] = "SUMMONED TO THEIR NATION'S";
-const char D_8030A54C[] = "DEFENSE, THEY FIND OUT WHERE";
-const char D_8030A56C[] = "THE WARHEADS ORIGINATED. A";
-const char D_8030A588[] = "CERTAIN NEARBY MILITARY BASE.";
-const char D_8030A5A8[] = "THE FLOOD OF RADIATION PREVENTS";
-const char D_8030A5C8[] = "ANYONE GETTING CLOSE TO THE";
-const char D_8030A5E4[] = "RUNAWAY CARRIER, AND PEOPLE IN";
-const char D_8030A604[] = "THE KNOW FEAR THAT EVEN THE";
-const char D_8030A620[] = "SLIGHTEST JOLT COULD TRIGGER";
-const char D_8030A640[] = "A CATASTROPHIC EXPLOSION.";
-const char D_8030A65C[] = "STANDING AS THE WORLD'S FINAL";
-const char D_8030A67C[] = "HOPE, BLAST CORPS MUST CLEAR";
-const char D_8030A69C[] = "THE WAY TO GROUND ZERO, GATHER";
-const char D_8030A6BC[] = "A TEAM OF SIX ELITE SCIENTISTS";
-const char D_8030A6DC[] = "AND ULTIMATELY COUNTER THE";
-const char D_8030A6F8[] = "THREAT OF NUCLEAR WINTER.";
-const char D_8030A714[] = "EVEN AS THE CARRIER";
-const char D_8030A728[] = "TRUNDLES TOWARDS GROUND";
-const char D_8030A740[] = "ZERO, YOU ARE DOING";
-const char D_8030A754[] = "EVERYTHING IN YOUR POWER";
-const char D_8030A770[] = "TO GET THE ASSEMBLED";
-const char D_8030A788[] = "SCIENTISTS THERE FIRST ...";
-const char D_8030A7A4[] = "MERCIFULLY, THE SCIENTISTS";
-const char D_8030A7C0[] = "ARE ABLE TO SET UP A";
-const char D_8030A7D8[] = "PROPERLY CONTROLLED";
-const char D_8030A7EC[] = "DETONATION ... AND FINALLY,";
-const char D_8030A808[] = "AS THE SMOKE FADES, THE WORLD";
-const char D_8030A828[] = "CAN LET OUT A SIGH OF RELIEF.";
-const char D_8030A848[] = "THE DEVASTATION LEFT IN";
-const char D_8030A860[] = "YOUR WAKE IS NOTHING COMPARED";
-const char D_8030A880[] = "TO WHAT WOULD HAVE HAPPENED";
-const char D_8030A89C[] = "IF BLAST CORPS HAD FAILED";
-const char D_8030A8B8[] = "AT THE LAST.";
-const char D_8030A8C8[] = "REBUILDING BEGINS IMMEDIATELY.";
-const char D_8030A8E8[] = "WITH CATASTROPHE AVERTED, THE";
-const char D_8030A908[] = "TEAM MEMBERS BECOME NATIONAL";
-const char D_8030A928[] = "HEROES, THEIR SUCCESS AND";
-const char D_8030A944[] = "SATISFACTION ASSURED FOR";
-const char D_8030A960[] = "THE FORESEEABLE FUTURE.";
-const char D_8030A978[] = "**RDUS COLLECTED!**********";
-const char D_8030A994[] = "**SURVIVORS FREE!**********";
-const char D_8030A9B0[] = "**BUILDINGS DESTROYED!**********";
-const char D_8030A9D4[] = "**LEVEL COMPLETE!**********";
-const char D_8030A9F0[] = "**PATH CLEARED!**********";
-const char D_8030AA0C[] = "********EMERGENCY! ...****************";
-const char D_8030AA34[] = "YOU MUST COMPLETELY";
-const char D_8030AA48[] = "REMOVE ALL OBSTACLES";
-const char D_8030AA60[] = "FROM THE DANGER ZONE!";
-const char D_8030AA78[] = "DANGER ZONE!";
-const char D_8030AA88[] = "THIS IS AN RDU,";
-const char D_8030AA98[] = "TRIGGERED REMOTELY";
-const char D_8030AAAC[] = "AS YOU DRIVE BY.";
-const char D_8030AAC0[] = "THEY CAN BE USED FOR";
-const char D_8030AAD8[] = "GUIDANCE AS WELL AS";
-const char D_8030AAEC[] = "RADIATION DISPERSAL.";
-const char D_8030AB04[] = "COMMUNICATION POINTS";
-const char D_8030AB1C[] = "ALLOW YOU TO MAKE";
-const char D_8030AB30[] = "CONTACT WITH HQ.";
-const char D_8030AB44[] = "WHEN ACTIVATED, THEY";
-const char D_8030AB5C[] = "BREAK OPEN VALUABLE";
-const char D_8030AB70[] = "NEW TRAINING LEVELS.";
-const char D_8030AB88[] = "YOU CAN";
-const char D_8030AB90[] = "ACCESS THESE FROM";
-const char D_8030ABA4[] = "THE WORLD SCREEN.";
-const char D_8030ABB8[] = "BACKLASH";
-const char D_8030ABC4[] = "DESTROY BUILDINGS";
-const char D_8030ABD8[] = "WITH BACKLASH USING";
-const char D_8030ABEC[] = "ITS ARMORED REAR.";
-const char D_8030AC00[] = "USE R TO SKID";
-const char D_8030AC10[] = "THE TRUCK WHEN";
-const char D_8030AC20[] = "GOING INTO A TURN.";
-const char D_8030AC34[] = "AIM FOR AT LEAST";
-const char D_8030AC48[] = "A SILVER MEDAL";
-const char D_8030AC58[] = "BEFORE PROGRESSING:";
-const char D_8030AC6C[] = "THIS TECHNIQUE";
-const char D_8030AC7C[] = "MUST BE MASTERED";
-const char D_8030AC90[] = "FOR LATER LEVELS.";
-const char D_8030ACA4[] = "USE BUMPS TO GET";
-const char D_8030ACB8[] = "BACKLASH AIRBORNE AND";
-const char D_8030ACD0[] = "CAUSE MAXIMUM DAMAGE.";
-const char D_8030ACE8[] = "SIDESWIPE";
-const char D_8030ACF4[] = "HITS HARDEST AT THE";
-const char D_8030AD08[] = "MAXIMUM EXTENSION";
-const char D_8030AD1C[] = "OF ITS SIDE PANELS.";
-const char D_8030AD30[] = "FIND BLUE AMMO BOXES";
-const char D_8030AD48[] = "TO KEEP SIDESWIPE'S";
-const char D_8030AD5C[] = "ATTACK POWER AT FULL.";
-const char D_8030AD74[] = "CHARGES REMAINING";
-const char D_8030AD88[] = "ARE DISPLAYED IN THE";
-const char D_8030ADA0[] = "LOWER LEFT CORNER.";
-const char D_8030ADB4[] = "THUNDERFIST";
-const char D_8030ADC0[] = "DEMOLISH BUILDINGS";
-const char D_8030ADD4[] = "BY DIVING AND";
-const char D_8030ADE4[] = "ROLLING INTO THEM.";
-const char D_8030ADF8[] = "A WELL-TIMED SERIES";
-const char D_8030AE0C[] = "OF ATTACKS CAN CAUSE";
-const char D_8030AE24[] = "INCREDIBLE DAMAGE.";
-const char D_8030AE38[] = "SKYFALL";
-const char D_8030AE40[] = "MAKE USE OF SKYFALL'S";
-const char D_8030AE58[] = "ARMORED UNDERSIDE";
-const char D_8030AE6C[] = "TO CRUSH FROM ABOVE.";
-const char D_8030AE84[] = "TURBO INTO A DITCH";
-const char D_8030AE98[] = "WITH L/R TO LAUNCH";
-const char D_8030AEAC[] = "YOURSELF SKYWARDS ...";
-const char D_8030AEC4[] = "J-BOMB";
-const char D_8030AECC[] = "USE A TO THRUST";
-const char D_8030AEDC[] = "J-BOMB INTO THE";
-const char D_8030AEEC[] = "AIR OVER A TARGET ...";
-const char D_8030AF04[] = "THEN HIT B TO";
-const char D_8030AF14[] = "DIVE EARTHWARDS";
-const char D_8030AF24[] = "FROM A HEIGHT.";
-const char D_8030AF34[] = "SURVIVORS ESCAPE WHEN";
-const char D_8030AF4C[] = "THE WALLS AROUND";
-const char D_8030AF60[] = "THEM ARE DESTROYED.";
-const char D_8030AF74[] = "CUE THE BLAST CORPS";
-const char D_8030AF88[] = "CHOPPER, SWOOPING IN";
-const char D_8030AFA0[] = "TO PICK THEM UP.";
-const char D_8030AFB4[] = "ONE GOLD COMMENDATION";
-const char D_8030AFCC[] = "IS GIVEN PER LEVEL";
-const char D_8030AFE0[] = "FOR PATH CLEARANCE:";
-const char D_8030AFF4[] = "THE SECOND REQUIRES";
-const char D_8030B008[] = "ALL SURVIVORS, RDUS";
-const char D_8030B01C[] = "AND TOTAL DESTRUCTION.";
-const char D_8030B034[] = "WARNING!";
-const char D_8030B040[] = "SOMETHING IN THE";
-const char D_8030B054[] = "CARRIER'S PATH";
-const char D_8030B064[] = "HAS BEEN MISSED!";
-const char D_8030B078[] = "KEEP AN EYE";
-const char D_8030B084[] = "ON THE LOWER";
-const char D_8030B094[] = "LEFT ARROW ...";
-const char D_8030B0A4[] = "IT CHANGES FROM GREEN";
-const char D_8030B0BC[] = "TO RED AS YOU CLOSE";
-const char D_8030B0D0[] = "IN ON THE CARRIER.";
-const char D_8030B0E4[] = "USE IT WITH THE RADAR";
-const char D_8030B0FC[] = "TO QUICKLY TRACK";
-const char D_8030B110[] = "DOWN THE PROBLEM:";
-const char D_8030B124[] = "RED INDICATES THE";
-const char D_8030B138[] = "CARRIER, BLUE THE NEXT";
-const char D_8030B150[] = "BUILDING IN ITS PATH.";
-const char D_8030B168[] = "CONGRATULATIONS!";
-const char D_8030B17C[] = "THIS IS ONE OF";
-const char D_8030B18C[] = "THE BONUS VEHICLES.";
-const char D_8030B1A0[] = "THEY ARE";
-const char D_8030B1AC[] = "MOST USEFUL IN";
-const char D_8030B1BC[] = "TRAINING STAGES:";
-const char D_8030B1D0[] = "ACCESS THESE";
-const char D_8030B1E0[] = "VIA THE LEVEL'S";
-const char D_8030B1F0[] = "COMMUNICATION POINTS.";
-const char D_8030B208[] = "PATH CLEARED!";
-const char D_8030B218[] = "YOUR PRIMARY MISSION";
-const char D_8030B230[] = "HERE IS COMPLETE.";
-const char D_8030B244[] = "THE BLAST CORPS";
-const char D_8030B254[] = "SEMI ALLOWS YOU";
-const char D_8030B264[] = "TO EXIT THE LEVEL.";
-const char D_8030B278[] = "MOVE BETWEEN";
-const char D_8030B288[] = "VEHICLES WITH";
-const char D_8030B298[] = "THE Z BUTTON.";
-const char D_8030B2A8[] = "SPARE TIME CAN BE";
-const char D_8030B2BC[] = "USED TO FIND RDUS AND";
-const char D_8030B2D4[] = "DESTROY BUILDINGS ...";
-const char D_8030B2EC[] = "RETURN IF NECESSARY";
-const char D_8030B300[] = "AFTER CHECKING";
-const char D_8030B310[] = "YOUR PERFORMANCE.";
-const char D_8030B324[] = "USE Z TO GET OUT";
-const char D_8030B338[] = "OF ONE VEHICLE";
-const char D_8030B348[] = "AND COMMANDEER ANOTHER.";
-const char D_8030B360[] = "THE DESTRUCTION OF";
-const char D_8030B374[] = "THIS BUILDING";
-const char D_8030B384[] = "IS ESSENTIAL!";
-const char D_8030B394[] = "FLASHING ARROWS";
-const char D_8030B3A4[] = "MEAN IT STANDS IN";
-const char D_8030B3B8[] = "THE CARRIER'S PATH.";
-const char D_8030B3CC[] = "AS DANGER CLOSES IN,";
-const char D_8030B3E4[] = "THE ARROWS CHANGE";
-const char D_8030B3F8[] = "FROM GREEN TO RED.";
-const char D_8030B40C[] = "THIS IS A PERIPHERY";
-const char D_8030B420[] = "STRUCTURE : CRUSHING";
-const char D_8030B438[] = "IT IS NOT VITAL.";
-const char D_8030B44C[] = "THEN AGAIN, IT'S FUN";
-const char D_8030B464[] = "- AND MIGHT REVEAL";
-const char D_8030B478[] = "A SURPRISE OR TWO ...";
-const char D_8030B490[] = "LEVELING EVERYTHING";
-const char D_8030B4A4[] = "HELPS YOU GAIN";
-const char D_8030B4B4[] = "A COMMENDATION.";
-const char D_8030B4C4[] = "HOWEVER, IT'S A";
-const char D_8030B4D4[] = "SECONDARY OBJECTIVE";
-const char D_8030B4E8[] = "TO CLEARING THE WAY.";
-const char D_8030B500[] = "CONCENTRATE ON THE";
-const char D_8030B514[] = "ARROWED BUILDINGS AS";
-const char D_8030B52C[] = "THE CARRIER PASSES ...";
-const char D_8030B544[] = "PLENTY OF TIME TO";
-const char D_8030B558[] = "COME BACK LATER";
-const char D_8030B568[] = "AND FINISH THE JOB.";
-const char D_8030B57C[] = "USE Z TO GET OUT";
-const char D_8030B590[] = "OF ONE VEHICLE";
-const char D_8030B5A0[] = "AND COMMANDEER ANOTHER.";
-const char D_8030B5B8[] = "BUT CLEAR A PATH FOR";
-const char D_8030B5D0[] = "THE CARRIER BEFORE";
-const char D_8030B5E4[] = "GOING OFF TO EXPLORE!";
-const char D_8030B5FC[] = "THE CRANE CAN MOVE";
-const char D_8030B610[] = "OBJECTS TO PREVIOUSLY";
-const char D_8030B628[] = "INACCESSIBLE PLACES.";
-const char D_8030B640[] = "LOAD IT UP THEN";
-const char D_8030B650[] = "HEAD FOR THE";
-const char D_8030B660[] = "CONTROLS IN THE CAB.";
-const char D_8030B678[] = "COLLECT AMMO BOXES";
-const char D_8030B68C[] = "AND YOU CAN BLAST";
-const char D_8030B6A0[] = "YOUR WAY THROUGH.";
-const char D_8030B6B4[] = "YOU COULD STOP";
-const char D_8030B6C4[] = "THE TRAIN AT";
-const char D_8030B6D4[] = "THIS STATION.";
-const char D_8030B6E4[] = "WAIT FOR THE SMILEY";
-const char D_8030B6F8[] = "BEFORE ATTEMPTING TO";
-const char D_8030B710[] = "LOAD OR UNLOAD.";
-const char D_8030B720[] = "TNT CRATES CAN BE";
-const char D_8030B734[] = "PUSHED AROUND USING";
-const char D_8030B748[] = "RAMDOZER'S SHOVEL.";
-const char D_8030B75C[] = "BUT THEY WON'T BE";
-const char D_8030B770[] = "STABLE FOR LONG ...";
-const char D_8030B784[] = "SELECT START THEN";
-const char D_8030B798[] = "VIEW STATS TO CHECK";
-const char D_8030B7AC[] = "STATUS OF LEVEL.";
-const char D_8030B7C0[] = "THE TRAIN CAN HELP";
-const char D_8030B7D4[] = "TRANSPORT RAMDOZER";
-const char D_8030B7E8[] = "TO THE STATION.";
-const char D_8030B7F8[] = "PRESSING START WILL";
-const char D_8030B80C[] = "ALLOW YOU TO VIEW THE";
-const char D_8030B824[] = "MISSILE CARRIER'S PATH.";
-const char D_8030B83C[] = "NO";
-const char D_8030B840[] = "YES";
-const char D_8030B844[] = "CONGRATULATIONS!!";
-const char D_8030B858[] = "HAVING DEMONSTRATED";
-const char D_8030B86C[] = "VERSATILITY AND RELIABILITY";
-const char D_8030B888[] = "WELL BEYOND THE CALL OF";
-const char D_8030B8A0[] = "DUTY, THE BLAST CORPS";
-const char D_8030B8B8[] = "TEAM CAN FINALLY TAKE";
-const char D_8030B8D0[] = "THAT WELL-DESERVED HOLIDAY.";
-const char D_8030B8EC[] = "WHEN THEY GET BACK THEY'LL";
-const char D_8030B908[] = "FIND THE OFFERS AND DEALS";
-const char D_8030B924[] = "STILL FLOODING IN,";
-const char D_8030B938[] = "KEEPING THEM IN THEIR";
-const char D_8030B950[] = "CHOSEN LINE OF WORK";
-const char D_8030B964[] = "FOR MANY YEARS TO COME ...";
-const char D_8030B980[] = "MAYBE AT SOME POINT EVEN";
-const char D_8030B99C[] = "LEADING THEM BACK INTO";
-const char D_8030B9B4[] = "THE FIELD OF MILITARY";
-const char D_8030B9CC[] = "OPERATIONS - BUT THIS";
-const char D_8030B9E4[] = "TIME FOR A CONSIDERABLY";
-const char D_8030B9FC[] = "NOBLER CAUSE.";
-const char D_8030BA0C[] = "ALL THAT, THOUGH, CAN WAIT.";
-const char D_8030BA28[] = "WITH THEIR COUNTRY";
-const char D_8030BA3C[] = "BREATHING A SIGH OF";
-const char D_8030BA50[] = "RELIEF AND THEIR GOOD";
-const char D_8030BA68[] = "NAME ASSURED FOR LIFE,";
-const char D_8030BA80[] = "THE TEAM CAN REST EASY";
-const char D_8030BA98[] = "FOR A WHILE.";
-const char D_8030BAA8[] = "UNLESS, OF COURSE, THE";
-const char D_8030BAC0[] = "LURE OF THE GOLD STANDARD";
-const char D_8030BADC[] = "PROVES TOO MUCH ...";
-const char D_8030BAF0[] = "PERHAPS THERE ARE";
-const char D_8030BB04[] = "FURTHER CHALLENGES AWAITING";
-const char D_8030BB20[] = "THOSE WHO CAN ACHIEVE";
-const char D_8030BB38[] = "A PERFECT RECORD ...";
+
+typedef struct {
+    /* 0x0 */ u8 unk0;
+    /* 0x1 */ u8 unk1;
+    /* 0x2 */ u8 unk2;
+    /* 0x3 */ u8 unk3;
+    /* 0x4 */ u8 unk4;
+    /* 0x5 */ u8 unk5;
+    /* 0x6 */ u8 unk6;
+    /* 0x7 */ u8 unk7;
+} UnkStruct_802F47B0; /* size = 0x8 */
 
 /* .bss, 0x8036B980-0x8036BEF0 (tools/bss_c.py) */
-u8 D_8036B980[0x28];
-u8 D_8036B9A8[0x20];
-u8 D_8036B9C8[0x20];
-u8 D_8036B9E8[0x20];
-u8 D_8036BA08[0x20];
-u8 D_8036BA28[0x20];
+char D_8036B980[0x28];
+char D_8036B9A8[0x20];
+char D_8036B9C8[0x20];
+char D_8036B9E8[0x20];
+char D_8036BA08[0x20];
+char D_8036BA28[0x20];
 u8 D_8036BA48[0x50];
 u8 D_8036BA98[0xa];
 u8 D_8036BAA2[3];
@@ -647,6 +261,1486 @@ s32 D_8036BED4;
 UnkStruct_8036BED8 *D_8036BED8;
 f32 D_8036BEDC;
 u8 D_8036BEE0;
+
+typedef struct {
+    /* 0x00 */ u16 unk0;
+    /* 0x02 */ u8 unk2[0x1A];
+} UnkStruct_802F8BF4; /* size = 0x1C */
+
+extern u16 D_80301098[];
+extern u16 D_803010A0[];
+extern u16 D_803010A8[];
+extern u16 D_803010BC[];
+extern u16 D_803010C0[];
+extern u16 D_80301488[];
+extern u16 D_80301498[];
+extern u16 D_803014B0[];
+extern u16 D_803014C4[];
+extern u16 D_803014DC[];
+extern u16 D_803014FC[];
+extern u16 D_80301518[];
+extern u16 D_80301530[];
+extern u16 D_80301534[];
+extern u16 D_80301538[];
+extern u16 D_8030153C[];
+extern u16 D_80301540[];
+extern u16 D_80301558[];
+extern u16 D_80301570[];
+extern u16 D_80301588[];
+extern u16 D_803015A4[];
+extern u16 D_803015A8[];
+extern u16 D_803015AC[];
+extern u16 D_803015B0[];
+extern u16 D_803015C8[];
+extern u16 D_803015E4[];
+extern u16 D_80301600[];
+extern u16 D_80301620[];
+extern u16 D_80301634[];
+extern u16 D_80301638[];
+extern u16 D_8030163C[];
+extern u16 D_80301640[];
+extern u16 D_8030165C[];
+extern u16 D_80301674[];
+extern u16 D_80301694[];
+extern u16 D_803016AC[];
+extern u16 D_803016C4[];
+extern u16 D_803016C8[];
+extern u16 D_803016CC[];
+extern u16 D_803016D0[];
+extern u16 D_803016E4[];
+extern u16 D_80301700[];
+extern u16 D_8030171C[];
+extern u16 D_80301720[];
+extern u16 D_80301724[];
+extern u16 D_80301728[];
+extern u16 D_80301744[];
+extern u16 D_80301760[];
+extern u16 D_8030177C[];
+extern u16 D_80301780[];
+extern u16 D_80301784[];
+extern u16 D_80301788[];
+extern u16 D_8030178C[];
+extern u16 D_80301790[];
+extern u16 D_80301B98[];
+extern u16 D_80301BA0[];
+extern u16 D_80301BA8[];
+extern u16 D_80301BB4[];
+extern u16 D_80301BC0[];
+extern u16 D_80301BCC[];
+extern u16 D_80301BD4[];
+extern u16 D_80301BE0[];
+extern u16 D_80301BF4[];
+extern u16 D_80301C04[];
+extern u16 D_80301C14[];
+extern u16 D_80301C24[];
+extern u16 D_80301C30[];
+extern u16 D_80301C40[];
+extern u16 D_80301C50[];
+extern u16 D_80301C64[];
+extern u16 D_80301C70[];
+extern u16 D_80301C78[];
+extern u16 D_80301C8C[];
+extern u16 D_80301C9C[];
+extern u16 D_80301CB0[];
+extern u16 D_80301CC8[];
+extern u16 D_80301CE8[];
+extern u16 D_80301CEC[];
+extern u16 D_80301CF0[];
+extern u16 D_80301CF4[];
+extern u16 D_80301D08[];
+extern u16 D_80301D24[];
+extern u16 D_80301D38[];
+extern u16 D_80301D3C[];
+extern u16 D_80301D40[];
+extern u16 D_80301D44[];
+extern u16 D_80301D48[];
+extern u16 D_80301D64[];
+extern u16 D_80301D7C[];
+extern u16 D_80301D8C[];
+extern u16 D_80301DA4[];
+extern u16 D_80301DC0[];
+extern u16 D_80301DC4[];
+extern u16 D_80301DE0[];
+extern u16 D_80301DF4[];
+extern u16 D_80301E0C[];
+extern u16 D_80301E20[];
+extern u16 D_80301E38[];
+extern u16 D_80301E3C[];
+extern u16 D_80301E40[];
+extern u16 D_80301E44[];
+extern u16 D_80301E48[];
+extern u16 D_80301E60[];
+extern u16 D_80301E7C[];
+extern u16 D_80301E94[];
+extern u16 D_80301E98[];
+extern u16 D_80301E9C[];
+extern u16 D_80301EA0[];
+extern u16 D_80301EA4[];
+extern u16 D_80301EC0[];
+extern u16 D_80301ED8[];
+extern u16 D_80301EF0[];
+extern u16 D_80301EF4[];
+extern u16 D_80301EF8[];
+extern u16 D_80301EFC[];
+extern u16 D_80301F00[];
+extern u16 D_80301F14[];
+extern u16 D_80301F28[];
+extern u16 D_80301F38[];
+extern u16 D_80301F3C[];
+extern u16 D_80301F40[];
+extern u16 D_80301F54[];
+extern u16 D_80301F6C[];
+extern u16 D_80301F8C[];
+extern u16 D_80301FA8[];
+extern u16 D_80301FAC[];
+extern u16 D_80301FB0[];
+extern u16 D_80301FD0[];
+extern u16 D_80301FE8[];
+extern u16 D_80302000[];
+extern u16 D_80302004[];
+extern u16 D_80302008[];
+extern u16 D_8030200C[];
+extern u16 D_8030202C[];
+extern u16 D_8030204C[];
+extern u16 D_80302068[];
+extern u16 D_80302088[];
+extern u16 D_8030208C[];
+extern u16 D_80302090[];
+extern u16 D_803020AC[];
+extern u16 D_803020CC[];
+extern u16 D_803020E4[];
+extern u16 D_803020E8[];
+extern u16 D_803020EC[];
+extern u16 D_80302104[];
+extern u16 D_80302124[];
+extern u16 D_80302140[];
+extern u16 D_8030215C[];
+extern u16 D_80302174[];
+extern u16 D_80302178[];
+extern u16 D_8030217C[];
+extern u16 D_80302194[];
+extern u16 D_803021B0[];
+extern u16 D_803021CC[];
+extern u16 D_803021EC[];
+extern u16 D_803021F0[];
+extern u16 D_8030220C[];
+extern u16 D_8030222C[];
+extern u16 D_8030224C[];
+extern u16 D_80302264[];
+extern u16 D_80302280[];
+extern u16 D_80302284[];
+extern u16 D_80302288[];
+extern u16 D_803022A8[];
+extern u16 D_803022C8[];
+extern u16 D_803022E0[];
+extern u16 D_803022F4[];
+extern u16 D_803022F8[];
+extern u16 D_803022FC[];
+extern u16 D_80302310[];
+extern u16 D_80302328[];
+extern u16 D_80302340[];
+extern u16 D_8030235C[];
+extern u16 D_80302360[];
+extern u16 D_80302364[];
+extern u16 D_80302380[];
+extern u16 D_803023A0[];
+extern u16 D_803023C0[];
+extern u16 D_803023DC[];
+extern u16 D_803023E0[];
+extern u16 D_803023E4[];
+extern u16 D_803023FC[];
+extern u16 D_80302410[];
+extern u16 D_80302424[];
+extern u16 D_8030243C[];
+extern u16 D_80302440[];
+extern u16 D_80302460[];
+extern u16 D_8030247C[];
+extern u16 D_80302494[];
+extern u16 D_803024AC[];
+extern u16 D_803024CC[];
+extern u16 D_803024D0[];
+extern u16 D_803024F0[];
+extern u16 D_80302504[];
+extern u16 D_8030251C[];
+extern u16 D_80302534[];
+extern u16 D_80302538[];
+extern u16 D_80302550[];
+extern u16 D_80302554[];
+extern u16 D_8030256C[];
+extern u16 D_80302584[];
+extern u16 D_80302588[];
+extern u16 D_8030258C[];
+extern u16 D_803025B8[];
+extern u16 D_803025DC[];
+extern u16 D_80302600[];
+extern u16 D_8030262C[];
+extern u16 D_80302650[];
+extern u16 D_8030268C[];
+extern u16 D_80302698[];
+extern u16 D_803026C0[];
+extern u16 D_803026CC[];
+extern u16 D_803026F8[];
+extern u16 D_80302704[];
+extern u16 D_80302734[];
+extern u16 D_80302748[];
+extern u16 D_80302774[];
+extern u16 D_80302790[];
+extern u16 D_803027AC[];
+extern u16 D_803027C4[];
+extern u16 D_803027E0[];
+extern u16 D_80302800[];
+extern u16 D_80302820[];
+extern u16 D_80302840[];
+extern u16 D_8030285C[];
+extern u16 D_80302878[];
+extern u16 D_8030288C[];
+extern u16 D_803028AC[];
+extern u16 D_803028C8[];
+extern u16 D_803028E8[];
+extern u16 D_80302908[];
+extern u16 D_80302918[];
+extern u16 D_80302930[];
+extern u16 D_80302934[];
+extern u16 D_80302940[];
+extern u16 D_80302954[];
+extern u16 D_80302968[];
+extern u16 D_80302974[];
+extern u16 D_80302978[];
+extern u16 D_8030298C[];
+extern u16 D_803029A0[];
+extern u16 D_803029B4[];
+extern u16 D_803029B8[];
+extern u16 D_803029C8[];
+extern u16 D_803029CC[];
+extern u16 D_803029D0[];
+extern u16 D_803029D4[];
+extern u16 D_803029E8[];
+extern u16 D_803029EC[];
+extern u16 D_803029F0[];
+extern u16 D_80302A00[];
+extern u16 D_80302A14[];
+extern u16 D_80302A28[];
+extern u16 D_80302A3C[];
+extern u16 D_80302A50[];
+extern u16 D_80302A60[];
+extern u16 D_80302A64[];
+extern u16 D_80302A68[];
+extern u16 D_80302A7C[];
+extern u16 D_80302A8C[];
+extern u16 D_80302A90[];
+extern u16 D_80302AA4[];
+extern u16 D_80302AB4[];
+extern u16 D_80302AB8[];
+extern u16 D_80302AD0[];
+extern u16 D_80302AE4[];
+extern u16 D_80302AE8[];
+extern u16 D_80302AFC[];
+extern u16 D_80302B0C[];
+extern u16 D_80302B10[];
+extern u16 D_80302B24[];
+extern u16 D_80302B34[];
+extern u16 D_80302B4C[];
+extern u16 D_80302B50[];
+extern u16 D_80302B64[];
+extern u16 D_80302B7C[];
+extern u16 D_80302B94[];
+extern u16 D_80302BA8[];
+extern u16 D_80302BAC[];
+extern u16 D_80302BB0[];
+extern u16 D_80302BB4[];
+extern u16 D_80302BCC[];
+extern u16 D_80302BE4[];
+extern u16 D_80302BE8[];
+extern u16 D_80302BEC[];
+extern u16 D_80302BF0[];
+extern u16 D_80302BF4[];
+extern u16 D_80302C08[];
+extern u16 D_80302C20[];
+extern u16 D_80302C2C[];
+extern u16 D_80302C30[];
+extern u16 D_80302C34[];
+extern u16 D_80302C4C[];
+extern u16 D_80302C64[];
+extern u16 D_80302C68[];
+extern u16 D_80302C7C[];
+extern u16 D_80302C94[];
+extern u16 D_80302C98[];
+extern u16 D_80302CA8[];
+extern u16 D_80302CBC[];
+extern u16 D_80302CC0[];
+extern u16 D_80302CD4[];
+extern u16 D_80302CE4[];
+extern u16 D_80302CF0[];
+extern u16 D_80302CF4[];
+extern u16 D_80302D08[];
+extern u16 D_80302D14[];
+extern u16 D_80302D28[];
+extern u16 D_80302D2C[];
+extern u16 D_80302D40[];
+extern u16 D_80302D58[];
+extern u16 D_80302D70[];
+extern u16 D_80302D84[];
+extern u16 D_80302D9C[];
+extern u16 D_80302DB4[];
+extern u16 D_80302DCC[];
+extern u16 D_80302DE4[];
+extern u16 D_80302DFC[];
+extern u16 D_80302E14[];
+extern u16 D_80302E28[];
+extern u16 D_80302E2C[];
+extern u16 D_80302E30[];
+extern u16 D_80302E34[];
+extern u16 D_80302E40[];
+extern u16 D_80302E58[];
+extern u16 D_80302E70[];
+extern u16 D_80302E74[];
+extern u16 D_80302E88[];
+extern u16 D_80302E9C[];
+extern u16 D_80302EB0[];
+extern u16 D_80302EC8[];
+extern u16 D_80302EE0[];
+extern u16 D_80302EF4[];
+extern u16 D_80302F08[];
+extern u16 D_80302F1C[];
+extern u16 D_80302F30[];
+extern u16 D_80302F44[];
+extern u16 D_80302F54[];
+extern u16 D_80302F64[];
+extern u16 D_80302F74[];
+extern u16 D_80302F8C[];
+extern u16 D_80302F90[];
+extern u16 D_80302FA0[];
+extern u16 D_80302FB0[];
+extern u16 D_80302FB4[];
+extern u16 D_80302FCC[];
+extern u16 D_80302FE0[];
+extern u16 D_80302FF0[];
+extern u16 D_80303004[];
+extern u16 D_80303014[];
+extern u16 D_8030302C[];
+extern u16 D_80303040[];
+extern u16 D_80303058[];
+extern u16 D_80303070[];
+extern u16 D_80303084[];
+extern u16 D_80303098[];
+extern u16 D_8030309C[];
+extern u16 D_803030B4[];
+extern u16 D_803030CC[];
+extern u16 D_803030E4[];
+extern u16 D_803030F8[];
+extern u16 D_8030310C[];
+extern u16 D_80303124[];
+extern u16 D_80303138[];
+extern u16 D_8030314C[];
+extern u16 D_80303160[];
+extern u16 D_80303174[];
+extern u16 D_80303184[];
+extern u16 D_80303188[];
+extern u16 D_80303198[];
+extern u16 D_803031B0[];
+extern u16 D_803031C8[];
+extern u16 D_803031D8[];
+extern u16 D_803031EC[];
+extern u16 D_803031FC[];
+extern u16 D_8030320C[];
+extern u16 D_80303220[];
+extern u16 D_80303234[];
+extern u16 D_80303248[];
+extern u16 D_8030325C[];
+extern u16 D_80303270[];
+extern u16 D_80303288[];
+extern u16 D_8030329C[];
+extern u16 D_803032B4[];
+extern u16 D_803032C8[];
+extern u16 D_803032E0[];
+extern u16 D_803032E4[];
+extern u16 D_803032F8[];
+extern u16 D_80303304[];
+extern u16 D_80303318[];
+extern u16 D_8030331C[];
+extern u16 D_80303320[];
+extern u16 D_80303324[];
+extern u16 D_80303338[];
+extern u16 D_8030334C[];
+extern u16 D_80303360[];
+extern u16 D_80303378[];
+extern u16 D_8030338C[];
+extern u16 D_8030339C[];
+extern u16 D_803033B0[];
+extern u16 D_803033C0[];
+extern u16 D_803033D0[];
+extern u16 D_803033E4[];
+extern u16 D_803033F0[];
+extern u16 D_80303400[];
+extern u16 D_80303410[];
+extern u16 D_80303420[];
+extern u16 D_80303424[];
+extern u16 D_80303428[];
+extern u16 D_80303438[];
+extern u16 D_8030343C[];
+extern u16 D_80303450[];
+extern u16 D_8030345C[];
+extern u16 D_80303470[];
+extern u16 D_80303488[];
+extern u16 D_803034A0[];
+extern u16 D_803034B8[];
+extern u16 D_803034D0[];
+extern u16 D_803034DC[];
+extern u16 D_803034EC[];
+extern u16 D_803034FC[];
+extern u16 D_80303514[];
+extern u16 D_80303520[];
+extern u16 D_80303534[];
+extern u16 D_80303544[];
+extern u16 D_8030355C[];
+extern u16 D_80303574[];
+extern u16 D_8030358C[];
+extern u16 D_80303594[];
+extern u16 D_803035A0[];
+extern u16 D_803035AC[];
+extern u16 D_803035B4[];
+extern u16 D_803035BC[];
+extern u16 D_803035C8[];
+/* .data, 0x802F47B0-0x802FA270 (tools/data_c.py) */
+UnkStruct_802F47B0 D_802F47B0[0x17] = {
+    { 0, 0, 0, 255, 0, 0, 0, 255 },
+    { 90, 90, 220, 255, 90, 90, 220, 255 },
+    { 0, 255, 0, 255, 0, 255, 0, 255 },
+    { 0, 255, 255, 255, 0, 255, 255, 255 },
+    { 255, 0, 0, 255, 255, 0, 0, 255 },
+    { 255, 0, 255, 255, 255, 0, 255, 255 },
+    { 255, 255, 0, 255, 255, 255, 0, 255 },
+    { 255, 255, 255, 255, 255, 255, 255, 255 },
+    { 128, 128, 128, 255, 128, 128, 128, 255 },
+    { 255, 180, 0, 255, 255, 180, 0, 255 },
+    { 255, 120, 0, 255, 255, 120, 0, 255 },
+    { 255, 240, 70, 255, 255, 240, 70, 255 },
+    { 255, 0, 0, 255, 255, 255, 0, 255 },
+    { 255, 255, 255, 255, 255, 255, 0, 255 },
+    { 0, 0, 255, 255, 255, 255, 255, 255 },
+    { 0, 255, 255, 255, 0, 0, 255, 255 },
+    { 255, 0, 0, 255, 255, 255, 0, 255 },
+    { 255, 0, 0, 255, 255, 255, 0, 255 },
+    { 255, 255, 255, 255, 0, 0, 255, 255 },
+    { 255, 255, 255, 255, 255, 0, 0, 255 },
+    { 255, 0, 255, 255, 255, 0, 0, 255 },
+    { 255, 180, 0, 255, 255, 120, 0, 255 },
+    { 0, 255, 0, 255, 255, 255, 0, 255 },
+};
+u8 D_802F4868[8] = { 15, 16, 16, 16, 16, 16, 16, 16 };
+u8 D_802F4870[8] = { 6, 7, 7, 7, 7, 7, 7, 7 };
+u8 D_802F4878[8] = { 13, 25, 14, 23, 16, 0, 16, 14 };
+u16 D_802F4880[0x28] = { 0xFFF };
+UnkStruct_802F48D0 D_802F48D0[8] = {
+    { 0, { 87, 84, 85, 80, 76, 83, 74, 77, 78, 79, 73, 75, -1 } },
+    { 15, { 85, 70, 71, 76, -1 } },
+    { 16, { 85, 70, 76, 71, -1 } },
+    { 3, { 85, 70, 71, 72, -1 } },
+    { 18, { 81, -1 } },
+    { 33, { 82, -1 } },
+    { 13, { 86, 84, -1 } },
+    { 10, { 85, -1 } },
+};
+u8 D_802F49E0[0x14] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+UnkStruct_802F49F4 D_802F49F4[0x4b] = {
+    { 0, 0, 0, 0, { 0 }, 1, { 0 }, 0, 1, 0, 1.0f, 1, 0, 0, 0 },
+    {
+        0, -8, 3, 0, { 9, 61, 9, 61, 9, 62, 9, 62, 9, 63, 9, 63 }, 4, { 2, 1, 2, 3 }, 1, 8, 0,
+        1.0f, 2, 9, 0, 0,
+    },
+    { 0, -8, 1, 0, { 9, 62, 9, 62 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 9, 0, 0 },
+    { 0, -8, 1, 0, { 9, 63, 9, 63 }, 1, { 1 }, 2, 8, 0, 1.0f, 2, 9, 0, 0 },
+    {
+        -16, -8, 5, 0, { 9, 64, 9, 64, 9, 65, 9, 65, 9, 66, 9, 66, 9, 67, 9, 67, 9, 68, 9, 68 },
+        10, { 3, 2, 1, 1, 2, 3, 4, 5, 5, 4 }, 1, 10, 0, 1.0f, 2, 9, 0, 0,
+    },
+    { -16, -8, 1, 0, { 9, 66, 9, 66 }, 1, { 1 }, 1, 10, 0, 1.0f, 2, 9, 0, 0 },
+    {
+        -32, -9, 5, 0, { 9, 48, 9, 49, 9, 50, 9, 51, 9, 52 }, 7, { 1, 1, 1, 2, 3, 4, 5 }, 1, 9, 0,
+        1.0f, 1, 3, 0, 0,
+    },
+    {
+        -32, -9, 5, 0, { 9, 38, 9, 39, 9, 40, 9, 41, 9, 42 }, 8, { 1, 2, 3, 4, 5, 4, 3, 2 }, 1, 6,
+        0, 1.0f, 1, 1, 0, 0,
+    },
+    {
+        -32, -7, 5, 0, { 9, 43, 9, 44, 9, 45, 15, 127, 15, 128 }, 8, { 1, 2, 3, 4, 5, 4, 3, 2 }, 1,
+        7, 0, 1.0f, 1, 1, 0, 0,
+    },
+    { -32, -9, 3, 0, { 9, 53, 9, 54, 9, 55 }, 4, { 1, 1, 2, 3 }, 1, 8, 0, 1.0f, 1, 3, 0, 0 },
+    { -32, -9, 2, 0, { 9, 46, 9, 47 }, 2, { 1, 2 }, 1, 16, 0, 1.0f, 1, 1, 0, 0 },
+    { -32, -9, 1, 0, { 9, 46 }, 1, { 1 }, 2, 16, 0, 1.0f, 1, 1, 0, 0 },
+    {
+        -28, -8, 5, 0, { 9, 56, 9, 56, 9, 57, 9, 57, 9, 58, 9, 58, 9, 59, 9, 59, 9, 60, 9, 60 }, 5,
+        { 1, 2, 3, 4, 5 }, 1, 8, 0, 1.0f, 2, 9, 0, 0,
+    },
+    { 0, 0, 1, 0, { 9, 16, 9, 15 }, 1, { 1, 2, 3, 4, 5 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    {
+        0, 0, 5, 0, { 9, 48, 9, 49, 9, 50, 9, 51, 9, 52 }, 7, { 1, 1, 1, 2, 3, 4, 5 }, 1, 9, 0,
+        2.0f, 1, 3, 0, 0,
+    },
+    {
+        0, 0, 5, 0, { 9, 38, 9, 39, 9, 40, 9, 41, 9, 42 }, 5, { 1, 2, 3, 4, 5 }, 1, 6, 0, 2.0f, 1,
+        1, 0, 0,
+    },
+    { 0, 0, 3, 0, { 9, 53, 9, 54, 9, 55 }, 4, { 1, 1, 2, 3 }, 1, 8, 0, 2.0f, 1, 3, 0, 0 },
+    { 0, 0, 2, 0, { 9, 46, 9, 47 }, 2, { 1, 2 }, 1, 16, 0, 2.0f, 1, 1, 0, 0 },
+    { 184, -3, 1, 0, { 9, 27 }, 1, { 1 }, 2, 16, 0, 0.75f, 1, 0, 0, 0 },
+    { 184, -3, 1, 0, { 9, 27 }, 1, { 1 }, 1, 16, 0, 0.75f, 1, 0, 0, 0 },
+    { 184, -3, 1, 0, { 9, 28 }, 1, { 1 }, 1, 16, 0, 0.75f, 1, 0, 0, 0 },
+    { 184, -3, 1, 0, { 9, 29 }, 1, { 1 }, 1, 16, 0, 0.75f, 1, 0, 0, 0 },
+    { 184, -3, 1, 0, { 5, 114 }, 1, { 1 }, 1, 16, 0, 0.75f, 1, 0, 0, 0 },
+    {
+        0, 0, 5, 0,
+        { 9, 220, 9, 219, 9, 222, 9, 221, 9, 224, 9, 223, 9, 226, 9, 225, 9, 228, 9, 227 }, 5,
+        { 1, 2, 3, 4, 5 }, 1, 8, 0, 1.0f, 2, 1, 0, 0,
+    },
+    { 0, 0, 1, 0, { 10, 151, 9, 30 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    {
+        0, 0, 5, 0, { 9, 93, 9, 92, 9, 95, 9, 94, 9, 97, 9, 96, 9, 99, 9, 98, 9, 101, 9, 100 }, 5,
+        { 1, 2, 3, 4, 5 }, 1, 8, 0, 1.0f, 2, 1, 0, 0,
+    },
+    { 0, 0, 1, 0, { 5, 101, 5, 100 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 9, 214, 9, 213 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 9, 216, 9, 215 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 5, 94, 5, 93 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 5, 94, 5, 93 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    {
+        0, 0, 5, 0, { 9, 48, 9, 49, 9, 50, 9, 51, 9, 52 }, 7, { 1, 1, 1, 2, 3, 4, 5 }, 1, 12, 0,
+        2.0f, 1, 3, 0, 0,
+    },
+    { 0, 0, 1, 0, { 5, 116, 5, 115 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 9, 218, 9, 217 }, 2, { 1, 1 }, 1, 24, 0, 1.0f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 9, 16, 9, 15 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 5, 113, 5, 112 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 9, 24, 9, 23 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 9, 12, 9, 11 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 7, 10, 7, 9 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 7, 114, 7, 19 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 0 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 0 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 9, 18, 9, 17 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 9, 22, 9, 21 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 9, 10, 9, 9 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 0 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 0 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 9, 14, 9, 13 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 9, 8, 9, 7 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 9, 26, 9, 25 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { -44, -8, 1, 0, { 7, 18, 7, 17 }, 1, { 1 }, 1, 8, 0, 0.61f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 9, 31 }, 1, { 1 }, 1, 8, 0, 1.0f, 1, 1, 0, 0 },
+    { -32, -6, 1, 0, { 9, 27 }, 1, { 1 }, 1, 16, 0, 1.0f, 1, 0, 0, 0 },
+    { -32, -6, 1, 0, { 9, 28 }, 1, { 1 }, 1, 16, 0, 1.0f, 1, 0, 0, 0 },
+    { -32, -6, 1, 0, { 9, 29 }, 1, { 1 }, 1, 16, 0, 1.0f, 1, 0, 0, 0 },
+    { -32, -6, 1, 0, { 5, 114 }, 1, { 1 }, 1, 16, 0, 1.0f, 1, 0, 0, 0 },
+    { 0, 0, 1, 0, { 2, 228, 2, 227 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 9, 16, 9, 15 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 5, 113, 5, 112 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 9, 24, 9, 23 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 9, 12, 9, 11 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 7, 10, 7, 9 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 7, 114, 7, 19 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 0 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 0 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 9, 18, 9, 17 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 9, 22, 9, 21 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 9, 10, 9, 9 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 0 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 0 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 9, 14, 9, 13 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 9, 8, 9, 7 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 9, 26, 9, 25 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 7, 18, 7, 17 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+    { 0, 0, 1, 0, { 13, 68, 13, 67 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
+};
+UnkStruct_8036BB10 D_802F5804[0x1da] = {
+    { 32, 56, 48, 24, 24, { 0 }, "SELECT OPTION", D_80301B98, 0, 0, 30, 7, 0, 0 },
+    { 97, 80, 82, 20, 20, { 0 }, "MORE", D_80301BD4, 0, 0, 30, 7, 4, 0 },
+    { 97, 80, 102, 20, 20, { 0 }, "VIEW STATS", D_80301BA8, 0, 0, 30, 7, 4, 0 },
+    { 97, 80, 122, 20, 20, { 0 }, "RESTART", D_80301BC0, 0, 0, 30, 7, 4, 0 },
+    { 97, 80, 142, 20, 20, { 0 }, "QUIT LEVEL", D_80301BCC, 0, 0, 30, 7, 4, 0 },
+    { 32, 56, 48, 24, 24, { 0 }, "SELECT OPTION", D_80301B98, 0, 0, 30, 7, 0, 0 },
+    { 113, 80, 82, 20, 20, { 0 }, "CONTINUE", D_80301BA0, 0, 0, 30, 7, 4, 0 },
+    { 97, 80, 102, 20, 20, { 0 }, "CONTROL MODE", D_80301BB4, 0, 0, 30, 7, 4, 0 },
+    { 97, 80, 122, 20, 20, { 0 }, "MISSION BRIEFING", D_80301BE0, 0, 0, 30, 7, 4, 0 },
+    { 97, 80, 142, 20, 20, { 0 }, "MUSIC VOLUME", D_80301BF4, 0, 0, 30, 7, 4, 0 },
+    { 36, 32, 6, 20, 20, { 0 }, "COLLISION IMMINENT!", D_80301C04, 0, 0, 30, 17, 4, 0 },
+    { 36, 52, 6, 20, 20, { 0 }, "WARNING!", D_80301C14, 0, 0, 30, 17, 4, 0 },
+    { 32, 32, 40, 20, 20, { 0 }, "REACTOR MELTDOWN!", D_80301C24, 0, 0, 30, 12, 6, 0 },
+    { 36, 44, 64, 20, 20, { 0 }, "ABORTING MISSION", D_80301C30, 0, 0, 30, 18, 4, 0 },
+    { 32, 44, 40, 20, 20, { 0 }, "CONGRATULATIONS!", D_80301C40, 0, 0, 30, 16, 6, 0 },
+    { 36, 40, 64, 20, 20, { 0 }, "MISSION COMPLETE", D_80301C50, 0, 0, 30, 14, 2, 0 },
+    { 160, 64, 42, 28, 30, { 0 }, D_8036B980, D_802F4880, 0, 0, 30, 12, 12, 0 },
+    { 240, 112, 210, 24, 24, { 0 }, "PRESS START", NULL, 0, 0, 30, 7, 7, 0 },
+    { 0x400, 76, 96, 15, 15, { 0 }, D_8036B9A8, NULL, 6, 0, 0, 22, 2, 0 },
+    { 0x400, 216, 96, 15, 15, { 0 }, D_8036B9C8, NULL, 7, 0, 0, 22, 2, 0 },
+    { 0x400, 76, 128, 15, 15, { 0 }, D_8036B9E8, NULL, 8, 0, 0, 22, 2, 0 },
+    { 0x400, 216, 128, 15, 15, { 0 }, D_8036BA08, NULL, 9, 0, 0, 22, 2, 0 },
+    { 0x400, 152, 170, 15, 15, { 0 }, D_8036BA28, NULL, 10, 0, 0, 22, 2, 0 },
+    { 0x401, 60, 208, 19, 19, { 0 }, NULL, NULL, 2, 0, 30, 7, 4, 0 },
+    { 0x401, 248, 208, 19, 19, { 0 }, NULL, NULL, 5, 0, 30, 7, 4, 0 },
+    { 160, 64, 42, 28, 30, { 0 }, D_8036B980, D_802F4880, 0, 0, 30, 12, 12, 0 },
+    { 224, 112, 210, 24, 24, { 0 }, "", NULL, 0, 0, 30, 7, 7, 0 },
+    { 0x400, 40, 108, 15, 15, { 0 }, NULL, NULL, 6, 0, 0, 22, 2, 0 },
+    { 0x400, 240, 108, 15, 15, { 0 }, NULL, NULL, 6, 0, 0, 22, 2, 0 },
+    { 0x400, 40, 108, 15, 15, { 0 }, NULL, NULL, 6, 0, 0, 22, 2, 0 },
+    { 0x400, 240, 108, 15, 15, { 0 }, NULL, NULL, 6, 0, 0, 22, 2, 0 },
+    { 0x1A0, 130, 118, 22, 22, { 0 }, "******MISSION", D_80301C64, 0, 0, 0, 4, 2, 0 },
+    { 0x1A0, 130, 140, 22, 22, { 0 }, "FAILED!*****", D_80301C70, 0, 0, 0, 4, 2, 0 },
+    { 0x401, 60, 208, 19, 19, { 0 }, NULL, NULL, 2, 0, 30, 7, 4, 0 },
+    { 0x401, 248, 208, 19, 19, { 0 }, NULL, NULL, 5, 0, 30, 7, 4, 0 },
+    { 36, 40, 6, 20, 20, { 0 }, NULL, NULL, 30, 0, 16, 6, 0, 0 },
+    { 32, 0, 17, 20, 20, { 0 }, NULL, NULL, 0, 0, 30, 16, 6, 0 },
+    { 36, 24, 39, 20, 20, { 0 }, NULL, NULL, 0, 0, 30, 14, 4, 0 },
+    { 32, 0, 22, 24, 24, { 0 }, "SET MUSIC VOLUME", D_803010A8, 0, 0, 0, 7, 7, 0 },
+    { 209, 52, 54, 22, 22, { 0 }, "QUIET", D_803010BC, 0, 0, 30, 7, 4, 0 },
+    { 209, 188, 54, 22, 22, { 0 }, "LOUD", D_803010C0, 0, 0, 30, 7, 4, 0 },
+    { 32, 53, 20, 26, 26, { 0 }, "**MISSION FAILED!**", D_80301C78, 0, 0, 0, 4, 4, 0 },
+    { 36, 40, 6, 20, 20, { 0 }, NULL, NULL, 30, 0, 16, 6, 0, 0 },
+    { 0x10A4, 0, -146, 22, 22, { 0 }, "CONGRATULATIONS!!", D_80301C8C, 0, 0, 30, 18, 6, 0 },
+    { 0x10A0, 0, 0, 16, 16, { 0 }, "MIRACULOUSLY, THE SHUTTLE", D_80301C9C, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 18, 16, 16, { 0 }, "COMPLETES ITS RETURN", D_80301CB0, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 36, 16, 16, { 0 }, "TO EARTH WITHOUT A", D_80301CC8, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 54, 16, 16, { 0 }, "SINGLE CASUALTY.", D_80301CE8, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 72, 16, 16, { 0 }, NULL, D_80301CEC, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 90, 16, 16, { 0 }, NULL, D_80301CF0, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 108, 16, 16, { 0 }, "BLAST CORPS HAS COME", D_80301CF4, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 126, 16, 16, { 0 }, "THROUGH WITH FLYING", D_80301D08, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 144, 16, 16, { 0 }, "COLORS YET AGAIN.", D_80301D24, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 162, 16, 16, { 0 }, NULL, D_80301D38, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 180, 16, 16, { 0 }, NULL, D_80301D3C, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 198, 16, 16, { 0 }, NULL, D_80301D40, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 216, 16, 16, { 0 }, "THEIR POPULARITY GIVEN", D_80301D44, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 234, 16, 16, { 0 }, "A FURTHER BOOST, THE", D_80301D48, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 252, 16, 16, { 0 }, "TEAM FIND NEW OFFERS", D_80301D64, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 270, 16, 16, { 0 }, "OF WORK POURING IN -", D_80301D7C, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 288, 16, 16, { 0 }, "BUT DECIDE THAT MAYBE,", D_80301D8C, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 306, 16, 16, { 0 }, "FOR NOW, IT'S TIME", D_80301DA4, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 324, 16, 16, { 0 }, "FOR A HOLIDAY.", D_80301DC0, 0, 0, 30, 6, 6, 0 },
+    {
+        0x10A0, 0, -186, 16, 16, { 0 }, "BATTERED AND CRIPPLED AFTER", D_80301DC4, 0, 0, 30, 6, 6,
+        0,
+    },
+    {
+        0x10A0, 0, -168, 16, 16, { 0 }, "ITS LONG VOYAGE, THE LATEST", D_80301DE0, 0, 0, 30, 6, 6,
+        0,
+    },
+    {
+        0x10A0, 0, -150, 16, 16, { 0 }, "SPACE SHUTTLE IS THROWN OFF", D_80301DF4, 0, 0, 30, 6, 6,
+        0,
+    },
+    {
+        0x10A0, 0, -132, 16, 16, { 0 }, "COURSE DURING RE-ENTRY AND", D_80301E0C, 0, 0, 30, 6, 6,
+        0,
+    },
+    { 0x10A0, 0, -114, 16, 16, { 0 }, "FORCED INTO DESPERATE", D_80301E20, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, -96, 16, 16, { 0 }, "MEASURES.", D_80301E38, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, -78, 16, 16, { 0 }, NULL, D_80301E3C, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, -60, 16, 16, { 0 }, NULL, D_80301E40, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, -42, 16, 16, { 0 }, NULL, D_80301E44, 0, 0, 30, 6, 6, 0 },
+    {
+        0x10A0, 0, -24, 16, 16, { 0 }, "A MAJOR CITY IS SEIZED BY", D_80301E48, 0, 0, 30, 6, 6, 0,
+    },
+    { 0x10A0, 0, -6, 16, 16, { 0 }, "PANIC WHEN THE RESIDENTS", D_80301E60, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 12, 16, 16, { 0 }, "FIND OUT THAT THEIR HOMES", D_80301E7C, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 30, 16, 16, { 0 }, "ARE ABOUT TO BECOME AN", D_80301E94, 0, 0, 30, 6, 6, 0 },
+    {
+        0x10A0, 0, 48, 16, 16, { 0 }, "EMERGENCY LANDING STRIP ...", D_80301E98, 0, 0, 30, 6, 6, 0,
+    },
+    { 0x10A0, 0, 66, 16, 16, { 0 }, NULL, D_80301E9C, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 84, 16, 16, { 0 }, NULL, D_80301EA0, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 102, 16, 16, { 0 }, NULL, D_80301EA4, 0, 0, 30, 6, 6, 0 },
+    {
+        0x10A0, 0, 120, 16, 16, { 0 }, "TIME IS OF THE ESSENCE AS", D_80301EC0, 0, 0, 30, 6, 6, 0,
+    },
+    { 0x10A0, 0, 138, 16, 16, { 0 }, "BLAST CORPS RISES ONCE", D_80301ED8, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 156, 16, 16, { 0 }, "MORE TO THE CHALLENGE.", D_80301EF0, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 174, 16, 16, { 0 }, NULL, D_80301EF4, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 192, 16, 16, { 0 }, NULL, D_80301EF8, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 210, 16, 16, { 0 }, NULL, D_80301EFC, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 228, 16, 16, { 0 }, "EVEN AS THE SHUTTLE", D_80301F00, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 246, 16, 16, { 0 }, "BLAZES DOWN THROUGH", D_80301F14, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 264, 16, 16, { 0 }, "THE SKIES, A RUNWAY", D_80301F28, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 282, 16, 16, { 0 }, "MUST BE CLEARED.", D_80301F38, 0, 0, 30, 6, 6, 0 },
+    { 176, 0, 36, 20, 20, { 0 }, "SITUATION:", D_8030268C, 0, 0, 30, 4, 4, 0 },
+    {
+        0x1A0, 32, 58, 16, 16, { 0 }, "********CARRIER LOCKED ON COURSE********", D_80302698, 0, 0,
+        30, 7, 4, 0,
+    },
+    { 0x2A0, 0, 84, 20, 20, { 0 }, "SOLUTION:", D_803026C0, 0, 0, 30, 4, 4, 0 },
+    {
+        0x1A0, 23, 106, 16, 16, { 0 }, "********CLEAR PATH TO GROUND ZERO!************",
+        D_803026CC, 0, 0, 30, 7, 4, 0,
+    },
+    { 176, 0, 36, 20, 20, { 0 }, "AGENTS:", D_803026F8, 0, 0, 30, 4, 4, 0 },
+    {
+        0x1A0, 69, 58, 16, 16, { 0 }, "********BLAST CORPS********", D_80302704, 0, 0, 30, 7, 4, 0,
+    },
+    { 0x2A0, 0, 84, 20, 20, { 0 }, "CHANCES:", D_80302734, 0, 0, 30, 4, 4, 0 },
+    {
+        0x1A0, 94, 106, 16, 16, { 0 }, "********SLIM*!******************", D_80302748, 0, 0, 30, 7,
+        4, 0,
+    },
+    { 0x1B0, 0, 48, 20, 20, { 0 }, "******MISSION 1:**", D_80302774, 0, 0, 30, 4, 4, 0 },
+    { 0x220, 0, 74, 15, 15, { 0 }, "CLEAR PATH FOR CARRIER", D_80302790, 0, 0, 30, 7, 4, 0 },
+    { 0x220, 0, 91, 15, 15, { 0 }, "ON EACH MAIN LEVEL.", D_803027AC, 0, 0, 30, 7, 4, 0 },
+    { 0x1B0, 0, 40, 20, 20, { 0 }, "******MISSION 2:**", D_803027C4, 0, 0, 30, 4, 4, 0 },
+    { 0x220, 0, 66, 15, 15, { 0 }, "ACTIVATE ALL RDUS AND", D_803027E0, 0, 0, 30, 7, 4, 0 },
+    { 0x220, 0, 83, 15, 15, { 0 }, "DESTROY ALL BUILDINGS", D_80302800, 0, 0, 30, 7, 4, 0 },
+    { 0x220, 0, 100, 15, 15, { 0 }, "TO EARN SECOND GOLD.", D_80302820, 0, 0, 30, 7, 4, 0 },
+    { 0x1B0, 0, 40, 20, 20, { 0 }, "******MISSION 3:**", D_80302840, 0, 0, 30, 4, 4, 0 },
+    {
+        0x220, 0, 66, 14, 15, { 0 }, "AFTER COMPLETING MAIN LEVELS,", D_8030285C, 0, 0, 30, 7, 4,
+        0,
+    },
+    { 0x220, 0, 83, 14, 15, { 0 }, "FIND ALL 6 SCIENTISTS TO", D_80302878, 0, 0, 30, 7, 4, 0 },
+    {
+        0x220, 0, 100, 14, 15, { 0 }, "ENSURE A CONTROLLED DETONATION.", D_8030288C, 0, 0, 30, 7,
+        4, 0,
+    },
+    { 0x1B0, 0, 48, 20, 20, { 0 }, "******MISSION 4:**", D_803028AC, 0, 0, 30, 4, 4, 0 },
+    { 0x220, 0, 74, 15, 15, { 0 }, "ACHIEVE GOLD ON ALL LEVELS", D_803028C8, 0, 0, 30, 7, 4, 0 },
+    { 0x220, 0, 91, 15, 15, { 0 }, "TO COMMENCE TIME ATTACK.", D_803028E8, 0, 0, 30, 7, 4, 0 },
+    { 176, 0, 16, 15, 15, { 0 }, "BLAST CORPS : LEADERS IN", D_80301F3C, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 32, 15, 15, { 0 }, "THE FIELD OF HEAVY DUTY", D_80301F40, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 48, 15, 15, { 0 }, "DEMOLITION THROUGH A", D_80301F54, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 64, 15, 15, { 0 }, "COMBINATION OF SKILL,", D_80301F6C, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 80, 15, 15, { 0 }, "EXPERIENCE AND CUTTING-", D_80301F8C, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 96, 15, 15, { 0 }, "EDGE TECHNOLOGY.", D_80301FA8, 0, 0, 30, 7, 6, 0 },
+    { 176, 0, 16, 15, 15, { 0 }, "SINCE ITS BIRTH THE COMPANY", D_80301FAC, 0, 0, 30, 7, 6, 0 },
+    {
+        160, 0, 32, 15, 15, { 0 }, "HAS APPLIED ITS UNIQUE TALENTS", D_80301FB0, 0, 0, 30, 7, 6, 0,
+    },
+    {
+        160, 0, 48, 15, 15, { 0 }, "TO THE PROBLEM OF URBAN DECAY,", D_80301FD0, 0, 0, 30, 7, 6, 0,
+    },
+    { 160, 0, 64, 15, 15, { 0 }, "RENOVATING AND REVITALIZING", D_80301FE8, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 80, 15, 15, { 0 }, "CITIES FROM ONE END OF THE", D_80302000, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 96, 15, 15, { 0 }, "COUNTRY TO THE OTHER.", D_80302004, 0, 0, 30, 7, 6, 0 },
+    { 176, 0, 16, 15, 15, { 0 }, "A FAR CRY FROM THE SENSELESS", D_80302008, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 32, 15, 15, { 0 }, "WARFARE AMIDST WHICH THE", D_8030200C, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 48, 15, 15, { 0 }, "SEEDS OF THE PROJECT WERE", D_8030202C, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 64, 15, 15, { 0 }, "SOWN, IN THE HEAVY VEHICLE", D_8030204C, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 80, 15, 15, { 0 }, "DEVELOPMENT BAY AT THE", D_80302068, 0, 0, 30, 7, 6, 0 },
+    {
+        160, 0, 96, 15, 15, { 0 }, "MILITARY BASE CALLED RAFTERS.", D_80302088, 0, 0, 30, 7, 6, 0,
+    },
+    { 176, 0, 16, 15, 15, { 0 }, "WHILE DEMONSTRATING A GREAT", D_8030208C, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 32, 15, 15, { 0 }, "NATURAL FLAIR, THE FOUNDING", D_80302090, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 48, 15, 15, { 0 }, "MEMBERS OF THE TEAM - AMBER,", D_803020AC, 0, 0, 30, 7, 6, 0 },
+    {
+        160, 0, 64, 15, 15, { 0 }, "CLARK, WESLEY AND SPIKE - WERE", D_803020CC, 0, 0, 30, 7, 6, 0,
+    },
+    {
+        160, 0, 80, 15, 15, { 0 }, "NEVER HAPPY WITH THE ULTIMATE", D_803020E4, 0, 0, 30, 7, 6, 0,
+    },
+    {
+        160, 0, 96, 15, 15, { 0 }, "PURPOSE OF THEIR MACHINES ...", D_803020E8, 0, 0, 30, 7, 6, 0,
+    },
+    { 176, 0, 16, 15, 15, { 0 }, "SO WHEN WESLEY WAS CRUELLY", D_803020EC, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 32, 15, 15, { 0 }, "REJECTED FOLLOWING THE FIELD", D_80302104, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 48, 15, 15, { 0 }, "ACCIDENT THAT LEFT HIM", D_80302124, 0, 0, 30, 7, 6, 0 },
+    {
+        160, 0, 64, 15, 15, { 0 }, "DISABLED, HIS FRIENDS FINALLY", D_80302140, 0, 0, 30, 7, 6, 0,
+    },
+    { 160, 0, 80, 15, 15, { 0 }, "REBELLED AND LED THE", D_8030215C, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 96, 15, 15, { 0 }, "INFAMOUS RAFTERS WALKOUT.", D_80302174, 0, 0, 30, 7, 6, 0 },
+    { 176, 0, 16, 15, 15, { 0 }, "BLAST CORPS CAME INTO BEING", D_80302178, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 32, 15, 15, { 0 }, "SOON AFTER. THAT WAS FIVE", D_8030217C, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 48, 15, 15, { 0 }, "YEARS AGO. BUT NOW, IN", D_80302194, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 64, 15, 15, { 0 }, "THE PRESENT DAY, WORLD PEACE", D_803021B0, 0, 0, 30, 7, 6, 0 },
+    {
+        160, 0, 80, 15, 15, { 0 }, "IS SHATTERED AS MANKIND FACES", D_803021CC, 0, 0, 30, 7, 6, 0,
+    },
+    { 160, 0, 96, 15, 15, { 0 }, "CRISIS ON A WORLDWIDE SCALE.", D_803021EC, 0, 0, 30, 7, 6, 0 },
+    { 176, 0, 16, 15, 15, { 0 }, "A PAIR OF DEFECTIVE NUCLEAR", D_803021F0, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 32, 15, 15, { 0 }, "MISSILES, EN ROUTE TO A SAFE", D_8030220C, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 48, 15, 15, { 0 }, "DETONATION SITE, HAVE BEGUN", D_8030222C, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 64, 15, 15, { 0 }, "TO LEAK. BADLY DAMAGED, THE", D_8030224C, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 80, 15, 15, { 0 }, "CARRIER AUTOMATICALLY LOCKS", D_80302264, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 96, 15, 15, { 0 }, "ONTO THE MOST DIRECT ROUTE.", D_80302280, 0, 0, 30, 7, 6, 0 },
+    { 176, 0, 16, 15, 15, { 0 }, "BAD MEMORIES RESURFACE FOR", D_80302284, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 32, 15, 15, { 0 }, "THE BLAST CORPS TEAM WHEN,", D_80302288, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 48, 15, 15, { 0 }, "SUMMONED TO THEIR NATION'S", D_803022A8, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 64, 15, 15, { 0 }, "DEFENSE, THEY FIND OUT WHERE", D_803022C8, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 80, 15, 15, { 0 }, "THE WARHEADS ORIGINATED. A", D_803022E0, 0, 0, 30, 7, 6, 0 },
+    {
+        160, 0, 96, 15, 15, { 0 }, "CERTAIN NEARBY MILITARY BASE.", D_803022F4, 0, 0, 30, 7, 6, 0,
+    },
+    {
+        176, 0, 16, 15, 15, { 0 }, "THE FLOOD OF RADIATION PREVENTS", D_803022F8, 0, 0, 30, 7, 6,
+        0,
+    },
+    { 160, 0, 32, 15, 15, { 0 }, "ANYONE GETTING CLOSE TO THE", D_803022FC, 0, 0, 30, 7, 6, 0 },
+    {
+        160, 0, 48, 15, 15, { 0 }, "RUNAWAY CARRIER, AND PEOPLE IN", D_80302310, 0, 0, 30, 7, 6, 0,
+    },
+    { 160, 0, 64, 15, 15, { 0 }, "THE KNOW FEAR THAT EVEN THE", D_80302328, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 80, 15, 15, { 0 }, "SLIGHTEST JOLT COULD TRIGGER", D_80302340, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 96, 15, 15, { 0 }, "A CATASTROPHIC EXPLOSION.", D_8030235C, 0, 0, 30, 7, 6, 0 },
+    {
+        176, 0, 16, 15, 15, { 0 }, "STANDING AS THE WORLD'S FINAL", D_80302360, 0, 0, 30, 7, 6, 0,
+    },
+    { 160, 0, 32, 15, 15, { 0 }, "HOPE, BLAST CORPS MUST CLEAR", D_80302364, 0, 0, 30, 7, 6, 0 },
+    {
+        160, 0, 48, 15, 15, { 0 }, "THE WAY TO GROUND ZERO, GATHER", D_80302380, 0, 0, 30, 7, 6, 0,
+    },
+    {
+        160, 0, 64, 15, 15, { 0 }, "A TEAM OF SIX ELITE SCIENTISTS", D_803023A0, 0, 0, 30, 7, 6, 0,
+    },
+    { 160, 0, 80, 15, 15, { 0 }, "AND ULTIMATELY COUNTER THE", D_803023C0, 0, 0, 30, 7, 6, 0 },
+    { 160, 0, 96, 15, 15, { 0 }, "THREAT OF NUCLEAR WINTER.", D_803023DC, 0, 0, 30, 7, 6, 0 },
+    { 176, 0, 88, 16, 16, { 0 }, "EVEN AS THE CARRIER", D_803023E0, 0, 0, 30, 6, 6, 0 },
+    { 160, 0, 106, 16, 16, { 0 }, "TRUNDLES TOWARDS GROUND", D_803023E4, 0, 0, 30, 6, 6, 0 },
+    { 160, 0, 124, 16, 16, { 0 }, "ZERO, YOU ARE DOING", D_803023FC, 0, 0, 30, 6, 6, 0 },
+    { 160, 0, 142, 16, 16, { 0 }, "EVERYTHING IN YOUR POWER", D_80302410, 0, 0, 30, 6, 6, 0 },
+    { 160, 0, 160, 16, 16, { 0 }, "TO GET THE ASSEMBLED", D_80302424, 0, 0, 30, 6, 6, 0 },
+    { 160, 0, 178, 16, 16, { 0 }, "SCIENTISTS THERE FIRST ...", D_8030243C, 0, 0, 30, 6, 6, 0 },
+    {
+        0x10A0, 0, -188, 16, 16, { 0 }, "MERCIFULLY, THE SCIENTISTS", D_80302440, 0, 0, 30, 6, 6,
+        0,
+    },
+    { 0x10A0, 0, -170, 16, 16, { 0 }, "ARE ABLE TO SET UP A", D_80302460, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, -152, 16, 16, { 0 }, "PROPERLY CONTROLLED", D_8030247C, 0, 0, 30, 6, 6, 0 },
+    {
+        0x10A0, 0, -134, 16, 16, { 0 }, "DETONATION ... AND FINALLY,", D_80302494, 0, 0, 30, 6, 6,
+        0,
+    },
+    {
+        0x10A0, 0, -116, 16, 16, { 0 }, "AS THE SMOKE FADES, THE WORLD", D_803024AC, 0, 0, 30, 6,
+        6, 0,
+    },
+    {
+        0x10A0, 0, -98, 16, 16, { 0 }, "CAN LET OUT A SIGH OF RELIEF.", D_803024CC, 0, 0, 30, 6, 6,
+        0,
+    },
+    { 0x10A0, 0, -26, 16, 16, { 0 }, "THE DEVASTATION LEFT IN", D_803024D0, 0, 0, 30, 6, 6, 0 },
+    {
+        0x10A0, 0, -8, 16, 16, { 0 }, "YOUR WAKE IS NOTHING COMPARED", D_803024F0, 0, 0, 30, 6, 6,
+        0,
+    },
+    {
+        0x10A0, 0, 10, 16, 16, { 0 }, "TO WHAT WOULD HAVE HAPPENED", D_80302504, 0, 0, 30, 6, 6, 0,
+    },
+    { 0x10A0, 0, 28, 16, 16, { 0 }, "IF BLAST CORPS HAD FAILED", D_8030251C, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 46, 16, 16, { 0 }, "AT THE LAST.", D_80302534, 0, 0, 30, 6, 6, 0 },
+    {
+        0x10A0, 0, 82, 16, 16, { 0 }, "REBUILDING BEGINS IMMEDIATELY.", D_80302538, 0, 0, 30, 6, 6,
+        0,
+    },
+    {
+        0x10A0, 0, 154, 16, 16, { 0 }, "WITH CATASTROPHE AVERTED, THE", D_80302550, 0, 0, 30, 6, 6,
+        0,
+    },
+    {
+        0x10A0, 0, 172, 16, 16, { 0 }, "TEAM MEMBERS BECOME NATIONAL", D_80302554, 0, 0, 30, 6, 6,
+        0,
+    },
+    {
+        0x10A0, 0, 190, 16, 16, { 0 }, "HEROES, THEIR SUCCESS AND", D_8030256C, 0, 0, 30, 6, 6, 0,
+    },
+    { 0x10A0, 0, 208, 16, 16, { 0 }, "SATISFACTION ASSURED FOR", D_80302584, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 226, 16, 16, { 0 }, "THE FORESEEABLE FUTURE.", D_80302588, 0, 0, 30, 6, 6, 0 },
+    {
+        0x120, 44, 6, 20, 20, { 0 }, "**RDUS COLLECTED!**********", D_803025B8, 0, 0, 30, 18, 4, 0,
+    },
+    {
+        0x120, 44, 6, 20, 20, { 0 }, "**SURVIVORS FREE!**********", D_803025DC, 0, 0, 30, 18, 4, 0,
+    },
+    {
+        0x120, 44, 6, 20, 20, { 0 }, "**BUILDINGS DESTROYED!**********", D_80302600, 0, 0, 30, 18,
+        4, 0,
+    },
+    {
+        0x120, 44, 6, 20, 20, { 0 }, "**LEVEL COMPLETE!**********", D_8030258C, 0, 0, 30, 18, 4, 0,
+    },
+    { 0x120, 44, 6, 20, 20, { 0 }, "**PATH CLEARED!**********", D_8030262C, 0, 0, 30, 18, 4, 0 },
+    {
+        0x1A0, 24, 20, 24, 24, { 0 }, "********EMERGENCY! ...****************", D_80302650, 0, 0,
+        30, 4, 4, 0,
+    },
+    { 160, 0, 48, 20, 20, { 0 }, "YOU MUST COMPLETELY", D_80302908, 0, 0, 30, 7, 4, 0 },
+    { 160, 0, 70, 20, 20, { 0 }, "REMOVE ALL OBSTACLES", D_80302918, 0, 0, 30, 7, 4, 0 },
+    { 160, 0, 92, 20, 20, { 0 }, "FROM THE DANGER ZONE!", D_80302930, 0, 0, 30, 7, 4, 0 },
+    { 164, 32, 6, 20, 20, { 0 }, "DANGER ZONE!", D_80302934, 0, 0, 30, 17, 4, 0 },
+    { 0x480, -32, 38, 15, 15, { 0 }, NULL, NULL, 16, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, -128, 16, 16, { 0 }, "THIS IS AN RDU,", D_80302940, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, -110, 16, 16, { 0 }, "TRIGGERED REMOTELY", D_80302954, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -92, 16, 16, { 0 }, "AS YOU DRIVE BY.", D_80302968, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -74, 16, 16, { 0 }, NULL, D_80302974, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -56, 16, 16, { 0 }, "THEY CAN BE USED FOR", D_80302978, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, -38, 16, 16, { 0 }, "GUIDANCE AS WELL AS", D_8030298C, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -20, 16, 16, { 0 }, "RADIATION DISPERSAL.", D_803029A0, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -32, 38, 15, 15, { 0 }, NULL, NULL, 56, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, -128, 16, 16, { 0 }, "COMMUNICATION POINTS", D_803029B4, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, -110, 16, 16, { 0 }, "ALLOW YOU TO MAKE", D_803029B8, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -92, 16, 16, { 0 }, "CONTACT WITH HQ.", D_803029C8, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -74, 16, 16, { 0 }, NULL, D_803029CC, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -56, 16, 16, { 0 }, "WHEN ACTIVATED, THEY", D_803029D0, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, -38, 16, 16, { 0 }, "BREAK OPEN VALUABLE", D_803029D4, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -20, 16, 16, { 0 }, "NEW TRAINING LEVELS.", D_803029E8, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -2, 16, 16, { 0 }, NULL, D_803029EC, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 16, 16, 16, { 0 }, "YOU CAN", D_803029F0, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 34, 16, 16, { 0 }, "ACCESS THESE FROM", D_80302A00, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 52, 16, 16, { 0 }, "THE WORLD SCREEN.", D_80302A14, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -16, 8, 15, 15, { 0 }, NULL, NULL, 62, 0, 0, 22, 2, 0 },
+    { 0x11A0, 0, -52, 24, 24, { 0 }, "BACKLASH", D_80302A28, 0, 0, 30, 4, 7, 0 },
+    { 0x10A0, 0, 20, 16, 16, { 0 }, "DESTROY BUILDINGS", D_80302A3C, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 38, 16, 16, { 0 }, "WITH BACKLASH USING", D_80302A50, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 56, 16, 16, { 0 }, "ITS ARMORED REAR.", D_80302A60, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 74, 16, 16, { 0 }, NULL, D_80302A64, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 92, 16, 16, { 0 }, NULL, D_80302A68, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 110, 16, 16, { 0 }, "USE R TO SKID", D_80302A7C, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 128, 16, 16, { 0 }, "THE TRUCK WHEN", D_80302A8C, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 146, 16, 16, { 0 }, "GOING INTO A TURN.", D_80302A90, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 164, 16, 16, { 0 }, NULL, D_80302AA4, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 182, 16, 16, { 0 }, "AIM FOR AT LEAST", D_80302AB4, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 200, 16, 16, { 0 }, "A SILVER MEDAL", D_80302AB8, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 218, 16, 16, { 0 }, "BEFORE PROGRESSING:", D_80302AD0, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 236, 16, 16, { 0 }, NULL, D_80302AE4, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 254, 16, 16, { 0 }, "THIS TECHNIQUE", D_80302AE8, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 272, 16, 16, { 0 }, "MUST BE MASTERED", D_80302AFC, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 290, 16, 16, { 0 }, "FOR LATER LEVELS.", D_80302B0C, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 308, 16, 16, { 0 }, NULL, D_80302B10, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 326, 16, 16, { 0 }, "USE BUMPS TO GET", D_80302B24, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 344, 16, 16, { 0 }, "BACKLASH AIRBORNE AND", D_80302B34, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 362, 16, 16, { 0 }, "CAUSE MAXIMUM DAMAGE.", D_80302B4C, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -16, 8, 15, 15, { 0 }, NULL, NULL, 58, 0, 0, 22, 2, 0 },
+    { 0x11A0, 0, -52, 24, 24, { 0 }, "SIDESWIPE", D_80302B50, 0, 0, 30, 4, 7, 0 },
+    { 0x10A0, 0, 20, 16, 16, { 0 }, "HITS HARDEST AT THE", D_80302B64, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 38, 16, 16, { 0 }, "MAXIMUM EXTENSION", D_80302B7C, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 56, 16, 16, { 0 }, "OF ITS SIDE PANELS.", D_80302B94, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 74, 16, 16, { 0 }, NULL, D_80302BA8, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 92, 16, 16, { 0 }, NULL, D_80302BAC, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 110, 16, 16, { 0 }, "FIND BLUE AMMO BOXES", D_80302BB0, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 128, 16, 16, { 0 }, "TO KEEP SIDESWIPE'S", D_80302BB4, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 146, 16, 16, { 0 }, "ATTACK POWER AT FULL.", D_80302BCC, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 164, 16, 16, { 0 }, NULL, D_80302BE4, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 182, 16, 16, { 0 }, "CHARGES REMAINING", D_80302BE8, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 200, 16, 16, { 0 }, "ARE DISPLAYED IN THE", D_80302BEC, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 218, 16, 16, { 0 }, "LOWER LEFT CORNER.", D_80302BF0, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -16, 8, 15, 15, { 0 }, NULL, NULL, 59, 0, 0, 22, 2, 0 },
+    { 0x11A0, 0, -52, 24, 24, { 0 }, "THUNDERFIST", D_80302BF4, 0, 0, 30, 4, 7, 0 },
+    { 0x10A0, 0, 20, 16, 16, { 0 }, "DEMOLISH BUILDINGS", D_80302C08, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 38, 16, 16, { 0 }, "BY DIVING AND", D_80302C20, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 56, 16, 16, { 0 }, "ROLLING INTO THEM.", D_80302C2C, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 74, 16, 16, { 0 }, NULL, D_80302C30, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 92, 16, 16, { 0 }, "A WELL-TIMED SERIES", D_80302C34, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 110, 16, 16, { 0 }, "OF ATTACKS CAN CAUSE", D_80302C4C, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 128, 16, 16, { 0 }, "INCREDIBLE DAMAGE.", D_80302C64, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -16, 8, 15, 15, { 0 }, NULL, NULL, 60, 0, 0, 22, 2, 0 },
+    { 0x11A0, 0, -52, 24, 24, { 0 }, "SKYFALL", D_80302C68, 0, 0, 30, 4, 7, 0 },
+    { 0x10A0, 0, 20, 16, 16, { 0 }, "MAKE USE OF SKYFALL'S", D_80302C7C, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 38, 16, 16, { 0 }, "ARMORED UNDERSIDE", D_80302C94, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 56, 16, 16, { 0 }, "TO CRUSH FROM ABOVE.", D_80302C98, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 74, 16, 16, { 0 }, NULL, D_80302CA8, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 92, 16, 16, { 0 }, "TURBO INTO A DITCH", D_80302CBC, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 110, 16, 16, { 0 }, "WITH L/R TO LAUNCH", D_80302CC0, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 128, 16, 16, { 0 }, "YOURSELF SKYWARDS ...", D_80302CD4, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -16, 8, 15, 15, { 0 }, NULL, NULL, 66, 0, 0, 22, 2, 0 },
+    { 0x11A0, 0, -52, 24, 24, { 0 }, "J-BOMB", D_80302CE4, 0, 0, 30, 4, 7, 0 },
+    { 0x10A0, 0, 20, 16, 16, { 0 }, "USE A TO THRUST", D_80302CF0, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 38, 16, 16, { 0 }, "J-BOMB INTO THE", D_80302CF4, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 56, 16, 16, { 0 }, "AIR OVER A TARGET ...", D_80302D08, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 74, 16, 16, { 0 }, NULL, D_80302D14, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 92, 16, 16, { 0 }, "THEN HIT B TO", D_80302D28, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 110, 16, 16, { 0 }, "DIVE EARTHWARDS", D_80302D2C, 0, 0, 30, 7, 7, 0 },
+    { 0x10A0, 0, 128, 16, 16, { 0 }, "FROM A HEIGHT.", D_80302D40, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 74, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, -128, 16, 16, { 0 }, "SURVIVORS ESCAPE WHEN", D_80302D58, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, -110, 16, 16, { 0 }, "THE WALLS AROUND", D_80302D70, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -92, 16, 16, { 0 }, "THEM ARE DESTROYED.", D_80302D84, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -56, 16, 16, { 0 }, "CUE THE BLAST CORPS", D_80302D9C, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, -38, 16, 16, { 0 }, "CHOPPER, SWOOPING IN", D_80302DB4, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -20, 16, 16, { 0 }, "TO PICK THEM UP.", D_80302DCC, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 16, 16, 16, { 0 }, "ONE GOLD COMMENDATION", D_80302DE4, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 34, 16, 16, { 0 }, "IS GIVEN PER LEVEL", D_80302DFC, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 52, 16, 16, { 0 }, "FOR PATH CLEARANCE:", D_80302E14, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 88, 16, 16, { 0 }, "THE SECOND REQUIRES", D_80302E28, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 106, 16, 16, { 0 }, "ALL SURVIVORS, RDUS", D_80302E2C, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 124, 16, 16, { 0 }, "AND TOTAL DESTRUCTION.", D_80302E30, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 13, 0, 0, 22, 2, 0 },
+    { 0x1061, 0, -128, 20, 20, { 0 }, "WARNING!", D_80302E34, 0, 0, 30, 4, 4, 0 },
+    { 0x1020, 0, -74, 16, 16, { 0 }, "SOMETHING IN THE", D_80302E40, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, -56, 16, 16, { 0 }, "CARRIER'S PATH", D_80302E58, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -38, 16, 16, { 0 }, "HAS BEEN MISSED!", D_80302E70, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -2, 16, 16, { 0 }, "KEEP AN EYE", D_80302E74, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 16, 16, 16, { 0 }, "ON THE LOWER", D_80302E88, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 34, 16, 16, { 0 }, "LEFT ARROW ...", D_80302E9C, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 70, 16, 16, { 0 }, "IT CHANGES FROM GREEN", D_80302EB0, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 88, 16, 16, { 0 }, "TO RED AS YOU CLOSE", D_80302EC8, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 106, 16, 16, { 0 }, "IN ON THE CARRIER.", D_80302EE0, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 142, 16, 16, { 0 }, "USE IT WITH THE RADAR", D_80302EF4, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 160, 16, 16, { 0 }, "TO QUICKLY TRACK", D_80302F08, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 178, 16, 16, { 0 }, "DOWN THE PROBLEM:", D_80302F1C, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 214, 16, 16, { 0 }, "RED INDICATES THE", D_80302F30, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 232, 16, 16, { 0 }, "CARRIER, BLUE THE NEXT", D_80302F44, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 250, 16, 16, { 0 }, "BUILDING IN ITS PATH.", D_80302F54, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 74, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, -74, 16, 16, { 0 }, "CONGRATULATIONS!", D_80302F64, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, -56, 16, 16, { 0 }, "THIS IS ONE OF", D_80302F74, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -38, 16, 16, { 0 }, "THE BONUS VEHICLES.", D_80302F8C, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, -2, 16, 16, { 0 }, "THEY ARE", D_80302F90, 30, 0, 7, 7, 0, 0 },
+    { 0x1021, 0, 16, 16, 16, { 0 }, "MOST USEFUL IN", D_80302FA0, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 34, 16, 16, { 0 }, "TRAINING STAGES:", D_80302FB0, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 70, 16, 16, { 0 }, "ACCESS THESE", D_80302FB4, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 88, 16, 16, { 0 }, "VIA THE LEVEL'S", D_80302FCC, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 106, 16, 16, { 0 }, "COMMUNICATION POINTS.", D_80302FE0, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 74, 0, 0, 22, 2, 0 },
+    { 0x1024, 0, 0, 16, 16, { 0 }, "PATH CLEARED!", D_80302FF0, 0, 0, 30, 18, 18, 0 },
+    { 0x1021, 0, 18, 16, 16, { 0 }, "YOUR PRIMARY MISSION", D_80303004, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 36, 16, 16, { 0 }, "HERE IS COMPLETE.", D_80303014, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 72, 16, 16, { 0 }, "THE BLAST CORPS", D_8030302C, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 90, 16, 16, { 0 }, "SEMI ALLOWS YOU", D_80303040, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 108, 16, 16, { 0 }, "TO EXIT THE LEVEL.", D_80303058, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 144, 16, 16, { 0 }, "MOVE BETWEEN", D_80303070, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 162, 16, 16, { 0 }, "VEHICLES WITH", D_80303084, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 180, 16, 16, { 0 }, "THE Z BUTTON.", D_80303098, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 216, 16, 16, { 0 }, "SPARE TIME CAN BE", D_8030309C, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 234, 16, 16, { 0 }, "USED TO FIND RDUS AND", D_803030B4, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 252, 16, 16, { 0 }, "DESTROY BUILDINGS ...", D_803030CC, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 288, 16, 16, { 0 }, "RETURN IF NECESSARY", D_803030E4, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 306, 16, 16, { 0 }, "AFTER CHECKING", D_803030F8, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 324, 16, 16, { 0 }, "YOUR PERFORMANCE.", D_8030310C, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 74, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, 0, 16, 16, { 0 }, "USE Z TO GET OUT", D_80303124, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 18, 16, 16, { 0 }, "OF ONE VEHICLE", D_80303138, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 36, 16, 16, { 0 }, "AND COMMANDEER ANOTHER.", D_8030314C, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 74, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, 0, 16, 16, { 0 }, "THE DESTRUCTION OF", D_80303160, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 18, 16, 16, { 0 }, "THIS BUILDING", D_80303174, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 36, 16, 16, { 0 }, "IS ESSENTIAL!", D_80303184, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 72, 16, 16, { 0 }, "FLASHING ARROWS", D_80303188, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 90, 16, 16, { 0 }, "MEAN IT STANDS IN", D_80303198, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 108, 16, 16, { 0 }, "THE CARRIER'S PATH.", D_803031B0, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 144, 16, 16, { 0 }, "AS DANGER CLOSES IN,", D_803031C8, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 162, 16, 16, { 0 }, "THE ARROWS CHANGE", D_803031D8, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 180, 16, 16, { 0 }, "FROM GREEN TO RED.", D_803031EC, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 74, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, 0, 16, 16, { 0 }, "THIS IS A PERIPHERY", D_803031FC, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 18, 16, 16, { 0 }, "STRUCTURE : CRUSHING", D_8030320C, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 36, 16, 16, { 0 }, "IT IS NOT VITAL.", D_80303220, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 72, 16, 16, { 0 }, "THEN AGAIN, IT'S FUN", D_80303234, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 90, 16, 16, { 0 }, "- AND MIGHT REVEAL", D_80303248, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 108, 16, 16, { 0 }, "A SURPRISE OR TWO ...", D_8030325C, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 74, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, 0, 16, 16, { 0 }, "LEVELING EVERYTHING", D_80303270, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 18, 16, 16, { 0 }, "HELPS YOU GAIN", D_80303288, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 36, 16, 16, { 0 }, "A COMMENDATION.", D_8030329C, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 72, 16, 16, { 0 }, "HOWEVER, IT'S A", D_803032B4, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 90, 16, 16, { 0 }, "SECONDARY OBJECTIVE", D_803032C8, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 108, 16, 16, { 0 }, "TO CLEARING THE WAY.", D_803032E0, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 144, 16, 16, { 0 }, "CONCENTRATE ON THE", D_803032E4, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 162, 16, 16, { 0 }, "ARROWED BUILDINGS AS", D_803032F8, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 180, 16, 16, { 0 }, "THE CARRIER PASSES ...", D_80303304, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 216, 16, 16, { 0 }, "PLENTY OF TIME TO", D_80303318, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 234, 16, 16, { 0 }, "COME BACK LATER", D_8030331C, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 252, 16, 16, { 0 }, "AND FINISH THE JOB.", D_80303320, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 74, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, 0, 16, 16, { 0 }, "USE Z TO GET OUT", D_80303324, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 18, 16, 16, { 0 }, "OF ONE VEHICLE", D_80303338, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 36, 16, 16, { 0 }, "AND COMMANDEER ANOTHER.", D_8030334C, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 72, 16, 16, { 0 }, "BUT CLEAR A PATH FOR", D_80303360, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 90, 16, 16, { 0 }, "THE CARRIER BEFORE", D_80303378, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 108, 16, 16, { 0 }, "GOING OFF TO EXPLORE!", D_8030338C, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 74, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, 0, 16, 16, { 0 }, "THE CRANE CAN MOVE", D_8030339C, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 18, 16, 16, { 0 }, "OBJECTS TO PREVIOUSLY", D_803033B0, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 36, 16, 16, { 0 }, "INACCESSIBLE PLACES.", D_803033C0, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 72, 16, 16, { 0 }, "LOAD IT UP THEN", D_803033D0, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 90, 16, 16, { 0 }, "HEAD FOR THE", D_803033E4, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 108, 16, 16, { 0 }, "CONTROLS IN THE CAB.", D_803033F0, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 74, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, 0, 16, 16, { 0 }, "COLLECT AMMO BOXES", D_80303400, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 18, 16, 16, { 0 }, "AND YOU CAN BLAST", D_80303410, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 36, 16, 16, { 0 }, "YOUR WAY THROUGH.", D_80303420, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 74, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, 0, 16, 16, { 0 }, "YOU COULD STOP", D_80303424, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 18, 16, 16, { 0 }, "THE TRAIN AT", D_80303428, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 36, 16, 16, { 0 }, "THIS STATION.", D_80303438, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 72, 16, 16, { 0 }, "WAIT FOR THE SMILEY", D_8030343C, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 90, 16, 16, { 0 }, "BEFORE ATTEMPTING TO", D_80303450, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 108, 16, 16, { 0 }, "LOAD OR UNLOAD.", D_8030345C, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 74, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, 0, 16, 16, { 0 }, "TNT CRATES CAN BE", D_80303470, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 18, 16, 16, { 0 }, "PUSHED AROUND USING", D_80303488, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 36, 16, 16, { 0 }, "RAMDOZER'S SHOVEL.", D_803034A0, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 72, 16, 16, { 0 }, "BUT THEY WON'T BE", D_803034B8, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 90, 16, 16, { 0 }, "STABLE FOR LONG ...", D_803034D0, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 74, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, 0, 16, 16, { 0 }, "SELECT START THEN", D_803034DC, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 18, 16, 16, { 0 }, "VIEW STATS TO CHECK", D_803034EC, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 36, 16, 16, { 0 }, "STATUS OF LEVEL.", D_803034FC, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 74, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, 0, 16, 16, { 0 }, "THE TRAIN CAN HELP", D_80303514, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 18, 16, 16, { 0 }, "TRANSPORT RAMDOZER", D_80303520, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 36, 16, 16, { 0 }, "TO THE STATION.", D_80303534, 0, 0, 30, 7, 7, 0 },
+    { 0x480, -36, 38, 15, 15, { 0 }, NULL, NULL, 74, 0, 0, 22, 2, 0 },
+    { 0x1020, 0, 0, 16, 16, { 0 }, "PRESSING START WILL", D_80303544, 0, 0, 30, 7, 7, 0 },
+    { 0x1021, 0, 18, 16, 16, { 0 }, "ALLOW YOU TO VIEW THE", D_8030355C, 0, 0, 30, 7, 7, 0 },
+    { 0x1020, 0, 36, 16, 16, { 0 }, "MISSILE CARRIER'S PATH.", D_80303574, 0, 0, 30, 7, 7, 0 },
+    { 160, -36, 34, 22, 22, { 0 }, NULL, NULL, 61, 0, 0, 7, 2, 0 },
+    { 32, 0, 60, 19, 19, { 0 }, NULL, NULL, 0, 0, 30, 7, 4, 0 },
+    { 209, 48, 84, 29, 29, { 0 }, "NO", D_80301098, 0, 0, 30, 8, 4, 0 },
+    { 209, 180, 84, 29, 29, { 0 }, "YES", D_803010A0, 0, 0, 30, 8, 4, 0 },
+    { 0x10A4, 0, -146, 22, 22, { 0 }, "CONGRATULATIONS!!", D_80301488, 0, 0, 30, 18, 6, 0 },
+    { 0x10A0, 0, 0, 16, 16, { 0 }, "HAVING DEMONSTRATED", D_80301498, 0, 0, 30, 6, 6, 0 },
+    {
+        0x10A0, 0, 18, 16, 16, { 0 }, "VERSATILITY AND RELIABILITY", D_803014B0, 0, 0, 30, 6, 6, 0,
+    },
+    { 0x10A0, 0, 36, 16, 16, { 0 }, "WELL BEYOND THE CALL OF", D_803014C4, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 54, 16, 16, { 0 }, "DUTY, THE BLAST CORPS", D_803014DC, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 72, 16, 16, { 0 }, "TEAM CAN FINALLY TAKE", D_803014FC, 0, 0, 30, 6, 6, 0 },
+    {
+        0x10A0, 0, 90, 16, 16, { 0 }, "THAT WELL-DESERVED HOLIDAY.", D_80301518, 0, 0, 30, 6, 6, 0,
+    },
+    { 0x10A0, 0, 108, 16, 16, { 0 }, NULL, D_80301530, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 126, 16, 16, { 0 }, NULL, D_80301534, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 144, 16, 16, { 0 }, NULL, D_80301538, 0, 0, 30, 6, 6, 0 },
+    {
+        0x10A0, 0, 162, 16, 16, { 0 }, "WHEN THEY GET BACK THEY'LL", D_8030153C, 0, 0, 30, 6, 6, 0,
+    },
+    {
+        0x10A0, 0, 180, 16, 16, { 0 }, "FIND THE OFFERS AND DEALS", D_80301540, 0, 0, 30, 6, 6, 0,
+    },
+    { 0x10A0, 0, 198, 16, 16, { 0 }, "STILL FLOODING IN,", D_80301558, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 216, 16, 16, { 0 }, "KEEPING THEM IN THEIR", D_80301570, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 234, 16, 16, { 0 }, "CHOSEN LINE OF WORK", D_80301588, 0, 0, 30, 6, 6, 0 },
+    {
+        0x10A0, 0, 252, 16, 16, { 0 }, "FOR MANY YEARS TO COME ...", D_803015A4, 0, 0, 30, 6, 6, 0,
+    },
+    { 0x10A0, 0, 270, 16, 16, { 0 }, NULL, D_803015A8, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 288, 16, 16, { 0 }, NULL, D_803015AC, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 306, 16, 16, { 0 }, NULL, D_803015B0, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 324, 16, 16, { 0 }, "MAYBE AT SOME POINT EVEN", D_803015C8, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 342, 16, 16, { 0 }, "LEADING THEM BACK INTO", D_803015E4, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 360, 16, 16, { 0 }, "THE FIELD OF MILITARY", D_80301600, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 378, 16, 16, { 0 }, "OPERATIONS - BUT THIS", D_80301620, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 396, 16, 16, { 0 }, "TIME FOR A CONSIDERABLY", D_80301634, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 414, 16, 16, { 0 }, "NOBLER CAUSE.", D_80301638, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 432, 16, 16, { 0 }, NULL, D_8030163C, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 450, 16, 16, { 0 }, NULL, D_80301640, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 468, 16, 16, { 0 }, NULL, D_8030165C, 0, 0, 30, 6, 6, 0 },
+    {
+        0x10A0, 0, 486, 16, 16, { 0 }, "ALL THAT, THOUGH, CAN WAIT.", D_80301674, 0, 0, 30, 6, 6,
+        0,
+    },
+    { 0x10A0, 0, 504, 16, 16, { 0 }, "WITH THEIR COUNTRY", D_80301694, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 522, 16, 16, { 0 }, "BREATHING A SIGH OF", D_803016AC, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 540, 16, 16, { 0 }, "RELIEF AND THEIR GOOD", D_803016C4, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 558, 16, 16, { 0 }, "NAME ASSURED FOR LIFE,", D_803016C8, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 576, 16, 16, { 0 }, "THE TEAM CAN REST EASY", D_803016CC, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 594, 16, 16, { 0 }, "FOR A WHILE.", D_803016D0, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 612, 16, 16, { 0 }, NULL, D_803016E4, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 630, 16, 16, { 0 }, NULL, D_80301700, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 648, 16, 16, { 0 }, NULL, D_8030171C, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 666, 16, 16, { 0 }, "UNLESS, OF COURSE, THE", D_80301720, 0, 0, 30, 6, 6, 0 },
+    {
+        0x10A0, 0, 684, 16, 16, { 0 }, "LURE OF THE GOLD STANDARD", D_80301724, 0, 0, 30, 6, 6, 0,
+    },
+    { 0x10A0, 0, 702, 16, 16, { 0 }, "PROVES TOO MUCH ...", D_80301728, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 720, 16, 16, { 0 }, NULL, D_80301744, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 738, 16, 16, { 0 }, NULL, D_80301760, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 756, 16, 16, { 0 }, NULL, D_8030177C, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 774, 16, 16, { 0 }, NULL, D_80301780, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 792, 16, 16, { 0 }, "PERHAPS THERE ARE", D_80301784, 0, 0, 30, 6, 6, 0 },
+    {
+        0x10A0, 0, 810, 16, 16, { 0 }, "FURTHER CHALLENGES AWAITING", D_80301788, 0, 0, 30, 6, 6,
+        0,
+    },
+    { 0x10A0, 0, 828, 16, 16, { 0 }, "THOSE WHO CAN ACHIEVE", D_8030178C, 0, 0, 30, 6, 6, 0 },
+    { 0x10A0, 0, 846, 16, 16, { 0 }, "A PERFECT RECORD ...", D_80301790, 0, 0, 30, 6, 6, 0 },
+};
+UnkStruct_802F8BDC D_802F8BDC[0x6c] = {
+    { 0x100, 208, 32, 16, -0xEFFFFC7, 0, 0, 5, 27, 28, 29, 0, 0, 0 },
+    { 0x100, 208, 32, 16, -0x4EFFFFC7, 0, 5, 5, 0, 28, 29, 0, 0, 0 },
+    { 0x100, 32, 32, 36, 0x8000008, 0, 10, 1, 0, 0, 0, 0, 0, 0 },
+    { 192, 32, 64, 36, 0x8000008, 0, 11, 1, 31, 0, 0, 0, 0, 0 },
+    { 0x100, 128, 32, 56, 11, 2, 12, 2, 0, 0, 0, 0, 0, 0 },
+    { 0x110, 128, 24, 56, 25, 2, 14, 2, 0, 0, 0, 0, 0, 0 },
+    { 0x160, 0x110, -16, -16, -0x4EBFEA18, 3, 16, 9, 0, 0, 229, 23, 0, 0 },
+    { 0x160, 0x110, -16, -16, -0x4EBFEA18, 2, 25, 10, 0, 0, 229, 33, 0, 0 },
+    { 192, 32, 64, 192, 0x8000008, 2, 35, 1, 107, 0, 0, 0, 0, 0 },
+    { 0x118, 72, 20, 80, 24, 3, 36, 2, 0, 0, 0, 0, 0, 0 },
+    { 0x140, 157, 0, 85, -0x4FFFF5D8, 0, 2, 5, 0, 0, 29, 0, 0, 0 },
+    { 0x140, 240, 0, 0, 2584, 0, 7, 2, 0, 28, 229, 0, 0, 0 },
+    { 0x100, 128, 32, 56, -0x4FFFF788, 0, 9, 4, 0, 0, 29, 0, 0, 0 },
+    { 0x130, 96, 8, 72, -0x4EFFFB98, 0, 38, 3, 0, 0, 29, 0, 0, 0 },
+    { 0x130, 64, 8, 80, 153, 1, 41, 1, 58, 0, 229, 0, 0, 0 },
+    { 0x140, 240, 0, 0, -0x4FFFE018, 0, 13, 9, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 240, 0, 0, -0x4FFFE018, 0, 22, 11, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 64, 32, 96, 6168, 0, 0, 2, 0, 0, 229, 0, 0, 0 },
+    { 0x1C0, 92, -64, 96, -0x4FFFB3D8, 0, 33, 20, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 144, 0, 48, 0x10001838, 0, 53, 3, 0, 0, 229, 0, 0, 0 },
+    { 192, 32, 64, 124, -0x4FFFF7C8, 2, 56, 1, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x2005D428, 0, 0, 0, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 160, 56, 54, -0x4FF429E0, 0, 0, 0, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 32, 32, 192, 0x8000008, 2, 42, 1, 31, 0, 0, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x5000888, 5, 57, 3, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x5000888, 5, 60, 3, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 0x110, 0, -16, 0x1104888, 4, 63, 23, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 180, 0, 30, 0x1000888, 5, 86, 5, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 240, 0, 0, 0x5000A00, 7, 176, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 0x110, 0, -16, 0x1104808, 2, 91, 23, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 0x110, 0, -16, 0x1104009, 2, 0x1A9, 49, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 0x110, 0, -16, 0x1104808, 2, 114, 24, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 0x110, 0, -16, 0x1104808, 2, 138, 37, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 64, 0, 88, 2184, 4, 196, 1, 0, 0, 229, 0, 0, 0 },
+    { 192, 64, 64, 88, 2688, 7, 197, 1, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 0x110, 0, -16, 0x104009, 2, 43, 20, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 0x110, 0, -16, 0x104008, 5, 63, 27, 0, 0, 229, 0, 0, 0 },
+    { 0x120, 160, 16, 40, 0x4000088, 9, 90, 4, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 160, 32, 40, 0x4000088, 6, 94, 4, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 160, 32, 40, 0x5000088, 5, 98, 3, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 160, 32, 40, 0x5000088, 5, 101, 4, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 160, 0, 40, 0x5000088, 5, 105, 4, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 160, 32, 40, 0x5000088, 5, 109, 3, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x5000008, 7, 112, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x5000008, 7, 118, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x5000008, 7, 124, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x5000008, 7, 130, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x5000008, 7, 136, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x5000008, 7, 142, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x5000008, 7, 148, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x5000008, 7, 154, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x5000008, 7, 160, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x5000008, 7, 166, 6, 0, 0, 229, 0, 0, 0 },
+    { 144, 32, 88, 164, -0x6BFFF758, 0, 175, 1, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 0x110, 0, -16, 0x4000008, 7, 172, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 0x110, 0, -16, 0x104008, 5, 178, 17, 0, 0, 229, 0, 0, 0 },
+    { 0x190, 0x12C, -40, -30, -0x6FFDE580, 0, 182, 14, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 32, 32, 36, 0x8000088, 3, 195, 1, 0, 0, 0, 0, 0, 0 },
+    { 0x100, 32, 32, 36, 0x8000088, 3, 196, 1, 0, 0, 0, 0, 0, 0 },
+    { 0x100, 32, 32, 36, 0x8000088, 3, 197, 1, 0, 0, 0, 0, 0, 0 },
+    { 0x100, 32, 32, 36, 0x8000088, 3, 198, 1, 0, 0, 0, 0, 0, 0 },
+    { 0x100, 32, 32, 36, 0x8000088, 3, 199, 1, 130, 0, 0, 0, 0, 0 },
+    { 0x100, 64, 32, 80, 136, 4, 200, 1, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 160, 0, 40, 0x4000088, 3, 201, 3, 0, 0, 229, 0, 0, 0 },
+    { 192, 32, 64, 36, 0x4000008, 0, 204, 1, 235, 0, 0, 0, 0, 0 },
+    { 0x120, 80, 40, 156, 0x905088, 3, 225, 22, 0, 0, 229, 0, 0, 0 },
+    { 0x120, 80, 40, 156, 0x905088, 3, 247, 14, 0, 0, 229, 0, 0, 0 },
+    { 0x120, 80, 40, 156, 0x905088, 3, 0x105, 9, 0, 0, 229, 0, 0, 0 },
+    { 0x120, 80, 40, 156, 0x905088, 3, 0x10E, 9, 0, 0, 229, 0, 0, 0 },
+    { 0x120, 80, 40, 156, 0x905088, 3, 0x117, 9, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x1255029, 0, 205, 8, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x1255029, 0, 213, 12, 0, 94, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x1255029, 0, 0x120, 13, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x2055029, 0, 0x12D, 17, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x1255029, 0, 0x13E, 10, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x2055029, 0, 0x148, 16, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x1255029, 0, 0x158, 4, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x3055029, 0, 0x15C, 10, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x1255029, 0, 0x166, 7, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x1255029, 0, 0x16D, 13, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x1255029, 0, 0x17A, 7, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x1255029, 0, 0x181, 7, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x1255029, 0, 0x188, 4, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x1255029, 0, 0x18C, 7, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x1255029, 0, 0x193, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x1255029, 0, 0x199, 4, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x1255029, 0, 0x19D, 4, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 140, 56, 50, 0x1255029, 0, 0x1A1, 4, 0, 0, 229, 0, 0, 0 },
+    { 0x120, 140, 16, 50, -0x4EFFFB97, 0, 0x1A5, 4, 0, 0, 29, 0, 0, 0 },
+    { 0x140, 168, 0, 64, 2056, 0, 198, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x8000800, 0, 204, 2, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x8000800, 0, 206, 3, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x8000800, 0, 209, 3, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, 0x8000800, 0, 212, 3, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 160, 32, 40, -0x5AFFFFD8, 0, 98, 3, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 160, 32, 40, -0x5AFFFFD8, 0, 101, 4, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 160, 0, 40, -0x5AFFFFD8, 0, 105, 4, 0, 0, 229, 0, 0, 0 },
+    { 0x100, 160, 32, 40, -0x5AFFFFD8, 0, 109, 3, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, -0x5AFFFFD8, 0, 112, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, -0x5AFFFFD8, 0, 118, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, -0x5AFFFFD8, 0, 124, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, -0x5AFFFFD8, 0, 130, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, -0x5AFFFFD8, 0, 136, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, -0x5AFFFFD8, 0, 142, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, -0x5AFFFFD8, 0, 148, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, -0x5AFFFFD8, 0, 154, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, -0x5AFFFFD8, 0, 160, 6, 0, 0, 229, 0, 0, 0 },
+    { 0x140, 128, 0, 56, -0x5AFFFFD8, 0, 166, 6, 0, 0, 229, 0, 0, 0 },
+};
+Vtx D_802F97B0[0x10] = {
+    { { { -600, 600, -10 }, 0, { 0 }, { 0, 0, 0, 160 } } },
+    { { { -600, 1000, -10 }, 0, { 0 }, { 0 } } },
+    { { { -1000, 600, -10 }, 0, { 0 }, { 0 } } },
+    { { { -600, 600, -10 }, 0, { 0 }, { 0, 0, 0, 160 } } },
+    { { { 600, 1000, -10 }, 0, { 0 }, { 0 } } },
+    { { { 600, 600, -10 }, 0, { 0 }, { 0, 0, 0, 160 } } },
+    { { { 600, 600, -10 }, 0, { 0 }, { 0, 0, 0, 160 } } },
+    { { { 1000, 600, -10 }, 0, { 0 }, { 0 } } },
+    { { { 600, -600, -10 }, 0, { 0 }, { 0, 0, 0, 160 } } },
+    { { { 1000, -600, -10 }, 0, { 0 }, { 0 } } },
+    { { { 600, -1000, -10 }, 0, { 0 }, { 0 } } },
+    { { { 600, -600, -10 }, 0, { 0 }, { 0, 0, 0, 160 } } },
+    { { { -1000, -600, -10 }, 0, { 0 }, { 0 } } },
+    { { { -600, -600, -10 }, 0, { 0 }, { 0, 0, 0, 160 } } },
+    { { { -600, -600, -10 }, 0, { 0 }, { 0, 0, 0, 160 } } },
+    { { { -600, -1000, -10 }, 0, { 0 }, { 0 } } },
+};
+Gfx D_802F98B0[0x10] = {
+    gsSPVertex(D_802F97B0, 16, 0),
+    gsSP1Triangle(0, 5, 14, 0),
+    gsSP1Triangle(14, 11, 5, 0),
+    gsSP1Triangle(1, 2, 3, 2),
+    gsSP1Triangle(1, 3, 6, 0),
+    gsSP1Triangle(1, 4, 6, 0),
+    gsSP1Triangle(4, 7, 6, 0),
+    gsSP1Triangle(6, 7, 8, 0),
+    gsSP1Triangle(7, 8, 9, 0),
+    gsSP1Triangle(8, 9, 10, 0),
+    gsSP1Triangle(8, 10, 13, 0),
+    gsSP1Triangle(10, 13, 15, 0),
+    gsSP1Triangle(12, 13, 15, 0),
+    gsSP1Triangle(12, 13, 2, 0),
+    gsSP1Triangle(3, 2, 13, 0),
+    gsSPEndDisplayList(),
+};
+s32 D_802F9930 = 1;
+UnkStruct_802F9934 D_802F9934[7] = {
+    { 189, "RAFTS", D_8030358C },
+    { 104, "GAS PLANTS", D_80303594 },
+    { 0, "CONTAINERS", D_803035A0 },
+    { 186, "SPHERES", D_803035AC },
+    { 188, "SPHERES", D_803035B4 },
+    { 192, "BEACONS", D_803035BC },
+    { 230, "CRATES", D_803035C8 },
+};
+Vtx D_802F99C0[4] = {
+    { { { 6, 12, 6 }, 0, { 480, 480 }, { 255, 255, 255, 255 } } },
+    { { { -6, 12, -6 }, 0, { 0, 480 }, { 255, 255, 255, 255 } } },
+    { { { -6, 0, -6 }, 0, { 0 }, { 255, 255, 255, 255 } } },
+    { { { 6, 0, 6 }, 0, { 480 }, { 255, 255, 255, 255 } } },
+};
+Vtx D_802F9A00[0x40] = {
+    { { { 0 }, 0, { 0 }, { 0 } } },
+    { { { 0 }, 0, { 0 }, { 32, 26, 19, 74 } } },
+    { { { 13357, 8778 }, 0, { 0 }, { 0 } } },
+    { { { 0 }, 0, { 0 }, { 0 } } },
+    { { { 0 }, 0, { 0 }, { 0 } } },
+    { { { 0, 0, 2825 }, 0x61B, { 20030, 11452 }, { 110, 90, 65, 255 } } },
+    { { { -19300, 30463, -28547 }, 0x60C4, { 5138, 3611 }, { 0 } } },
+    { { { 0 }, 0, { 0 }, { 0 } } },
+    { { { 0 }, 0, { 0 }, { 0 } } },
+    { { { 1285, 1307, 11561 }, 0x22A0, { 26449, 15103 }, { 111, 92, 67, 255 } } },
+    { { { -15188, -30977, -16986 }, 0x80FF, { 18499, 14492 }, { 9, 10, 9, 39 } } },
+    { { { 0 }, 0, { 0 }, { 0 } } },
+    { { { 0 }, 0, { 0 }, { 11, 11, 10, 70 } } },
+    { { { 10539, 10219, 16703 }, 0x35FF, { 29793, 18687 }, { 113, 95, 71, 255 } } },
+    { { { -5421, -22529, -10049 }, 0x97FF, { 27758, 25343 }, { 65, 72, 68, 239 } } },
+    { { { 4114, 4426 }, 0, { 0 }, { 0 } } },
+    { { { 0 }, 0, { 1029, 1319 }, { 35, 38, 35, 243 } } },
+    { { { 10798, 11007, 16707 }, 0x3BFF, { 31078, 19967 }, { 117, 99, 74, 255 } } },
+    { { { -12358, -26881, -7479 }, 0xA1FF, { -31616, 28927 }, { 70, 79, 74, 255 } } },
+    { { { 12599, 13559, 1543 }, 0x627, { 0 }, { 0 } } },
+    { { { 0, 0, 257 }, 0x107, { 3856, 3977 }, { 34, 39, 37, 255 } } },
+    { { { 10031, 12031, 16706 }, 0x3BFF, { 32620, 20991 }, { 122, 104, 78, 255 } } },
+    { { { -11331, -26625, -9277 }, 0x9CFF, { -20819, -27137 }, { 94, 99, 91, 255 } } },
+    { { { 12600, 14079, 6171 }, 0x1A91, { 770, 519 }, { 0 } } },
+    { { { 0, 0, 8989 }, 0x158D, { 13357, 9195 }, { 35, 40, 39, 255 } } },
+    { { { 9260, 11263, 13880 }, 0x32FF, { 24144, 15615 }, { 101, 85, 63, 255 } } },
+    { { { 26456, 16895, 31851 }, 0x53FF, { 31096, 26623 }, { 77, 80, 73, 255 } } },
+    { { { 13626, 14335, 21578 }, 0x3BF3, { 16179, 9873 }, { 0 } } },
+    { { { 0, 0, 11556 }, 0x1BC4, { 20804, 13055 }, { 78, 67, 50, 255 } } },
+    { { { 15160, 12287, 8225 }, 0x1FFF, { 8476, 6399 }, { 63, 35, 25, 255 } } },
+    { { { 17191, 7423, 11303 }, 0x20FF, { 8737, 8191 }, { 78, 70, 59, 255 } } },
+    { { { 26968, 17663, 31075 }, 0x4AFF, { 21315, 13260 }, { 0 } } },
+    { { { 0, 0, 1541 }, 0x417, { 18236, 11479 }, { 90, 76, 56, 255 } } },
+    { { { 24400, 15359, 8219 }, 0x16FF, { 17941, 3839 }, { 183, 53, 36, 255 } } },
+    { { { -7563, 25343, 27691 }, 0x22FF, { 5652, 4863 }, { 77, 62, 47, 255 } } },
+    { { { 27479, 17407, 25939 }, 0x3FD7, { 3595, 2079 }, { 0 } } },
+    { { { 0 }, 0, { 514, 279 }, { 38, 32, 23, 211 } } },
+    { { { 23115, 14335, 6167 }, 0x13FF, { 17935, 2815 }, { 106, 19, 11, 255 } } },
+    { { { 28181, 3327, 24340 }, 0xEFF, { 4369, 4095 }, { 81, 66, 49, 255 } } },
+    { { { 15409, 9420, 1541 }, 0x41B, { 0 }, { 0 } } },
+    { { { 0 }, 0, { 0 }, { 0 } } },
+    { { { 6934, 4501, 7708 }, 0x18FF, { 8718, 3327 }, { 76, 15, 10, 255 } } },
+    { { { 19982, 2559, 10253 }, 0xBFF, { 7710, 7167 }, { 40, 34, 26, 141 } } },
+    { { { 771, 523 }, 0, { 0 }, { 0 } } },
+    { { { 0 }, 0, { 0 }, { 0 } } },
+    { { { 0, 0, 514 }, 0x22B, { 8991, 6324 }, { 52, 44, 33, 251 } } },
+    { { { 15155, 10239, 8477 }, 0x17B0, { 772, 1071 }, { 0 } } },
+    { { { 0 }, 0, { 0 }, { 0 } } },
+    { { { 0 }, 0, { 0 }, { 0 } } },
+    { { { 0 }, 0, { 0 }, { 4, 3, 2, 35 } } },
+    { { { 2055, 1315 }, 0, { 0 }, { 0 } } },
+};
+Vtx D_802F9E00[0x40] = {
+    { { { 5377, 265, 5890 }, 0x10A, { 5890, 266 }, { 22, 3, 1, 10 } } },
+    { { { 5122, 265, 4609 }, 8, { 4097, 520 }, { 50, 28, 19, 82 } } },
+    { { { 18992, 8788, 7427 }, 12, { 8963, 271 }, { 37, 3, 2, 16 } } },
+    { { { 8708, 271, 7939 }, 0x10D, { 7426, 525 }, { 29, 3, 2, 13 } } },
+    { { { 5378, 266, 6915 }, 0x10C, { 7683, 525 }, { 30, 3, 1, 13 } } },
+    { { { 6915, 12, 8971 }, 0x726, { 25408, 11974 }, { 133, 91, 65, 255 } } },
+    { { { -12643, 30719, -19328 }, 0x61D5, { 16662, 4143 }, { 46, 3, 2, 20 } } },
+    { { { 10243, 273, 8963 }, 0x210, { 8708, 15 }, { 33, 3, 1, 14 } } },
+    { { { 4610, 8, 6915 }, 0x10C, { 9219, 528 }, { 38, 5, 1, 17 } } },
+    { { { 11275, 2103, 19243 }, 0x22AA, { -31917, 15359 }, { 137, 95, 67, 255 } } },
+    { { { -6226, -31233, -3669 }, 0x82FF, { -31158, 15551 }, { 63, 14, 10, 62 } } },
+    { { { 12037, 276, 11525 }, 0x214, { 10500, 531 }, { 35, 3, 1, 15 } } },
+    { { { 4098, 263, 6402 }, 0x10B, { 9988, 529 }, { 62, 17, 11, 92 } } },
+    { { { 23858, 10495, 28228 }, 0x37FF, { -26267, 18943 }, { 152, 99, 71, 255 } } },
+    { { { -41, -22529, -59 }, 0x95FF, { -18572, 25343 }, { 128, 77, 68, 255 } } },
+    { { { 19478, 4708, 13829 }, 0x118, { 11267, 275 }, { 32, 2, 1, 14 } } },
+    { { { 4610, 520, 5634 }, 0x109, { 9736, 1330 }, { 91, 43, 36, 255 } } },
+    { { { 30006, 11519, -31158 }, 0x3CFF, { -19858, 20223 }, { 173, 106, 75, 255 } } },
+    { { { -63, -27137, -47 }, 0x9EFF, { -7288, 28415 }, { 155, 85, 74, 255 } } },
+    { { { 31804, 13823, 16139 }, 0x840, { 9987, 273 }, { 25, 3, 1, 11 } } },
+    { { { 6916, 12, 7173 }, 0x213, { 11541, 3987 }, { 84, 46, 38, 255 } } },
+    { { { -30917, 12543, -19117 }, 0x3CFF, { -5763, 21247 }, { 232, 123, 82, 255 } } },
+    { { { -48, -27393, -44 }, 0x9AFF, { -72, -27649 }, { 208, 109, 91, 255 } } },
+    { { { 32062, 14591, 16926 }, 0x1B9D, { 7686, 531 }, { 20, 2, 2, 9 } } },
+    { { { 9476, 529, 20000 }, 0x169C, { 25650, 9727 }, { 88, 47, 40, 255 } } },
+    { { { 31034, 11519, -673 }, 0x36FF, { -124, 17151 }, { 255, 148, 76, 255 } } },
+    { { { -90, 18943, -101 }, 0x56FF, { -110, 26623 }, { 178, 90, 73, 255 } } },
+    { { { 26433, 14591, 30028 }, 0x3DFE, { 21297, 8844 }, { 21, 2, 1, 9 } } },
+    { { { 11526, 276, 26155 }, 0x1DE1, { -26549, 13311 }, { 174, 79, 52, 255 } } },
+    { { { -17328, 12799, -13489 }, 0x24FF, { -105, 12287 }, { 255, 155, 60, 255 } } },
+    { { { -67, 14847, -121 }, 0x2DFF, { -18883, 8959 }, { 152, 80, 61, 255 } } },
+    { { { -24737, 17919, -23706 }, 0x4BFF, { 30534, 13273 }, { 35, 3, 2, 15 } } },
+    { { { 13061, 278, 19212 }, 0x736, { -23481, 12031 }, { 226, 94, 57, 255 } } },
+    { { { -130, 16127, -135 }, 0x25FF, { -67, 21759 }, { 255, 255, 164, 255 } } },
+    { { { -1, -22529, -136 }, 0x2FFF, { -3003, 6399 }, { 225, 83, 49, 255 } } },
+    { { { -11421, 17663, -20391 }, 0x3EFA, { 19474, 2362 }, { 49, 4, 1, 21 } } },
+    { { { 10245, 530, 13318 }, 0x117, { 17930, 1074 }, { 140, 46, 25, 254 } } },
+    { { { -142, 15103, -3732 }, 0x21FF, { -38, 24575 }, { 255, 255, 187, 255 } } },
+    { { { -11, 26879, -111 }, 0x24FF, { -169, 6143 }, { 255, 93, 52, 255 } } },
+    { { { -19649, 10239, 23565 }, 0x53D, { 17158, 285 }, { 51, 6, 1, 23 } } },
+    { { { 7940, 270, 10500 }, 0x212, { 14344, 538 }, { 84, 14, 2, 45 } } },
+    { { { -27344, 5821, -15540 }, 0x22FF, { -142, 11007 }, { 255, 255, 111, 255 } } },
+    { { { -103, 13311, -3514 }, 0x18FF, { -15039, 9215 }, { 169, 54, 28, 188 } } },
+    { { { 24847, 1077, 17928 }, 0x11F, { 14597, 537 }, { 46, 5, 2, 21 } } },
+    { { { 7427, 269, 8451 }, 0x10E, { 8710, 528 }, { 37, 7, 2, 18 } } },
+    { { { 18958, 1058, -27868 }, 0x968, { -149, 9727 }, { 255, 185, 57, 255 } } },
+    { { { -126, 14079, -166 }, 0x24FF, { 32541, 2658 }, { 51, 8, 3, 23 } } },
+    { { { 10501, 274, 11525 }, 0x314, { 10500, 530 }, { 37, 4, 1, 16 } } },
+    { { { 4866, 264, 4354 }, 0x108, { 5124, 9 }, { 35, 6, 1, 16 } } },
+    { { { 12039, 277, 21775 }, 0x327, { -6097, 2413 }, { 255, 77, 14, 192 } } },
+    { { { -16338, 3955, -25826 }, 0x848, { 28177, 1074 }, { 53, 7, 1, 23 } } },
+    { { { 6146, 523, 4867 }, 0x209, { 5635, 266 }, { 24, 2, 1, 10 } } },
+    { { { 2817, 261, 3842 }, 7, { 5634, 266 }, { 25, 3, 1, 11 } } },
+    { { { 7684, 526, 17673 }, 0x31F, { -27370, 1091 }, { 202, 31, 5, 91 } } },
+    { { { 24336, 812, 22286 }, 0x328, { 17160, 285 }, { 55, 7, 2, 25 } } },
+    { { { 9219, 528, 4610 }, 0x108, { 3586, 518 }, { 13, 2, 1, 6 } } },
+    { { { 2817, 5, 4098 }, 0x208, { 4354, 7 }, { 17, 2, 0, 7 } } },
+    { { { 7428, 269, 15880 }, 0x31C, { 26892, 815 }, { 131, 16, 3, 58 } } },
+    { { { 15880, 283, 13319 }, 0x117, { 13062, 278 }, { 42, 5, 1, 19 } } },
+    { { { 9732, 272, 6915 }, 12, { 4099, 7 }, { 10, 1, 1, 5 } } },
+    { { { 2818, 5, 3073 }, 0x105, { 3330, 262 }, { 17, 2, 2, 8 } } },
+    { { { 7939, 526, 14086 }, 0x118, { 20744, 804 }, { 96, 11, 2, 42 } } },
+    { { { 12550, 790, 9476 }, 0x110, { 9989, 530 }, { 34, 4, 2, 15 } } },
+    { { { 7938, 269, 7428 }, 13, { 5378, 521 }, { 12, 2, 2, 6 } } },
+};
+s32 D_802FA200[0x14] = { 60, 100, 200, 50, 120, 120, 0, 0, 50, 200, 120, 0, 0, 50, 50, 50, 100 };
+s32 D_802FA250 = 0;
+s32 D_802FA254 = 0;
+s32 D_802FA258 = 0;
+s32 D_802FA25C = 0;
+s32 D_802FA260 = 0;
+s32 D_802FA264 = 0;
+s32 D_802FA268 = 0;
+s32 D_802FA26C = 0;
 
 u8 func_8026AD30(s16 arg0) {
     UnkStruct_802F48D0 *sp2C;
@@ -728,7 +1822,6 @@ typedef struct {
 
 extern UnkStruct_802E8F94 D_802E8F94[];
 extern u8 D_802E8BF8;
-extern u8 D_802F4878[];
 extern u8 D_8036BAE8[];
 extern s16 D_8036BB0C;
 extern s8 D_8036BB0E;
@@ -937,20 +2030,6 @@ void func_8026BBD0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
     *arg2 += gfx - arg0;
 }
 
-typedef struct {
-    /* 0x0 */ u8 unk0;
-    /* 0x1 */ u8 unk1;
-    /* 0x2 */ u8 unk2;
-    /* 0x3 */ u8 unk3;
-    /* 0x4 */ u8 unk4;
-    /* 0x5 */ u8 unk5;
-    /* 0x6 */ u8 unk6;
-    /* 0x7 */ u8 unk7;
-} UnkStruct_802F47B0; /* size = 0x8 */
-
-extern UnkStruct_802F47B0 D_802F47B0[];
-extern Gfx D_802F98B0[];
-extern s32 D_802F9930;
 extern u8 D_802E8BD4;
 extern u8 D_802E8BD8;
 extern u8 D_8035805C;
@@ -978,7 +2057,7 @@ f32 func_802574F0(f32);
 void func_80259BD4(Gfx **, UnkStruct_803156F8 *);
 void func_80259DC8(UnkStruct_803156F8 *, void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32,
                    s32, s32, s32);
-s32 func_8025B498(s16, u16, u8 *, s32);
+s32 func_8025B498(s16, u16, char *, u16 *);
 void func_8026EF70(UnkStruct_802F8BDC *);
 void func_80261570(f32);
 void *func_8026F004(UnkStruct_802F8BDC *, u16, u8);
@@ -1141,9 +2220,9 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
                     sp148 = &D_8036BB10[sp138];
                     if (sp148->unk0 & 0x20) {
                         if (sp14C->unk8 & 0x80000) {
-                            sp148->unk2 = func_8025B498(sp14C->unk0 / 2, sp148->unk6, sp148->unkC, (s32) sp148->unk10);
+                            sp148->unk2 = func_8025B498(sp14C->unk0 / 2, sp148->unk6, sp148->unkC, sp148->unk10);
                         } else {
-                            sp148->unk2 = func_8025B498(sp14C->unk0 / 2, sp148->unk6, sp148->unkC, (s32) sp148->unk10);
+                            sp148->unk2 = func_8025B498(sp14C->unk0 / 2, sp148->unk6, sp148->unkC, sp148->unk10);
                         }
                     }
                 }
@@ -1592,7 +2671,7 @@ void *func_8026F004(UnkStruct_802F8BDC *arg0, u16 arg1, u8 arg2) {
     } else {
         sp3B = 0;
     }
-    sp34 = sp3C->unkC;
+    sp34 = (u8 *)sp3C->unkC;
     sp30 = sp3C->unk10;
     D_8036BB48[0] = D_802E8C98[sp3B];
     switch (D_8036BB1E) {
@@ -1734,7 +2813,7 @@ s32 func_8026F92C(u64 arg0) {
     return i;
 }
 
-u8 func_8026FA38(char **arg0, s32 *arg1) {
+u8 func_8026FA38(char **arg0, u16 **arg1) {
     s32 i;
     s32 sp18;
 
@@ -1906,15 +2985,6 @@ s32 func_80270A54(UnkStruct_8036BED8 *arg0) {
     }
     return 0;
 }
-
-extern s32 D_802FA250;
-extern s32 D_802FA254;
-extern s32 D_802FA258;
-extern s32 D_802FA25C;
-extern s32 D_802FA260;
-extern s32 D_802FA264;
-extern s32 D_802FA268;
-extern s32 D_802FA26C;
 
 void func_80270AE0(u8 *arg0) {
     s32 argc;

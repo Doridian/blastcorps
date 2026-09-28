@@ -43,4 +43,9 @@
     gImmp1(pkt, G_RDPHALF_CONT, (_SHIFTL(dsdx, 16, 16) | _SHIFTL(dtdy, 0, 16))); \
 }
 
+/* K0_TO_PHYS for a static initializer (a display list in .data): the linker
+ * can add a constant to an address but not mask it, and every address such a
+ * list points at is KSEG0. */
+#define STATIC_K0_TO_PHYS(x) ((u32)(x) - K0BASE)
+
 #endif

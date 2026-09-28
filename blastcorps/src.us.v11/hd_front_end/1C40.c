@@ -179,6 +179,7 @@ s32 func_80276130(UnkStruct_803156F8 *, u8, s32, s32, s32, s32, s32, u8, u8, u8,
                   u8, u8, u8, u8);
 void func_8029A7E4(char *, ...);
 
+extern Lights2 D_80208470;
 extern char *D_802081C0[][2];
 extern u16 D_802082D8[];
 extern u16 D_802082E4[];
@@ -328,67 +329,134 @@ void func_801E8DCC(u8 arg0) {
     D_802154E4 = 3.0f;
 }
 
-const char D_8020E4D0[] = "ROOKIE WRECKER";
-
-const char D_8020E4E0[] = "TRAINED CRUSHER";
-
-const char D_8020E4F0[] = "EXPERIENCED RAVAGER";
-
-const char D_8020E504[] = "DECORATED DAMAGER";
-
-const char D_8020E518[] = "PROFESSIONAL RAZER";
-
-const char D_8020E52C[] = "EXPERT DESTROYER";
-
-const char D_8020E540[] = "GIFTED RUINER";
-
-const char D_8020E550[] = "ACCOMPLISHED CONQUEROR";
-
-const char D_8020E568[] = "MASTER DESPOILER";
-
-const char D_8020E57C[] = "DEMOLITION FANATIC";
-
-const char D_8020E590[] = "GRAND ERADICATOR";
-
-const char D_8020E5A4[] = "HEAVY DUTY WASTER";
-
-const char D_8020E5B8[] = "TOTAL PULVERISER";
-
-const char D_8020E5CC[] = "CHAMPION RANSACKER";
-
-const char D_8020E5E0[] = "MECHANICAL MAESTRO";
-
-const char D_8020E5F4[] = "CHIEF OBLITERATOR";
-
-const char D_8020E608[] = "COMMANDING DESOLATOR";
-
-const char D_8020E620[] = "SUPREME DEVASTATOR";
-
-const char D_8020E634[] = "ULTIMATE ANNIHILATOR";
-
-const char D_8020E64C[] = "LEVELING LEGEND";
-
-const char D_8020E65C[] = "DESTRUCTIVE PSYCHOPATH";
-
-const char D_8020E674[] = "MINDLESS DESECRATOR";
-
-const char D_8020E688[] = "HYSTERICAL CLAUSTROPHOBE";
-
-const char D_8020E6A4[] = "UNCONTROLLABLE MADMAN";
-
-const char D_8020E6BC[] = "WORLD CLASS MEGALOMANIAC";
-
-const char D_8020E6D8[] = "CAPTAIN OF CARNAGE";
-
-const char D_8020E6EC[] = "SINGLE MINDED CHAOSMONGER";
-
-const char D_8020E708[] = "GRAND HIGH SLAUGHTERMASTER";
-
-const char D_8020E724[] = "LUNATIC LORD OF HAVOC";
-
-const char D_8020E73C[] = "ARMAGEDDON ADEPT";
-
-const char D_8020E750[] = "YOU CAN STOP NOW.";
+extern char D_803041DC[];
+extern char D_803041EC[];
+extern char D_803041FC[];
+extern char D_8030420C[];
+extern char D_8030421C[];
+extern char D_8030422C[];
+extern char D_8030423C[];
+extern char D_8030424C[];
+extern char D_8030425C[];
+extern char D_8030426C[];
+extern char D_8030427C[];
+extern char D_80304288[];
+extern char D_8030429C[];
+extern char D_803042AC[];
+extern char D_803042B8[];
+extern char D_803042CC[];
+extern char D_803042E0[];
+extern char D_803042F0[];
+extern char D_80304304[];
+extern char D_8030430C[];
+extern char D_80304318[];
+extern char D_80304328[];
+extern char D_80304334[];
+extern char D_80304344[];
+extern char D_80304358[];
+extern char D_80304364[];
+extern char D_80304370[];
+extern char D_8030437C[];
+extern char D_80304388[];
+extern char D_80304394[];
+extern char D_8030439C[];
+extern char D_803043B8[];
+extern char D_80304474[];
+extern char D_80304544[];
+extern char D_80304614[];
+extern const char D_8020E764[];
+extern const char D_8020E768[];
+extern const char D_8020E770[];
+extern const char D_8020E82C[];
+extern const char D_8020E8EC[];
+extern const char D_8020E9AC[];
+/* .data, 0x802081C0-0x802084B0 (tools/data_c.py) */
+char *D_802081C0[0x1f][2] = {
+    { "ROOKIE WRECKER", D_803041DC },
+    { "TRAINED CRUSHER", D_803041EC },
+    { "EXPERIENCED RAVAGER", D_803041FC },
+    { "DECORATED DAMAGER", D_8030420C },
+    { "PROFESSIONAL RAZER", D_8030421C },
+    { "EXPERT DESTROYER", D_8030422C },
+    { "GIFTED RUINER", D_8030423C },
+    { "ACCOMPLISHED CONQUEROR", D_8030424C },
+    { "MASTER DESPOILER", D_8030425C },
+    { "DEMOLITION FANATIC", D_8030426C },
+    { "GRAND ERADICATOR", D_8030427C },
+    { "HEAVY DUTY WASTER", D_80304288 },
+    { "TOTAL PULVERISER", D_8030429C },
+    { "CHAMPION RANSACKER", D_803042AC },
+    { "MECHANICAL MAESTRO", D_803042B8 },
+    { "CHIEF OBLITERATOR", D_803042CC },
+    { "COMMANDING DESOLATOR", D_803042E0 },
+    { "SUPREME DEVASTATOR", D_803042F0 },
+    { "ULTIMATE ANNIHILATOR", D_80304304 },
+    { "LEVELING LEGEND", D_8030430C },
+    { "DESTRUCTIVE PSYCHOPATH", D_80304318 },
+    { "MINDLESS DESECRATOR", D_80304328 },
+    { "HYSTERICAL CLAUSTROPHOBE", D_80304334 },
+    { "UNCONTROLLABLE MADMAN", D_80304344 },
+    { "WORLD CLASS MEGALOMANIAC", D_80304358 },
+    { "CAPTAIN OF CARNAGE", D_80304364 },
+    { "SINGLE MINDED CHAOSMONGER", D_80304370 },
+    { "GRAND HIGH SLAUGHTERMASTER", D_8030437C },
+    { "LUNATIC LORD OF HAVOC", D_80304388 },
+    { "ARMAGEDDON ADEPT", D_80304394 },
+    { "YOU CAN STOP NOW.", D_8030439C },
+};
+u8 D_802082B8[0x20] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 2, 2, 1, 1 };
+u16 D_802082D8[6] = { 0x777, 0x777, 0x776, 0x773 };
+u16 D_802082E4[2] = { 0x774, 0x775 };
+u16 D_802082E8[2] = { 0x576, 0x575 };
+u16 D_802082EC[6] = { 0x91B, 0x91B, 0x91C, 0x91D, 0x572 };
+u16 D_802082F8[2] = { 0x91F };
+u8 D_802082FC[0x18] = { 49, 50, 51, 52, 47, 46, 127, 0, 0, 0, 0, 0, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 47, 127 };
+u8 D_80208314[0x3c] = {
+    65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88,
+    89, 90, 66, 67, 68, 70, 71, 72, 74, 75, 76, 77, 78, 80, 81, 82, 83, 84, 86, 87, 88, 89, 90, 0,
+    0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 12,
+};
+u32 D_80208350[2] = { 26, 21 };
+UnkStruct_80208358 D_80208358 = { { (char *)D_8020E770, (char *)D_8020E82C, (char *)D_8020E8EC, (char *)D_8020E9AC } };
+UnkStruct_80208358 D_80208368 = { { D_803043B8, D_80304474, D_80304544, D_80304614 } };
+char *D_80208378[2] = { (char *)D_8020E764, (char *)D_8020E768 };
+Vtx D_80208380[8] = {
+    { { { -160, 174, 180 }, 0, { 0 }, { 0, 129, 0, 40 } } },
+    { { { 160, 174, 180 }, 0, { 0 }, { 0, 129, 0, 40 } } },
+    { { { 160, 204, 180 }, 0, { 0 }, { 0, 127, 30, 40 } } },
+    { { { -160, 204, 180 }, 0, { 0 }, { 0, 127, 30, 40 } } },
+    { { { -160, 198, 200 }, 0, { 0 }, { 90, 90, 0, 180 } } },
+    { { { -160, 180, 200 }, 0, { 0 }, { 90, 166, 0, 180 } } },
+    { { { 160, 180, 200 }, 0, { 0 }, { 90, 166, 0, 180 } } },
+    { { { 160, 198, 200 }, 0, { 0 }, { 90, 90, 0, 180 } } },
+};
+Gfx D_80208400[9] = {
+    gsSPVertex(D_80208380, 8, 0),
+    gsDPPipeSync(),
+    gsSP1Triangle(0, 5, 1, 0),
+    gsSP1Triangle(5, 1, 6, 0),
+    gsSP1Triangle(4, 5, 6, 0),
+    gsSP1Triangle(4, 6, 7, 0),
+    gsSP1Triangle(4, 3, 7, 0),
+    gsSP1Triangle(3, 7, 2, 0),
+    gsSPEndDisplayList(),
+};
+Lights2 D_80208448 = {
+    { { { 40, 10, 10 }, 0, { 40, 10, 10 }, 0 } },
+    {
+        { { { 240, 200, 20 }, 0, { 240, 200, 20 }, 0, { 69, -69, 69 }, 0 } },
+        { { { 240, 110, 20 }, 0, { 240, 110, 20 }, 0, { -69, 69, 69 }, 0 } },
+    },
+};
+Lights2 D_80208470 = {
+    { { { 40, 2, 33 }, 0, { 40, 2, 33 }, 0 } },
+    {
+        { { { 90, 2, 220 }, 0, { 90, 2, 220 }, 0, { 69, -69, 69 }, 0 } },
+        { { { 90, 2, 220 }, 0, { 90, 2, 220 }, 0, { -69, 69, 69 }, 0 } },
+    },
+};
+u8 D_80208498[4] = { 32 };
+UnkStruct_8020849C D_8020849C = { { 0 } };
 
 const char D_8020E764[] = "";
 

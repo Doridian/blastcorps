@@ -77,13 +77,10 @@ extern s32 D_803643E4;
 extern s32 D_803643E8;
 extern u8 D_803643D4;
 extern s16 D_803ED390[3];
-extern s32 D_802FF0D0[];
 extern void *D_803BDB00;
 extern void *D_803BDB04;
 extern void *D_803BDB08;
-extern UnkStruct_802FF150 D_802FF150[];
 extern u16 D_803C30A8[];
-extern UnkStruct_802FF11C D_802FF11C[6];
 
 /* .bss, 0x8039CA60-0x8039CA90 (tools/bss_c.py) */
 u8 D_8039CA60[1];
@@ -99,6 +96,27 @@ s32 D_8039CA80;
 s32 D_8039CA84;
 u32 D_8039CA88;
 u8 D_8039CA8C;
+
+/* .data, 0x802FF0D0-0x802FF180 (tools/data_c.py) */
+s32 D_802FF0D0[0x13] = {
+    20000, 7000, 26000, 11000, 10000, 17000, 7000, 15000, 13000, 17000, 16000, 35000, 0, 17000,
+    22000, 13000, 8500, 35000, 35000,
+};
+UnkStruct_802FF11C D_802FF11C[6] = {
+    { 0x552078, 0x5049D8 },
+    { 0x5049D8, 0x5049D8 },
+    { 0x553078, 0x5049D8 },
+    { 0xC192078, 0xC1849D8 },
+    { 0xC1849D8, 0xC1849D8 },
+    { 0xC193078, 0xC1849D8 },
+};
+u8 D_802FF14C[4] = { 0 };
+UnkStruct_802FF150 D_802FF150[1] = {
+    {
+        { 0x28A00, 0x28A00, 0x32C80, 0x32C80 }, { 0x12340, 0x1B580, 0x12340, 0x1B580 },
+        { 1, 2, 4, 5, 8, -1 }, 9,
+    },
+};
 
 void func_80294E30(void) {
     D_8039CA68[0] = (UnkStruct_8039CA68 *) 0x80055400;

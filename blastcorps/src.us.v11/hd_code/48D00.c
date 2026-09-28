@@ -59,9 +59,6 @@ extern s32 D_80358070;
 extern s32 D_80367738;
 extern s8 D_802E8BE4;
 extern s32 D_802E8BE8;
-extern UnkStruct_802FDB98 D_802FDB98[];
-extern u8 D_802FDBD0;
-extern u8 D_802FDBD4;
 extern OSMesgQueue D_80370BF8;
 extern u8 D_803A7424;
 extern u8 D_803F932C;
@@ -69,7 +66,6 @@ extern Mtx D_02000000[];
 extern u8 D_803F932D;
 extern u8 D_803F932E;
 extern s32 D_802E8BDC;
-extern s16 D_802FDB70[];
 extern s32 D_80358060;
 extern s8 D_803643D9;
 extern s32 D_803643E0;
@@ -135,6 +131,16 @@ u8 D_8039C541[1];
 u8 D_8039C542[2];
 u8 D_8039C544[4];
 u8 D_8039C548[8];
+
+/* .data, 0x802FDB70-0x802FDBE0 (tools/data_c.py) */
+s16 D_802FDB70[0x14] = { 0, 135, 105, 150, 150, 135, 0, 150, 200, 2000, 175, 0, 0, 195, 190, 185, 105 };
+UnkStruct_802FDB98 D_802FDB98[2] = {
+    { -15, 15, 0, 30, -15, 15, 1798, 1799, 1798, 1799, 832, 928 },
+    { -15, 15, 0, 30, -15, 15, 1798, 1799, 1002, 1003, 832, 928 },
+};
+u8 D_802FDBC8[8] = { 0 };
+u8 D_802FDBD0 = 0;
+u8 D_802FDBD4 = 0;
 
 void func_8028D4C0(UnkStruct_8028D4C0 *arg0, UnkStruct_8028D4C0 *arg1) {
     D_8039B610 = 0;

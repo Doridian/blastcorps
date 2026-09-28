@@ -11,7 +11,6 @@ typedef struct {
 
 extern u8 D_802E8BD0;
 extern u8 D_802E8BD8;
-extern u8 D_802E8CB0[];
 extern u8 D_803643D6;
 extern u8 D_803643DB;
 extern u8 D_80364A50;
@@ -70,6 +69,9 @@ u8 D_803669A8;
 UnkStruct_80365588 *D_803669AC;
 u8 *D_803669B0;
 s32 D_803669B4;
+
+/* .data, 0x802E8CB0-0x802E8CC0 (tools/data_c.py) */
+u8 D_802E8CB0[0x10] = { 9, 32 };
 
 void func_8025B9D0(s32 arg0, s32 *arg1) {
     s32 sp34;

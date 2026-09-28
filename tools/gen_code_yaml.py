@@ -698,8 +698,13 @@ def split_code_data(m, starts):
         for spec in args.data_split:
             off, _, obj = spec.partition(":")
             off = int(off, 16)
+            kind = "data" if off < args.rodata else "rodata"
+            if obj:
+                # the object's block starts here, wherever the references put it
+                layout = [x for x in layout if not (x[1] == kind and x[2] == obj and x[0] != off)]
+                have = {o for o, _, _ in layout}
             if off not in have:
-                layout.append((off, "data" if off < args.rodata else "rodata", obj or f"{off:X}"))
+                layout.append((off, kind, obj or f"{off:X}"))
         layout.sort(key=lambda x: x[0])
 
         # A .text boundary splat missed shows up as two objects' .rodata in
@@ -737,7 +742,8 @@ def main():
                     help="region after .rodata that belongs to no object")
     ap.add_argument("--data-split", action="append", default=[], metavar="OFF[:OBJ]",
                     help="start of a block in .data/.rodata that no reference shows: "
-                    "object OBJ's, or a data-only object's")
+                    "object OBJ's (moving its block if the references put it elsewhere), "
+                    "or a data-only object's")
     ap.add_argument("--join", action="append", default=[], type=hexarg,
                     help="a boundary found in .rodata that the config leaves unsplit")
     ap.add_argument("--bss", metavar="VRAM:END", type=lambda s: tuple(int(x, 16) for x in s.split(":")),

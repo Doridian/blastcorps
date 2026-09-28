@@ -122,13 +122,52 @@ hd_code's and hd_front_end's (us.v11) `.data`/`.rodata` are split per object. A 
   way (`const char D_8020EFA4[12]` in hd_front_end/7800.c). A zero slot in
   the late part is usually the padding before another object's `.rodata`
   (hd_front_end/9570.c's at `0x8020F088` was: C450.c starts there).
-- `.data`: only 45BB0 owns its own so far. Elsewhere, no initialized globals
-  or statics. A local initialized aggregate (`char *sp24[] = {...}`) is
-  `.data` too, with its strings at that point in `.rodata`.
+- `.data`: every C file (us.v11) owns its own; see below. A local
+  initialized aggregate (`char *sp24[] = {...}`) is `.data` too, with its
+  strings at that point in `.rodata`.
 - A global defined in the same file is addressed differently from an extern
   one: neighbouring globals, or a u64's two halves, share one `lui`. Every C
   file already defines its own `.bss` (the `/* .bss, ... (tools/bss_c.py) */`
   block), so such a variable is usually there to use.
+
+`.data` (us.v11): `tools/data_c.py <module> <object>` writes a C file's
+definitions from its asm block (while the block is still `data` and
+extracted; `--ref` takes a saved `.data.s` to redo one). What mattered:
+
+- IDO lays `.data` out in definition order, not first use as with `.bss`,
+  and aligns every variable to at least 4 (8 for doubles, 64-bit integers
+  and the GBI unions `Gfx`, `Vtx`, `Mtx`), then pads the section to 16. So a
+  label that isn't 4-aligned is a field of something, and consecutive `u8`
+  globals are really one array or struct. Static locals come out where
+  their function is.
+- The definitions go after the `.bss` block: a `.data` initializer that
+  names a `.bss` variable counts as a use and would reorder `.bss` if it came
+  first. Code above the definitions keeps its `extern`s; defining a variable
+  in the same file changed no code here.
+- Use the types the code declares (from any C file of any module; the tool
+  borrows the declaration and copies the typedef). Nonzero bytes in a
+  struct's padding mean a missing field (23C20's `unk9`). A typed variable
+  also shows where a block really starts: hd_front_end's 7800/9570 boundary
+  was inside a texture a 9570 display list loads whole.
+- A string that only a `.data` table points to was a literal in the
+  initializer: IDO emits it into `.rodata` where the table is defined. With
+  `--literals` the tool writes them that way and puts the definitions where
+  the strings were (7800's table sits after its first function). Where the
+  `.rodata` order doesn't allow it for every table, `--literals-in <var>`
+  limits it (hd_front_end/1C40); the rest stay `const char` arrays, cast to
+  the field's type. Making a field `char *` for this is only safe where the
+  code never reads bytes through it (`lbu` becomes `lb`); cast at that use
+  instead (26570's `func_8026F004`).
+- Display lists in `.data` are gs* macros. Some hold the physical address
+  of vertices in the same block (4B5E0, 4DA80): `STATIC_K0_TO_PHYS(x)`
+  (`common.h`) is `(u32)(x) - K0BASE`, which the linker can relocate, so
+  those move in a shifted build too. Vertices stored inside a struct typed
+  as a `Gfx` array get their own `Vtx` field.
+- An end pointer to the array right before a table (37530's
+  `D_802FC360[10].unk4`) is `&D_802FC320[4]`.
+- A name that only C uses and no object defines any more (a field of
+  another file's variable, hd_code's text tables that hd_front_end points
+  to) needs a line in `undefined_syms`.
 
 `.bss` (us.v11) is per object as well; every C file defines its block's
 variables, the handwritten objects get a `.bss.s`. What mattered:

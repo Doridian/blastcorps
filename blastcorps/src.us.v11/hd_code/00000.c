@@ -295,6 +295,24 @@ s16 D_8036509C;
 s16 D_8036509E;
 s16 D_803650A0;
 
+/* .data, 0x802E8BD0-0x802E8C60 (tools/data_c.py) */
+u8 D_802E8BD0 = 0;
+u8 D_802E8BD4 = 0;
+u8 D_802E8BD8 = 0;
+s32 D_802E8BDC = 0;
+f32 D_802E8BE0 = 1.3f;
+u8 D_802E8BE4 = 0;
+s32 D_802E8BE8 = 0;
+s32 D_802E8BEC = -1;
+u8 D_802E8BF0 = 0;
+u8 D_802E8BF4[4] = { 10, 29 };
+u8 D_802E8BF8 = 0;
+s32 D_802E8BFC[0x12] = {
+    2000, 2350, 1400, 1700, 1600, 1030, 1030, 2000, 1600, 1650, 100, 0, 2000, 1850, 1450, 1000,
+    100, 100,
+};
+u8 D_802E8C44[0x1c] = { 0, 1, 2, 3, 4, 5, 14, 7, 8, 9, 10, 11, 15, 13, 6, 12, 10, 27 };
+
 
 extern u8 D_00787F40[];
 extern u8 D_00788000[];
@@ -307,16 +325,6 @@ extern OSThread D_80218D30;
 extern u8 D_80218EE0[];
 extern s32 D_80219F58;
 extern u8 D_8021ED00[];
-extern u8 D_802E8BD0;
-extern u8 D_802E8BD4;
-extern u8 D_802E8BD8;
-extern s32 D_802E8BDC;
-extern u8 D_802E8BE4;
-extern s32 D_802E8BE8;
-extern s32 D_802E8BEC;
-extern u8 D_802E8BF0;
-extern u8 D_802E8BF4[];
-extern u8 D_802E8BF8;
 extern UnkStruct_802E8F94 D_802E8F94[];
 extern s32 D_802FA254;
 extern u8 D_802FA940[];
@@ -1317,7 +1325,6 @@ void func_80244930(void *arg0) {
         }
     }
 }
-extern f32 D_802E8BE0;
 extern u8 D_802F4870[];
 extern s32 D_802FA268;
 /* .bss, defined here so the osGetTime() store shares one lui (see D_80364A90). */
@@ -2350,7 +2357,6 @@ u8 func_8024AFA8(s32 arg0) {
     return sp27;
 }
 
-extern s32 D_802E8BFC[];
 u8 func_802AE888(s32);
 void func_8028F93C(void);
 void func_80292084(void);
@@ -3455,7 +3461,6 @@ typedef struct {
     /* 0x06 */ u8 unk6[0x82];
 } UnkStruct_8036BED8_00000; /* size = 0x88 */
 
-extern f32 D_802E8BE0;
 extern UnkStruct_802F8BF4 D_802F8BF4[];
 extern s16 D_80366A04;
 extern u8 D_8036B8B0;

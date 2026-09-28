@@ -172,7 +172,6 @@ void func_80264A34(char *, u16, s32);
 
 extern s32 D_80358070;
 extern u8 D_8039C53C[];
-extern char D_8020D800[][4];
 extern char D_8020F2DC[];
 extern char D_8020F308[];
 extern char D_8020F320[];
@@ -194,6 +193,9 @@ u8 D_8021A82C[4];
 u8 D_8021A830[4];
 u8 D_8021A834[4];
 u8 D_8021A838[8];
+
+/* .data, 0x8020D800-0x8020D810 (tools/data_c.py) */
+char D_8020D800[4][4] = { "1ST", "2ND", "3RD", "4TH" };
 
 void func_801F7850(void) {
     UnkStruct_80364AF0 *sp7C;

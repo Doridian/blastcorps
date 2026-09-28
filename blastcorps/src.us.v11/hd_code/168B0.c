@@ -9,7 +9,6 @@ typedef struct {
     /* 0x4 */ s8 unk4;
 } UnkStruct_80365588; /* size = 0x5 */
 
-extern f32 D_802E8C84[];
 extern u8 D_8039CAF0[][0x200];
 
 void func_8029A7E4(char *, ...);
@@ -22,6 +21,11 @@ u8 D_80365360[0x50];
 u16 D_803653B0[0x54];
 char D_80365458[0x100];
 u16 D_80365558[0x14];
+
+/* .data, 0x802E8C80-0x802E8C90 (tools/data_c.py) */
+s32 D_802E8C80 = 0x20200000;
+f32 D_802E8C84[2] = { 0.6f, 0.95f };
+u16 D_802E8C8C[2] = { 42, 0x1000 };
 
 void func_8025B070(void) {
     s32 sp4;

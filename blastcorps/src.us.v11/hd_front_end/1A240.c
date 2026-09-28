@@ -5,7 +5,6 @@ void func_80260650(s32, s32, s32 *);
 s32 func_8026A828(s32, s32);
 void func_8026AF6C(s32);
 
-extern s16 D_8020E3E0[];
 extern u8 D_802FAD50[];
 extern s32 D_80367738;
 extern s16 D_8036BB1C;
@@ -23,8 +22,6 @@ void func_8028B4C4(u8 *romStart, u8 *dst, u32 *size, u8, u8, u8);
 extern u8 D_0068B550[];
 extern u8 D_006A32B0[];
 extern u8 *D_80358070;
-extern char D_8020E3E8[][0x12];
-extern char *D_8020E430[];
 extern UnkStruct_8020C070 D_8020C070[];
 
 /* .bss, 0x8021AB90-0x8021ABB0 (tools/bss_c.py) */
@@ -34,6 +31,15 @@ u8 D_8021ABA1;
 u8 D_8021ABA2;
 s32 D_8021ABA4;
 s32 D_8021ABA8;
+
+extern char D_803048CC[];
+extern char D_803048D8[];
+extern char D_803048E4[];
+extern char D_803048F0[];
+/* .data, 0x8020E3E0-0x8020E440 (tools/data_c.py) */
+s16 D_8020E3E0[4] = { 83, 129, 97, 180 };
+char D_8020E3E8[4][0x12] = { "AMBER", "CLARK", "SPIKE", "WESLEY" };
+char *D_8020E430[4] = { D_803048CC, D_803048D8, D_803048E4, D_803048F0 };
 
 /*
  * Loads the ROM range D_0068B550..D_006A32B0, splits it into four 160x120

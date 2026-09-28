@@ -8,9 +8,6 @@ typedef struct {
 } UnkStruct_80365340; /* size = 0xC */
 
 extern s32 D_802E8BDC;
-extern s32 D_802E8C70;
-extern s32 D_802E8C74;
-extern s32 D_802E8C78;
 extern u8 D_8035805C;
 extern u8 *D_80358070;
 extern u64 D_80364A98;
@@ -25,6 +22,11 @@ void func_80259824(Gfx **arg0, s32 arg1);
 UnkStruct_80365340 *D_80365340;
 Vtx *D_80365348[2];
 s32 D_80365350;
+
+/* .data, 0x802E8C70-0x802E8C80 (tools/data_c.py) */
+s32 D_802E8C70 = 0;
+s32 D_802E8C74 = 0;
+s32 D_802E8C78 = 0;
 
 void func_802592F0(void) {
     s32 sp1C;

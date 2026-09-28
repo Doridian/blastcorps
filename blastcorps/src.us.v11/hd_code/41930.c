@@ -5,8 +5,6 @@ typedef struct {
     /* 0x04 */ u8 unk4[0x2C];
 } UnkStruct_8020D7E4; /* size = 0x30 */
 
-extern u8 D_802FDA60[];
-extern u8 D_802FDA70[];
 extern UnkStruct_8020D7E4 D_8020D7E4[];
 
 typedef struct {
@@ -35,6 +33,10 @@ void func_8026AF6C(s32);
 
 /* .bss, 0x8036EBA0-0x8036EC00 (tools/bss_c.py) */
 char D_8036EBA0[0x60];
+
+/* .data, 0x802FDA60-0x802FDA80 (tools/data_c.py) */
+u8 D_802FDA60[0x10] = { 0, 0, 5, 5, 5, 4, 6, 4, 0, 5, 5, 9, 6 };
+u8 D_802FDA70[0x10] = { 0, 0, 40, 40, 37, 40, 27, 39, 0, 37, 37, 26, 26 };
 
 void func_802860F0(void) {
     u8 sp37;

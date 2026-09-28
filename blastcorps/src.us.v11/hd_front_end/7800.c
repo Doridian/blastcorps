@@ -230,13 +230,13 @@ u8 func_801EE800(u8 *arg0, u8 arg1, u8 arg2) {
     return sp33;
 }
 
-const char D_8020EF48[] = "YOUR NEW BEST!";
-
-const char D_8020EF58[] = "BEST TO DATE";
-
-const char D_8020EF68[] = "YOUR BEST STAYS";
-
-const char D_8020EF78[] = "GUEST BEST IS";
+extern u16 D_80303B3C[];
+extern u16 D_80303B48[];
+extern u16 D_80303B58[];
+extern u16 D_80303B68[];
+/* .data, 0x802084D0-0x802084F0 (tools/data_c.py) */
+char *D_802084D0[4] = { "YOUR NEW BEST!", "BEST TO DATE", "YOUR BEST STAYS", "GUEST BEST IS" };
+u16 *D_802084E0[4] = { D_80303B3C, D_80303B48, D_80303B58, D_80303B68 };
 
 u8 func_801EEDB4(u8 arg0, u8 arg1, u8 arg2) {
     s32 sp6C;

@@ -35,7 +35,8 @@ typedef struct {
 } UnkStruct_8039C800; /* size = 0x28 */
 
 typedef struct {
-    /* 0x000 */ Gfx unk0[0x50];
+    /* 0x000 */ Gfx unk0[0x28];
+    /* 0x140 */ Vtx unk140[0x14];
     /* 0x280 */ s16 unk280;
     /* 0x282 */ u8 unk282;
     /* 0x283 */ u8 unk283;
@@ -102,9 +103,7 @@ extern void func_802AACD4(u8, s32, s32, s16 *, s16 *);
 extern void func_802AAE1C(u8, s16, s16, s32 *, s32 *);
 extern s32 func_802CE6F8(s32, s32, s32);
 
-extern UnkStruct_802FDC08 D_802FDC08[];
 extern u8 D_803A7424;
-extern s16 D_802FDBE0[];
 extern s32 D_803643E0;
 extern s32 D_803643E4;
 extern s32 D_803643E8;
@@ -141,6 +140,98 @@ u8 D_8039C950;
 s32 D_8039C954;
 s32 D_8039C958;
 s32 D_8039C95C;
+
+/* .data, 0x802FDBE0-0x802FE3C0 (tools/data_c.py) */
+s16 D_802FDBE0[0x14] = { 0, 135, 105, 150, 150, 135, 0, 150, 200, 2000, 175, 0, 0, 195, 190, 185, 105 };
+UnkStruct_802FDC08 D_802FDC08[3] = {
+    {
+        {
+            gsSPVertex(STATIC_K0_TO_PHYS(&D_802FDC08[0].unk140), 8, 0),
+            gsSP1Triangle(0, 1, 2, 0),
+            gsSP1Triangle(0, 2, 3, 0),
+            gsSP1Triangle(4, 1, 0, 0),
+            gsSP1Triangle(1, 4, 5, 0),
+            gsSP1Triangle(7, 5, 4, 0),
+            gsSP1Triangle(5, 7, 6, 0),
+            gsSP1Triangle(7, 3, 2, 0),
+            gsSP1Triangle(6, 7, 2, 0),
+            gsSPModifyVertex(5, G_MWO_POINT_ST, 0x0),
+            gsSPModifyVertex(6, G_MWO_POINT_ST, 0x7E00000),
+            gsSP1Triangle(5, 2, 1, 0),
+            gsSP1Triangle(2, 5, 6, 0),
+            gsSPEndDisplayList(),
+        },
+        {
+            { { { 30, 0, -30 }, 0, { 0 }, { 0 } } },
+            { { { 30, 30, -30 }, 0, { 0, 992 }, { 0 } } },
+            { { { 30, 30, 30 }, 0, { 2016, 992 }, { 0 } } },
+            { { { 30, 0, 30 }, 0, { 2016 }, { 0 } } },
+            { { { -30, 0, -30 }, 0, { 2016 }, { 0 } } },
+            { { { -30, 30, -30 }, 0, { 2016, 992 }, { 0 } } },
+            { { { -30, 30, 30 }, 0, { 0, 992 }, { 0 } } },
+            { { { -30, 0, 30 }, 0, { 0 }, { 0 } } },
+        },
+        1164, 64, 32, 1600, 30, 960, 0,
+    },
+    {
+        {
+            gsSPVertex(STATIC_K0_TO_PHYS(&D_802FDC08[1].unk140), 8, 0),
+            gsSP1Triangle(2, 1, 0, 0),
+            gsSP1Triangle(3, 2, 0, 0),
+            gsSP1Triangle(0, 1, 4, 0),
+            gsSP1Triangle(5, 4, 1, 0),
+            gsSP1Triangle(4, 5, 7, 0),
+            gsSP1Triangle(6, 7, 5, 0),
+            gsSP1Triangle(2, 3, 7, 0),
+            gsSP1Triangle(2, 7, 6, 0),
+            gsSPModifyVertex(5, G_MWO_POINT_ST, 0x0),
+            gsSPModifyVertex(6, G_MWO_POINT_ST, 0x7E00000),
+            gsSP1Triangle(1, 2, 5, 0),
+            gsSP1Triangle(6, 5, 2, 0),
+            gsSPEndDisplayList(),
+        },
+        {
+            { { { 42 }, 0, { 0 }, { 0 } } },
+            { { { 42, 30 }, 0, { 0, 992 }, { 0 } } },
+            { { { 0, 30, -42 }, 0, { 2016, 992 }, { 0 } } },
+            { { { 0, 0, -42 }, 0, { 2016 }, { 0 } } },
+            { { { 0, 0, 42 }, 0, { 2016 }, { 0 } } },
+            { { { 0, 30, 42 }, 0, { 2016, 992 }, { 0 } } },
+            { { { -42, 30 }, 0, { 0, 992 }, { 0 } } },
+            { { { -42 }, 0, { 0 }, { 0 } } },
+        },
+        1164, 64, 32, 1600, 30, 960, 0,
+    },
+    {
+        {
+            gsSPVertex(STATIC_K0_TO_PHYS(&D_802FDC08[1].unk140), 8, 0),
+            gsSP1Triangle(2, 1, 0, 0),
+            gsSP1Triangle(3, 2, 0, 0),
+            gsSP1Triangle(0, 1, 4, 0),
+            gsSP1Triangle(5, 4, 1, 0),
+            gsSP1Triangle(4, 5, 7, 0),
+            gsSP1Triangle(6, 7, 5, 0),
+            gsSP1Triangle(2, 3, 7, 0),
+            gsSP1Triangle(2, 7, 6, 0),
+            gsSPModifyVertex(5, G_MWO_POINT_ST, 0x0),
+            gsSPModifyVertex(6, G_MWO_POINT_ST, 0x7E00000),
+            gsSP1Triangle(1, 2, 5, 0),
+            gsSP1Triangle(6, 5, 2, 0),
+            gsSPEndDisplayList(),
+        },
+        {
+            { { { 42 }, 0, { 0 }, { 0 } } },
+            { { { 42, 30 }, 0, { 0, 992 }, { 0 } } },
+            { { { 0, 30, -42 }, 0, { 2016, 992 }, { 0 } } },
+            { { { 0, 0, -42 }, 0, { 2016 }, { 0 } } },
+            { { { 0, 0, 42 }, 0, { 2016 }, { 0 } } },
+            { { { 0, 30, 42 }, 0, { 2016, 992 }, { 0 } } },
+            { { { -42, 30 }, 0, { 0, 992 }, { 0 } } },
+            { { { -42 }, 0, { 0 }, { 0 } } },
+        },
+        1164, 64, 32, 1280, 40, 960, 0,
+    },
+};
 
 void func_8028FDA0(s16 *arg0, s16 *arg1) {
     s32 i;

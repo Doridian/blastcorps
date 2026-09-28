@@ -190,7 +190,13 @@ works out hd_code's split (see `docs/ROADMAP.md`, Phase 1). A C file owns
 its data with a `.data`/`.rodata` subsegment; its remaining `GLOBAL_ASM`
 functions then carry their own rodata into the `.s`, and asm-processor places
 it. `tools/inline_rodata.py` turns a file's `extern` string/float uses into
-literals when switching it to own its `.rodata`. The other
+literals when switching it to own its `.rodata`. In us.v11 every C file owns
+its `.data` and `.rodata`; what is still asm `data`/`rodata` belongs to
+handwritten objects or to data-only objects (named by offset: text tables,
+display lists, libultra's VI modes). `tools/data_c.py <module> <object>`
+writes a C file's `.data` definitions from the asm block, typed by the
+file's declarations (see `docs/DECOMPILING.md`); it needs the block still
+`data` and extracted, or `--ref` with a saved copy of its `.data.s`. The other
 versions still have one data `bin` and no `.bss` layout.
 
 `.bss` (us.v11) is laid out per object too, in the top-level `bss:` list of

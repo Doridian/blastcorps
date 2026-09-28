@@ -22,7 +22,6 @@ typedef struct {
 extern UnkStruct_803643C8 *D_803643C8;
 extern UnkStruct_803643C8 *D_803643CC;
 extern s32 D_803EBBF8;
-extern Vp D_802E8C60;
 
 void func_80284E54(Gfx *, s32, s32, s32, s32, s32);
 
@@ -37,6 +36,9 @@ Mtx D_80365270;
 Mtx D_803652B0;
 Mtx D_803652F0;
 u8 *D_80365330;
+
+/* .data, 0x802E8C60-0x802E8C70 (tools/data_c.py) */
+Vp D_802E8C60 = { { { 128, 128, 511 }, { 128, 128, 511 } } };
 
 void func_80258230(u8 arg0, s32 arg1, s16 arg2, s16 arg3) {
     D_803643CC->unk1022 = arg0;

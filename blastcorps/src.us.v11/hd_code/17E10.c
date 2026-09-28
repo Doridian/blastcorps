@@ -102,7 +102,6 @@ extern u8 D_00489E70[];
 extern u8 D_0048F5A0[];
 extern s8 D_802E8BD8;
 extern u8 D_802E8BF0;
-extern u32 D_802E8CD0[];
 extern UnkStruct_802E8F94 D_802E8F94[];
 extern u8 D_803643D6;
 extern u8 D_803643D7;
@@ -153,6 +152,9 @@ u8 D_80366BC0;
 u16 D_80366BC2;
 u8 D_80366BC4;
 u8 D_80366BC5;
+
+/* .data, 0x802E8CD0-0x802E8CE0 (tools/data_c.py) */
+u32 D_802E8CD0[4] = { 30, 80 };
 
 void func_8025C5D0(void) {
     switch (D_802E8BEC) {

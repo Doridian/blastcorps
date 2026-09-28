@@ -1,7 +1,7 @@
 #include "common.h"
 
-extern u32 *D_802FDB30;
-extern u32 *D_802FDB34;
+extern u32 D_803FFFF8;
+extern u32 D_803FFFFC;
 extern OSMesgQueue D_803150A0;
 
 void func_801F57B0(void);
@@ -13,6 +13,10 @@ void func_8028B4C4(u32 arg0, u8 *arg1, u32 *arg2, u8 arg3, u8 arg4, u8 arg5);
 /* .bss, 0x80370C50-0x80370C70 (tools/bss_c.py) */
 u8 D_80370C50;
 OSIoMesg D_80370C58;
+
+/* .data, 0x802FDB30-0x802FDB40 (tools/data_c.py) */
+u32 *D_802FDB30 = &D_803FFFF8;
+u32 *D_802FDB34 = &D_803FFFFC;
 
 void func_8028B3E0(void) {
     u32 sp24;

@@ -127,7 +127,6 @@ typedef struct {
 } UnkStruct_80364AF0; /* size = 0x100 */
 
 extern OSViMode D_80306E70[];
-extern u8 D_802FA270;
 extern s32 D_80358060;
 /*
  * This file's .bss.  The functions using these only match with them
@@ -158,6 +157,9 @@ OSTimer D_8036BF78;
 u8 D_8036BF98[0x20];
 u32 D_8036BFB8;
 s32 D_8036BFBC;
+
+/* .data, 0x802FA270-0x802FA280 (tools/data_c.py) */
+u8 D_802FA270 = 1;
 
 extern UnkStruct_8036BB10 *D_8036BB10;
 extern u8 D_802E8BD0;

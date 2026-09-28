@@ -276,4 +276,5 @@ def main():
     print(f"{c_path}: {len(defs)} definitions" + (f"; left to the linker: {' '.join(skipped)}" if skipped else ""))
 
 
-main()
+if __name__ == "__main__":
+    main()

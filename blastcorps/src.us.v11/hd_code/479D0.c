@@ -38,7 +38,6 @@ extern s32 D_803643E0;
 extern s32 D_803643E4;
 extern s32 D_803643E8;
 extern s32 D_80367738;
-extern UnkStruct_802FDB40 D_802FDB40[];
 extern s16 D_803EDC00;
 extern s16 D_803F8B72;
 
@@ -53,6 +52,12 @@ void func_8028C41C(Vtx *, u8, s16, s16, s16);
 UnkStruct_8039AF00 D_8039AF00[1];
 u8 D_8039AF18[0x150];
 s32 D_8039B068;
+
+/* .data, 0x802FDB40-0x802FDB70 (tools/data_c.py) */
+UnkStruct_802FDB40 D_802FDB40[2] = {
+    { -10, 10, 0, 20, -10, 10, 2453, 2453, 640, 100, 10 },
+    { -10, 10, 0, 20, -10, 10, 2455, 2455, 640, 100, 1 },
+};
 
 void func_8028C190(UnkStruct_8028C190 *arg0, UnkStruct_8028C190 *arg1) {
     D_8039B068 = 0;

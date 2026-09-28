@@ -91,7 +91,11 @@ hd_front_end us.v10 0x21010 0x29E60 0x20060
 # 0xC450 (found by missed_boundaries) is another object start: 9570's .rodata
 # ends in 12 bytes of padding before C450's.  .bss follows .data; its last
 # variable is libultra's at 0x8021AC2C.  func_8028B3E0 clears everything up
-# to 0x8021ED00 after inflating the module.
-hd_front_end us.v11 0x21040 0x29E90 0x20090 0x27440 0x29690 --split 10850 --bss 80210E90:8021AC30
+# to 0x8021ED00 after inflating the module.  9570's .data starts at 0x214F0,
+# not where its code's references put it (0x21FA0): its first texture runs
+# from there to 0x80208FA8 (the display list after it loads 0x55C texels),
+# so it can't be 7800's.
+hd_front_end us.v11 0x21040 0x29E90 0x20090 0x27440 0x29690 --split 10850 --bss 80210E90:8021AC30 \
+    --data-split 214F0:9570
 hd_front_end jp     0x20F90 0x29B00 0x1FFE0
 hd_front_end eu     0x21990 0x2CAB0 0x209E0
