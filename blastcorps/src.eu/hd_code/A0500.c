@@ -4,9 +4,9 @@
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/A0500/_Ldtob.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/A0500/func_802E55C0.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/A0500/_Ldunscale.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/A0500/func_802E56A0.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/A0500/_Genld.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/A0500/alSeqGetLoc.s")
 

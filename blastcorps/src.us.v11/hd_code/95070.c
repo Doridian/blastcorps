@@ -18,7 +18,6 @@ extern OSViMode D_80307840;
 #define viModeNtsc D_803077F0
 #define viModeMpal D_80307840
 
-/* func_802D98D0 is __osViInit. */
-#define __osViInit func_802D98D0
+/* __osViInit is __osViInit. */
 
 #include "src/libultra/io/vi.c"

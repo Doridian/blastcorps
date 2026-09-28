@@ -104,7 +104,7 @@ void func_80264A34(char *, u16, s32);
 void func_8026AF6C(s32);
 s16 func_8028604C(s32);
 void func_8029A7E4(char *, ...);
-void func_802D82A0(ALCSPlayer *, s32);
+void alCSPSetTempo(ALCSPlayer *, s32);
 u8 func_802C1B1C(void);
 void func_802C1DD0(s32);
 
@@ -286,7 +286,7 @@ void func_802633E0(void) {
                     }
                     D_802F5804[0x3E0 / 4] = D_80367D10;
                     D_802F5804[0x3E4 / 4] = D_80367D28;
-                    func_802D82A0(D_80367734, alCSPGetTempo(D_80367734) * D_80309588);
+                    alCSPSetTempo(D_80367734, alCSPGetTempo(D_80367734) * D_80309588);
                 }
                 D_80367B54++;
                 D_80367BF8 = 0;

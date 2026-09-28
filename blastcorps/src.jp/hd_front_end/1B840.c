@@ -6,12 +6,12 @@
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B840/corrupted.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B840/func_802032A0.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B840/osPfsInit.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B840/func_80203354.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B840/__osPfsGetStatus.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B840/osPfsAllocateFile.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B840/__osPfsDeclearPage.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B840/func_80203B48.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B840/__osClearPage.s")

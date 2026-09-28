@@ -122,3 +122,57 @@ debugBuffer = 0x80224A50; // type:data libultra
 __osThreadSave = 0x80224B50; // type:data libultra
 osResetType = 0x8000030C; // type:data libultra
 osAppNMIBuffer = 0x8000031C; // type:data libultra
+
+// libultra in hd_code (us.v11 hd_code addresses), identified while writing
+// their C from ultralib's source (see blastcorps/src/libultra/): each one
+// matches the named source function, and is where its callers and data say.
+//   osContInit etc.   controller.c/contreaddata.c: PIF request building and
+//                     __osContPifRam use.
+//   osCreatePiManager / osCreateViManager / viMgrMain / __osDevMgrMain:
+//                     create the PI/VI manager threads and message queues
+//                     (__osPiDevMgr, __osViDevMgr); the loops dispatch on
+//                     OS_MESG_TYPE_*.
+//   The alCSP* setters/getters: each sends or reads the event/field of
+//                     ALCSPlayer that libaudio's cspsetxxx.c does (vol at
+//                     0x32, state at 0x2C).  alSeqp* compiles the same; these
+//                     are CSP because their callers use alCSPNew/alCSPGetTempo.
+osCreatePiManager = 0x802D4560; // type:func libultra
+alCSPGetState = 0x802D4E10; // type:func libultra
+proutSprintf = 0x802D6ACC; // type:func libultra
+alCSPSetSeq = 0x802D81B0; // type:func libultra
+alCSPPlay = 0x802D81F0; // type:func libultra
+alCSPSetVol = 0x802D8220; // type:func libultra
+alCSPSetTempo = 0x802D82A0; // type:func libultra
+alCSPGetVol = 0x802D8310; // type:func libultra
+_bnkfPatchBank = 0x802D8370; // type:func libultra
+alCSPSetBank = 0x802D97E0; // type:func libultra
+__osViInit = 0x802D98D0; // type:func libultra
+osAiSetNextBuffer = 0x802D9B60; // type:func libultra
+osCreateViManager = 0x802DA610; // type:func libultra
+viMgrMain = 0x802DA794; // type:func libultra
+_VirtualToPhysicalTask = 0x802DAD00; // type:func libultra
+osContInit = 0x802DB0A0; // type:func libultra
+osContStartReadData = 0x802DB4D0; // type:func libultra
+osContGetReadData = 0x802DB594; // type:func libultra
+__osPackReadData = 0x802DB63C; // type:func libultra
+__osDevMgrMain = 0x802DC570; // type:func libultra
+_Putfld = 0x802DD3DC; // type:func libultra
+_decodeChunk = 0x802E0B20; // type:func libultra
+_Ldunscale = 0x802E37C0; // type:func libultra
+_Genld = 0x802E38A0; // type:func libultra
+
+// libultra in hd_front_end (us.v11 hd_front_end addresses): the Controller
+// Pak and EEPROM code, written from ultralib's pfs*.c and conteep*.c.
+osEepromProbe = 0x80202880; // type:func libultra
+osPfsInit = 0x80203350; // type:func libultra
+__osPfsGetStatus = 0x80203404; // type:func libultra
+__osClearPage = 0x80203BF8; // type:func libultra
+osEepromLongWrite = 0x802042D0; // type:func libultra
+osEepromLongRead = 0x80204410; // type:func libultra
+__osPfsGetNextPage = 0x80204710; // type:func libultra
+osPfsReadWriteFile = 0x8020480C; // type:func libultra
+osEepromWrite = 0x80204C10; // type:func libultra
+__osPackEepWriteData = 0x80204DC0; // type:func libultra
+__osEepStatus = 0x80204ECC; // type:func libultra
+osEepromRead = 0x802050F0; // type:func libultra
+__osPackEepReadData = 0x802052E0; // type:func libultra

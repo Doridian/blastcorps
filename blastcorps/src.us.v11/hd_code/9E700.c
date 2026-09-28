@@ -21,7 +21,7 @@ extern const f64 D_8030E348;
 #define LDTOB_ZERO D_8030E340
 #define LDTOB_1E8 D_8030E348
 
-/* func_802E37C0 and func_802E38A0 are xldtob.c's static _Ldunscale and _Genld. */
+/* _Ldunscale and _Genld are xldtob.c's static _Ldunscale and _Genld. */
 #include "src/libultra/libc/xldtob.c"
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E700/alSeqGetLoc.s")

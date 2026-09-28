@@ -13,9 +13,8 @@ extern const unsigned int D_8030DE2C[]; /* fbit */
 #define fchar D_8030DE24
 #define fbit D_8030DE2C
 
-/* func_802DD3DC is xprintf.c's static _Putfld. */
-#define _Putfld func_802DD3DC
+/* _Putfld is xprintf.c's static _Putfld. */
 
 #include "src/libultra/libc/xprintf.c"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/983F0/func_802DD3DC.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/983F0/_Putfld.s")

@@ -8,6 +8,6 @@
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E980/alRaw16Pull.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E980/func_802E3810.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E980/_decodeChunk.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E980/alAdpcmPull.s")

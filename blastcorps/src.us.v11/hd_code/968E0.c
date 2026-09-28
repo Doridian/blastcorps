@@ -9,8 +9,7 @@ extern OSMesg D_803FF2C0;
 #define __osEepromTimerQ D_803FF2A8
 #define __osEepromTimerMsg D_803FF2C0
 
-/* func_802DB0A0 is osContInit. */
-#define osContInit func_802DB0A0
+/* osContInit is osContInit. */
 
 #include "src/libultra/io/controller.c"
 

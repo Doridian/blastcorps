@@ -456,7 +456,7 @@ void func_802C1DD0(s32);
 void func_802CE840(void);
 Gfx *func_802CEEFC(Gfx *, u8, void *, void *);
 void func_802CF628(void);
-void func_802D4560(OSPri, OSMesgQueue *, OSMesg *, s32);
+void osCreatePiManager(OSPri, OSMesgQueue *, OSMesg *, s32);
 f32 sqrtf(f32);
 float fcos(float);
 void osScRemoveClient(void *, void *);
@@ -482,7 +482,7 @@ void func_80244870(void *arg0) {
     s32 pad[2];
 
     osDpSetStatus(4);
-    func_802D4560(150, &D_80314D80, D_80314D98, 194);
+    osCreatePiManager(150, &D_80314D80, D_80314D98, 194);
     osCreateThread(&D_80310BD0, 3, func_80244930, arg0, &D_80310D80[0x2000 / sizeof(u64)], 10);
     osStartThread(&D_80310BD0);
     if (D_802FA254 == 0) {

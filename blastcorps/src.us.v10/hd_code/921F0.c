@@ -2,4 +2,4 @@
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/921F0/sprintf.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/921F0/func_802D6A1C.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/921F0/proutSprintf.s")

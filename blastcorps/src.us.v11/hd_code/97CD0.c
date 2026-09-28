@@ -2,7 +2,6 @@
 
 #include "src/libultra/io/pirawdma.c"
 
-/* func_802DC570 is __osDevMgrMain. */
-#define __osDevMgrMain func_802DC570
+/* __osDevMgrMain is __osDevMgrMain. */
 
 #include "src/libultra/io/devmgr.c"

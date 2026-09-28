@@ -103,8 +103,7 @@ void func_802CDA10(s32, s32, s32);
 s32 func_802CDB70(s16, s16);
 void func_802CE4F0(s32, s32, s32);
 s32 func_802CE6F8(s32, s32, s32);
-void func_802DB4D0(OSMesgQueue *);
-void func_802DB594(OSContPad *);
+void osContGetReadData(OSContPad *);
 void func_8028DA5C(Vtx *, u8);
 void func_8026AD30(s32);
 s32 func_8029B930(void);
@@ -551,9 +550,9 @@ void func_8028FC10(void) {
     OSContPad sp24[4];
 
     sp3E = 0;
-    func_802DB4D0(&D_80370BF8);
+    osContStartReadData(&D_80370BF8);
     osRecvMesg(&D_80370BF8, NULL, OS_MESG_BLOCK);
-    func_802DB594(sp24);
+    osContGetReadData(sp24);
     if (sp24[0].button & 0x1000) {
         sp3E = 1;
     }

@@ -1,3 +1,3 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B850/func_80202850.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_front_end/1B850/osEepromProbe.s")

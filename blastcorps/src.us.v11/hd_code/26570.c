@@ -303,7 +303,7 @@ void func_8029A7E4(char *, ...);
 s32 func_80270A54(UnkStruct_8036BED8 *arg0);
 char *func_8025B558(u16 *);
 void func_802A0B00(u16, s32);
-void func_802DA610(s32);
+void osCreateViManager(s32);
 void func_80270F7C(void *);
 void func_80271C24(UnkSched *, UnkSchedTask *);
 void func_80271CE4(UnkSched *, s32);
@@ -807,7 +807,7 @@ void func_80270D20(UnkSched *sc, void *stack, OSPri priority, u8 mode, u8 numFie
     D_8036BF1C = NULL;
     osCreateMesgQueue(&sc->interruptQ, sc->intBuf, 16);
     osCreateMesgQueue(&sc->cmdQ, sc->cmdMsgBuf, 16);
-    func_802DA610(0xFE);
+    osCreateViManager(0xFE);
     osViSetMode(&D_80306E70[mode]);
     osViBlack(TRUE);
     osSetEventMesg(OS_EVENT_SP, &sc->interruptQ, (OSMesg) 0x29B);

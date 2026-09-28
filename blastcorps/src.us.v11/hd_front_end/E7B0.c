@@ -37,7 +37,6 @@ u8 func_8028FCD4(OSMesgQueue *, u8 *);
 u8 func_8028A370(void);
 s32 func_8025B300(u8 *);
 void func_80270E50(void *sc, void *client, OSMesgQueue *mq, s32 arg3, s32 arg4);
-s32 func_80203350(OSMesgQueue *, OSPfs *, s32);
 u8 __osContDataCrc(u8 *);
 void func_801F58E8(void *);
 void func_801F74B0(u8 *);
@@ -114,9 +113,6 @@ typedef struct {
     /* 0x04 */ u8 unk4[0x18];
 } UnkStruct_8020C488; /* size = 0x1C */
 
-s32 func_8020480C(OSPfs *, s32, u8, s32, s32, u8 *);
-void func_80204C10(OSMesgQueue *, s32, void *);
-void func_802050F0(OSMesgQueue *, s32, void *);
 Gfx *func_80272ED8(Gfx *, s32, s32, s32, s32, s32, f32);
 Gfx *func_80274868(Gfx *);
 Gfx *func_80274AA4(Gfx *);
@@ -255,7 +251,7 @@ s32 func_801F60C8(void) {
         sp18 = 1;
     }
     if (sp18 == 0) {
-        sp18 = func_80203350(&D_80370BF8, &D_8039B630, 0);
+        sp18 = osPfsInit(&D_80370BF8, &D_8039B630, 0);
     }
     func_8028A370();
     return sp18;
@@ -320,7 +316,7 @@ s32 func_801F6264(u8 arg0, u8 arg1) {
         if (sp3C == 0) {
             sp2C = 0;
             do {
-                sp3C = func_8020480C(&D_8039B630, D_8039B698[arg0], arg1, 0, 0x100, sp28);
+                sp3C = osPfsReadWriteFile(&D_8039B630, D_8039B698[arg0], arg1, 0, 0x100, sp28);
                 sp2C++;
             } while (sp3C != 0 && sp2C < 3);
         }
@@ -361,7 +357,7 @@ s32 func_801F65C4(u8 arg0, u8 arg1, u8 arg2) {
     } else {
         sp34 = osPfsFindFile(&D_8039B630, 0x3031, 0x4E424345, D_8020C000, D_8020C014, &D_8039B698[arg0]);
         if (sp34 == 0) {
-            sp34 = func_8020480C(&D_8039B630, D_8039B698[arg0], arg2, sp28, 0x20, sp24);
+            sp34 = osPfsReadWriteFile(&D_8039B630, D_8039B698[arg0], arg2, sp28, 0x20, sp24);
         }
         for (sp30 = 0; sp30 < 0xE; sp30++) {
             func_8029A7E4(D_8020F2C8, arg2, sp30, D_80364EF0[arg0][D_802E8C44[sp30]]);
@@ -390,9 +386,9 @@ s32 func_801F67E4(u8 arg0, u8 arg1, u8 arg2) {
             D_80364F70[sp37] = D_80364EF0[arg0][D_802E8C44[D_80364AF0[arg0].unk92[arg1]]];
             D_80364F70[sp37 + 1] = D_80364F70[sp37] ^ 0x55AA;
             func_8029A7E4(D_8020F330, arg1, D_80364F70[sp37], (u32)(sp37 * 2 + 0x100) >> 3, sp30);
-            func_80204C10(&D_80370BF8, (u32)(sp37 * 2 + 0x100) >> 3, sp30);
+            osEepromWrite(&D_80370BF8, (u32)(sp37 * 2 + 0x100) >> 3, sp30);
         } else {
-            func_802050F0(&D_80370BF8, (u32)(sp37 * 2 + 0x100) >> 3, sp30);
+            osEepromRead(&D_80370BF8, (u32)(sp37 * 2 + 0x100) >> 3, sp30);
             for (sp38 = 0; sp38 < 2; sp38++, arg1++) {
                 if (((D_80364AF0[arg0].unk18[arg1] > 0 && D_80364AF0[arg0].unk18[arg1] < 6) ? 1 : 0) &&
                     arg1 != 0x31 && arg1 != 0x2F && arg1 != 0x26) {
@@ -415,10 +411,10 @@ s32 func_801F6AF4(u8 arg0, u64 arg2) {
     sp24 = 0;
     sp20 = &D_80364AF0[arg0];
     if (D_802E8BF8 != 0 || D_80364A90 == 0x40000000000000) {
-        func_80204C10(&D_80370BF8, 0x3F, &arg2);
+        osEepromWrite(&D_80370BF8, 0x3F, &arg2);
     } else {
         func_8029A7E4(D_8020F35C, arg2);
-        sp24 = func_8020480C(&D_8039B630, D_8039B698[arg0], 1, 0xDE0, 0x20, (u8 *)&arg2);
+        sp24 = osPfsReadWriteFile(&D_8039B630, D_8039B698[arg0], 1, 0xDE0, 0x20, (u8 *)&arg2);
     }
     return sp24;
 }
@@ -431,9 +427,9 @@ s32 func_801F6BD0(u8 arg0, u64 *arg1) {
     sp44 = 0;
     sp40 = &D_80364AF0[arg0];
     if (D_802E8BF8 != 0) {
-        func_802050F0(&D_80370BF8, 0x3F, arg1);
+        osEepromRead(&D_80370BF8, 0x3F, arg1);
     } else {
-        sp44 = func_8020480C(&D_8039B630, D_8039B698[arg0], 0, 0xDE0, 0x20, (u8 *)sp20);
+        sp44 = osPfsReadWriteFile(&D_8039B630, D_8039B698[arg0], 0, 0xDE0, 0x20, (u8 *)sp20);
         *arg1 = sp20[0];
         func_8029A7E4(D_8020F374, *arg1);
     }
@@ -470,7 +466,7 @@ s32 func_801F6CA4(u8 arg0, u8 arg1, u8 arg2) {
         sp30 = osPfsFindFile(&D_8039B630, 0x3031, 0x4E424345, D_8020C000, D_8020C014, &D_8039B698[arg0]);
         sp34 = sp30;
         if (sp30 == 0) {
-            sp34 = func_8020480C(&D_8039B630, D_8039B698[arg0], arg2, sp24, 0x40, D_8039C4B8);
+            sp34 = osPfsReadWriteFile(&D_8039B630, D_8039B698[arg0], arg2, sp24, 0x40, D_8039C4B8);
         }
     }
     if (sp34 == 0 && arg2 == 0) {

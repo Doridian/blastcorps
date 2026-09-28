@@ -118,7 +118,6 @@ void func_80261284(void);
 void func_802613C8(void);
 void func_80261528(void);
 void func_802682A4(void);
-void func_802D9B60(void *buf, u32 size);
 OSMesgQueue *func_80270F74(void *sc);
 void func_80270E50(void *sc, void *client, OSMesgQueue *mq, s32 arg3, s32 arg4);
 void func_8029A7E4(char *, ...);
@@ -563,7 +562,7 @@ void func_80267CDC(UnkAudioInfo *info, UnkAudioInfo *lastInfo) {
     func_802682A4();
     audioPtr = (s16 *)osVirtualToPhysical(info->data);
     if (lastInfo != NULL) {
-        func_802D9B60(lastInfo->data, lastInfo->frameSamples << 2);
+        osAiSetNextBuffer(lastInfo->data, lastInfo->frameSamples << 2);
     }
     samplesLeft = osAiGetLength() >> 2;
     info->frameSamples = (D_8036A8BC - samplesLeft + 53) & ~0xF;

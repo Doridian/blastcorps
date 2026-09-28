@@ -96,12 +96,9 @@ extern s16 D_803F7C34;
 extern u8 D_803F7C3F;
 extern char D_8030CBD0[];
 
-void func_802DB0A0(OSMesgQueue *, u8 *, u8 *);
-void func_802DB4D0(OSMesgQueue *);
 void func_8026AF6C(s32);
 void func_8029A7E4(char *, ...);
 void func_8028A42C(void);
-void func_802DB594(UnkStruct_80370BD8 *);
 void func_8025BEF8(void);
 void func_8025BBE8(u16, s8, s8);
 void func_8028B734(s8 *, s8 *, u8);
@@ -116,7 +113,7 @@ u8 func_8028A370(void) {
 
     osCreateMesgQueue(&D_80370BF8, &D_80370BF0, 1);
     osSetEventMesg(OS_EVENT_SI, &D_80370BF8, 0);
-    func_802DB0A0(&D_80370BF8, &sp1B, D_80370BC8);
+    osContInit(&D_80370BF8, &sp1B, D_80370BC8);
     osContSetCh(1);
     D_80370C10 = 0;
     D_80370C35 = 0;
@@ -126,7 +123,7 @@ u8 func_8028A370(void) {
 void func_8028A3E4(void) {
     if (D_8039C4B0 == 0) {
         func_8028A42C();
-        func_802DB4D0(&D_80370BF8);
+        osContStartReadData(&D_80370BF8);
         D_80370C10 = 1;
     }
 }
@@ -147,7 +144,7 @@ void func_8028A470(void) {
     if (D_80358064 != 0) {
         if (D_8039C4B0 == 0 && D_80370C10 != 0) {
             osRecvMesg(&D_80370BF8, NULL, OS_MESG_BLOCK);
-            func_802DB594(sp44);
+            osContGetReadData(sp44);
             if (sp44->unk4 != 0) {
                 func_8029A7E4(D_8030CBD0);
                 sp44->unk0 = 0;

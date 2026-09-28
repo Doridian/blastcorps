@@ -6,6 +6,5 @@
 #define __osEepromTimerMsg D_803FF2C0
 
 #define osEepromLongWrite func_802042D0
-#define osEepromWrite func_80204C10
 
 #include "src/libultra/io/conteeplongwrite.c"

@@ -1,6 +1,6 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/96CB0/func_802DB470.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/96CB0/osContInit.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/96CB0/__osContGetInitData.s")
 

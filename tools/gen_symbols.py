@@ -8,8 +8,8 @@ Each file gets, below a marker line:
     `lib:fuzzy` (it differs by a few instructions), `lib:ref` (a matched
     function calls or references it by that name);
   * names from blastcorps/symbols_known.txt (identified by hand, given at their
-    us.v11 init addresses) on every copy of that code, with the globals each
-    copy uses, tagged as in that file;
+    us.v11 addresses in any module) on every copy of that code, with the
+    globals each copy uses, tagged as in that file;
   * names from the other modules for addresses outside this one, so a call from
     hd_front_end into hd_code gets hd_code's name, unless that name is also
     defined here (each module is linked on its own and has its own copies of
@@ -147,15 +147,25 @@ def known_copies(ref, target):
     `ref` and `target` are {module: (vram, words, bins)} for the reference and
     the version being generated.  Returns {module: {addr: (name, kind, tag)}}."""
     known = parse_symbols(KNOWN)
-    funcs = sorted((a, n, t) for n, a, k, t in known if k == "func")
     data = {a: (n, t) for n, a, k, t in known if k != "func"}
-    (rmod,) = {m for m, (vram, words, _) in ref.items()
-               if all(vram <= a < vram + 4 * len(words) for a, _, _ in funcs)}
-    rvram, rwords, _ = ref[rmod]
+    # A known function is identified in whichever module its address falls in
+    # (the modules' ranges don't overlap), then found in every other copy.
+    by_mod = {}
+    for n, a, k, t in known:
+        if k != "func":
+            continue
+        rmod = next(m for m, (vram, words, _) in ref.items() if vram <= a < vram + 4 * len(words))
+        by_mod.setdefault(rmod, []).append((a, n, t))
+    out = {m: {} for m in target}
+    for rmod, funcs in by_mod.items():
+        _copy_known(ref[rmod], rmod, sorted(funcs), data, target, out)
+    return out
+
+
+def _copy_known(refmod, rmod, funcs, data, target, out):
+    rvram, rwords, _ = refmod
     starts = sorted({a for a, _, _ in funcs} |
                     {rvram + 4 * i for i in libmatch.func_starts(libmatch.Module(rmod, rvram, rwords))})
-
-    out = {m: {} for m in target}
     for addr, name, tg in funcs:
         end = next(x for x in starts if x > addr)
         body = list(rwords[(addr - rvram) // 4:(end - rvram) // 4])
@@ -177,7 +187,6 @@ def known_copies(ref, target):
                 if raddr in data and j in theirs:
                     dname, dtag = data[raddr]
                     out[m].setdefault(theirs[j], (dname, "data", dtag))
-    return out
 
 
 def main():

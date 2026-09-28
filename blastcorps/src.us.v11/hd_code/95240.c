@@ -6,7 +6,6 @@
 extern u8 D_80306E40;
 #define hdwrBugFlag D_80306E40
 
-/* func_802D9B60 is osAiSetNextBuffer. */
-#define osAiSetNextBuffer func_802D9B60
+/* osAiSetNextBuffer is osAiSetNextBuffer. */
 
 #include "src/libultra/io/aisetnextbuf.c"

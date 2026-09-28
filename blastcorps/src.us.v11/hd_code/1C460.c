@@ -66,9 +66,7 @@ s32 func_80264BA4(s32);
 void func_802D76C0(ALCSPlayer *);
 void func_802D81B0(ALCSPlayer *, ALCSeq *);
 void func_802D81F0(ALCSPlayer *);
-void func_802D8220(ALCSPlayer *, s32);
-void func_802D82A0(ALCSPlayer *, s32);
-s32 func_802D8310(ALCSPlayer *);
+void alCSPSetTempo(ALCSPlayer *, s32);
 s32 func_802D4E10(ALCSPlayer *);
 
 void func_80260EE0(u8 arg0);
@@ -91,12 +89,12 @@ void func_80260C20(u8 arg0, f32 arg1) {
     alCSeqNew(&D_80367518[D_802E8D84], D_80367510);
     func_802D81B0(D_80367734, &D_80367518[D_802E8D84]);
     func_802D81F0(D_80367734);
-    func_802D8220(D_80367734, D_802E8D00[D_80367708] * D_8036770C * D_802E8D88);
+    alCSPSetVol(D_80367734, D_802E8D00[D_80367708] * D_8036770C * D_802E8D88);
 }
 
 void func_80260D7C(f32 arg0) {
     D_802E8D88 = arg0;
-    func_802D8220(D_80367734, D_802E8D00[D_80367708] * D_8036770C * arg0);
+    alCSPSetVol(D_80367734, D_802E8D00[D_80367708] * D_8036770C * arg0);
 }
 
 f32 func_80260DF0(void) {
@@ -173,7 +171,7 @@ void func_80261068(void) {
             alCSeqGetLoc(&D_80367518[D_802E8D84], &sp28);
             if ((func_802D4E10(D_80367734) == 1) && (sp28.lastTicks != 0)) {
                 alCSeqSetLoc(&D_80367518[D_802E8D84], &D_80367400->marker);
-                func_802D82A0(D_80367734, D_80367400->tempo);
+                alCSPSetTempo(D_80367734, D_80367400->tempo);
                 for (sp114 = 0; sp114 < 0x40; sp114++) {
                     ((u32 *)D_80367734->chanState)[sp114] = D_80367400->chanState[sp114];
                 }
@@ -228,19 +226,19 @@ void func_802613C8(void) {
     f32 sp28;
     s16 sp26;
 
-    sp2C = func_802D8310(D_80367734);
+    sp2C = alCSPGetVol(D_80367734);
     sp28 = D_802E8D00[D_80367708] * D_802E8D88;
     sp26 = sp2C + (sp28 * D_8036770C - sp2C) * D_803092A0;
     if (ABS(sp26 - sp28 * D_8036770C) < 10.0f) {
         sp26 = sp28 * D_8036770C;
         D_8036772A = 0;
     }
-    func_802D8220(D_80367734, sp26);
+    alCSPSetVol(D_80367734, sp26);
 }
 
 void func_80261528(void) {
     if (D_80367734->state == 1) {
-        func_802D82A0(D_80367734, D_8036772C);
+        alCSPSetTempo(D_80367734, D_8036772C);
         D_8036772C = 0;
     }
 }
