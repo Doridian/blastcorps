@@ -34,10 +34,10 @@ UD1="RSP microcode data (DMEM image), used by the graphics task setup in 405F0"
 UD2="RSP microcode data (DMEM image), used by the audio task setup in 20460"
 UD3="RSP microcode data (DMEM image), used by the handwritten code at 5FD50"
 
-hd_code() {  # version data end t1 t2 d1 d2 d3 uc [rodata ucode-data [--data-split off ...]]
+hd_code() {  # version data end t1 t2 d1 d2 d3 uc [rodata ucode-data] [--option ...]
     local v=$1
-    local split=()
-    if [ -n "${10:-}" ]; then
+    local split=("${@:10}")
+    if [ -n "${10:-}" ] && [[ ${10} != --* ]]; then
         # .data/.rodata per object; the three microcode DMEM images follow .rodata
         local u=$((${11}))
         split=(--rodata "${10}"
@@ -53,13 +53,12 @@ hd_code() {  # version data end t1 t2 d1 d2 d3 uc [rodata ucode-data [--data-spl
 
 FD="RSP microcode data (DMEM image) for the microcode at the end of .text"
 
-hd_front_end() {  # version data end ucode [rodata ucode-data [split...]]
+hd_front_end() {  # version data end ucode [rodata ucode-data [--option ...]]
     local v=$1
     local split=()
     if [ -n "${5:-}" ]; then
         # .data/.rodata per object; the microcode's DMEM image follows .rodata
-        split=(--rodata "$5" --tail "$(printf %X $(($6))):800:$FD")
-        for s in "${@:7}"; do split+=(--split "$s"); done
+        split=(--rodata "$5" --tail "$(printf %X $(($6))):800:$FD" "${@:7}")
     fi
     $GEN hd_front_end "$v" --vram 0x801E7000 --data "$2" --end "$3" \
         --bin "$4:FB0:$FE" --note "$FE_NOTE" \
@@ -76,13 +75,18 @@ hd_code us.v10 0xA4360 0xCADF0 0x68790 0x69040 0x7D920 0x8002C 0x8E860 0xA0B80
 hd_code us.v11 0xA4410 0xCAEA0 0x68810 0x690C0 0x7D9D0 0x800DC 0x8E910 0xA0C30 0xC33D0 0xC9BD0 \
     --data-split BAF70 --data-split C2FA0:97BB0 --data-split C33C0:9FE20
 hd_code jp     0xA47E0 0xCAF60 0x68B80 0x69430 0x7DDA0 0x804AC 0x8ECE0 0xA1000
-hd_code eu     0xA6210 0xCD2D0 0x6B180 0x6BA30 0x80340 0x82A4C 0x91280 0xA2A30
+# eu's vi.c is PAL's, so it doesn't match the other versions' __osViInit and
+# OBJECT_STARTS can't find it: it starts after coss.c, at the osTvType load.
+hd_code eu     0xA6210 0xCD2D0 0x6B180 0x6BA30 0x80340 0x82A4C 0x91280 0xA2A30 --split 97A80
 
 hd_front_end us.v10 0x21010 0x29E60 0x20060
 # us.v11 also splits .data/.rodata: .rodata starts at "SELECT VEHICLE!",
 # the microcode data ("RSP SW Version: 2.0D") after the last .rodata.
 # 0x10850 is where bestTimes.c starts after pfsHandler.c: pfsHandler's
 # .rodata ends in func_801F58E8's jump tables and the menu strings follow.
-hd_front_end us.v11 0x21040 0x29E90 0x20090 0x27440 0x29690 0x10850
+# 0xC450 is most likely another object start (9570's .rodata would end in
+# padding where it now has an unexplained zero double), but 9570.c is
+# decompiled as one file, so it stays joined (--join) until that file is split.
+hd_front_end us.v11 0x21040 0x29E90 0x20090 0x27440 0x29690 --split 10850 --join C450
 hd_front_end jp     0x20F90 0x29B00 0x1FFE0
 hd_front_end eu     0x21990 0x2CAB0 0x209E0

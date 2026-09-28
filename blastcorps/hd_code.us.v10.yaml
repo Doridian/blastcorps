@@ -51,6 +51,7 @@ segments:
     - [0x51690, c, hd_code/51690]
     - [0x52D70, c, hd_code/52D70]
     - [0x53220, c, hd_code/53220]
+    - [0x53820, c, hd_code/53820]
     - [0x54E30, c, hd_code/54E30]
     - [0x55970, c, hd_code/55970]
     - [0x55D40, c, hd_code/55D40]
@@ -114,6 +115,7 @@ segments:
     - [0x912B0, c, hd_code/912B0]
     - [0x91770, asm, hd_code/91770] # handwritten
     - [0x91780, c, hd_code/91780]
+    - [0x91C70, c, hd_code/91C70]
     - [0x91CE0, c, hd_code/91CE0]
     - [0x91EA0, asm, hd_code/91EA0] # handwritten
     - [0x91ED0, asm, hd_code/91ED0] # handwritten
@@ -122,6 +124,9 @@ segments:
     - [0x921F0, c, hd_code/921F0]
     - [0x922A0, c, hd_code/922A0]
     - [0x92300, c, hd_code/92300]
+    - [0x92640, c, hd_code/92640]
+    - [0x92700, c, hd_code/92700]
+    - [0x92750, c, hd_code/92750]
     - [0x92980, c, hd_code/92980]
     - [0x92A20, c, hd_code/92A20]
     - [0x92AB0, c, hd_code/92AB0]
@@ -131,6 +136,7 @@ segments:
     - [0x92CF0, c, hd_code/92CF0]
     - [0x92DF0, asm, hd_code/92DF0] # handwritten
     - [0x92E50, c, hd_code/92E50]
+    - [0x92E80, c, hd_code/92E80]
     - [0x93940, c, hd_code/93940]
     - [0x93980, c, hd_code/93980]
     - [0x939F0, c, hd_code/939F0]
@@ -141,9 +147,12 @@ segments:
     - [0x94F70, c, hd_code/94F70]
     - [0x94FB0, asm, hd_code/94FB0] # handwritten
     - [0x94FC0, c, hd_code/94FC0]
+    - [0x95030, c, hd_code/95030]
+    - [0x95060, c, hd_code/95060]
     - [0x95190, c, hd_code/95190]
     - [0x953A0, c, hd_code/953A0]
     - [0x953B0, c, hd_code/953B0]
+    - [0x95A80, c, hd_code/95A80]
     - [0x95B90, c, hd_code/95B90]
     - [0x95DA0, c, hd_code/95DA0]
     - [0x96100, c, hd_code/96100]
@@ -165,6 +174,7 @@ segments:
     - [0x971F0, asm, hd_code/971F0] # handwritten
     - [0x97AC0, asm, hd_code/97AC0] # handwritten
     - [0x97B00, c, hd_code/97B00]
+    - [0x97B40, c, hd_code/97B40]
     - [0x97C20, c, hd_code/97C20]
     - [0x97E80, c, hd_code/97E80]
     - [0x98280, asm, hd_code/98280] # handwritten
@@ -176,12 +186,15 @@ segments:
     - [0x9AF40, c, hd_code/9AF40]
     - [0x9B030, c, hd_code/9B030]
     - [0x9B390, c, hd_code/9B390]
+    - [0x9B3C0, c, hd_code/9B3C0]
     - [0x9BB40, c, hd_code/9BB40]
     - [0x9BBE0, c, hd_code/9BBE0]
+    - [0x9BD30, c, hd_code/9BD30]
     - [0x9C880, c, hd_code/9C880]
     - [0x9CB80, c, hd_code/9CB80]
     - [0x9D760, c, hd_code/9D760]
     - [0x9D870, c, hd_code/9D870]
+    - [0x9D930, c, hd_code/9D930]
     - [0x9DAB0, c, hd_code/9DAB0]
     - [0x9DAC0, c, hd_code/9DAC0]
     - [0x9DAD0, asm, hd_code/9DAD0] # handwritten
@@ -195,6 +208,9 @@ segments:
     - [0x9E510, c, hd_code/9E510]
     - [0x9E640, asm, hd_code/9E640] # handwritten
     - [0x9E650, c, hd_code/9E650]
+    - [0x9F720, c, hd_code/9F720]
+    - [0x9FD40, c, hd_code/9FD40]
+    - [0x9FD50, c, hd_code/9FD50]
     - [0x9FD70, c, hd_code/9FD70]
     - [0xA0980, asm, hd_code/A0980] # handwritten
     - [0xA0990, c, hd_code/A0990]

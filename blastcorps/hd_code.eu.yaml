@@ -53,6 +53,7 @@ segments:
     - [0x533C0, c, hd_code/533C0]
     - [0x54AA0, c, hd_code/54AA0]
     - [0x54F50, c, hd_code/54F50]
+    - [0x555B0, c, hd_code/555B0]
     - [0x56BC0, c, hd_code/56BC0]
     - [0x57700, c, hd_code/57700]
     - [0x57AD0, c, hd_code/57AD0]
@@ -121,6 +122,7 @@ segments:
     - [0x93DE0, c, hd_code/93DE0]
     - [0x942A0, asm, hd_code/942A0] # handwritten
     - [0x942B0, c, hd_code/942B0]
+    - [0x947A0, c, hd_code/947A0]
     - [0x94810, c, hd_code/94810]
     - [0x949D0, asm, hd_code/949D0] # handwritten
     - [0x94A00, asm, hd_code/94A00] # handwritten
@@ -128,6 +130,9 @@ segments:
     - [0x94BB0, c, hd_code/94BB0]
     - [0x94D20, c, hd_code/94D20]
     - [0x94D80, c, hd_code/94D80]
+    - [0x950C0, c, hd_code/950C0]
+    - [0x95180, c, hd_code/95180]
+    - [0x951D0, c, hd_code/951D0]
     - [0x95400, c, hd_code/95400]
     - [0x954A0, c, hd_code/954A0]
     - [0x95530, c, hd_code/95530]
@@ -135,6 +140,7 @@ segments:
     - [0x95650, c, hd_code/95650]
     - [0x956F0, c, hd_code/956F0]
     - [0x95770, c, hd_code/95770]
+    - [0x958A0, c, hd_code/958A0]
     - [0x96360, c, hd_code/96360]
     - [0x963A0, c, hd_code/963A0]
     - [0x96410, c, hd_code/96410]
@@ -145,9 +151,12 @@ segments:
     - [0x97990, c, hd_code/97990]
     - [0x979D0, asm, hd_code/979D0] # handwritten
     - [0x979E0, c, hd_code/979E0]
+    - [0x97A50, c, hd_code/97A50]
+    - [0x97A80, c, hd_code/97A80]
     - [0x97BC0, c, hd_code/97BC0]
     - [0x97DD0, c, hd_code/97DD0]
     - [0x97DE0, c, hd_code/97DE0]
+    - [0x984B0, c, hd_code/984B0]
     - [0x985C0, c, hd_code/985C0]
     - [0x987D0, c, hd_code/987D0]
     - [0x98B30, c, hd_code/98B30]
@@ -171,6 +180,7 @@ segments:
     - [0x99F90, asm, hd_code/99F90] # handwritten
     - [0x9A860, asm, hd_code/9A860] # handwritten
     - [0x9A8A0, c, hd_code/9A8A0]
+    - [0x9A8E0, c, hd_code/9A8E0]
     - [0x9A9C0, c, hd_code/9A9C0]
     - [0x9AC20, c, hd_code/9AC20]
     - [0x9B020, asm, hd_code/9B020] # handwritten
@@ -182,11 +192,14 @@ segments:
     - [0x9DCE0, c, hd_code/9DCE0]
     - [0x9DDD0, c, hd_code/9DDD0]
     - [0x9E130, c, hd_code/9E130]
+    - [0x9E160, c, hd_code/9E160]
     - [0x9E8E0, c, hd_code/9E8E0]
     - [0x9E980, c, hd_code/9E980]
+    - [0x9EAD0, c, hd_code/9EAD0]
     - [0x9F620, c, hd_code/9F620]
     - [0x9F920, c, hd_code/9F920]
     - [0x9FA30, c, hd_code/9FA30]
+    - [0x9FAF0, c, hd_code/9FAF0]
     - [0x9FC70, c, hd_code/9FC70]
     - [0x9FC80, c, hd_code/9FC80]
     - [0x9FC90, c, hd_code/9FC90]
@@ -199,6 +212,9 @@ segments:
     - [0xA03C0, c, hd_code/A03C0]
     - [0xA04F0, asm, hd_code/A04F0] # handwritten
     - [0xA0500, c, hd_code/A0500]
+    - [0xA15D0, c, hd_code/A15D0]
+    - [0xA1BF0, c, hd_code/A1BF0]
+    - [0xA1C00, c, hd_code/A1C00]
     - [0xA1C20, c, hd_code/A1C20]
     - [0xA2830, asm, hd_code/A2830] # handwritten
     - [0xA2840, c, hd_code/A2840]

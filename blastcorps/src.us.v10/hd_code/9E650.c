@@ -7,34 +7,3 @@
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/_Ldunscale.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/_Genld.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/alSeqGetLoc.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/alSeqSetLoc.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/alSeqGetTicks.s")
-
-void func_802E3F20(void) {
-}
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/func_802E3F28.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/alSeqNextEvent.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/alSeqNewMarker.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/alSeqSecToTicks.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/alSeqTicksToSec.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/__alSeqNextDelta.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/func_802E43A8.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/func_802E43F8.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/alSeqNew.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/alSynSetPriority.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E650/alFilterNew.s")

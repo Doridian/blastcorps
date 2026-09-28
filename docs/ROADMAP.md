@@ -97,7 +97,11 @@ change size (a "shiftable" build), which is how we test it.
       `0x80210690`). pfsHandler.c / bestTimes.c are split at `0x10850`
       (`--split`), with a data-only menu object between them (`.data`
       `0x8020C070`, `.rodata` `0x8020F480`). Every C file owns its `.rodata`
-      except 9570 (an unexplained zero double at `0x8020F088`).
+      except 9570 (a zero double at `0x8020F088`). That slot is most
+      likely padding: `missed_boundaries()` finds another object starting at
+      `0xC450` (its `.rodata` at `0x8020F090`), so 9570.c is two files. The
+      config keeps it joined (`--join` in `regen_code_yaml.sh`) until 9570.c
+      is split, after which 9570 can own its `.rodata`.
 - [ ] `hd_code` for us.v10/jp/eu and `hd_front_end` us.v10/jp/eu: same thing. Needs each
       version's `.rodata` start and microcode-data offset for
       `regen_code_yaml.sh` (the last `.data` is reverb.c's `L_INC`,

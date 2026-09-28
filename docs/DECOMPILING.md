@@ -121,7 +121,8 @@ hd_code's and hd_front_end's (us.v11) `.data`/`.rodata` are split per object. A 
   Unreferenced zero bytes among the early `.rodata` can be emulated the same
   way (`const char D_8020EFA4[12]` in hd_front_end/7800.c). A zero slot in
   the late part (hd_front_end/9570.c, `0x8020F088`) can't, so 9570 stays on
-  asm `rodata`.
+  asm `rodata`; that one is probably the padding before a second object at
+  `0xC450` (see ROADMAP).
 - `.data`: only 45BB0 owns its own so far. Elsewhere, no initialized globals
   or statics. A local initialized aggregate (`char *sp24[] = {...}`) is
   `.data` too, with its strings at that point in `.rodata`.
@@ -181,7 +182,8 @@ If you find more, extend the generator rather than hand-editing a config.
   16 after a jump table, marks an object boundary splat missed.
   `gen_code_yaml.py` finds these itself (`missed_boundaries()`), and takes
   `OBJECT_STARTS` (first functions by name) and `--split` for ones that
-  don't show.
+  don't show. `--join` keeps a found boundary unsplit (for a C file that
+  was decompiled before it was found).
 - One C stub has one optimisation level, and IDO -O3 inlines across the
   whole stub, so a stub holding several original objects needs a `.text`
   split per object. A C file also packs its data with no 16-byte gap

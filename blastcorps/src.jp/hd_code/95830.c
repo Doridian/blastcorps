@@ -19,5 +19,3 @@ void func_802DA130(void) {
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/95830/alAudioFrame.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/95830/alSynNew.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/95830/osPiStartDma.s")
