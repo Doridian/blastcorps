@@ -117,21 +117,33 @@ extern u32 D_802F3AF4;
 extern s32 D_802F3AF8;
 extern s32 D_802F3C04;
 extern u64 D_8030EB90[];
-extern s32 D_8036A8C4;
+
+/* .bss, 0x80368050-0x8036B8B0 (tools/bss_c.py) */
+u8 D_80368050[8];
+OSTime D_80368058;
+OSTime D_80368060;
+OSTime D_80368068;
+UnkAudioMgr D_80368070;
+u8 D_803682F8[0x10];
+u64 D_80368308[0x400];
+UnkDMAState D_8036A308;
+UnkDMABuffer D_8036A318[1];
+u8 D_8036A32C[4];
+u8 D_8036A330[0x588];
+u32 D_8036A8B8;
+u32 D_8036A8BC;
+u32 D_8036A8C0;
+s32 D_8036A8C4;
+UnkIoMesg D_8036A8C8[0x48];
+OSMesgQueue D_8036AE68;
+OSMesg D_8036AE80[0x48];
+s32 D_8036AFA0;
+u8 D_8036AFA4[4];
+u8 D_8036AFA8[8];
+u8 D_8036AFB0[0x900];
+
 extern UnkFxParams D_802F3AFC;
 extern u8 D_80315440[];
-extern u8 D_803682F8[];
-extern UnkAudioMgr D_80368070;
-extern u64 D_80368308[];
-extern UnkDMAState D_8036A308;
-extern UnkDMABuffer D_8036A318[];
-extern UnkIoMesg D_8036A8C8[];
-extern s32 D_8036AFA0;
-extern u32 D_8036A8B8;
-extern u32 D_8036A8BC;
-extern u32 D_8036A8C0;
-extern OSMesgQueue D_8036AE68;
-extern OSMesg D_8036AE80[];
 
 void func_802676A0(UnkSynConfig *c, OSPri pri) {
     s32 i;
@@ -192,13 +204,6 @@ extern u8 D_80367729;
 extern u8 D_8036772A;
 extern s32 D_8036772C;
 extern u8 D_80367730;
-/*
- * This file's own .bss: the u64 halves share one lui only with these defined
- * here.  The addresses still come from the absolute symbols in undefined_syms.
- */
-OSTime D_80368058;
-OSTime D_80368060;
-OSTime D_80368068;
 
 void func_80270E50(void *, void *, OSMesgQueue *, s32, s32);
 void func_80261068(void);

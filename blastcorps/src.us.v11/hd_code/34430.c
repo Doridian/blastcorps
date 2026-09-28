@@ -13,22 +13,9 @@ extern s32 D_802FC060[][2];
 extern Vtx D_802FBEE0[];
 extern Vp D_802FBED0;
 extern s32 D_80358058;
-extern Gfx D_8036D188[];
-extern Mtx D_8036D2C8;
-extern Mtx D_8036D388;
 
-extern Mtx D_8036CC70[][10];
-extern f32 D_8036D174;
-extern s32 D_8036D17C;
-extern f32 D_8036D184;
 extern s32 D_80358070;
 extern u8 D_80367C00;
-extern UnkStruct_8036CB60 D_8036CB60[11];
-extern s32 D_8036CC68;
-extern s32 D_8036CC6C;
-extern s32 D_8036D170;
-extern u8 D_8036D178;
-extern s32 D_8036D180;
 
 void func_80257490(s32, s32);
 void func_80284E54(Gfx *, s32, s32, s32, s32, s32);
@@ -41,6 +28,22 @@ s32 func_8027B87C(f32 dst[4][4], f32 src[4][4]);
 void func_8027A7DC(Gfx **gfxp, s32 arg1, s32 arg2);
 s32 func_8027B5D0(f32 m[4][4], f32 *arg1, f32 *arg2, s32 *arg3);
 void func_8029A7E4(char *, char *, char *, s32);
+
+/* .bss, 0x8036CB60-0x8036D3D0 (tools/bss_c.py) */
+UnkStruct_8036CB60 D_8036CB60[11];
+s32 D_8036CC68;
+s32 D_8036CC6C;
+Mtx D_8036CC70[2][10];
+s32 D_8036D170;
+f32 D_8036D174;
+u8 D_8036D178;
+s32 D_8036D17C;
+s32 D_8036D180;
+f32 D_8036D184;
+Gfx D_8036D188[0x28];
+Mtx D_8036D2C8;
+u8 D_8036D308[0x80];
+Mtx D_8036D388;
 
 void func_80278BF0(Gfx *src, Gfx *end, Gfx **out) {
     Gfx *dst;

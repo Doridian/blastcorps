@@ -29,6 +29,18 @@ typedef struct {
 } UnkStruct_8027690C;
 
 void func_80276D1C(Mtx *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 *arg5, f32 *arg6, f32 *arg7, f32 *arg8);
+
+/* .bss, 0x8036C790-0x8036C8D0 (tools/bss_c.py) */
+UnkStruct_8036C7A0 *D_8036C790;
+UnkStruct_8036C7A0 *D_8036C794;
+s32 D_8036C798;
+UnkStruct_8036C7A0 *D_8036C7A0[10];
+s32 D_8036C7C8;
+u8 D_8036C7CC;
+Vtx D_8036C7D0[1][4];
+u8 D_8036C810[0x40];
+Mtx D_8036C850[2];
+
 void func_8027690C(UnkStruct_8027690C *arg0, f32 x, f32 y, f32 z, s16 *outX, s16 *outY, Mtx *arg6, Mtx *arg7,
                    Mtx *arg8, f32 arg9);
 

@@ -39,8 +39,6 @@ extern s32 D_803643E4;
 extern s32 D_803643E8;
 extern s32 D_80367738;
 extern UnkStruct_802FDB40 D_802FDB40[];
-extern UnkStruct_8039AF00 D_8039AF00[];
-extern s32 D_8039B068;
 extern s16 D_803EDC00;
 extern s16 D_803F8B72;
 
@@ -50,6 +48,11 @@ s32 func_802A0CC8(s32, s32);
 void func_802CE880(s32, s32, s32, s32, s32);
 void func_802CE90C(s32);
 void func_8028C41C(Vtx *, u8, s16, s16, s16);
+
+/* .bss, 0x8039AF00-0x8039B070 (tools/bss_c.py) */
+UnkStruct_8039AF00 D_8039AF00[1];
+u8 D_8039AF18[0x150];
+s32 D_8039B068;
 
 void func_8028C190(UnkStruct_8028C190 *arg0, UnkStruct_8028C190 *arg1) {
     D_8039B068 = 0;

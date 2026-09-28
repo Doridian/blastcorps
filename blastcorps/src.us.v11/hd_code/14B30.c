@@ -14,15 +14,17 @@ extern s32 D_802E8C78;
 extern u8 D_8035805C;
 extern u8 *D_80358070;
 extern u64 D_80364A98;
-extern UnkStruct_80365340 *D_80365340;
-extern Vtx *D_80365348[2];
-extern s32 D_80365350;
 
 void func_8025B070(void);
 void func_802597D8(u8 *arg0, u8 *arg1, s32 arg2);
 s32 func_80259814(u16 *arg0, u16 *arg1);
 void func_8025946C(Gfx **arg0, s32 arg1);
 void func_80259824(Gfx **arg0, s32 arg1);
+
+/* .bss, 0x80365340-0x80365360 (tools/bss_c.py) */
+UnkStruct_80365340 *D_80365340;
+Vtx *D_80365348[2];
+s32 D_80365350;
 
 void func_802592F0(void) {
     s32 sp1C;

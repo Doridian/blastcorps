@@ -21,6 +21,26 @@ make VERSION=us.v11 -C blastcorps compress   # re-deflate into assets/
 make VERSION=us.v11                          # relink the ROM from that
 ```
 
+`compress` also copies the rebuilt `init` into `assets/`, so the ROM is made
+entirely from rebuilt modules. The ROM link places everything from
+`hd_code_text` on by the compressed modules' sizes (`tools/rom_syms.py`), and
+the header checksum is recomputed (`tools/n64crc.py`); for the original
+modules both are no-ops.
+
+A shifted build proves nothing depends on absolute addresses: `SHIFT=1` puts
+`SHIFT_PAD` (default `0x10`) bytes of zeros at the start of hd_code's and
+hd_front_end's `.text` and `.data`, and nothing is sha1-checked:
+
+```
+make VERSION=us.v11 -C blastcorps SHIFT=1 all compress
+make VERSION=us.v11 SHIFT=1
+```
+
+Rebuild without `SHIFT` (both steps) to get the matching assets back.
+`SHIFT_LDFLAGS="--defsym SHIFT_PAD_hd_code_data=0x20 ..."` pads single
+sections (`hd_code`, `hd_code_data`, `hd_code_bss`, and the same for
+`hd_front_end`), which is how to bisect a shift that breaks something.
+
 `asm/` and `assets/` hold one version at a time. Switching `VERSION` without
 `make clean` (both directories) is rejected by the `stamp` target — that guard
 exists because stale output from another version otherwise links in silently and
@@ -39,6 +59,9 @@ The sha1 checks are the arbiter. Everything below is a way to keep them passing.
   everything after it. Asset segments are opaque and may absorb their padding.
   This was a live bug in `blastcorps.us.v10.yaml` (`0x7f9c76` should have been
   `0x7f9c75`).
+- **Every name must still be where it was.** Outside `SHIFT`, each link is
+  followed by `tools/link_syms.py --check`, which fails if any name in the
+  symbol files moved; that points at a layout problem before the sha1 does.
 - **Config offsets are generated, not hand-written.** `tools/gen_build_yaml.py`
   reads the top-level split straight out of the ROM (gzip members are
   self-delimiting); `tools/gen_code_yaml.py` runs splat once for file boundaries
@@ -73,6 +96,10 @@ offsets. That is why the code segments use `subalign: 4` and stage 2 assembles
 with `--no-pad-sections`; either default pads those objects and shifts
 everything after them. The same code also trips splat's file-boundary
 suggestions, so `gen_code_yaml.py` drops any boundary that a branch crosses.
+
+The two pointer-bearing islands are written as `.s` files with those words
+as `.word <symbol>` (`tools/postsplit.py`, `pointer_bins`), so they move with
+the code they point at.
 
 The jp/eu configs used to lump about 0x38000 bytes of real code into these bins
 (the generator ignored bin lengths). It still matched, because a bin is exact,
@@ -128,7 +155,8 @@ IDO quirks that have mattered so far (all `-O1`):
 - m2c drops some early returns; check the function's size.
 - A global defined in the same file is addressed differently from an
   `extern` one (a `u64`'s two halves share one `lui`). Such functions only
-  match once their data is split out of the `bin` and defined in C.
+  match with their data defined in C, in the file that owns it (`.data`,
+  `.rodata` and `.bss` are per object in us.v11).
 - libultra was built with unsigned `char`; this build passes `-signed`.
 - Per-file flags go under "Optimisation Overrides" in `blastcorps/Makefile`
   (`ll.c` is `-mips3 -32`, relabelled mips2 by `tools/elf_mips2.py` so ld
@@ -146,7 +174,7 @@ subsegment, not a `c` file full of `GLOBAL_ASM`. That keeps
 `gen_code_yaml.py` classifies it (see `docs/DECOMPILING.md`). About a third
 of hd_code is Rare's handwritten engine; it can't become matching C.
 
-## Data
+## Data and symbols at link time
 
 Extraction goes through `tools/split.py`, a wrapper around the splat
 submodule that fixes its data output (exact string escapes, `dlabel`, pointer
@@ -158,11 +186,46 @@ its data with a `.data`/`.rodata` subsegment; its remaining `GLOBAL_ASM`
 functions then carry their own rodata into the `.s`, and asm-processor places
 it. `tools/inline_rodata.py` turns a file's `extern` string/float uses into
 literals when switching it to own its `.rodata`. The other
-versions still have one data `bin`; `.bss` is still absolute symbols.
+versions still have one data `bin` and no `.bss` layout.
 
-Splat only symbolizes a `%hi`/`%lo` pair it can match up. A table reached
-through a `lui`/`addiu` pair split by scheduling stays a bare constant, so C
-that names it needs a line in `undefined_syms.<module>.<VERSION>.txt`.
+`.bss` (us.v11) is laid out per object too, in the top-level `bss:` list of
+each module's config (`tools/modmap.py` reads it; splat ignores it):
+`[vram, bss|.bss, <module>/<object>]` in link order, then `[end]`.
+`gen_code_yaml.py --bss` works it out for hd_code and hd_front_end as it does
+`.data`; init's is hand-written. `postsplit.py` writes an asm object's block
+as `asm/data/<module>/<object>.bss.s` and adds a NOLOAD `.<module>_bss`
+section to the linker script. A `.bss` block belongs to a C file, which
+defines its variables itself: `tools/bss_c.py <module> <object>` writes those
+definitions from the block (reference copy in `asm/bss/`), and
+`bss_c.py --check` compares an object with it. Every C file owns its `.bss`;
+only the handwritten objects use `.bss.s`. IDO emits uninitialized globals
+into `.bss` (not COMMON) in the order it first sees them, so the tool puts
+the definitions before any use; see `docs/DECOMPILING.md`.
+
+`postsplit.py` also symbolizes the lui pairs splat leaves as numbers (split
+by scheduling, 64-bit loads, `add`/`addi` in Rare's asm) wherever they point
+into a module or at a ROM segment, and data words (even inside `.byte`
+records) that point into any module. What no object here defines by name goes
+into `module_syms_auto.<module>.<VERSION>.txt` if it lies in a module, else
+`undefined_syms_auto` (only hardware registers, the boot globals at
+`0x800003xx`, segment addresses, ROM offsets and the fixed memory map are left
+there). At link time `tools/link_syms.py` turns all the symbol files into
+`build/<module>.<VERSION>.syms.ld`: names an object defines are dropped, the
+rest of this module's become relative to the nearest symbol below them, other
+modules' come from their layout links (each module is linked twice, see the
+Makefile), ROM segment starts become `rom_syms.py`'s symbols, and the rest
+stays absolute. `build/*.syms.txt` lists which is which. A hand-written line
+in `undefined_syms.<module>.<VERSION>.txt` marked `/* fixed */` stays
+absolute even inside a module (hd_code's allocator limit `0x8020ED00`).
+
+A C file can still name an address splat never saw with a line in
+`undefined_syms.<module>.<VERSION>.txt`; inside a module that is resolved
+like the rest, so don't use constant-address casts for it.
+`tools/find_abs.py <module> <VERSION>` lists what a linked module still
+points at without a relocation (the final links keep `--emit-relocs`); what's
+left is the fixed memory map: the modules' load addresses, the framebuffers
+at `0x80000400` and `0x8021ED00`, `0x80400000`, and the ROM range init leaves
+at `0x803FFFF8`.
 
 ## Conventions
 

@@ -126,15 +126,41 @@ hd_code's and hd_front_end's (us.v11) `.data`/`.rodata` are split per object. A 
   or statics. A local initialized aggregate (`char *sp24[] = {...}`) is
   `.data` too, with its strings at that point in `.rodata`.
 - A global defined in the same file is addressed differently from an extern
-  one: neighbouring globals, or a u64's two halves, share one `lui`. If that
-  global is in `.bss` (hd_code's starts at `0x8030F660`), define it without an
-  initializer. The absolute linker symbol still pins its address; see the
-  `OSTime` block in `hd_code/26570.c`.
+  one: neighbouring globals, or a u64's two halves, share one `lui`. Every C
+  file already defines its own `.bss` (the `/* .bss, ... (tools/bss_c.py) */`
+  block), so such a variable is usually there to use.
+
+`.bss` (us.v11) is per object as well; every C file defines its block's
+variables, the handwritten objects get a `.bss.s`. What mattered:
+
+- IDO puts uninitialized globals in `.bss`, not COMMON, in the order it
+  first sees them, defined or used (an `extern` declaration doesn't count).
+  Definitions after the code that uses them come out in the order of first
+  use, so the block goes before the first function (or the first use in
+  `.data` initializers, or the `#include "src/..."` of a libultra stub).
+- Each variable is aligned by its size: 8 from 8 bytes up, else 4, 2, 1,
+  whatever its type. A `.bss` section is padded to 16. So an unreferenced
+  gap that IDO's alignment wouldn't leave needs a `u8 D_<addr>[n]` (the
+  tool writes those), and an array of unknown size can come out smaller than
+  its gap, with padding after it.
+- `tools/bss_c.py <module> <object>` writes the definitions: declared types
+  where the file (or a header) declares the name, `u8` arrays for the rest.
+  A name inside another variable (a field another object uses as a symbol)
+  isn't defined; `link_syms.py` makes it relative. To give a file a new
+  variable, re-run it after `rm -rf asm` and an extract (the block's
+  reference is `asm/bss/<module>/<object>.bss.s`), or edit the block by
+  hand and run `bss_c.py --check`.
+- Changing a declared type changes the layout: keep the size (or add the
+  padding) so that `--check` and the sha1 stay happy.
 
 Addresses reached through a `lui`/`addiu` pair that splat didn't match up
-(including segment and ROM addresses like `0x02000000` or `0x00487050`) get a
-line in `undefined_syms.<module>.<VERSION>.txt`. Don't use constant-address
-casts or struct-offset tricks for them.
+are symbolized by `tools/postsplit.py` when it can follow the pair; C that
+names one splat never saw gets a line in
+`undefined_syms.<module>.<VERSION>.txt` (including segment and ROM addresses
+like `0x02000000` or `0x00487050`). Inside a module such a name is made
+relative to the symbol below it at link time. Don't use constant-address
+casts or struct-offset tricks for them: a cast doesn't move in a shifted
+build.
 
 ## Display lists
 

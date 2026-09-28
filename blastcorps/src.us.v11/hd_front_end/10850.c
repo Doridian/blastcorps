@@ -76,8 +76,6 @@ extern s32 D_802E8BDC;
 extern UnkStruct_802E8F94 D_802E8F94[];
 extern UnkStruct_80364AF0 D_80364AF0[];
 extern u8 D_80364AEA;
-extern u32 D_8021A828;
-extern u8 D_8021A7E8[];
 
 
 typedef struct {
@@ -135,7 +133,6 @@ extern u16 D_80370C28;
 extern u16 D_80370C2A;
 extern UnkStruct_8036BB24 *D_8036BB24;
 extern UnkStruct_802F8BDC D_802F8BDC[];
-extern u8 D_8021A7D0[];
 extern u8 D_8021A8F0;
 extern u8 D_8039B6B0[];
 extern u8 D_8039C4B8[];
@@ -175,7 +172,6 @@ void func_80264A34(char *, u16, s32);
 
 extern s32 D_80358070;
 extern u8 D_8039C53C[];
-extern char D_80219FD0[][0x20];
 extern char D_8020D800[][4];
 extern char D_8020F2DC[];
 extern char D_8020F308[];
@@ -188,6 +184,16 @@ s32 func_801F76E4(u8 *, s32);
 s32 func_801F6BD0(u8, u64 *);
 void func_802042D0(OSMesgQueue *, s32, void *, s32);
 void func_80204410(OSMesgQueue *, s32, void *, s32);
+
+/* .bss, 0x80219FD0-0x8021A840 (tools/bss_c.py) */
+char D_80219FD0[0x40][0x20];
+u8 D_8021A7D0[0x18];
+u8 D_8021A7E8[0x40];
+u32 D_8021A828;
+u8 D_8021A82C[4];
+u8 D_8021A830[4];
+u8 D_8021A834[4];
+u8 D_8021A838[8];
 
 void func_801F7850(void) {
     UnkStruct_80364AF0 *sp7C;

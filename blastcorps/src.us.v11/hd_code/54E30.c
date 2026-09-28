@@ -16,16 +16,18 @@ extern u8 D_80364AE8;
 extern UnkStruct_80364AF0 D_80364AF0[];
 extern s32 D_80367738;
 /*
- * In hd_code's .bss.  Defined here (without an initializer), so a u64's two
- * halves share one lui; the absolute symbols still give the addresses.
+ * This file's .bss.  Defined here, a u64's two halves share one lui.
  */
+
+/* .bss, 0x803A6AF0-0x803A6B10 (tools/bss_c.py) */
 u64 D_803A6AF0;
 u64 D_803A6AF8;
-extern u8 D_803A6B00;
-extern u8 D_803A6B01;
-extern u8 D_803A6B02;
-extern u8 D_803A6B03;
-extern u8 D_803A6B04;
+u8 D_803A6B00;
+u8 D_803A6B01;
+u8 D_803A6B02;
+u8 D_803A6B03;
+u8 D_803A6B04;
+
 
 u64 func_801ECA50(u8);
 void func_8025B9D0(s32, s32 *);

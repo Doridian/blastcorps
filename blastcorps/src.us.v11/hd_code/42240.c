@@ -4,17 +4,6 @@ extern u8 *D_80358070;
 extern s8 D_80364A68;
 extern s8 D_80364A6A;
 extern s8 D_80364A6C;
-extern u8 *D_8036EC00;
-extern Vtx *D_8036EC04;
-extern Mtx *D_8036EC08;
-extern Mtx *D_8036EC0C;
-extern s16 D_8036EC10;
-extern u8 *D_8036EC14;
-extern Vtx *D_8036EC18;
-extern s16 D_8036EC1C;
-extern u8 *D_8036EC20;
-extern Vtx *D_8036EC24;
-extern s16 D_8036EC28;
 extern s16 D_80367BD6;
 extern u8 D_803EE3B1;
 /* Segment 2 base, reached through a relocation, not a constant. */
@@ -26,6 +15,19 @@ extern s16 D_803EDC00;
 void func_802A0CC8(s32, s32);
 void func_8026A378(s16, s32 *);
 void func_80259DC8(s32, s32 *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+
+/* .bss, 0x8036EC00-0x8036EC30 (tools/bss_c.py) */
+u8 *D_8036EC00;
+Vtx *D_8036EC04;
+Mtx *D_8036EC08;
+Mtx *D_8036EC0C;
+s16 D_8036EC10;
+u8 *D_8036EC14;
+Vtx *D_8036EC18;
+s16 D_8036EC1C;
+u8 *D_8036EC20;
+Vtx *D_8036EC24;
+s16 D_8036EC28;
 
 void func_80286A00(void) {
     D_80364A68 = 1;

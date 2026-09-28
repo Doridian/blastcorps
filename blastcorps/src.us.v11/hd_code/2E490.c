@@ -18,16 +18,10 @@
         gImmp1(pkt, G_RDPHALF_CONT, (_SHIFTL((dsdx), 16, 16) | _SHIFTL((dtdy), 0, 16))); \
     }
 
-extern u8 D_8036C360;
 extern u32 D_803156C4;
 extern u8 D_803B9888;
 extern s32 D_80358070;
-extern s32 D_8036BFE0[][2];
-extern u8 D_8036C1E0[];
 extern u64 D_80364A90;
-extern u8 D_8036C220[];
-extern f32 D_8036C260[];
-extern Vtx *D_8036C368[2][64][2];
 extern u8 D_8035805C;
 
 void func_80257490(s32 *, s32);
@@ -39,6 +33,14 @@ Gfx *func_80272ED8(Gfx *, u8, s16, s16, u8, u8, f32);
 Gfx *func_802742D8(Gfx *, u8, s16, s16, s32, s32, s32, f32, u8);
 Gfx *func_80274868(Gfx *);
 Gfx *func_80274AA4(Gfx *);
+
+/* .bss, 0x8036BFE0-0x8036C770 (tools/bss_c.py) */
+s32 D_8036BFE0[0x40][2];
+u8 D_8036C1E0[0x40];
+u8 D_8036C220[0x40];
+f32 D_8036C260[0x40];
+u8 D_8036C360;
+Vtx *D_8036C368[2][64][2];
 
 void func_80272C50(void) {
     D_8036C360 = 0;

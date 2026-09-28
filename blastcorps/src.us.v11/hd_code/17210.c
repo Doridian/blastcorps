@@ -17,19 +17,6 @@ extern u8 D_803643DB;
 extern u8 D_80364A50;
 extern u64 D_80364A90;
 extern u64 D_80364A98;
-extern s8 D_80365580;
-extern UnkStruct_80365588 D_80365588[];
-extern u8 D_8036698C;
-extern s32 D_80366990;
-extern s32 D_80366994;
-extern s32 D_80366998;
-extern s32 D_8036699C;
-extern s32 D_803669A0;
-extern u16 D_803669A4;
-extern s8 D_803669A6;
-extern s8 D_803669A7;
-extern u8 D_803669A8;
-extern UnkStruct_80365588 *D_803669AC;
 extern s16 D_8036BB1C;
 extern u16 D_80370C30;
 extern s8 D_80370C32;
@@ -56,12 +43,33 @@ typedef struct {
 extern u8 D_006A9F10[];
 extern u8 D_006AD3F0[];
 extern u8 *D_80358070;
-extern u8 *D_803669B0;
-extern s32 D_803669B4;
 extern u16 D_80366A04;
 
 void func_8028B4C4(u8 *, u8 *, s32 *, s32, s32, s32);
 void func_80257490(void *, s32);
+
+/* .bss, 0x80365580-0x803669C0 (tools/bss_c.py) */
+s8 D_80365580;
+u8 D_80365581[1];
+u8 D_80365582[2];
+u8 D_80365584[4];
+UnkStruct_80365588 D_80365588[1];
+u8 D_8036558D[1];
+u8 D_8036558E[2];
+u8 D_80365590[0x13FC];
+u8 D_8036698C;
+s32 D_80366990;
+s32 D_80366994;
+s32 D_80366998;
+s32 D_8036699C;
+s32 D_803669A0;
+u16 D_803669A4;
+s8 D_803669A6;
+s8 D_803669A7;
+u8 D_803669A8;
+UnkStruct_80365588 *D_803669AC;
+u8 *D_803669B0;
+s32 D_803669B4;
 
 void func_8025B9D0(s32 arg0, s32 *arg1) {
     s32 sp34;

@@ -78,3 +78,25 @@ segments:
     # RSP microcode data (DMEM image) for the microcode at the end of .text
     - [0x29690, bin, hd_front_end/29690]
   - [0x29E90] # EOF
+
+# .bss of each object in link order (see split_bss in tools/gen_code_yaml.py),
+# by vram.  splat doesn't read this; tools/split.py writes the asm objects'
+# .bss and adds it to the linker script.
+bss:
+  - [0x80210E90, .bss, hd_front_end/00000]
+  - [0x80215440, .bss, hd_front_end/1C40]
+  - [0x80215960, .bss, hd_front_end/6790]
+  - [0x802159C0, .bss, hd_front_end/7390]
+  - [0x802159D0, .bss, hd_front_end/7800]
+  - [0x80215A70, .bss, hd_front_end/9570]
+  - [0x80217690, .bss, hd_front_end/C450]
+  - [0x802182C0, .bss, hd_front_end/DE70]
+  - [0x80218740, .bss, hd_front_end/E7B0]
+  - [0x80219FD0, .bss, hd_front_end/10850]
+  - [0x8021A840, .bss, hd_front_end/11530]
+  - [0x8021AB70, .bss, hd_front_end/17990]
+  - [0x8021AB80, .bss, hd_front_end/196F0]
+  - [0x8021AB90, .bss, hd_front_end/1A240]
+  - [0x8021ABB0, .bss, hd_front_end/1DC10]
+  - [0x8021ABF0, .bss, hd_front_end/1F5C0]
+  - [0x8021AC30] # end

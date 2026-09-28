@@ -73,10 +73,6 @@ extern UnkStruct_802FE980 D_802FE980[];
 extern u32 D_803156C4;
 extern s32 D_803643E0;
 extern s32 D_803643E8;
-extern f32 D_8039CA10[4][4];
-extern f32 D_8039CA50;
-extern f32 D_8039CA54;
-extern f32 D_8039CA58;
 extern s32 D_802E8BDC;
 extern UnkStruct_802FEDA0 D_802FEDA0[];
 extern void *D_8036DCD8;
@@ -88,6 +84,13 @@ extern s32 D_803F7668;
 extern s32 D_803F766C;
 void func_80294C50(f32 arg0[4][4], s16 *arg1, s16 *arg2, s16 *arg3, s32 *arg4, s32 arg5);
 void func_80294D24(f32 arg0[4][4], s16 *arg1, s16 *arg2, s16 *arg3, s32 *arg4, s32 arg5);
+
+/* .bss, 0x8039CA10-0x8039CA60 (tools/bss_c.py) */
+f32 D_8039CA10[4][4];
+f32 D_8039CA50;
+f32 D_8039CA54;
+f32 D_8039CA58;
+
 void func_80293F84(f32 arg0[4][4], s16 arg1, s16 arg2, s16 *arg3, s16 *arg4, s16 *arg5, UnkStruct_80293F84 *arg6,
                    s32 arg7);
 void func_802936AC(f32 arg0[4][4], s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 *arg5, s16 *arg6, s16 *arg7,

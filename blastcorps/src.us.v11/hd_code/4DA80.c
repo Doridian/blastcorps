@@ -50,7 +50,6 @@ extern u8 D_802E8BE4;
 extern s32 D_802E8BE8;
 extern UnkStruct_802FE3C0 D_802FE3C0[];
 extern void *D_80367738;
-extern UnkStruct_8039C960 D_8039C960[4];
 extern u8 D_803643D9;
 extern s16 D_803A7410;
 extern s16 D_803A7412;
@@ -59,6 +58,9 @@ extern s32 D_803BE710;
 extern u16 D_803BE714;
 extern u16 D_803BE716;
 extern u8 D_803F932D;
+
+/* .bss, 0x8039C960-0x8039CA10 (tools/bss_c.py) */
+UnkStruct_8039C960 D_8039C960[4];
 
 void func_80292240(void) {
     s32 i;

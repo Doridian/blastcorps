@@ -21,7 +21,15 @@ O_FILES := $(foreach file,$(S_FILES),$(BUILD_DIR)/$(file).o) \
 BLASTCORP_EXTRACTED := blastcorps/init.$(VERSION).bin blastcorps/hd_code.$(VERSION).bin blastcorps/hd_front_end.$(VERSION).bin
 
 TARGET = $(BUILD_DIR)/$(BASENAME).$(VERSION)
-LD_SCRIPT = $(BASENAME).$(VERSION).ld
+# splat's script, with the segments from hd_code_text on placed by the size
+# of the compressed modules in assets/ (tools/rom_syms.py).  For the
+# original modules that is where the config has them.
+SPLAT_LD_SCRIPT = $(BASENAME).$(VERSION).ld
+LD_SCRIPT = $(BUILD_DIR)/$(BASENAME).$(VERSION).ld
+
+# SHIFT=1: the modules in assets/ came from a shifted stage-2 build (see
+# blastcorps/Makefile), so the ROM is not sha1-checked.
+SHIFT ?= 0
 
 CROSS = mips-linux-gnu-
 AS = $(CROSS)as
@@ -62,7 +70,12 @@ stamp:
 check: .baserom.$(VERSION).ok
 
 verify: $(TARGET).z64
+ifeq ($(SHIFT),0)
 	@echo "$$(cat $(BASENAME).$(VERSION).sha1)  $(TARGET).z64" | sha1sum --check
+else
+	@$(PYTHON) $(TOOLS_DIR)/n64crc.py $(TARGET).z64 --check
+	@echo "$(TARGET).z64: shifted build, not sha1-checked"
+endif
 
 extract: check stamp assets/init.$(VERSION).bin
 
@@ -99,7 +112,12 @@ assets/init.$(VERSION).bin:
 	@echo "$$(cat $(BASENAME).$(VERSION).sha1)  $<" | sha1sum --check
 	@touch $@
 
-$(TARGET).elf: $(O_FILES)
+$(LD_SCRIPT): $(SPLAT_LD_SCRIPT) $(BIN_FILES) $(TOOLS_DIR)/rom_syms.py
+	@mkdir -p $(BUILD_DIR)
+	@$(PYTHON) $(TOOLS_DIR)/rom_syms.py $(VERSION) --out $(BUILD_DIR)/rom.$(VERSION).ld \
+		--ld-in $(SPLAT_LD_SCRIPT) --ld-out $@
+
+$(TARGET).elf: $(O_FILES) $(LD_SCRIPT)
 	@$(LD) $(LDFLAGS) -o $@
 
 $(BUILD_DIR)/%.s.o: %.s
@@ -111,8 +129,11 @@ $(BUILD_DIR)/%.bin.o: %.bin
 $(TARGET).bin: $(TARGET).elf
 	$(OBJCOPY) $(OBJCOPYFLAGS) $< $@
 
+# init is in the 1 MiB the boot code checksums, and a shifted build changes
+# the ROM offsets in it.
 $(TARGET).z64: $(TARGET).bin
 	@cp $< $@
+	@$(PYTHON) $(TOOLS_DIR)/n64crc.py $@
 
 ### Settings
 .SECONDARY:

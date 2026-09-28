@@ -3,18 +3,20 @@
 extern u8 D_006A8DA0[];
 extern u8 D_006A9F10[];
 extern u8 *D_80358070;
-extern u8 *D_8039CA90;
-extern u8 *D_8039CA94;
-extern u8 *D_8039CA98;
-extern u8 *D_8039CA9C;
-extern s16 D_8039CAA0;
-extern u8 D_8039CAA2;
 extern u16 D_80370C30;
 extern s8 D_80370C32;
 extern s8 D_80370C33;
 
 void func_8028B4C4(u8 *, u8 *, s32 *, s32, s32, s32);
 Gfx *func_8029700C(Gfx *gfx, s16 arg1, s16 arg2);
+
+/* .bss, 0x8039CA90-0x8039CAB0 (tools/bss_c.py) */
+u8 *D_8039CA90;
+u8 *D_8039CA94;
+u8 *D_8039CA98;
+u8 *D_8039CA9C;
+s16 D_8039CAA0;
+u8 D_8039CAA2;
 
 void func_80295E50(void) {
     s32 sp24;

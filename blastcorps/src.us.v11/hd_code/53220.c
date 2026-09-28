@@ -48,7 +48,6 @@ extern u8 D_80364AE8;
 extern u8 D_80364B80[][0x100];
 extern UnkStruct_8036BB10 *D_8036BB24;
 extern u8 D_8039CAB6;
-extern u8 D_8039CAD0;
 
 /* The second line of each entry, in the data after gzip's. */
 extern u16 D_80303B9C[];
@@ -344,6 +343,9 @@ s8 func_80272C5C(u8 *, s32, s32, s32, s32, f32);
 u8 func_8029766C(u8, u8 *);
 u8 func_80297EF8(u8);
 u8 func_80297F74(void);
+
+/* .bss, 0x8039CAD0-0x8039CAE0 (tools/bss_c.py) */
+u8 D_8039CAD0;
 
 void func_802979E0(u8 arg0) {
     UnkStruct_802F8BDC *sp4C = &D_802F8BDC[21];

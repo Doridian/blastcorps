@@ -27,25 +27,27 @@ extern u8 D_006E8980[];
 extern u8 D_006EA850[];
 extern u8 D_006EAB90[];
 extern u8 D_006EC4C0[];
-extern u32 D_802182C0;
-extern u32 D_802182C4;
-extern void *D_802182C8;
-extern void *D_802182CC;
-extern u8 D_802182D0[][0x40];
 extern u8 *D_80358070;
 extern u8 D_8035805C;
 extern u16 D_8035807C;
-extern UnkStruct_801F4E70 *D_80218350;
-extern u8 *D_80218358[];
-extern Gfx *D_80218360[];
-extern u32 D_80218730;
 extern s16 D_8036BB20;
-extern Mtx D_80218370;
-extern Mtx D_802183B0;
-extern Mtx D_802183F0;
-extern u8 D_80218430[];
-extern u16 D_80218734;
 extern UnkStruct_803156F8 D_803156F8[];
+
+/* .bss, 0x802182C0-0x80218740 (tools/bss_c.py) */
+u32 D_802182C0;
+u32 D_802182C4;
+void *D_802182C8;
+void *D_802182CC;
+u8 D_802182D0[2][0x40];
+UnkStruct_801F4E70 *D_80218350;
+u8 *D_80218358[2];
+Gfx *D_80218360[4];
+Mtx D_80218370;
+Mtx D_802183B0;
+Mtx D_802183F0;
+u8 D_80218430[0x300];
+u32 D_80218730;
+u16 D_80218734;
 
 void func_801F4E70(u8 arg0) {
     UnkStruct_801F4E70 *sp34;

@@ -116,14 +116,7 @@ extern s32 D_803643E0;
 extern s32 D_803643E8;
 extern s16 D_8036443C;
 extern s16 D_8036443E;
-extern s16 D_80368034;
-extern s16 D_80368036;
 extern UnkSndBank *D_80367738;
-extern UnkStruct_80367D60 D_80367D60[20];
-extern s32 D_80368038;
-extern s32 D_80368040;
-extern s32 D_80368044;
-extern s32 D_80368048;
 extern s32 D_8036B968;
 extern u8 D_8036EA79;
 extern s32 D_803EF308;
@@ -131,6 +124,17 @@ extern s32 D_803EF30C;
 extern u8 D_803EF32C;
 extern s32 D_803EF6DC;
 extern s32 D_803EF6E4;
+
+/* .bss, 0x80367D60-0x80368050 (tools/bss_c.py) */
+UnkStruct_80367D60 D_80367D60[20];
+u8 D_80368030[4];
+s16 D_80368034;
+s16 D_80368036;
+s32 D_80368038;
+u8 D_8036803C[4];
+s32 D_80368040;
+s32 D_80368044;
+s32 D_80368048;
 
 void func_80264C20(s32 arg0) {
     s32 i;

@@ -22,8 +22,6 @@ extern UnkStruct_802F47B0 D_802F47B0[];
 extern u32 D_80358060;
 extern u8 D_803643D6;
 extern s16 D_8036BB1C;
-extern s32 D_803A6B20;
-extern s32 D_803A6B24;
 
 /* The credits. */
 UnkStruct_80304A90 D_80304A90[] = {
@@ -116,6 +114,10 @@ void func_80260EE0(s32);
 void func_8026AF6C(s32);
 void func_80275270(u64, f32);
 s32 func_802753C0(void);
+
+/* .bss, 0x803A6B20-0x803A6B30 (tools/bss_c.py) */
+s32 D_803A6B20;
+s32 D_803A6B24;
 
 void func_8029A500(void) {
     D_803A6B20 = -0xEF;

@@ -5,8 +5,6 @@
  * __additional_scanline, but they are the game's own: D_8021AB80 holds a
  * 320x240 RGBA16 image that func_80200BE0 draws.
  */
-extern u32 __additional_scanline;
-extern u8 D_8021AB84;
 extern u64 D_80364A90;
 extern u8 *D_80358070;
 extern u8 D_006AD3F0[];
@@ -17,6 +15,10 @@ extern u8 D_006E8980[];
 void func_8028B4C4(u8 *romStart, u8 *dst, u32 *size, u8, u8, u8);
 
 void func_80200714(u8);
+
+/* .bss, 0x8021AB80-0x8021AB90 (tools/bss_c.py) */
+u32 __additional_scanline;
+u8 D_8021AB84;
 
 void func_802006F0(void) {
     func_80200714(D_8021AB84);

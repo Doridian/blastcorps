@@ -110,11 +110,6 @@ extern u8 D_803643D8;
 extern s32 D_80364AA8;
 extern u8 D_80364AE8;
 extern UnkStruct_80364AF0 D_80364AF0[];
-extern u32 D_80366BB8;
-extern u8 D_80366BC0;
-extern u16 D_80366BC2;
-extern u8 D_80366BC4;
-extern u8 D_80366BC5;
 extern ALCSPlayer *D_80367734;
 extern UnkSndBank *D_80367738;
 extern u32 D_80367740;
@@ -128,23 +123,36 @@ extern u32 D_80358060;
 extern u8 *D_80358070;
 extern u64 D_80364A90;
 extern u64 D_80364A98;
-extern s16 D_80366A00;
-extern s16 D_80366A02;
-extern s16 D_80366A04;
-extern s8 D_80366A10;
-extern s8 D_80366A11;
-extern u16 D_80366A12;
-extern s16 D_80366A14;
-extern s16 D_80366A16;
-extern Vtx *D_80366BA0;
-extern u8 *D_80366BA4;
-extern s32 D_80366BA8;
-extern u32 D_80366BB0[];
 extern s16 D_8039CAA0;
-extern u32 D_80366BBC;
 
 extern u32 D_802E8BEC;
-extern s8 D_80366A18;
+
+/* .bss, 0x80366A00-0x80366BD0 (tools/bss_c.py) */
+s16 D_80366A00;
+s16 D_80366A02;
+s16 D_80366A04;
+u8 D_80366A06[2];
+u8 D_80366A08[8];
+s8 D_80366A10;
+s8 D_80366A11;
+u16 D_80366A12;
+s16 D_80366A14;
+s16 D_80366A16;
+s8 D_80366A18;
+u8 D_80366A19[1];
+u8 D_80366A1A[2];
+u8 D_80366A1C[4];
+u8 D_80366A20[0x180];
+Vtx *D_80366BA0;
+u8 *D_80366BA4;
+s32 D_80366BA8;
+u32 D_80366BB0[2];
+u32 D_80366BB8;
+u32 D_80366BBC;
+u8 D_80366BC0;
+u16 D_80366BC2;
+u8 D_80366BC4;
+u8 D_80366BC5;
 
 void func_8025C5D0(void) {
     switch (D_802E8BEC) {

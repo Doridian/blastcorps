@@ -28,24 +28,6 @@ extern u8 D_802E8E40[];
 extern u16 D_802E8E7C[];
 extern s32 D_802E8EB4[][6];
 extern s32 D_803156C4;
-extern UnkStruct_80366C30 D_80366C30[];
-extern UnkStruct_80366C30 *D_80367400;
-extern s32 D_80367408[];
-extern u8 *D_80367510;
-extern ALSeqFile *D_80367514;
-extern ALCSeq D_80367518[];
-extern u8 D_80367708;
-extern f32 D_8036770C;
-extern f32 D_80367710;
-extern f32 D_80367714;
-extern u8 D_80367728;
-extern u8 D_80367729;
-extern u8 D_8036772A;
-extern s32 D_8036772C;
-extern u8 D_80367730;
-extern ALCSPlayer *D_80367734;
-extern s32 D_80367738;
-extern s32 D_80367740;
 
 void func_8028B4C4(s32, u8 *, s32 *, s32, s32, s32);
 void func_8029A7E4(char *, ...);
@@ -67,6 +49,31 @@ void func_8026101C(void);
 void func_80261570(f32 arg0);
 void func_80261FB0(u8 arg0);
 void func_80261E9C(u64 arg0);
+
+/* .bss, 0x80366C30-0x80367B50 (tools/bss_c.py) */
+UnkStruct_80366C30 D_80366C30[4];
+UnkStruct_80366C30 *D_80367400;
+s32 D_80367408[0x42];
+u8 *D_80367510;
+ALSeqFile *D_80367514;
+ALCSeq D_80367518[2];
+u8 D_80367708;
+f32 D_8036770C;
+f32 D_80367710;
+f32 D_80367714;
+ALHeap D_80367718;
+u8 D_80367728;
+u8 D_80367729;
+u8 D_8036772A;
+s32 D_8036772C;
+u8 D_80367730;
+ALCSPlayer *D_80367734;
+s32 D_80367738;
+ALBank *D_8036773C;
+s32 D_80367740;
+u8 D_80367744[4];
+u8 D_80367748[8];
+u8 D_80367750[0x400];
 
 void func_80260C20(u8 arg0, f32 arg1) {
     s32 sp24;

@@ -128,13 +128,7 @@ typedef struct {
 
 extern Vtx D_802FA820[2][4];
 extern UnkStruct_802FA8A0 D_802FA8A0;
-extern u8 D_8036BFC5;
-extern f32 D_8036BFC8;
-extern f32 D_8036BFCC;
-extern f32 D_8036BFD0;
 extern UnkStruct_802FA280 D_802FA280[][2];
-extern f32 D_8036BFC0;
-extern u8 D_8036BFC4;
 extern u32 D_803BE718;
 extern u32 D_803BE71C;
 extern u16 D_803BE720;
@@ -143,6 +137,14 @@ extern UnkStruct_8036BB10 *D_8036BB10;
 extern u8 *D_80358070;
 
 void func_802A0B00(u16, s32);
+
+/* .bss, 0x8036BFC0-0x8036BFE0 (tools/bss_c.py) */
+f32 D_8036BFC0;
+u8 D_8036BFC4;
+u8 D_8036BFC5;
+f32 D_8036BFC8;
+f32 D_8036BFCC;
+f32 D_8036BFD0;
 
 Gfx *func_80271FD0(Gfx *arg0, s32 arg1, u16 arg2, s16 arg3, s16 arg4, s32 *arg5) {
     Gfx *gfx;

@@ -87,12 +87,6 @@ extern char *D_802084D0[];
 extern u16 *D_802084E0[];
 extern UnkStruct_8020C070 D_8020C070[];
 extern UnkStruct_8020D810 D_8020D810[];
-extern u16 D_802159D0;
-extern u8 *D_802159D4;
-extern u8 *D_802159D8;
-extern u16 D_802159DC;
-extern f32 D_802159E0;
-extern f32 D_802159E4;
 extern Mtx D_802182D0[];
 extern s32 D_802E8BDC;
 extern u8 D_802E8C44[];
@@ -147,6 +141,16 @@ extern u8 D_8036EA99;
 extern u8 D_8036EA9A;
 extern u8 D_8036EA9B;
 extern u16 D_8036EA9C;
+
+/* .bss, 0x802159D0-0x80215A70 (tools/bss_c.py) */
+u16 D_802159D0;
+u8 *D_802159D4;
+u8 *D_802159D8;
+u16 D_802159DC;
+f32 D_802159E0;
+f32 D_802159E4;
+u8 D_802159E8[8];
+u8 D_802159F0[0x80];
 
 u8 func_801EE800(u8 *arg0, u8 arg1, u8 arg2) {
     UnkStruct_80364AF0 *sp3C;

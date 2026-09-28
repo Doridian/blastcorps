@@ -130,9 +130,36 @@ HD_CODE_LD_SCRIPT = hd_code.$(VERSION).ld
 HD_FRONT_END_TARGET = $(BUILD_DIR)/hd_front_end.$(VERSION)
 HD_FRONT_END_LD_SCRIPT = hd_front_end.$(VERSION).ld
 
-INIT_LDFLAGS    = -T $(INIT_LD_SCRIPT) -Map $(INIT_TARGET).map -T undefined_syms_auto.init.$(VERSION).txt -T undefined_funcs_auto.init.$(VERSION).txt -T undefined_syms.init.$(VERSION).txt --no-check-sections
-HD_CODE_LDFLAGS = -T $(HD_CODE_LD_SCRIPT) -Map $(HD_CODE_TARGET).map -T undefined_syms_auto.hd_code.$(VERSION).txt -T undefined_funcs_auto.hd_code.$(VERSION).txt -T undefined_syms.hd_code.$(VERSION).txt --no-check-sections
-HD_FRONT_END_LDFLAGS = -T $(HD_FRONT_END_LD_SCRIPT) -Map $(HD_FRONT_END_TARGET).map -T undefined_syms_auto.hd_front_end.$(VERSION).txt -T undefined_funcs_auto.hd_front_end.$(VERSION).txt -T undefined_syms.hd_front_end.$(VERSION).txt --no-check-sections
+# The symbol files splat and we write give every name its address in the
+# original ROM.  tools/link_syms.py turns them into what each link uses (see
+# there): names the module's objects define are dropped, addresses inside
+# the module become relative to its symbols, addresses in another module are
+# looked up in that module's layout link, ROM offsets of segments become the
+# top-level ROM's symbols, and the fixed memory map stays as it is.
+SYMFILES = undefined_syms_auto.$(1).$(VERSION).txt module_syms_auto.$(1).$(VERSION).txt undefined_funcs_auto.$(1).$(VERSION).txt undefined_syms.$(1).$(VERSION).txt
+LINK_SYMS = $(PYTHON) $(TOOLS_DIR)/link_syms.py
+
+# ROM positions: of the assets (fixed), and of everything including the
+# compressed modules as built (for init's boot code).
+ROM_SYMS_FIXED = $(BUILD_DIR)/rom_fixed.$(VERSION).ld
+ROM_SYMS       = $(BUILD_DIR)/rom.$(VERSION).ld
+GZ_FILES       = $(BUILD_DIR)/hd_code_text.$(VERSION).gz $(BUILD_DIR)/hd_code_data.$(VERSION).gz \
+                 $(BUILD_DIR)/hd_front_end_text.$(VERSION).gz $(BUILD_DIR)/hd_front_end_data.$(VERSION).gz
+
+# SHIFT=1: a build that is laid out differently from the original, to show
+# that nothing depends on absolute addresses.  SHIFT_PAD bytes of padding
+# (zeros, which are nops) go at the start of hd_code's and hd_front_end's
+# .text and .data; everything after moves.  Nothing is sha1-checked.
+# (--defsym has to come before the scripts that test it with DEFINED().)
+SHIFT ?= 0
+ifneq ($(SHIFT),0)
+SHIFT_PAD     ?= 0x10
+SHIFT_LDFLAGS := --defsym SHIFT_PAD=$(SHIFT_PAD)
+endif
+
+INIT_LDFLAGS    = --emit-relocs -T $(INIT_LD_SCRIPT) -Map $(INIT_TARGET).map -T $(BUILD_DIR)/init.$(VERSION).syms.ld -T $(ROM_SYMS) --no-check-sections
+HD_CODE_LDFLAGS = $(SHIFT_LDFLAGS) --emit-relocs -T $(HD_CODE_LD_SCRIPT) -Map $(HD_CODE_TARGET).map -T $(BUILD_DIR)/hd_code.$(VERSION).syms.ld -T $(ROM_SYMS_FIXED) --no-check-sections
+HD_FRONT_END_LDFLAGS = $(SHIFT_LDFLAGS) --emit-relocs -T $(HD_FRONT_END_LD_SCRIPT) -Map $(HD_FRONT_END_TARGET).map -T $(BUILD_DIR)/hd_front_end.$(VERSION).syms.ld -T $(ROM_SYMS_FIXED) --no-check-sections
 
 
 ### Optimisation Overrides
@@ -177,22 +204,29 @@ hd_code: dirs $(HD_CODE_TARGET).bin
 
 hd_front_end: dirs $(HD_FRONT_END_TARGET).bin
 
+ifeq ($(SHIFT),0)
+VERIFY = echo "$$(cat $(1).$(VERSION).sha1)  $(BUILD_DIR)/$(1).$(VERSION).bin" | sha1sum --check
+else
+VERIFY = echo "$(BUILD_DIR)/$(1).$(VERSION).bin: shifted by $(SHIFT_PAD), not checked"
+endif
+
 verify_init: init
-	@echo "$$(cat init.$(VERSION).sha1)  $(INIT_TARGET).bin" | sha1sum --check
+	@$(call VERIFY,init)
 
 verify_hd_code: hd_code
-	@echo "$$(cat hd_code.$(VERSION).sha1)  $(HD_CODE_TARGET).bin" | sha1sum --check
+	@$(call VERIFY,hd_code)
 
 verify_hd_front_end: hd_front_end
-	@echo "$$(cat hd_front_end.$(VERSION).sha1)  $(HD_FRONT_END_TARGET).bin" | sha1sum --check
+	@$(call VERIFY,hd_front_end)
 
 extract: stamp
 	$(PYTHON) $(TOOLS_DIR)/split.py init.$(VERSION).yaml
 	$(PYTHON) $(TOOLS_DIR)/split.py hd_code.$(VERSION).yaml
 	$(PYTHON) $(TOOLS_DIR)/split.py hd_front_end.$(VERSION).yaml
 
-compress: $(BUILD_DIR)/hd_code_text.$(VERSION).gz $(BUILD_DIR)/hd_code_data.$(VERSION).gz \
-          $(BUILD_DIR)/hd_front_end_text.$(VERSION).gz $(BUILD_DIR)/hd_front_end_data.$(VERSION).gz
+compress: $(GZ_FILES) $(INIT_TARGET).bin
+	@echo "Replacing extracted init..."
+	cp $(INIT_TARGET).bin ../assets/init.$(VERSION).bin
 	@echo "Replacing extracted hd_code..."
 	cp $(BUILD_DIR)/hd_code_text.$(VERSION).gz ../assets/hd_code_text.$(VERSION).bin
 	cp $(BUILD_DIR)/hd_code_data.$(VERSION).gz ../assets/hd_code_data.$(VERSION).bin
@@ -211,14 +245,64 @@ clean:
 
 ### Recipes
 
-$(BUILD_DIR)/init.$(VERSION).elf: $(INIT_O_FILES)
+# Relink when SHIFT changes, though no object does.
+$(BUILD_DIR)/shift.stamp: FORCE
+	@mkdir -p $(BUILD_DIR)
+	@if [ "$$(cat $@ 2>/dev/null)" != "$(SHIFT) $(SHIFT_LDFLAGS)" ]; then echo "$(SHIFT) $(SHIFT_LDFLAGS)" > $@; fi
+
+$(ROM_SYMS_FIXED): ../blastcorps.$(VERSION).yaml $(TOOLS_DIR)/rom_syms.py
+	@mkdir -p $(BUILD_DIR)
+	cd .. && $(PYTHON) tools/rom_syms.py $(VERSION) --fixed-only --out blastcorps/$@
+
+$(ROM_SYMS): ../blastcorps.$(VERSION).yaml $(TOOLS_DIR)/rom_syms.py $(GZ_FILES)
+	cd .. && $(PYTHON) tools/rom_syms.py $(VERSION) --out blastcorps/$@ \
+		$(foreach m,hd_code_text hd_code_data hd_front_end_text hd_front_end_data,--module $(m)=blastcorps/$(BUILD_DIR)/$(m).$(VERSION).gz)
+
+# Each module is linked twice.  The layout link places everything with other
+# modules' symbols at their original addresses; the final link takes them
+# from the other modules' layout links.  (A module's layout doesn't depend on
+# those values, so there is no cycle.)  Outside SHIFT, every name must still
+# be at its original address.
+LINK_DEPS = $(TOOLS_DIR)/link_syms.py $(TOOLS_DIR)/modmap.py $(BUILD_DIR)/shift.stamp
+ifeq ($(SHIFT),0)
+CHECK_SYMS = $(LINK_SYMS) --check $@ $(1) $(VERSION) $(call SYMFILES,$(1))
+endif
+
+$(BUILD_DIR)/init.$(VERSION).syms.ld: $(call SYMFILES,init) $(INIT_O_FILES) $(ROM_SYMS) $(LINK_DEPS)
+	@$(LINK_SYMS) init $(VERSION) -o $@ --rom $(ROM_SYMS) --report $(@:.ld=.txt) $(call SYMFILES,init)
+
+$(BUILD_DIR)/%.$(VERSION).layout.ld: $(ROM_SYMS_FIXED) $(LINK_DEPS)
+	@$(LINK_SYMS) $* $(VERSION) -o $@ --rom $(ROM_SYMS_FIXED) $(call SYMFILES,$*)
+
+$(BUILD_DIR)/%.$(VERSION).layout.elf: $(BUILD_DIR)/%.$(VERSION).layout.ld
+	@$(LD) $(SHIFT_LDFLAGS) -T $*.$(VERSION).ld -T $< -T $(ROM_SYMS_FIXED) --no-check-sections -o $@
+
+$(BUILD_DIR)/hd_code.$(VERSION).layout.ld: $(call SYMFILES,hd_code) $(HD_CODE_O_FILES)
+$(BUILD_DIR)/hd_front_end.$(VERSION).layout.ld: $(call SYMFILES,hd_front_end) $(HD_FRONT_END_O_FILES)
+$(BUILD_DIR)/hd_code.$(VERSION).layout.elf: $(HD_CODE_O_FILES)
+$(BUILD_DIR)/hd_front_end.$(VERSION).layout.elf: $(HD_FRONT_END_O_FILES)
+
+$(BUILD_DIR)/hd_code.$(VERSION).syms.ld: $(call SYMFILES,hd_code) $(HD_CODE_O_FILES) $(ROM_SYMS_FIXED) \
+                                        $(BUILD_DIR)/hd_front_end.$(VERSION).layout.elf $(LINK_DEPS)
+	@$(LINK_SYMS) hd_code $(VERSION) -o $@ --rom $(ROM_SYMS_FIXED) --report $(@:.ld=.txt) \
+		--layout hd_front_end=$(BUILD_DIR)/hd_front_end.$(VERSION).layout.elf $(call SYMFILES,hd_code)
+
+$(BUILD_DIR)/hd_front_end.$(VERSION).syms.ld: $(call SYMFILES,hd_front_end) $(HD_FRONT_END_O_FILES) $(ROM_SYMS_FIXED) \
+                                             $(BUILD_DIR)/hd_code.$(VERSION).layout.elf $(LINK_DEPS)
+	@$(LINK_SYMS) hd_front_end $(VERSION) -o $@ --rom $(ROM_SYMS_FIXED) --report $(@:.ld=.txt) \
+		--layout hd_code=$(BUILD_DIR)/hd_code.$(VERSION).layout.elf $(call SYMFILES,hd_front_end)
+
+$(BUILD_DIR)/init.$(VERSION).elf: $(INIT_O_FILES) $(BUILD_DIR)/init.$(VERSION).syms.ld
 	@$(LD) $(INIT_LDFLAGS) -o $@
+	@$(call CHECK_SYMS,init)
 
-$(BUILD_DIR)/hd_code.$(VERSION).elf: $(HD_CODE_O_FILES)
+$(BUILD_DIR)/hd_code.$(VERSION).elf: $(HD_CODE_O_FILES) $(BUILD_DIR)/hd_code.$(VERSION).syms.ld
 	@$(LD) $(HD_CODE_LDFLAGS) -o $@
+	@$(call CHECK_SYMS,hd_code)
 
-$(BUILD_DIR)/hd_front_end.$(VERSION).elf: $(HD_FRONT_END_O_FILES)
+$(BUILD_DIR)/hd_front_end.$(VERSION).elf: $(HD_FRONT_END_O_FILES) $(BUILD_DIR)/hd_front_end.$(VERSION).syms.ld
 	@$(LD) $(HD_FRONT_END_LDFLAGS) -o $@
+	@$(call CHECK_SYMS,hd_front_end)
 
 # IDO can't write dependency files, so list the headers with the host cpp and
 # add the .s files each C file pulls in through GLOBAL_ASM.  Otherwise
@@ -303,7 +387,7 @@ $(BUILD_DIR)/hd_front_end_data.$(VERSION).bin: $(BUILD_DIR)/hd_front_end.$(VERSI
 
 ### Settings
 .SECONDARY:
-.PHONY: all clean default dirs extract compress stamp \
+.PHONY: all clean default dirs extract compress stamp FORCE \
         init hd_code hd_front_end \
         verify_init verify_hd_code verify_hd_front_end
 SHELL = /bin/bash -e -o pipefail

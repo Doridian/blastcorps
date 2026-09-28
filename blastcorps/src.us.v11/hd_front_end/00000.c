@@ -68,6 +68,29 @@ void func_802025D0(u8, u32);
 void func_80259450(void);
 void func_80259C24(Gfx **, UnkStruct_803156F8 *);
 void func_80259CCC(UnkStruct_803156F8 *, u8 *, u16 *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+
+/* .bss, 0x80210E90-0x80215440 (tools/bss_c.py) */
+UnkStruct_80210E90 *D_80210E90[0x14];
+u8 *D_80210EE0[0x13][2];
+Gfx *D_80210F78[0x13][4];
+Mtx D_802110A8[0x13];
+Mtx D_80211568[0x13];
+Mtx D_80211A28;
+s16 D_80211A68;
+s16 D_80211A6A;
+f32 D_80211A70[0x14];
+u8 D_80211AC0[0x13][0x300];
+u8 D_802153C0[0x14];
+f32 D_802153D4;
+f32 D_802153D8;
+f32 D_802153DC;
+f32 D_802153E0;
+u16 D_802153E4;
+u16 D_802153E6;
+s32 D_802153E8;
+s32 D_802153EC;
+u32 D_802153F0[0x14];
+
 void func_80259DC8(UnkStruct_803156F8 *, u8 *, u16 *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32,
                    s32, s32, s32);
 void func_80260650(s32, s32, s32);

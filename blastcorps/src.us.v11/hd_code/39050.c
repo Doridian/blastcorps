@@ -53,19 +53,8 @@ typedef struct {
 extern UnkStruct_802FC3F0 D_802FC3F0[];
 extern s16 D_802FC48C[];
 extern u8 *D_80358070;
-extern Vtx *D_8036DCA0[];
 void func_802802D4(Vtx *arg0, s32 arg1, s32 arg2, s32 arg3);
 void func_8028072C(Vtx *arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, s16 arg6);
-extern Vtx *D_8036DCA8[2];
-extern s32 D_8036DCB0;
-extern u8 *D_8036DCB8[3];
-extern Gfx *D_8036DCC8[2];
-extern u8 D_8036DCD0;
-extern s16 D_8036DCD2;
-extern u8 D_8036DCD4;
-extern u8 D_8036DCD5;
-extern u8 D_8036DCD6;
-extern u8 D_8036DCD7;
 extern u8 D_802E8BD0;
 
 s32 func_802A0CC8(s32, s32);
@@ -102,11 +91,6 @@ typedef struct {
 } UnkStruct_8036DCE0; /* size = 0xC */
 
 extern UnkStruct_802FC494 D_802FC494[];
-extern UnkStruct_8036DCE0 D_8036DCE0[];
-extern Vtx D_8036DD70[2][12][4];
-extern u8 D_8036E370;
-extern s32 D_8036E374;
-extern u8 *D_8036E378;
 
 s32 func_8026A828(s32, s32);
 void func_802CE65C(s32, s32, s16, s16);
@@ -137,17 +121,6 @@ extern s32 D_803643E0;
 extern s32 D_803643E4;
 extern s32 D_803643E8;
 extern s32 D_80367738;
-extern s32 D_8036DCD8;
-extern UnkStruct_8036E380 D_8036E380[];
-extern s32 D_8036E4C0;
-extern u8 *D_8036E4C4;
-extern s16 D_8036E4C8;
-extern u8 D_8036E4CA;
-extern u8 *D_8036E4CC;
-extern s16 D_8036E4D0;
-extern u8 D_8036E4D2;
-extern u8 D_8036E4D3;
-extern u32 D_8036E4D4;
 extern Vtx D_802FC568[];
 extern s16 D_80367BD6;
 /* Segment 2 base, reached through a relocation, not a constant. */
@@ -156,8 +129,6 @@ extern Gfx D_802FFF38[];
 extern Gfx D_80300A68[];
 extern u32 D_803156C4;
 extern u8 D_803643D6;
-extern Mtx D_8036E4D8[][2];
-extern f32 D_8036E5D8[];
 extern s32 D_803EF6DC;
 extern s32 D_803EF6E0;
 extern s32 D_803EF6E4;
@@ -171,6 +142,40 @@ s32 func_8029DBF0(u8);
 void func_802AC1A0(s32);
 
 void func_8027DA10(s32 arg0, s32 arg1, s32 arg2);
+
+/* .bss, 0x8036DCA0-0x8036E5E0 (tools/bss_c.py) */
+Vtx *D_8036DCA0[2];
+Vtx *D_8036DCA8[2];
+s32 D_8036DCB0;
+u8 *D_8036DCB8[3];
+Gfx *D_8036DCC8[2];
+u8 D_8036DCD0;
+s16 D_8036DCD2;
+u8 D_8036DCD4;
+u8 D_8036DCD5;
+u8 D_8036DCD6;
+u8 D_8036DCD7;
+s32 D_8036DCD8;
+UnkStruct_8036DCE0 D_8036DCE0[1];
+u8 D_8036DCEC[4];
+u8 D_8036DCF0[0x80];
+Vtx D_8036DD70[2][12][4];
+u8 D_8036E370;
+s32 D_8036E374;
+u8 *D_8036E378;
+UnkStruct_8036E380 D_8036E380[1];
+u8 D_8036E3D0[0xF0];
+s32 D_8036E4C0;
+u8 *D_8036E4C4;
+s16 D_8036E4C8;
+u8 D_8036E4CA;
+u8 *D_8036E4CC;
+s16 D_8036E4D0;
+u8 D_8036E4D2;
+u8 D_8036E4D3;
+u32 D_8036E4D4;
+Mtx D_8036E4D8[2][2];
+f32 D_8036E5D8[2];
 
 void func_8027D810(s32 arg0) {
     switch (arg0) {

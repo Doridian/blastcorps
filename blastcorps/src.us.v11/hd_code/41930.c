@@ -25,7 +25,6 @@ extern u8 D_80364B80[][0x100];
 extern u8 D_80364B81[][0x100];
 extern UnkStruct_802E8F38 D_802E8F38[];
 extern UnkStruct_8020C070 D_8020C070[];
-extern char D_8036EBA0[];
 extern s32 D_80358060;
 
 void func_801ECC8C(void);
@@ -33,6 +32,9 @@ void func_80200714(u8);
 void func_80255DC8(void);
 void func_80260C20(u8, f32);
 void func_8026AF6C(s32);
+
+/* .bss, 0x8036EBA0-0x8036EC00 (tools/bss_c.py) */
+char D_8036EBA0[0x60];
 
 void func_802860F0(void) {
     u8 sp37;

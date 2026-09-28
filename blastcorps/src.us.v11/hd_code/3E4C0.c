@@ -21,7 +21,6 @@ extern Vtx D_802FD830[][12];
 extern f32 D_802FD9B0;
 extern u8 D_803643DB;
 extern f32 D_80364414;
-extern Mtx D_8036E5E0[];
 extern s16 D_803F767C;
 extern s16 D_803F7680;
 
@@ -29,6 +28,9 @@ s32 func_802AD7D4(s32);
 s32 func_8026A610(s32, s32, s32, s32);
 void func_802C1B9C(void);
 f32 func_80284ADC();
+
+/* .bss, 0x8036E5E0-0x8036E660 (tools/bss_c.py) */
+Mtx D_8036E5E0[2];
 
 void func_80282C80(Gfx **arg0, Mtx *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     Gfx *gfx;

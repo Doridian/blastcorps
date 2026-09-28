@@ -4,11 +4,6 @@
 
 extern f32 D_80364414;
 extern s16 D_8036443C;
-extern u16 D_80370C70;
-extern s16 D_80370C72;
-extern s8 D_80370C74;
-extern u8 D_80370C75;
-extern s16 D_80370C76;
 extern s16 D_803ED400;
 extern s16 D_803ED408;
 extern u8 D_803ED40A;
@@ -19,6 +14,15 @@ s32 func_802AD7D4(s32);
 u16 func_8028BA1C(s16 arg0, s16 arg1, s8 *arg2, u8 arg3);
 f32 func_8028BBF4(s16 arg0, s16 arg1, s16 arg2, s16 arg3);
 f32 func_8028BD88(f32 arg0, f32 arg1);
+
+/* .bss, 0x80370C70-0x8039AF00 (tools/bss_c.py) */
+u16 D_80370C70;
+s16 D_80370C72;
+s8 D_80370C74;
+u8 D_80370C75;
+s16 D_80370C76;
+u8 D_80370C78[8];
+u8 D_80370C80[0x2A280];
 
 void func_8028B720(void) {
     D_80370C75 = 0;

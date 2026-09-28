@@ -22,6 +22,22 @@ typedef struct {
 void func_801F4E70(s32);
 Gfx *func_801F4FBC(UnkStruct_803156F8 *, Gfx *);
 void func_80259CCC(UnkStruct_803156F8 *, u8 *, u16 *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+
+/* .bss, 0x80215960-0x802159C0 (tools/bss_c.py) */
+s32 D_80215960;
+s32 D_80215964;
+f32 D_80215968;
+f32 D_8021596C;
+s32 D_80215970;
+s16 D_80215974;
+s16 D_80215976;
+s32 D_80215978;
+u8 D_8021597C[3];
+u8 D_8021597F[1];
+u8 D_80215980[0x18];
+u8 D_80215998[0x18];
+s16 D_802159B0;
+
 void func_80259DC8(UnkStruct_803156F8 *, u8 *, u16 *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32,
                    s32, s32, s32);
 s32 func_8025B300(u8 *);

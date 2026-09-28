@@ -30,7 +30,12 @@ config written to <module>.<version>.yaml and reading back what it found:
    this pass repeats until no new boundary turns up.  --join keeps a found
    boundary unsplit.  Without --rodata, .data and .rodata stay one bin.
 
-5. The config.  With --c, code subsegments are `c` (one GLOBAL_ASM file per
+5. .bss (split_bss, only with --bss).  The references into .bss from the
+   same all-asm run, and the .data words that point there, lay out one .bss
+   block per object in link order, as for .data.  They go in the config's
+   top-level `bss:` list, which splat ignores and tools/split.py reads.
+
+6. The config.  With --c, code subsegments are `c` (one GLOBAL_ASM file per
    function under asm/nonmatchings) wherever both ends are 16-byte aligned,
    the alignment an IDO object gets; handwritten code and code between data
    islands (which starts or ends elsewhere) stays `asm`.  A data subsegment
@@ -301,6 +306,28 @@ def split_data(names, refs, pairs, blob, vram, data, rodata, tail, text_end):
     return sorted(out, key=lambda x: (x[1] == "rodata", x[0]))
 
 
+def split_bss(names, refs, pairs, layout, blob, vram, data, rodata, lo, hi):
+    """Per-object .bss blocks: [(vram, name)] in address order.
+
+    Laid out like .data (layout_blocks): the code's references into [lo, hi)
+    choose the chain, lui pairs splat left as numbers and .data words that
+    point into .bss (credited to the object whose .data holds them) only
+    anchor and widen blocks.  layout is split_data's, for those owners."""
+    word = be_word(blob, vram)
+    index = {n: i for i, n in enumerate(names)}
+    dstarts = sorted((off + vram, name) for off, kind, name in layout if kind == "data")
+    ptrs = []
+    for a in range(vram + data, vram + rodata, 4):
+        w = word(a)
+        if lo <= w < hi:
+            owner = next((n for s, n in reversed(dstarts) if s <= a), None)
+            if owner in index:
+                ptrs.append((index[owner], w))
+    blocks = layout_blocks(len(names), lo, hi, [(i, a) for i, a, _ in refs],
+                           [(i, a) for i, a, _ in pairs], ptrs)
+    return [(start, names[i]) for start, i, _, _ in blocks]
+
+
 def missed_boundaries(layout, names, by_func, blob, vram, text_end, compiled):
     """Module offsets of .text boundaries splat missed, found in .rodata.
 
@@ -551,9 +578,10 @@ class Module:
     def data_bin(self):
         return [f"    - [0x{self.data:X}, bin, {self.mod}/{self.mod}_data] # .data"]
 
-    def write(self, starts, data_lines, c=False, eof=""):
+    def write(self, starts, data_lines, c=False, eof="", tail=()):
         lines = self.header() + self.text_lines(starts, c) + data_lines
         lines.append(f"  - [0x{self.args.end:X}]{eof}")
+        lines += tail
         self.cfg.write_text("\n".join(lines) + "\n")
 
     def splat(self, starts, data_lines):
@@ -712,13 +740,15 @@ def main():
                     "object OBJ's, or a data-only object's")
     ap.add_argument("--join", action="append", default=[], type=hexarg,
                     help="a boundary found in .rodata that the config leaves unsplit")
+    ap.add_argument("--bss", metavar="VRAM:END", type=lambda s: tuple(int(x, 16) for x in s.split(":")),
+                    help="the module's .bss (vram range); lays it out per object (needs --rodata)")
     args = ap.parse_args()
 
     m = Module(args)
     # Data the C owns already (.data/.rodata subsegments), by (offset, kind, name).
     owned = set()
     if m.cfg.exists():
-        for o in re.finditer(r"- \[0x([0-9A-F]+), \.(data|rodata), (\S+)\]", m.cfg.read_text()):
+        for o in re.finditer(r"- \[0x([0-9A-F]+), \.(data|rodata|bss), (\S+)\]", m.cfg.read_text()):
             owned.add((int(o.group(1), 16), o.group(2), o.group(3)))
 
     splits = split_handwritten(m, find_boundaries(m))
@@ -737,7 +767,27 @@ def main():
             data_lines += [f"    # {line}" for line in textwrap.wrap(note, 72)]
             data_lines.append(f"    - [0x{off:X}, bin, {m.mod}/{off:X}]")
 
-    m.write(starts, data_lines, c=args.c, eof=" # EOF")
+    bss_lines = []
+    if args.bss is not None and args.rodata is not None:
+        lo, hi = args.bss
+        symbols = {}
+        for path in [args.symbols, f"undefined_syms_auto.{m.mod}.{m.ver}.txt"]:
+            if path and Path(path).exists():
+                for s in SYMBOL_RE.finditer(Path(path).read_text()):
+                    symbols.setdefault(s.group(1), int(s.group(2), 16))
+        names = [seg_name(x) for x in starts]
+        refs, pairs = asm_refs(m.mod, names, symbols, lo, hi)
+        bss_lines = ["", "# .bss of each object in link order (see split_bss in tools/gen_code_yaml.py),",
+                     "# by vram.  splat doesn't read this; tools/split.py writes the asm objects'",
+                     "# .bss and adds it to the linker script.",
+                     "bss:"]
+        for vram, name in split_bss(names, refs, pairs, layout, m.full, m.vram,
+                                    m.data, args.rodata, lo, hi):
+            kind = ".bss" if (vram, "bss", f"{m.mod}/{name}") in owned else "bss"
+            bss_lines.append(f"  - [0x{vram:X}, {kind}, {m.mod}/{name}]")
+        bss_lines.append(f"  - [0x{hi:X}] # end")
+
+    m.write(starts, data_lines, c=args.c, eof=" # EOF", tail=bss_lines)
     print(f"{m.cfg}: {len(starts)} code subsegments, {len(m.bins)} bin")
 
 

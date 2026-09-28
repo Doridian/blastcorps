@@ -33,4 +33,11 @@ ush mask_bits[] = {
 int lbits = 9; /* bits in base literal/length lookup table */
 int dbits = 6; /* bits in base distance lookup table */
 
+/* .bss, 0x8039CAE0-0x803A6AF0 (tools/bss_c.py) */
+struct huft *huft_heap;
+ulg bb;
+unsigned bk;
+unsigned hufts;
+u8 D_8039CAF0[0xA000];
+
 #include "src/gzip_inflate.inc.c"

@@ -51,25 +51,11 @@ typedef struct {
 extern s32 D_80358070;
 extern UnkStruct_8036EC30 *D_802C4A20[];
 extern Vtx D_802FDA80[];
-extern UnkStruct_8036EC30 *D_8036EC30;
-extern UnkStruct_8036EC38 D_8036EC38[50];
-extern s32 D_80370B78;
-extern s32 D_80370B7C;
-extern s32 D_80370B80;
-extern u8 D_80370B84;
-extern s32 D_80370B88;
-extern u8 D_80370B8C;
-extern u8 D_80370B8D;
-extern u8 *D_80370B90;
-extern s16 D_80370B98[];
-extern s32 D_80370BB0;
-extern s32 D_80370BB4;
 
 extern s32 D_803643F8;
 extern s32 D_803643FC;
 extern s32 D_80364400;
 extern s16 D_80364452;
-extern Mtx D_8036F278[2][50];
 
 s32 func_8026A828(s32 lo, s32 hi);
 s32 func_8026A6F0(s32, s32, s32, s32, s32, s32);
@@ -78,6 +64,22 @@ void func_80289EF4(Gfx **);
 u32 func_8028A0A0();
 void func_8028A1D0(UnkStruct_8028A1D0 *, s32);
 void func_802A1040(u16, u8 *, s32);
+
+/* .bss, 0x8036EC30-0x80370BC0 (tools/bss_c.py) */
+UnkStruct_8036EC30 *D_8036EC30;
+UnkStruct_8036EC38 D_8036EC38[50];
+Mtx D_8036F278[2][50];
+s32 D_80370B78;
+s32 D_80370B7C;
+s32 D_80370B80;
+u8 D_80370B84;
+s32 D_80370B88;
+u8 D_80370B8C;
+u8 D_80370B8D;
+u8 *D_80370B90;
+s16 D_80370B98[0xc];
+s32 D_80370BB0;
+s32 D_80370BB4;
 
 void func_80288220(void) {
     s32 i;

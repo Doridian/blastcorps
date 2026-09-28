@@ -71,11 +71,9 @@ void func_802995F0(s32);
 
 extern u64 D_80364A90;
 extern u64 D_80364A98;
-extern s32 D_8021AB7C;
 extern s32 D_80367738;
 extern s16 D_8036BB1C;
 extern OSMesgQueue D_80219F50;
-extern u8 D_8021AB70;
 extern u16 D_8036BB16;
 extern s16 D_8036BB18;
 extern s16 D_8036BB1A;
@@ -88,8 +86,6 @@ extern u64 D_8021A830;
 extern UnkStruct_802F8BDC D_802F8BDC[];
 extern u8 D_802154B0;
 extern u8 D_8039C541;
-extern s16 D_8021AB74;
-extern s16 D_8021AB76;
 extern OSMesgQueue D_80219EF8;
 extern s32 D_80364AA8;
 extern s8 D_8039CA60;
@@ -107,10 +103,17 @@ extern Gfx D_01000038[];
 extern s8 D_80364A71;
 extern s32 D_80364A64;
 extern u32 D_803156C4;
-extern char D_8021AB72[];
 extern OSMesgQueue D_80315180;
 extern UnkStruct_8020C070 D_8020C070[];
 extern u8 D_80365060[];
+
+/* .bss, 0x8021AB70-0x8021AB80 (tools/bss_c.py) */
+u8 D_8021AB70;
+char D_8021AB72[2];
+s16 D_8021AB74;
+s16 D_8021AB76;
+u8 D_8021AB78[4];
+s32 D_8021AB7C;
 
 void func_801FE990(void) {
     s32 spDC;

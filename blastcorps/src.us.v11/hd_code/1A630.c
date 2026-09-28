@@ -90,8 +90,12 @@ void func_80260934(u8 arg0);
  * func_80260300 stores head and tail through one shared lui, which IDO only
  * does for one object defined in the same file.  D_80366BD0 is .bss.
  */
-extern UnkSndPlayer D_80366BD0;
 UnkStruct_802E8CE0 D_802E8CE0 = { NULL, NULL, NULL };
+
+/* .bss, 0x80366BD0-0x80366C30 (tools/bss_c.py) */
+UnkSndPlayer D_80366BD0;
+u16 *D_80366C28;
+
 UnkSndPlayer *D_802E8CEC = &D_80366BD0;
 s16 D_802E8CF0 = 0;
 

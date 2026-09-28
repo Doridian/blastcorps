@@ -99,8 +99,6 @@ extern u8 *D_80358070;
 extern Gfx D_8020BC88[];
 extern u8 D_802E8F38[][8];
 extern u8 D_803156F8[];
-extern u16 D_80217288;
-extern u16 *D_8021728C;
 extern Vtx D_02000000[];
 
 s32 func_8026A828(s32, s32);
@@ -110,20 +108,25 @@ void func_8027690C(u8 *arg0, f32 x, f32 y, f32 z, s16 *outX, s16 *outY, Mtx *arg
 extern Vtx D_80217690[][2][4];
 extern f64 D_8020F0A0; /* 10000.0 */
 extern f64 D_8020F0A8; /* 10000.0 */
-extern u8 *D_80215A7C;
-extern u8 *D_80215A80;
-extern u8 *D_80215A84;
 extern u8 D_0066C900[];
 extern u8 D_0068B550[];
-extern u16 *D_80215A70[];
-extern Vtx D_80215A88[];
-extern s32 D_80217290[];
-extern s32 D_80217390[];
-extern s32 D_80217490[];
-extern s32 D_80217590[];
 
 void func_8028B4C4(u32 arg0, u8 *arg1, u32 *arg2, u8 arg3, u8 arg4, u8 arg5);
 void func_801F0570(void);
+
+/* .bss, 0x80215A70-0x80217690 (tools/bss_c.py) */
+u16 *D_80215A70[3];
+u8 *D_80215A7C;
+u8 *D_80215A80;
+u8 *D_80215A84;
+Vtx D_80215A88[1];
+u8 D_80215A98[0x17F0];
+u16 D_80217288;
+u16 *D_8021728C;
+s32 D_80217290[0x40];
+s32 D_80217390[0x40];
+s32 D_80217490[0x40];
+s32 D_80217590[0x40];
 
 /* This function's sqrtf is the intrinsic (sqrt.s); the rest of the file calls the libm one. */
 #pragma intrinsic(sqrtf)

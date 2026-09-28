@@ -28,13 +28,15 @@ extern u8 D_803156F8[];
 extern u8 D_8035805C;
 extern u64 D_80367750[];
 extern u64 D_8036AFB0[];
-extern u64 *D_8036E660[];
-extern u64 *D_8036E678[];
-extern u8 D_8036E68C[];
-extern u64 *D_8036E694;
-extern UnkStruct_8036E698 D_8036E698[][2];
 
 void func_8029A7E4(char *, ...);
+
+/* .bss, 0x8036E660-0x8036EA60 (tools/bss_c.py) */
+u64 *D_8036E660[6];
+u64 *D_8036E678[5];
+u8 D_8036E68C[7];
+u64 *D_8036E694;
+UnkStruct_8036E698 D_8036E698[5][2];
 
 void func_80284DB0(void) {
     D_8036E660[0] = D_80207090;

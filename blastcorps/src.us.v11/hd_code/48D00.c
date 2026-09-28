@@ -63,12 +63,6 @@ extern UnkStruct_802FDB98 D_802FDB98[];
 extern u8 D_802FDBD0;
 extern u8 D_802FDBD4;
 extern OSMesgQueue D_80370BF8;
-extern UnkStruct_8039B070 D_8039B070[];
-extern s32 D_8039B610;
-extern s32 D_8039B614;
-extern s32 D_8039B618;
-extern s32 D_8039B61C;
-extern u8 D_8039B620;
 extern u8 D_803A7424;
 extern u8 D_803F932C;
 extern Mtx D_02000000[];
@@ -118,6 +112,29 @@ f32 sqrtf(f32);
 void func_8028DD64();
 UnkStruct_8039B070 *func_8028DE94(void);
 u8 func_8028FCD4(OSMesgQueue *, u8 *);
+
+/* .bss, 0x8039B070-0x8039C550 (tools/bss_c.py) */
+UnkStruct_8039B070 D_8039B070[1];
+u8 D_8039B0B8[0x558];
+s32 D_8039B610;
+s32 D_8039B614;
+s32 D_8039B618;
+s32 D_8039B61C;
+u8 D_8039B620;
+u8 D_8039B621[1];
+u8 D_8039B622[2];
+u8 D_8039B624[4];
+u8 D_8039B628[0xE88];
+u8 D_8039C4B0[4];
+u8 D_8039C4B4[4];
+u8 D_8039C4B8[0x40];
+u8 D_8039C4F8[0x44];
+u8 D_8039C53C[4];
+u8 D_8039C540[1];
+u8 D_8039C541[1];
+u8 D_8039C542[2];
+u8 D_8039C544[4];
+u8 D_8039C548[8];
 
 void func_8028D4C0(UnkStruct_8028D4C0 *arg0, UnkStruct_8028D4C0 *arg1) {
     D_8039B610 = 0;

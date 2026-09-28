@@ -130,26 +130,35 @@ extern OSViMode D_80306E70[];
 extern u8 D_802FA270;
 extern s32 D_80358060;
 /*
- * This file's own .bss.  The functions using these only match with them
- * defined here (a u64's halves share one lui), but until .bss is split the
- * addresses still come from the absolute symbols in undefined_syms_auto.
+ * This file's .bss.  The functions using these only match with them
+ * defined here (a u64's halves share one lui).
  */
+
+/* .bss, 0x8036BEF0-0x8036BFC0 (tools/bss_c.py) */
 OSTime D_8036BEF0;
 OSTime D_8036BEF8;
 OSTime D_8036BF00;
-extern s32 D_8036BF10;
-extern s32 D_8036BF14;
-extern s32 D_8036BF18;
-extern struct UnkSchedTask *D_8036BF1C;
-extern u32 D_8036BF20;
-extern u32 D_8036BF24;
-extern u32 D_8036BF2C;
+s32 D_8036BF08;
+s32 D_8036BF0C;
+s32 D_8036BF10;
+s32 D_8036BF14;
+s32 D_8036BF18;
+struct UnkSchedTask *D_8036BF1C;
+u32 D_8036BF20;
+u32 D_8036BF24;
+u8 D_8036BF28[4];
+u32 D_8036BF2C;
+u8 D_8036BF30[8];
 OSTime D_8036BF38;
 OSTime D_8036BF40;
 OSTime D_8036BF48;
 OSTime D_8036BF50;
-extern OSTimer D_8036BF78;
-extern s32 D_8036BFBC;
+u8 D_8036BF58[0x20];
+OSTimer D_8036BF78;
+u8 D_8036BF98[0x20];
+u32 D_8036BFB8;
+s32 D_8036BFBC;
+
 extern UnkStruct_8036BB10 *D_8036BB10;
 extern u8 D_802E8BD0;
 extern u64 D_80364A90;
@@ -221,9 +230,6 @@ OSMesgQueue *func_80270F74(UnkSched *sc) {
     return &sc->cmdQ;
 }
 
-extern u32 D_8036BFB8;
-extern s32 D_8036BF08;
-extern s32 D_8036BF0C;
 extern OSMesgQueue *D_8036BF90;
 extern OSMesg D_8036BF94;
 u32 func_802A1320(void);

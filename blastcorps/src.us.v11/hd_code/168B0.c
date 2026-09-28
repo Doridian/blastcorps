@@ -10,15 +10,18 @@ typedef struct {
 } UnkStruct_80365588; /* size = 0x5 */
 
 extern f32 D_802E8C84[];
-extern u8 D_80365360[];
-extern u16 D_803653B0[];
-extern char D_80365458[];
 extern u8 D_8039CAF0[][0x200];
 
 void func_8029A7E4(char *, ...);
 void func_802A1040(u16, u8 *, s32);
 s32 func_8025B300(u8 *arg0);
 s32 func_8025B370(u16 *arg0);
+
+/* .bss, 0x80365360-0x80365580 (tools/bss_c.py) */
+u8 D_80365360[0x50];
+u16 D_803653B0[0x54];
+char D_80365458[0x100];
+u16 D_80365558[0x14];
 
 void func_8025B070(void) {
     s32 sp4;

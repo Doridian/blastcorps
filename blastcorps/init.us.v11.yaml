@@ -45,9 +45,8 @@ segments:
     - [0x3990, asm, init/3990] # __osGetCause
     - [0x39A0, c, init/39A0]
     - [0x3A00, asm, init/3A00] # __osDisableInt, __osRestoreInt
-    # .data, then .rodata, of each object in link order.  .bss starts at
-    # 0x802229E0 and is 0x23A0 bytes (the entry point clears it); its
-    # variables are still linker symbols.
+    # .data, then .rodata, of each object in link order.  .bss follows, in
+    # the top-level bss: list.
     - [0x3A40, .data, init/0050]
     - [0x3B40, .data, init/1660]
     - [0x3B50, data, init/1A30]
@@ -60,3 +59,15 @@ segments:
     - [0x3C10, rodata, init/2330]
     - [0x3C60, rodata, init/3770]
   - [0x3CE0]
+
+# .bss of each object in link order, by vram (see tools/modmap.py).  splat
+# doesn't read this; tools/split.py writes the asm objects' .bss and adds it
+# to the linker script.  It is 0x23A0 bytes, which the entry point clears.
+bss:
+  - [0x802229E0, .bss, init/0050] # inflate.c: huft_heap, bb, bk, hufts
+  - [0x802229F0, .bss, init/1660] # gzip.c: inbuf .. outcnt
+  - [0x80222A30, bss, init/1A30] # the boot stack (0x2000 bytes; sp starts at its top), then two words
+  - [0x80224A40, .bss, init/1F40] # initialize.c: __osFinalrom
+  - [0x80224A50, .bss, init/3110] # kdebugserver.c: debugBuffer, __osThreadSave
+  - [0x80224D00, .bss, init/3700] # seteventmesg.c: __osEventStateTab
+  - [0x80224D80] # end

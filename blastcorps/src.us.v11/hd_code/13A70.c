@@ -23,17 +23,20 @@ extern UnkStruct_803643C8 *D_803643C8;
 extern UnkStruct_803643C8 *D_803643CC;
 extern s32 D_803EBBF8;
 extern Vp D_802E8C60;
-extern Gfx D_803650B0[];
-extern Mtx D_803651F0;
-extern Mtx D_80365230;
-extern Mtx D_80365270;
-extern Mtx D_803652B0;
-extern Mtx D_803652F0;
 
 void func_80284E54(Gfx *, s32, s32, s32, s32, s32);
 
 u8 func_8027EED8(s32, s32, s16 *);
 u8 func_802ABEDC(s32, s32, s32);
+
+/* .bss, 0x803650B0-0x80365340 (tools/bss_c.py) */
+Gfx D_803650B0[0x28];
+Mtx D_803651F0;
+Mtx D_80365230;
+Mtx D_80365270;
+Mtx D_803652B0;
+Mtx D_803652F0;
+u8 *D_80365330;
 
 void func_80258230(u8 arg0, s32 arg1, s16 arg2, s16 arg3) {
     D_803643CC->unk1022 = arg0;

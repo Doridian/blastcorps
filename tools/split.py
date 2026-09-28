@@ -13,10 +13,14 @@ The submodule's splat is old; these patch it rather than fork it:
   reference.  splat only symbolizes pointers within the same subsegment, so
   once .data/.rodata are split per object, pointers between objects (a
   table in one object's .data listing another's strings, say) would stay
-  bare constants and the build would not be shiftable.
+  bare constants and the build would not be shiftable.  So does a word that
+  points anywhere else in a module (this one's .text or .bss, or another
+  module): tools/link_syms.py resolves those at link time.
 - Aligned data that splat would print as bytes or halfwords (because code
   reads it with lbu or lh) is printed as words when it holds a pointer to a
   symbol, so the pointer is a relocation too.
+- After splat: tools/postsplit.py symbolizes the lui pairs splat left as
+  numbers, writes the .bss of each object and adds it to the linker script.
 - A `.rodata` subsegment (owned by the C file of the same name) is handed to
   that file's GLOBAL_ASM functions: each symbol goes into the .s of the first
   function that references it, as `.late_rodata` (jump tables, floats and
@@ -65,6 +69,8 @@ def group_scan(self, rom_bytes):
                 bits = int.from_bytes(rom_bytes[i : i + 4], "big")
                 if any(d.contains_vram(bits) for d in datas):
                     self.get_symbol(bits, create=True, define=True, local_only=True)
+                elif sub.type in ("data", "rodata") and postsplit.movable(MODULES, bits):
+                    self.get_symbol(bits, create=True, reference=True)
     _group_scan(self, rom_bytes)
 
 
@@ -101,6 +107,35 @@ def holds_pointer(self, sym_bytes):
         if bits >= 0x80000000 and self.get_most_parent().get_symbol(bits) is not None:
             return True
     return False
+
+
+def with_pointers(self, sym_bytes, vram):
+    """Bytes that splat would print as .byte/.short, with the aligned words
+    among them that point at a symbol printed as .word (a pointer in a table
+    of odd-sized records).  None if there are none."""
+    parent = self.get_most_parent()
+    words = {}
+    for i in range(-vram % 4, len(sym_bytes) - 3, 4):
+        bits = int.from_bytes(sym_bytes[i : i + 4], "big")
+        sym = parent.get_symbol(bits, reference=True) if bits >= 0x80000000 else None
+        if sym is not None:
+            words[i] = sym.name
+    if not words:
+        return None
+    out, run, i = [], [], 0
+    while i < len(sym_bytes):
+        if i in words:
+            if run:
+                out.append(".byte " + ", ".join(run))
+                run = []
+            out.append(f".word {words[i]}")
+            i += 4
+        else:
+            run.append(f"0x{sym_bytes[i]:02X}")
+            i += 1
+    if run:
+        out.append(".byte " + ", ".join(run))
+    return "\n".join(out)
 
 
 def disassemble_data(self, rom_bytes):
@@ -158,7 +193,8 @@ def disassemble_data(self, rom_bytes):
             rodata_encountered = True
             ret += "\n\n\n.section .rodata"
 
-        sym_str += self.disassemble_symbol(sym_bytes, stype)
+        mixed = with_pointers(self, sym_bytes, sym.vram_start) if stype in ("byte", "short") else None
+        sym_str += mixed if mixed else self.disassemble_symbol(sym_bytes, stype)
         sym.disasm_str = sym_str
         ret += sym_str
 
@@ -237,5 +273,16 @@ def data_split(self, rom_bytes):
 
 CommonSegData.split = data_split
 
+import yaml  # noqa: E402
+
+import modmap  # noqa: E402
+import postsplit  # noqa: E402
+
+CONFIG_PATH = sys.argv[1]
+CONFIG = yaml.safe_load(Path(CONFIG_PATH).read_text())
+MODULES = modmap.modules(postsplit.version_of(CONFIG), Path(CONFIG_PATH).parent)
+
 sys.argv[0] = os.path.join(SPLAT, "split.py")
 runpy.run_path(sys.argv[0], run_name="__main__")
+if any(s.get("type") == "code" for s in CONFIG["segments"] if isinstance(s, dict)):
+    postsplit.run(CONFIG_PATH, CONFIG)

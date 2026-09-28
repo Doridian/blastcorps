@@ -18,7 +18,6 @@ void func_802A57AC(void);
 
 extern Gfx D_01000010[];
 extern Gfx D_01000038[];
-extern s32 D_802159C0;
 extern OSMesgQueue D_80315180;
 extern UnkStruct_803156F8 D_803156F8[];
 extern void *D_80358050[];
@@ -28,6 +27,9 @@ extern s32 D_80358078;
 extern s32 D_80358080;
 extern s32 D_80358084;
 extern s16 D_8036BB18;
+
+/* .bss, 0x802159C0-0x802159D0 (tools/bss_c.py) */
+s32 D_802159C0;
 
 void func_801EE390(void) {
 }

@@ -21,19 +21,21 @@ extern u64 D_80364A98;
 extern u8 D_80364AE8;
 extern UnkStruct_80364AF0 D_80364AF0[];
 extern u16 D_80370C28;
-extern s16 D_8039CAB0;
-extern s16 D_8039CAB2;
-extern s16 D_8039CAB4;
-extern u8 D_8039CAB6;
-extern u8 D_8039CAB7;
-extern u8 D_8039CAB8;
-extern Gfx *D_8039CABC;
-extern void *D_8039CAC0;
-extern Mtx *D_8039CAC4;
-extern u8 D_8039CAC8;
 
 u8 func_8029766C(u8 arg0, u8 *arg1);
 s32 func_8026A6F0(s32, s32, s32, s32, s32, s32);
+
+/* .bss, 0x8039CAB0-0x8039CAD0 (tools/bss_c.py) */
+s16 D_8039CAB0;
+s16 D_8039CAB2;
+s16 D_8039CAB4;
+u8 D_8039CAB6;
+u8 D_8039CAB7;
+u8 D_8039CAB8;
+Gfx *D_8039CABC;
+void *D_8039CAC0;
+Mtx *D_8039CAC4;
+u8 D_8039CAC8;
 
 void func_80297530(u8 arg0) {
     u8 sp1F;

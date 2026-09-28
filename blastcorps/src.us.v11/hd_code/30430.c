@@ -1,14 +1,18 @@
 #include "common.h"
 
 /*
- * D_8036C770..D_8036C784 are this file's own .bss: func_80274BF0 and
- * func_80275270 store D_8036C778 (a u64) through one shared lui, which IDO
- * only does for a symbol it knows is local, so it is defined here.  The
- * address still comes from the absolute symbol in undefined_syms_auto until
- * .bss is split.
+ * This file's .bss: func_80274BF0 and func_80275270 store D_8036C778 (a u64)
+ * through one shared lui, which IDO only does for a symbol defined in the
+ * same file.
  */
-extern u16 D_8036C770;
+
+/* .bss, 0x8036C770-0x8036C790 (tools/bss_c.py) */
+u16 D_8036C770;
+f32 D_8036C774;
 u64 D_8036C778;
+u32 D_8036C780;
+u8 D_8036C784;
+
 
 void func_80275270(u64 arg0, f32 arg2);
 
@@ -16,9 +20,6 @@ extern s32 D_80358060;
 extern u64 D_80364A90;
 extern u64 D_80364A98;
 extern s32 D_802E8BDC;
-extern u8 D_8036C784;
-extern u32 D_8036C780;
-extern f32 D_8036C774;
 extern u32 D_803156C4;
 extern f32 D_802FA930;
 extern u8 D_8035805C;

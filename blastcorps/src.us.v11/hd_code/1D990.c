@@ -60,23 +60,6 @@ extern s32 D_803643E8;
 extern s32 D_80364A58;
 extern s32 D_80364AA8;
 extern ALCSPlayer *D_80367734;
-extern s32 D_80367B50;
-extern u8 D_80367B54;
-extern u16 D_80367B58[];
-extern char D_80367B60[];
-extern s32 D_80367BBC;
-extern u16 D_80367BF6;
-extern u8 D_80367BF8;
-extern u8 D_80367BF9;
-extern u8 D_80367BFA;
-extern u8 D_80367BFB;
-extern u16 D_80367BFC;
-extern u8 D_80367BFE;
-extern s8 D_80367BFF;
-extern UnkStruct_80367C04 *D_80367C04;
-extern u8 D_80367C10;
-extern char D_80367D10[];
-extern char D_80367D28[];
 extern u8 D_8036DCD4;
 extern u32 D_8036EA70;
 extern u8 D_8036EA78;
@@ -102,6 +85,51 @@ void func_8029A7E4(char *, ...);
 void alCSPSetTempo(ALCSPlayer *, s32);
 u8 func_802C1B1C(void);
 void func_802C1DD0(s32);
+
+/* .bss, 0x80367B50-0x80367D60 (tools/bss_c.py) */
+s32 D_80367B50;
+u8 D_80367B54;
+u8 D_80367B56[2];
+u16 D_80367B58[4];
+char D_80367B60[0x50];
+char D_80367BB0[0xc];
+s32 D_80367BBC;
+s32 D_80367BC0;
+u32 D_80367BC4;
+u16 D_80367BC8;
+struct UnkStruct_802F49F4 *D_80367BCC;
+struct UnkStruct_802F49F4 *D_80367BD0;
+u8 D_80367BD4;
+u8 D_80367BD5;
+s16 D_80367BD6;
+s16 D_80367BD8;
+u8 *D_80367BDC[1];
+u8 *D_80367BE0[5];
+u16 D_80367BF4;
+u16 D_80367BF6;
+u8 D_80367BF8;
+u8 D_80367BF9;
+u8 D_80367BFA;
+u8 D_80367BFB;
+u16 D_80367BFC;
+u8 D_80367BFE;
+s8 D_80367BFF;
+s8 D_80367C00;
+u8 D_80367C01;
+UnkStruct_80367C04 *D_80367C04;
+char *D_80367C08;
+s32 D_80367C0C;
+u8 D_80367C10;
+char D_80367C18[0x28];
+char D_80367C40[0x28];
+u16 D_80367C68[0x28];
+u16 D_80367CB8[0x28];
+u16 D_80367D08;
+char D_80367D10[0x18];
+char D_80367D28[0x28];
+s16 D_80367D50;
+u8 D_80367D52;
+u8 D_80367D53;
 
 void func_80262150(u8 arg0) {
     s32 i;
@@ -158,7 +186,7 @@ typedef struct {
     /* 0x6 */ s16 unk6;
 } UnkStruct_802E8F74; /* size = 0x8 */
 
-typedef struct {
+typedef struct UnkStruct_802F49F4 {
     /* 0x00 */ u8 pad0[4];
     /* 0x04 */ u8 unk4;
     /* 0x05 */ u8 pad5;

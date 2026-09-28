@@ -3,10 +3,12 @@
 extern u8 D_0048FA70[];
 extern u8 D_0048FE90[];
 extern u8 *D_80358070;
-extern u8 *D_803A6B10;
-extern s16 D_803A6B14;
 
 void func_8028B4C4(u8 *, u8 *, s32 *, s32, s32, s32);
+
+/* .bss, 0x803A6B10-0x803A6B20 (tools/bss_c.py) */
+u8 *D_803A6B10;
+s16 D_803A6B14;
 
 void func_8029A130(void) {
     s32 sp24;
