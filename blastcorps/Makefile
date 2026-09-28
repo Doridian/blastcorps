@@ -137,6 +137,13 @@ HD_FRONT_END_LDFLAGS = -T $(HD_FRONT_END_LD_SCRIPT) -Map $(HD_FRONT_END_TARGET).
 
 ### Optimisation Overrides
 
+# Files not built at the default -O1 (libultra's gu and audio code, for
+# example), as paths under $(SRC_DIR).
+O2_C_FILES.us.v11 :=
+O3_C_FILES.us.v11 :=
+$(foreach f,$(O2_C_FILES.$(VERSION)),$(BUILD_DIR)/$(SRC_DIR)/$(f).o): OPT_FLAGS := -O2
+$(foreach f,$(O3_C_FILES.$(VERSION)),$(BUILD_DIR)/$(SRC_DIR)/$(f).o): OPT_FLAGS := -O3
+
 # libultra's ll.c (the long long helpers) is built -mips3 -32, as in the SDK.
 MIPS3_C_FILES.us.v11 := init/2D60.c hd_code/90390.c
 # ld won't mix it with the -mips2 objects, so it's relabelled mips2 after.
