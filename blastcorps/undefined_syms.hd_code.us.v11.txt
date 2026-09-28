@@ -1,2 +1,7 @@
 /* reached through a lui/addiu pair splat does not match up */
 D_803092A0 = 0x803092A0;
+D_02000000 = 0x02000000;
+D_802FDA60 = 0x802FDA60;
+D_802FDA70 = 0x802FDA70;
+D_8020D7E4 = 0x8020D7E4;
+D_8030CCC0 = 0x8030CCC0;
