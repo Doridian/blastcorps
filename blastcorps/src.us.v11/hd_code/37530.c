@@ -36,8 +36,17 @@ typedef struct {
     /* 0x1B */ u8 unk1B;
 } UnkStruct_8036D3D0; /* size = 0x1C */
 
+typedef struct {
+    /* 0x0000 */ u8 unk0[0x2000];
+    /* 0x2000 */ Vtx unk2000[451];
+    /* 0x3C30 */ Gfx unk3C30[1];
+} UnkStruct_8027C4C8;
+
+void func_8027D350(s16 x0, s16 y0, s16 z0, s16 x1, s16 y1, s16 z1, Vtx *vtx, s32 i);
+void func_8027D5AC(void);
 s32 func_802AC4C4(s32, s32, s32, s32, s32, s32, s32, s32);
 
+extern UnkStruct_8027C4C8 D_02000000;
 extern s32 D_802E8BDC;
 extern f64 D_8030C6D0;
 extern f64 D_8030C6D8;
@@ -157,7 +166,215 @@ void func_8027BE7C(u8 arg0, s32 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, s3
     }
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/37530/func_8027C4C8.s")
+void func_8027C4C8(Gfx **arg0, UnkStruct_8027C4C8 *arg1) {
+    Gfx *gfx;
+    u8 idx;
+    u8 start;
+    u8 end;
+    u8 j;
+    u8 done;
+    Gfx *sub;
+    s32 subCount;
+    s32 vtxStart;
+    s32 vtxIdx;
+    s16 minX;
+    s16 minY;
+    s16 minZ;
+    s16 maxX;
+    s16 maxY;
+    s16 maxZ;
+    u8 k;
+    u8 n;
+    s32 count;
+    s32 sp6C;
+    u8 flag;
+
+    gfx = *arg0;
+    idx = D_8036DC90;
+    done = FALSE;
+    sub = arg1->unk3C30;
+    subCount = 0;
+    vtxStart = 0;
+    func_8027D5AC();
+    gDPPipeSync(gfx++);
+    gDPSetCycleType(gfx++, G_CYC_1CYCLE);
+    gDPSetRenderMode(gfx++, G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2);
+    gSPClearGeometryMode(gfx++, 0xFFFFFFFF);
+    gSPSetGeometryMode(gfx++, G_SHADE | G_SHADING_SMOOTH);
+    gSPTexture(gfx++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF);
+    gDPSetCombineLERP(gfx++, 0, 0, 0, PRIMITIVE, 0, 0, 0, SHADE, 0, 0, 0, PRIMITIVE, 0, 0, 0, SHADE);
+    gDPSetPrimColor(gfx++, 0, 0, 0, 0, 0, 0);
+    while (!done) {
+        start = idx;
+        flag = D_8036D3D0[idx].unk1B;
+        while (idx != D_8036DC91 && D_8036D3D0[idx].unk1A == 0) {
+            if (++idx == 80) {
+                idx = 0;
+            }
+        }
+        end = idx;
+        if (idx == D_8036DC91) {
+            done = TRUE;
+        }
+        if (start != end) {
+            gSPDisplayList(gfx++, &D_02000000.unk3C30[subCount]);
+            minX = 0x7FFF, minY = 0x7FFF, minZ = 0x7FFF;
+            maxX = -0x8000, maxY = -0x8000, maxZ = -0x8000;
+            vtxIdx = vtxStart;
+            j = start;
+            while (j != end) {
+                arg1->unk2000[vtxIdx].v.ob[0] = D_8036D3D0[j].unk0;
+                arg1->unk2000[vtxIdx].v.ob[1] = D_8036D3D0[j].unk2;
+                arg1->unk2000[vtxIdx].v.ob[2] = D_8036D3D0[j].unk4;
+                arg1->unk2000[vtxIdx].v.cn[3] = D_8036D3D0[j].unk18;
+                vtxIdx++;
+                arg1->unk2000[vtxIdx].v.ob[0] = D_8036D3D0[j].unk6;
+                arg1->unk2000[vtxIdx].v.ob[1] = D_8036D3D0[j].unk8;
+                arg1->unk2000[vtxIdx].v.ob[2] = D_8036D3D0[j].unkA;
+                arg1->unk2000[vtxIdx].v.cn[3] = D_8036D3D0[j].unk18;
+                vtxIdx++;
+                if (D_8036D3D0[j].unk0 < minX) {
+                    minX = D_8036D3D0[j].unk0;
+                }
+                if (D_8036D3D0[j].unk2 < minY) {
+                    minY = D_8036D3D0[j].unk2;
+                }
+                if (D_8036D3D0[j].unk4 < minZ) {
+                    minZ = D_8036D3D0[j].unk4;
+                }
+                if (D_8036D3D0[j].unk0 > maxX) {
+                    maxX = D_8036D3D0[j].unk0;
+                }
+                if (D_8036D3D0[j].unk2 > maxY) {
+                    maxY = D_8036D3D0[j].unk2;
+                }
+                if (D_8036D3D0[j].unk4 > maxZ) {
+                    maxZ = D_8036D3D0[j].unk4;
+                }
+                if (D_8036D3D0[j].unk6 < minX) {
+                    minX = D_8036D3D0[j].unk6;
+                }
+                if (D_8036D3D0[j].unk8 < minY) {
+                    minY = D_8036D3D0[j].unk8;
+                }
+                if (D_8036D3D0[j].unkA < minZ) {
+                    minZ = D_8036D3D0[j].unkA;
+                }
+                if (D_8036D3D0[j].unk6 > maxX) {
+                    maxX = D_8036D3D0[j].unk6;
+                }
+                if (D_8036D3D0[j].unk8 > maxY) {
+                    maxY = D_8036D3D0[j].unk8;
+                }
+                if (D_8036D3D0[j].unkA > maxZ) {
+                    maxZ = D_8036D3D0[j].unkA;
+                }
+                if (++j == 80) {
+                    j = 0;
+                }
+            }
+            if (flag == 0) {
+                j = start;
+                while (j != end) {
+                    arg1->unk2000[vtxIdx].v.ob[0] = D_8036D3D0[j].unkC;
+                    arg1->unk2000[vtxIdx].v.ob[1] = D_8036D3D0[j].unkE;
+                    arg1->unk2000[vtxIdx].v.ob[2] = D_8036D3D0[j].unk10;
+                    arg1->unk2000[vtxIdx].v.cn[3] = D_8036D3D0[j].unk19;
+                    vtxIdx++;
+                    arg1->unk2000[vtxIdx].v.ob[0] = D_8036D3D0[j].unk12;
+                    arg1->unk2000[vtxIdx].v.ob[1] = D_8036D3D0[j].unk14;
+                    arg1->unk2000[vtxIdx].v.ob[2] = D_8036D3D0[j].unk16;
+                    arg1->unk2000[vtxIdx].v.cn[3] = D_8036D3D0[j].unk19;
+                    vtxIdx++;
+                    if (D_8036D3D0[j].unkC < minX) {
+                        minX = D_8036D3D0[j].unkC;
+                    }
+                    if (D_8036D3D0[j].unkE < minY) {
+                        minY = D_8036D3D0[j].unkE;
+                    }
+                    if (D_8036D3D0[j].unk10 < minZ) {
+                        minZ = D_8036D3D0[j].unk10;
+                    }
+                    if (D_8036D3D0[j].unk12 > maxX) {
+                        maxX = D_8036D3D0[j].unk12;
+                    }
+                    if (D_8036D3D0[j].unk14 > maxY) {
+                        maxY = D_8036D3D0[j].unk14;
+                    }
+                    if (D_8036D3D0[j].unk16 > maxZ) {
+                        maxZ = D_8036D3D0[j].unk16;
+                    }
+                    if (D_8036D3D0[j].unkC < minX) {
+                        minX = D_8036D3D0[j].unkC;
+                    }
+                    if (D_8036D3D0[j].unkE < minY) {
+                        minY = D_8036D3D0[j].unkE;
+                    }
+                    if (D_8036D3D0[j].unk10 < minZ) {
+                        minZ = D_8036D3D0[j].unk10;
+                    }
+                    if (D_8036D3D0[j].unk12 > maxX) {
+                        maxX = D_8036D3D0[j].unk12;
+                    }
+                    if (D_8036D3D0[j].unk14 > maxY) {
+                        maxY = D_8036D3D0[j].unk14;
+                    }
+                    if (D_8036D3D0[j].unk16 > maxZ) {
+                        maxZ = D_8036D3D0[j].unk16;
+                    }
+                    if (++j == 80) {
+                        j = 0;
+                    }
+                }
+            }
+            count = vtxIdx - vtxStart;
+            if (flag != 0) {
+                sp6C = 0;
+            } else {
+                sp6C = count >> 1;
+            }
+            if (count > 40) {
+                func_8027D350(minX, minY, minZ, maxX, maxY, maxZ, arg1->unk2000, vtxIdx);
+                gSPVertex(sub++, &D_02000000.unk2000[vtxIdx], 8, 0);
+                gSPCullDisplayList(sub++, 0, 7);
+                subCount += 2;
+                vtxIdx += 8;
+            }
+            while (count >= 3) {
+                if (count > 16) {
+                    n = 16;
+                } else {
+                    n = count;
+                }
+                gSPVertex(sub++, &D_02000000.unk2000[vtxStart], n, 0);
+                k = 0;
+                vtxStart += n - 2;
+                subCount++;
+                while (k < n - 2) {
+                    if (sp6C != 2) {
+                        gSP1Triangle(sub++, k, k + 1, k + 2, 0);
+                        gSP1Triangle(sub++, k + 1, k + 2, k + 3, 0);
+                        subCount += 2;
+                        sp6C -= 2;
+                        k += 2;
+                    } else {
+                        sp6C = 0;
+                        k += 4;
+                    }
+                }
+                count = count - n + 2;
+            }
+            vtxStart = vtxIdx;
+            gSPEndDisplayList(sub++);
+            subCount++;
+        }
+        if (++idx == 80) {
+            idx = 0;
+        }
+    }
+    gDPPipeSync(gfx++);
+    *arg0 = gfx;
+}
 
 void func_8027D350(s16 x0, s16 y0, s16 z0, s16 x1, s16 y1, s16 z1, Vtx *vtx, s32 i) {
     vtx[i].v.ob[0] = x0;
