@@ -175,7 +175,9 @@ Handwritten code (the game's own asm, and libultra's `.s` files) is an `asm`
 subsegment, not a `c` file full of `GLOBAL_ASM`. That keeps
 `tools/progress.py` honest and marks what a port has to replace.
 `gen_code_yaml.py` classifies it (see `docs/DECOMPILING.md`). About a third
-of hd_code is Rare's handwritten engine; it can't become matching C.
+of hd_code is Rare's handwritten engine; it can't become matching C. For
+the port it is translated to C mechanically by `tools/recomp/` and checked
+against the original in unicorn (`docs/PORT.md`).
 
 ## Data and symbols at link time
 

@@ -254,6 +254,13 @@ selected with `TARGET_PC`. The N64 build stays matching.
     or a MIPS interpreter over recorded inputs).
   A sensible order: translate mechanically first to get the port running,
   then replace functions with readable C as they're understood.
+- [x] Mechanical translator for Rare's engine block and hd_front_end's
+      handwritten run (`tools/recomp/`, `make -C tools/recomp`): one C file
+      per object over a register-file context and an emulated RDRAM arena,
+      symbols kept. A differential test runs every function against the
+      original in unicorn, on random states and on RDRAM snapshots from
+      real play. All 688 functions match. See docs/PORT.md for the
+      interface, results and what's left.
 - Later: widescreen, higher framerate (the game loop is tied to VI retrace),
   and mod support.
 
