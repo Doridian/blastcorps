@@ -8,16 +8,14 @@
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/53220/func_80297F74.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/53220/huft_build.s")
+/* hd_code's copy of Rare's gzip inflate, for hd_front_end.  Its tables are
+ * in hd_code's .data, which isn't split yet. */
+#include "gzip.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/53220/inflate_codes.s")
+extern uch border[];
+extern ush cplens[];
+extern uch cplext[];
+extern ush cpdist[];
+extern uch cpdext[];
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/53220/inflate_stored.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/53220/inflate_fixed.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/53220/inflate_dynamic.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/53220/inflate_block.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/53220/inflate.s")
+#include "src/gzip_inflate.inc.c"

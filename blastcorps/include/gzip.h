@@ -20,6 +20,15 @@ typedef unsigned char  uch;
 typedef unsigned short ush;
 typedef unsigned long  ulg;
 
+/* gzip.h: compression method and header flags */
+#define DEFLATED     8
+#define ERROR        1
+
+#define CONTINUATION 0x02
+#define EXTRA_FIELD  0x04
+#define ORIG_NAME    0x08
+#define COMMENT      0x10
+
 #define get_byte()  (inbuf[inptr++])
 #define NEXTBYTE()  (uch)get_byte()
 

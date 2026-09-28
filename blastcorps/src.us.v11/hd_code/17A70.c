@@ -1,9 +1,16 @@
 #include "common.h"
+#include "gzip.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/17A70/func_8025C230.s")
+/* hd_code's copy of Rare's gzip driver (see src/gzip_unzip.inc.c).  Its
+ * message is in hd_code's .data, which isn't split yet. */
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/17A70/get_method.s")
+/* "kiunzip: unknown method %d -- get newer version of gzip\n" */
+extern char D_80309030[];
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/17A70/bi_reverse.s")
+void func_8029A7E4(char *, ...);
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/17A70/clear_bufs.s")
+#define GZIP_UNZIP          func_8025C230
+#define GZIP_PRINTF         func_8029A7E4
+#define GZIP_UNKNOWN_METHOD D_80309030
+
+#include "src/gzip_unzip.inc.c"
