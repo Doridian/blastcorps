@@ -110,8 +110,8 @@ so a too-wide `bin` goes unnoticed: only the sha1 decides, and it cannot tell.
 
 `docs/ROADMAP.md` has the plan. The loop for one function:
 
-- `m2c` (`tools/mips_to_c/m2c.py`, needs `pycparser<3`) on its `.s` for a
-  first draft. Replace the `GLOBAL_ASM` line with the C.
+- `tools/m2c.sh <module> <function>` for a first draft (m2c, run from the
+  project venv). Replace the `GLOBAL_ASM` line with the C.
 - `make VERSION=us.v11 -C blastcorps <module>`, then
   `tools/fdiff.py <module> <function>` to diff it against the original. It
   refuses to run when the last link failed, since the binary would be stale.
@@ -125,6 +125,23 @@ IDO quirks that have mattered so far (all `-O1`):
 - Statement spelling changes the scheduling: `p = c + 1, xp = x + 2;` and the
   same two statements separated by `;` don't compile the same.
 - m2c drops some early returns; check the function's size.
+- A global defined in the same file is addressed differently from an
+  `extern` one (a `u64`'s two halves share one `lui`). Such functions only
+  match once their data is split out of the `bin` and defined in C.
+- libultra was built with unsigned `char`; this build passes `-signed`.
+- Per-file flags go under "Optimisation Overrides" in `blastcorps/Makefile`
+  (`ll.c` is `-mips3 -32`, relabelled mips2 by `tools/elf_mips2.py` so ld
+  will link it).
+
+When symbols_known.txt names a function, run `tools/gen_symbols.py` for each
+version (with the ultralib objects from `tools/build_ultralib.sh`), then
+`tools/sync_stub_names.py`, then remove `blastcorps/asm` and re-extract.
+Splat only writes a `.s` for names the existing stub lists, so without the
+middle step the stubs keep pointing at stale `func_` files.
+
+Handwritten code (the game's own asm, and libultra's `.s` files) is an `asm`
+subsegment, not a `c` file full of `GLOBAL_ASM`. That keeps
+`tools/progress.py` honest and marks what a port has to replace.
 
 Splat only symbolizes a `%hi`/`%lo` pair it can match up. A table reached
 through a `lui`/`addiu` pair split by scheduling stays a bare constant, so C

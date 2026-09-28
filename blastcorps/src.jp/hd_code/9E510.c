@@ -1,15 +1,15 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E510/func_802E2CD0.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E510/u32_to_string.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E510/func_802E2D00.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E510/string_to_u32.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E510/func_802E2D58.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E510/send_packet.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E510/func_802E2E18.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E510/send.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E510/func_802E2EF0.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E510/process_command_memory.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E510/func_802E2F3C.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E510/process_command_register.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E510/func_802E2F68.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/9E510/kdebugserver.s")

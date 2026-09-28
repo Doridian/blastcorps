@@ -2,19 +2,19 @@
 
 #pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/__osSiDeviceBusy.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/func_80221E10.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/u32_to_string.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/func_80221E40.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/string_to_u32.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/func_80221E98.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/send_packet.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/func_80221F58.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/send.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/func_80222030.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/process_command_memory.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/func_8022207C.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/process_command_register.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/func_802220A8.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/kdebugserver.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/__osDequeueThread.s")
 
@@ -22,6 +22,6 @@
 
 #pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/osSetEventMesg.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/func_80222470.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/osSetIntMask.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/func_802224D0.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/30E0/osDestroyThread.s")

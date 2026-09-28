@@ -1,3 +1,10 @@
 #include "common.h"
+#include "ultra_internal.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/2D00/osPiRawReadIo.s")
+s32 osPiRawReadIo(u32 devAddr, u32 *data) {
+    register u32 stat;
+
+    WAIT_ON_IOBUSY(stat);
+    *data = IO_READ((u32)osRomBase | devAddr);
+    return 0;
+}

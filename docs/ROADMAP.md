@@ -13,7 +13,7 @@ lands in `us.v11` first.
 
 | module         | functions | instructions | in C (2026-09-27) |
 | ---            | ---:      | ---:         | ---:              |
-| `init`         | 67        | ~3.7k        | 40%               |
+| `init`         | 67        | ~3.7k        | 95%               |
 | `hd_code`      | 1421      | ~160k        | 0%                |
 | `hd_front_end` | 161       | ~33k         | 0%                |
 
@@ -49,10 +49,10 @@ decompilation.
 - [x] Objects depend on their headers and `GLOBAL_ASM` files.
 - [x] `diff_settings.py`: `--module`/`--version`, for asm-differ.
 - [x] mips_to_c bumped to current m2c. It needs `pycparser<3`.
-- [ ] `tools/m2c.sh` (or a make target): run m2c on one function
-      with a context built from `include/`.
-- [ ] Per-file `OPT_FLAGS` overrides in `blastcorps/Makefile`, when a file
-      turns out not to be `-O1`.
+- [x] `tools/m2c.sh <module> <function>`.
+- [x] Per-file flag overrides in `blastcorps/Makefile` (`ll.c` is `-mips3`).
+- [x] `tools/sync_stub_names.py`: keep stubs in step with new names.
+- [ ] m2c context from `include/`, so its output uses real types.
 - [ ] decomp-permuter wiring for the few functions that won't match by hand.
 - [ ] `common.h`/`include/`: the base types, the `GLOBAL_ASM` macro, and
       libultra headers from the matching SDK version.
@@ -80,10 +80,10 @@ change size (a "shiftable" build), which is how we test it.
 
 Matching C for every non-handwritten function, in this order:
 
-1. **`init`.** gzip 1.2.4 is done (`0050.c`, `1660.c`). Left: the libultra
-   copy, including `func_80220C40`, which is an older `osInitialize`. The
-   entry point, the boot main `func_80220730` and `func_80220A50`/`B5C` are
-   handwritten and stay asm.
+1. **`init`.** Done except `osInitialize`, whose C is known but only matches
+   with `osClockRate` defined in the same file, which waits for the data
+   split. The rest of `init` is handwritten and now split out as `asm`: the
+   entry point, the boot code at `0x1A30`, and libultra's `.s` files.
 2. **libultra everywhere.** Most functions match ultralib's source directly.
    The ones that don't (`lib:fuzzy`) are an older revision and get their own
    copies. Share one source file across modules where the code is identical.

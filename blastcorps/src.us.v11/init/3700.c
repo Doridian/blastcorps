@@ -1,3 +1,12 @@
 #include "common.h"
+#include "ultra_internal.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/3700/osSetEventMesg.s")
+void osSetEventMesg(OSEvent event, OSMesgQueue *mq, OSMesg msg) {
+    register u32 saveMask = __osDisableInt();
+    __OSEventState *es;
+
+    es = &__osEventStateTab[event];
+    es->messageQueue = mq;
+    es->message = msg;
+    __osRestoreInt(saveMask);
+}

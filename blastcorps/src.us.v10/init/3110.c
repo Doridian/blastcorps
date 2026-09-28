@@ -1,15 +1,15 @@
 #include "common.h"
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/3110/func_80221E10.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/3110/u32_to_string.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/3110/func_80221E40.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/3110/string_to_u32.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/3110/func_80221E98.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/3110/send_packet.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/3110/func_80221F58.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/3110/send.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/3110/func_80222030.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/3110/process_command_memory.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/3110/func_8022207C.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/3110/process_command_register.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/init/3110/func_802220A8.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/init/3110/kdebugserver.s")
