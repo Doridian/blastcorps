@@ -1,21 +1,25 @@
 #!/usr/bin/env python3
-"""The top-level ROM layout, with the compressed modules at their real sizes.
+"""The top-level ROM layout, with every piece at its built size.
 
-  rom_syms.py <version> --out <rom.ld> [--fixed-only]
+  rom_syms.py <version> --out <rom.ld> [--fixed-only] [--assets DIR]
               [--module name=path ...] [--ld-in <splat.ld> --ld-out <ld>]
 
-Everything up to the first compressed module (hd_code_text) is where the
-top-level config (blastcorps.<version>.yaml) puts it.  From there on each
-segment follows the one before: a module takes the size of its gzip file
+The header and boot code are where the top-level config
+(blastcorps.<version>.yaml) puts them.  From init on, each segment follows
+the one before: init and the assets take the size of their built file
+(DIR/<name>.bin, default build/assets, from tools/assets.py, which pads each
+one out to where the next starts), a module the size of its gzip file
 (--module, else assets/<name>.bin), the unnamed zero-padding bins between
-them become alignment to 16, and the trailer starts where the last module's
-padding ends.  In the original ROM that reproduces the config's offsets.
+the modules become alignment to 16, and the trailer starts where the last
+module's padding ends.  For the original assets and modules that reproduces
+the config's offsets.
 
 --out gets `<segment>_ROM_START`/`_ROM_END` for every named segment, with the
 original start in a comment (tools/link_syms.py matches on that; the
 version dropped from module names: `hd_code_text_ROM_START`), for the stage-2
 links (tools/link_syms.py --rom).  --fixed-only leaves out what depends on the
-modules' sizes, for hd_code and hd_front_end, which reach only assets.
+modules' sizes, for hd_code and hd_front_end, which reach only assets.  A few
+addresses that aren't a segment's start get a symbol of their own (EXTRA).
 
 --ld-in/--ld-out rewrite the top-level linker script with those positions,
 without the padding bins (objcopy fills the gaps with zeros).
@@ -28,6 +32,12 @@ from pathlib import Path
 import yaml
 
 MODULES = ("hd_code_text", "hd_code_data", "hd_front_end_text", "hd_front_end_data")
+FIRST_CHAINED = "init."   # init, then the texture table right after it
+
+# Addresses the code uses that aren't a segment's start: {segment: [(name,
+# offset from its start)]}.  func_80255DC8 (hd_code 00000.c) DMAs 0xC0 bytes
+# from static_data, its inflated size, which runs past the data's end.
+EXTRA = {"static_data": [("DMA_END", 0xC0)]}
 
 
 def cname(s):
@@ -35,9 +45,9 @@ def cname(s):
     return "_" + s if s[0].isdigit() else s
 
 
-def layout(ver, sizes):
+def layout(ver, sizes, assets=Path("build/assets")):
     """[(name or None, start, end, kind, original start)] in ROM order; kind
-    is 'fixed', 'module', 'pad' or 'after' (placed after a module)."""
+    is 'fixed', 'asset', 'module', 'pad' or 'after' (placed after a module)."""
     cfg = yaml.safe_load(Path(f"blastcorps.{ver}.yaml").read_text())
     segs = []
     for s in cfg["segments"]:
@@ -49,25 +59,31 @@ def layout(ver, sizes):
             segs.append((None, s[0]))
     out = []
     moved = False
+    chained = False
     pos = None
     for k, (name, start) in enumerate(segs[:-1]):
         end = segs[k + 1][1]
         base = name.rsplit(f".{ver}", 1)[0] if name else None
+        if name and name.startswith(FIRST_CHAINED):
+            chained = True
+            pos = start
         if base in MODULES:
             moved = True
             size = sizes.get(base, end - start)
             start = pos if pos is not None else start
             out.append((base, start, start + size, "module", segs[k][1]))
             pos = start + size
-        elif not moved:
+        elif not chained:
             out.append((name, start, end, "fixed", start))
         elif name is None:
             new = (pos + 15) & ~15
             out.append((None, pos, new, "pad", start))
             pos = new
         else:
-            out.append((name, pos, pos + end - start, "after", start))
-            pos += end - start
+            built = assets / f"{name}.bin"
+            size = built.stat().st_size if built.exists() else end - start
+            out.append((name, pos, pos + size, "after" if moved else "asset", start))
+            pos += size
     # The last segment (the 0xFF trailer) still ends where the ROM did.
     name, start, end, kind, orig = out[-1]
     if kind == "after" and end < segs[-1][1]:
@@ -81,6 +97,7 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--fixed-only", action="store_true")
     ap.add_argument("--module", action="append", default=[], metavar="NAME=PATH")
+    ap.add_argument("--assets", default="build/assets")
     ap.add_argument("--ld-in")
     ap.add_argument("--ld-out")
     args = ap.parse_args()
@@ -91,14 +108,16 @@ def main():
         name, _, path = spec.partition("=")
         paths[name] = Path(path)
     sizes = {} if args.fixed_only else {m: p.stat().st_size for m, p in paths.items()}
-    segs = layout(ver, sizes)
+    segs = layout(ver, sizes, Path(args.assets))
 
     lines = [f"/* generated by tools/rom_syms.py from blastcorps.{ver}.yaml */"]
     for name, start, end, kind, orig in segs:
-        if name is None or (args.fixed_only and kind != "fixed"):
+        if name is None or (args.fixed_only and kind not in ("fixed", "asset")):
             continue
         lines += [f"{cname(name)}_ROM_START = 0x{start:X}; /* originally 0x{orig:X} */",
                   f"{cname(name)}_ROM_END = 0x{end:X};"]
+        for sym, off in EXTRA.get(name, []):
+            lines.append(f"{cname(name)}_{sym} = 0x{start + off:X}; /* originally 0x{orig + off:X} */")
     Path(args.out).write_text("\n".join(lines) + "\n")
 
     if args.ld_in:
@@ -122,7 +141,8 @@ def main():
             if kind == "pad":
                 # objcopy fills the gap with zeros
                 text = text.replace(f"\n        build/assets/{orig:X}.bin.o(.data);", "")
-            size = Path(f"assets/{name}.bin").stat().st_size if kind == "after" else None
+            built = Path(args.assets) / f"{name}.bin"
+            size = (built if built.exists() else Path(f"assets/{name}.bin")).stat().st_size if kind == "after" else None
             if size is not None and end - start > size:
                 # the trailer is all 0xFF; a smaller build fills it out
                 line = f"\n        build/assets/{name}.bin.o(.data);"

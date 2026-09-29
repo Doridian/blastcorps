@@ -109,6 +109,25 @@ make VERSION=us.v11
 Going all the way round -- split, disassemble, reassemble, re-deflate, relink --
 reproduces every one of the four ROMs byte for byte.
 
+## Assets
+
+`make extract` also turns the ROM's assets into editable files under
+`assets/` (`tools/assets.py`, see [docs/ASSETS.md](docs/ASSETS.md)):
+
+| directory          | what                                                         |
+| ---                | ---                                                          |
+| `assets/textures/` | the 4096-entry texture table: a PNG per texture, `textures.yaml` |
+| `assets/levels/`   | the 60 level files as YAML (header, objects, collision)      |
+| `assets/audio/`    | the music and sound effect banks (`.ctl`/`.tbl`), the 66 sequences (`.seq`) |
+| `assets/images/`   | the three 320x240 background images (PNG)                    |
+| `assets/gzip/`     | every other gzip member (models, display lists, ...), inflated |
+
+It checks that they rebuild to the ROM's bytes, and `make` builds the ROM
+from them: compressing them again and regenerating the texture and model
+tables.  After an edit that changes an asset's size, everything after it
+moves; rebuild with `SHIFT=1` (both stages, see CLAUDE.md) so the code
+follows.
+
 ## Regenerating the splat configs
 
 The top-level split and the stage-2 module splits are both generated rather than
@@ -182,7 +201,9 @@ the evidence for each name.
 ## C tools
 
 C tools from queueRAM's `blast_corps_docs`, `sm64tools` and other places.
-They can be found in the `tools/src` subdirectory of this repo.
+They can be found in the `tools/src` subdirectory of this repo.  The build
+doesn't use them (`tools/assets.py` and `tools/assetlib/` do the same in
+Python, and more); they are kept for reference.
 
 ### Build the tools
 

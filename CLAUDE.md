@@ -29,7 +29,10 @@ modules both are no-ops.
 
 A shifted build proves nothing depends on absolute addresses: `SHIFT=1` puts
 `SHIFT_PAD` (default `0x10`) bytes of zeros at the start of hd_code's and
-hd_front_end's `.text` and `.data`, and nothing is sha1-checked:
+hd_front_end's `.text` and `.data`, and `ASSET_SHIFT_PAD` (default `0x10`)
+before the texture table and every 16-aligned asset, and nothing is
+sha1-checked (stage 2 runs the top level's asset build itself, so the order
+below is enough):
 
 ```
 make VERSION=us.v11 -C blastcorps SHIFT=1 all compress
@@ -56,6 +59,33 @@ cmake --build build/port && build/port/blastcorps baserom.us.v11.z64
 
 Port-only source changes in `src.us.v11` go under `#ifdef TARGET_PC`.
 
+## Assets
+
+The top-level config names every piece of the ROM (docs/ASSETS.md has the
+inventory and formats). `make extract` runs `tools/assets.py extract`, which
+writes editable files under `assets/` (texture PNGs, level YAML, ctl/tbl/seq,
+inflated gzip members) and fails unless they rebuild to the ROM's bytes;
+`make` links the ROM from `tools/assets.py build`'s output in
+`build/assets/`, not from splat's bins. `tools/rom_syms.py` places every
+segment from init on by the size of its built file, and the texture and
+model tables are regenerated from where things ended up, so an edited
+asset may change size. The stage-2 links take the asset positions from
+`build/assets` too.
+
+- **Blast textures keep the ROM's stream.** The compression is lossy and
+  Rare's encoder isn't reproducible from the texels, so `NNN.blast` is used
+  while the PNG still decodes from it; only a changed PNG is recompressed.
+- **The LZSS is Mark Nelson's with BREAK_EVEN 2** (`tools/assetlib/lzss.py`);
+  his tree encoder reproduces the ROM's data. gzip members use `tools/gzip`
+  at `-6`, like the code.
+- **The texture table and the model table hold offsets from their own
+  start;** the handwritten loaders reach them through
+  `texture_table_ROM_START`/`model_table_ROM_START` (postsplit symbolizes
+  the `lui`/`addiu` pairs, including 5BF40's `lui 0`).
+- **Regenerate the top-level configs** with `tools/gen_build_yaml.py` after
+  changing `tools/assetlib/romlayout.py`; `assets.py extract` refuses a
+  config whose segments aren't where the ROM has them.
+
 ## What "matching" depends on
 
 The sha1 checks are the arbiter. Everything below is a way to keep them passing.
@@ -66,15 +96,17 @@ The sha1 checks are the arbiter. Everything below is a way to keep them passing.
 - **Padding must stay outside the code sections.** `hd_code_*` and
   `hd_front_end_*` get inflated and re-deflated, so a recompressed section is the
   bare gzip stream. Any inter-section padding folded into a segment shifts
-  everything after it. Asset segments are opaque and may absorb their padding.
+  everything after it. An asset segment in the config runs to the next one's
+  start; `tools/assets.py` pads each built asset out to that (the ROM's pad
+  bytes are kept where they aren't zeros).
   This was a live bug in `blastcorps.us.v10.yaml` (`0x7f9c76` should have been
   `0x7f9c75`).
 - **Every name must still be where it was.** Outside `SHIFT`, each link is
   followed by `tools/link_syms.py --check`, which fails if any name in the
   symbol files moved; that points at a layout problem before the sha1 does.
 - **Config offsets are generated, not hand-written.** `tools/gen_build_yaml.py`
-  reads the top-level split straight out of the ROM (gzip members are
-  self-delimiting); `tools/gen_code_yaml.py` runs splat once for file boundaries
+  reads the top-level split straight out of the ROM (gzip and LZSS streams
+  are self-delimiting, the tables and sound banks give their own sizes); `tools/gen_code_yaml.py` runs splat once for file boundaries
   and emits the stage-2 module configs. Both reproduce the hand-maintained US
   configs, so prefer regenerating over editing offsets by hand.
 

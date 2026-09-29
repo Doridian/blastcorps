@@ -27,6 +27,7 @@ link .env
 for sub in tools/splat tools/asm-differ tools/asm-processor tools/mips_to_c; do
     [ -n "$(ls -A "$HERE/$sub" 2>/dev/null)" ] || { rmdir "$HERE/$sub" 2>/dev/null || true; link "$sub"; }
 done
+link assets
 link blastcorps/asm
 link blastcorps/assets
 link blastcorps/.version

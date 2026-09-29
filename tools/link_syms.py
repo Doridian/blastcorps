@@ -17,7 +17,8 @@ ROM.  Here each one becomes:
 - its current address in another module, if it lies in one: the nearest
   symbol below it there, looked up in that module's --layout ELF.  Without
   one (the layout link itself) it keeps its original address;
-- the ROM symbol from --rom, if it is where a top-level ROM segment starts;
+- the ROM symbol from --rom, if it is where a top-level ROM segment starts
+  (or one of the other ROM addresses tools/rom_syms.py names);
 - else its original address.  That is the fixed memory map: hardware
   registers, the boot globals at 0x80000300, segment addresses, the
   framebuffers, each module's load address (unless it's a func_ name: the
@@ -128,12 +129,13 @@ def ld_objects(ld_path):
 
 
 def rom_symbols(path):
-    """{original ROM offset: symbol} of the segment starts in --rom."""
+    """{original ROM offset: symbol} of the segment starts in --rom (and of
+    the few other addresses tools/rom_syms.py names, marked "originally")."""
     out = {}
     if path and Path(path).exists():
         for line in Path(path).read_text().splitlines():
             m = ASSIGN.match(line)
-            if m and m.group(1).endswith("_ROM_START"):
+            if m and (m.group(1).endswith("_ROM_START") or "originally" in m.group(3)):
                 o = re.search(r"originally (0x[0-9A-Fa-f]+)", m.group(3))
                 out.setdefault(int(o.group(1) if o else m.group(2), 0), m.group(1))
     return out

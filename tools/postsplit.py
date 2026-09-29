@@ -169,7 +169,10 @@ def symbolize_pairs(paths, mods, roms, syms):
                     addr = (v | imm) if op == "ori" else (v + imm) & 0xFFFFFFFF
                     if op == "ori" and imm >= 0x8000:
                         addr = None  # %lo with ori only works below 0x8000
-                if addr is not None and (movable(mods, addr) or (addr in roms and addr >= 0x10000)):
+                # a ROM segment's start, above the small numbers (but the
+                # texture table is at 0x4CE0: 5BF40's `lui 0; addiu 0x4ce0`)
+                if addr is not None and (movable(mods, addr) or (addr in roms and (
+                        addr >= 0x10000 or roms[addr] == "texture_table"))):
                     name = syms.name(addr)
                     lui_n = hi[base][1]
                     if lui_n not in edits:

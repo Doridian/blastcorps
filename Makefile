@@ -13,10 +13,15 @@ BIN_DIRS  = assets
 TOOLS_DIR := tools
 
 S_FILES   = $(foreach dir,$(ASM_DIRS),$(wildcard $(dir)/*.s))
-BIN_FILES = $(foreach dir,$(BIN_DIRS),$(wildcard $(dir)/*.bin))
 
-O_FILES := $(foreach file,$(S_FILES),$(BUILD_DIR)/$(file).o) \
-           $(foreach file,$(BIN_FILES),$(BUILD_DIR)/$(file).o)
+# Every segment the ROM link uses is built into ASSET_DIR by tools/assets.py:
+# the assets from their editable files under assets/ (PNGs, YAML, ctl/tbl,
+# inflated gzip members), the rest (boot, init, the code modules) copied
+# from assets/.  splat's linker script lists them.
+ASSET_DIR = $(BUILD_DIR)/assets
+LD_BINS  := $(shell grep -o 'build/assets/[A-Za-z0-9_.]*\.bin\.o' $(BASENAME).$(VERSION).ld 2>/dev/null)
+O_FILES  := $(foreach file,$(S_FILES),$(BUILD_DIR)/$(file).o) $(LD_BINS)
+ASSET_SRCS = $(shell find assets/ -type f 2>/dev/null)
 
 BLASTCORP_EXTRACTED := blastcorps/init.$(VERSION).bin blastcorps/hd_code.$(VERSION).bin blastcorps/hd_front_end.$(VERSION).bin
 
@@ -28,8 +33,14 @@ SPLAT_LD_SCRIPT = $(BASENAME).$(VERSION).ld
 LD_SCRIPT = $(BUILD_DIR)/$(BASENAME).$(VERSION).ld
 
 # SHIFT=1: the modules in assets/ came from a shifted stage-2 build (see
-# blastcorps/Makefile), so the ROM is not sha1-checked.
+# blastcorps/Makefile), so the ROM is not sha1-checked.  The assets move too:
+# ASSET_SHIFT_PAD bytes go before every 16-aligned asset (tools/assets.py).
 SHIFT ?= 0
+ifneq ($(SHIFT),0)
+ASSET_SHIFT_PAD ?= 0x10
+else
+ASSET_SHIFT_PAD := 0
+endif
 
 CROSS = mips-linux-gnu-
 AS = $(CROSS)as
@@ -77,7 +88,10 @@ else
 	@echo "$(TARGET).z64: shifted build, not sha1-checked"
 endif
 
-extract: check stamp assets/init.$(VERSION).bin
+extract: check stamp assets/layout.yaml
+
+# the ROM's assets rebuilt from assets/ (see ASSET_DIR above)
+assets: dirs $(ASSET_DIR)/.stamp
 
 clean:
 	rm -rf asm
@@ -108,14 +122,29 @@ blastcorps/init.$(VERSION).bin: assets/init.$(VERSION).bin
 assets/init.$(VERSION).bin:
 	$(PYTHON) $(TOOLS_DIR)/splat/split.py $(BASENAME).$(VERSION).yaml
 
+# the editable assets (checked to rebuild to the ROM's bytes)
+assets/layout.yaml: | assets/init.$(VERSION).bin
+	$(PYTHON) $(TOOLS_DIR)/assets.py extract $(VERSION)
+
+$(BUILD_DIR)/asset_shift.stamp: FORCE
+	@mkdir -p $(BUILD_DIR)
+	@if [ "$$(cat $@ 2>/dev/null)" != "$(ASSET_SHIFT_PAD)" ]; then echo "$(ASSET_SHIFT_PAD)" > $@; fi
+
+$(ASSET_DIR)/.stamp: $(ASSET_SRCS) $(TOOLS_DIR)/assets.py $(wildcard $(TOOLS_DIR)/assetlib/*) $(BUILD_DIR)/asset_shift.stamp
+	@mkdir -p $(ASSET_DIR)
+	$(PYTHON) $(TOOLS_DIR)/assets.py build $(VERSION) --out $(ASSET_DIR) --shift $(ASSET_SHIFT_PAD)
+	@touch $@
+
+$(ASSET_DIR)/%.bin: $(ASSET_DIR)/.stamp ;
+
 .baserom.$(VERSION).ok: baserom.$(VERSION).z64
 	@echo "$$(cat $(BASENAME).$(VERSION).sha1)  $<" | sha1sum --check
 	@touch $@
 
-$(LD_SCRIPT): $(SPLAT_LD_SCRIPT) $(BIN_FILES) $(TOOLS_DIR)/rom_syms.py
+$(LD_SCRIPT): $(SPLAT_LD_SCRIPT) $(ASSET_DIR)/.stamp $(TOOLS_DIR)/rom_syms.py
 	@mkdir -p $(BUILD_DIR)
 	@$(PYTHON) $(TOOLS_DIR)/rom_syms.py $(VERSION) --out $(BUILD_DIR)/rom.$(VERSION).ld \
-		--ld-in $(SPLAT_LD_SCRIPT) --ld-out $@
+		--assets $(ASSET_DIR) --ld-in $(SPLAT_LD_SCRIPT) --ld-out $@
 
 $(TARGET).elf: $(O_FILES) $(LD_SCRIPT)
 	@$(LD) $(LDFLAGS) -o $@
@@ -123,8 +152,8 @@ $(TARGET).elf: $(O_FILES) $(LD_SCRIPT)
 $(BUILD_DIR)/%.s.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
-$(BUILD_DIR)/%.bin.o: %.bin
-	$(LD) -r -b binary -o $@ $<
+$(ASSET_DIR)/%.bin.o: $(ASSET_DIR)/%.bin
+	@$(LD) -r -b binary -o $@ $<
 
 $(TARGET).bin: $(TARGET).elf
 	$(OBJCOPY) $(OBJCOPYFLAGS) $< $@
@@ -137,5 +166,5 @@ $(TARGET).z64: $(TARGET).bin
 
 ### Settings
 .SECONDARY:
-.PHONY: all check clean decompress default dirs extract stamp verify
+.PHONY: all assets check clean decompress default dirs extract stamp verify FORCE
 SHELL = /bin/bash -e -o pipefail

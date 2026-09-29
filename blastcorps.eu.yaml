@@ -13,747 +13,755 @@ segments:
     type:  bin
     start: 0x00000040
   - [0x1000, bin, init.eu]
-  - [0x4CE0, bin]                           # offsets table (0x8000 long)
-  - [0xCCE0, bin]                           # blast-compressed textures, tbd
-  # TODO: extract each of these
-  - [0x487190, bin, titlelogo_usa.raw.859051540]
-  - [0x489FB0, bin, titlepicture_usa.raw.859051541]
-  - [0x48F6E0, bin, nink.raw.859051540]
-  - [0x48FAB0, bin, 64k.raw.859051541]
-  - [0x48FBB0, bin, copyrightLogo.raw.859051541]
-  - [0x48FFD0, bin, scientist.raw.859051482]
-  - [0x4902D1, bin, scientist_dl.raw.859051485]
-  - [0x490500, bin, commpoint.raw.859051482]
-  - [0x49098A, bin, commpoint_dl.raw.859051485]
-  - [0x490C00, bin, buggy.raw.859051480]
-  - [0x49195C, bin, buggy_dl.raw.859051484]
-  - [0x491F40, bin, driver.raw.859051481]
-  - [0x492818, bin, driver_dl.raw.859051484]
-  - [0x492B10, bin, sideswipe.raw.859051480]
-  - [0x493E28, bin, sideswipe_dl.raw.859051485]
-  - [0x4944D0, bin, magoo.raw.859051480]
-  - [0x49640C, bin, magoo_dl.raw.859051484]
-  - [0x496C10, bin, bulldozer.raw.859051481]
-  - [0x49777A, bin, bulldozer_dl.raw.859051484]
-  - [0x497C30, bin, truck.raw.859051481]
-  - [0x498693, bin, truck_dl.raw.859051484]
-  - [0x498B20, bin, chopper.raw.859051481]
-  - [0x4993E1, bin, chopper_dl.raw.859051485]
-  - [0x4997D0, bin, cmo.raw.859051481]
-  - [0x49A79F, bin, cmo_dl.raw.859051485]
-  - [0x49AE60, bin, crane.raw.859051481]
-  - [0x49B4B5, bin, crane_dl.raw.859051485]
-  - [0x49B770, bin, train.raw.859051481]
-  - [0x49BC21, bin, train_dl.raw.859051485]
-  - [0x49BE20, bin, hotrod.raw.859051482]
-  - [0x49C2E0, bin, hotrod_dl.raw.859051485]
-  - [0x49C5C0, bin, jetpack.raw.859051482]
-  - [0x49E1AC, bin, jetpack_dl.raw.859051486]
-  - [0x49EA20, bin, bike.raw.859051482]
-  - [0x49F454, bin, bike_dl.raw.859051485]
-  - [0x49F8E0, bin, barge.raw.859051483]
-  - [0x49FDE5, bin, barge_dl.raw.859051486]
-  - [0x4A00B0, bin, police.raw.859051482]
-  - [0x4A0546, bin, police_dl.raw.859051485]
-  - [0x4A0860, bin, ateam.raw.859051482]
-  - [0x4A0E2F, bin, ateam_dl.raw.859051486]
-  - [0x4A1140, bin, starski.raw.859051483]
-  - [0x4A1516, bin, starski_dl.raw.859051486]
-  - [0x4A17D0, bin, minimagoo.raw.859051483]
-  - [0x4A3922, bin, minimagoo_dl.raw.859051486]
-  - [0x4A4260, bin, shuttle.raw.859051483]
-  - [0x4A50AD, bin, shuttle_dl.raw.859051486]
-  - [0x4A57A0, bin, lagp.raw.861896295]
-  - [0x4AC0D2, bin, lagp_dl.raw.861798577]
-  - [0x4ACD60, bin, chimp.raw.855918150]
-  - [0x4B72FB, bin, chimp_dl.raw.857482582]
-  - [0x4B8AB0, bin, valley.raw.855417165]
-  - [0x4BEF35, bin, valley_dl.raw.857482584]
-  - [0x4BFEB0, bin, fact.raw.855417166]
-  - [0x4C3397, bin, fact_dl.raw.857482585]
-  - [0x4C3C10, bin, dip.raw.855417169]
-  - [0x4D3CC6, bin, dip_dl.raw.857482588]
-  - [0x4D60E0, bin, beetle.raw.855417168]
-  - [0x4E1988, bin, beetle_dl.raw.857482585]
-  - [0x4E30C0, bin, bonus1.raw.855417169]
-  - [0x4E4A34, bin, bonus1_dl.raw.857482585]
-  - [0x4E4FD0, bin, bonus2.raw.855417168]
-  - [0x4E75A8, bin, bonus2_dl.raw.857482586]
-  - [0x4E7D50, bin, bonus3.raw.855417170]
-  - [0x4E8D47, bin, bonus3_dl.raw.857482586]
-  - [0x4E90C0, bin, level9.raw.855311136]
-  - [0x4F456E, bin, level9_dl.raw.855311152]
-  - [0x4F5D60, bin, level10.raw.855052320]
-  - [0x4FF611, bin, level10_dl.raw.855052332]
-  - [0x500670, bin, level11.raw.854723779]
-  - [0x506EC3, bin, level11_dl.raw.854723782]
-  - [0x507FD0, bin, level12.raw.854375093]
-  - [0x51029A, bin, level12_dl.raw.854375108]
-  - [0x511490, bin, level13.raw.854807929]
-  - [0x521507, bin, level13_dl.raw.854807951]
-  - [0x5231D0, bin, level14.raw.855238321]
-  - [0x52BAC4, bin, level14_dl.raw.855238342]
-  - [0x52CE50, bin, level15.raw.854574411]
-  - [0x5319D5, bin, level15_dl.raw.854574420]
-  - [0x532850, bin, level16.raw.854893845]
-  - [0x53D47E, bin, level16_dl.raw.854893863]
-  - [0x53EB00, bin, level17.raw.855489141]
-  - [0x5491EA, bin, level17_dl.raw.857482586]
-  - [0x54A970, bin, level18.raw.855396658]
-  - [0x551EFA, bin, level18_dl.raw.855396671]
-  - [0x552F30, bin, level19.raw.850841479]
-  - [0x554B83, bin, level19_dl.raw.850841506]
-  - [0x555150, bin, level20.raw.850841480]
-  - [0x55F355, bin, level20_dl.raw.850841508]
-  - [0x560FE0, bin, level21.raw.850841480]
-  - [0x56481B, bin, level21_dl.raw.850841507]
-  - [0x565420, bin, level22.raw.850841481]
-  - [0x56E247, bin, level22_dl.raw.850841508]
-  - [0x56F540, bin, level23.raw.850841481]
-  - [0x571FD8, bin, level23_dl.raw.850841508]
-  - [0x572330, bin, level24.raw.850841481]
-  - [0x5734A4, bin, level24_dl.raw.850841508]
-  - [0x573830, bin, level25.raw.854023082]
-  - [0x579708, bin, level25_dl.raw.854023084]
-  - [0x57A410, bin, level26.raw.854114919]
-  - [0x5801AF, bin, level26_dl.raw.854114929]
-  - [0x580CB0, bin, level27.raw.854726149]
-  - [0x587DF0, bin, level27_dl.raw.854726160]
-  - [0x588E30, bin, level28.raw.850841483]
-  - [0x58B68D, bin, level28_dl.raw.850841509]
-  - [0x58BFD0, bin, level29.raw.854807687]
-  - [0x596351, bin, level29_dl.raw.854807695]
-  - [0x597CD0, bin, level30.raw.850841484]
-  - [0x59B017, bin, level30_dl.raw.850841509]
-  - [0x59B920, bin, level31.raw.850841485]
-  - [0x5A45A1, bin, level31_dl.raw.850841510]
-  - [0x5A5990, bin, level32.raw.850841486]
-  - [0x5AF811, bin, level32_dl.raw.850841510]
-  - [0x5B0C60, bin, level33.raw.854819191]
-  - [0x5B4FB0, bin, level33_dl.raw.854819199]
-  - [0x5B5B80, bin, level34.raw.853776466]
-  - [0x5B865E, bin, level34_dl.raw.853776469]
-  - [0x5B8D00, bin, level35.raw.854536978]
-  - [0x5C37BC, bin, level35_dl.raw.854536993]
-  - [0x5C4DD0, bin, level36.raw.854825056]
-  - [0x5C9E7D, bin, level36_dl.raw.854825064]
-  - [0x5CAB10, bin, level37.raw.850841488]
-  - [0x5CC9BE, bin, level37_dl.raw.850841511]
-  - [0x5CD0A0, bin, level38.raw.850841488]
-  - [0x5D0908, bin, level38_dl.raw.850841511]
-  - [0x5D11B0, bin, level39.raw.850841490]
-  - [0x5DB24C, bin, level39_dl.raw.850841512]
-  - [0x5DC980, bin, level40.raw.850841490]
-  - [0x5E5C79, bin, level40_dl.raw.850841512]
-  - [0x5E7030, bin, level41.raw.850841491]
-  - [0x5EB618, bin, level41_dl.raw.850841512]
-  - [0x5EC950, bin, level42.raw.854636925]
-  - [0x5F2DB7, bin, level42_dl.raw.854636935]
-  - [0x5F3BD0, bin, level43.raw.850841494]
-  - [0x6000C9, bin, level43_dl.raw.850841513]
-  - [0x601600, bin, level44.raw.850841493]
-  - [0x609711, bin, level44_dl.raw.850841513]
-  - [0x60A860, bin, level45.raw.850841494]
-  - [0x612815, bin, level45_dl.raw.850841513]
-  - [0x613BF0, bin, level46.raw.850841495]
-  - [0x61C9DC, bin, level46_dl.raw.850841514]
-  - [0x61DEC0, bin, level47.raw.850841495]
-  - [0x62133D, bin, level47_dl.raw.850841514]
-  - [0x621C40, bin, level48.raw.850841495]
-  - [0x625DFC, bin, level48_dl.raw.850841514]
-  - [0x626B30, bin, level49.raw.854576439]
-  - [0x62F9C1, bin, level49_dl.raw.850841515]
-  - [0x630D80, bin, level50.raw.854618062]
-  - [0x634E85, bin, level50_dl.raw.850841515]
-  - [0x635850, bin, level51.raw.850841497]
-  - [0x63BE50, bin, level51_dl.raw.850841515]
-  - [0x63CB60, bin, level52.raw.854807689]
-  - [0x641826, bin, level52_dl.raw.854807691]
-  - [0x642080, bin, level53.raw.854636926]
-  - [0x64421C, bin, level53_dl.raw.854636935]
-  - [0x644960, bin, level54.raw.850841498]
-  - [0x645EA5, bin, level54_dl.raw.850841516]
-  - [0x6461D0, bin, level55.raw.850841498]
-  - [0x647207, bin, level55_dl.raw.850841516]
-  - [0x6476A0, bin, level56.raw.850841500]
-  - [0x65377E, bin, level56_dl.raw.850841516]
-  - [0x655110, bin, level57.raw.855311995]
-  - [0x65F479, bin, level57_dl.raw.855311998]
-  - [0x660AA0, bin, level58.raw.850841500]
-  - [0x66565A, bin, level58_dl.raw.850841517]
-  - [0x6660D0, bin, level59.raw.850841501]
-  - [0x66BC99, bin, level59_dl.raw.850841517]
-  - [0x66CA50, bin, worldtextures.raw.859051575]
-  - [0x68B6A0, bin, ambertextures.raw.859051488]
-  - [0x6A3400, bin, traffictextures.raw.859051488]
-  - [0x6A8EF0, bin, controllertextures.raw.859051488]
-  - [0x6AA060, bin, attract.raw.859051470]
-  - [0x6E8AD0, bin, usa_star.raw.859051479]
-  - [0x6EA34E, bin, usa_star_dl.raw.859051483]
-  - [0x6EA9A0, bin, ninlogo.raw.859051480]
-  - [0x6EAB75, bin, ninlogo_dl.raw.859051484]
-  - [0x6EACE0, bin, reflectlogo.raw.859051480]
-  - [0x6EBF24, bin, reflectlogo_dl.raw.859051484]
-  - [0x6ECE10, bin, lamisc1.raw.853757069]
-  - [0x6ED1B8, bin, lamisc1_dl.raw.853756992]
-  - [0x6ED308, bin, lapetrol1.raw.853757069]
-  - [0x6ED772, bin, lapetrol1_dl.raw.853756992]
-  - [0x6ED8F0, bin, laburger1.raw.854558964]
-  - [0x6EDC92, bin, laburger1_dl.raw.854558944]
-  - [0x6EDDFE, bin, laorph6.raw.853757070]
-  - [0x6EE51C, bin, laorph6_dl.raw.853756992]
-  - [0x6EE797, bin, lashop2.raw.853757070]
-  - [0x6EEC5C, bin, lashop2_dl.raw.853756993]
-  - [0x6EEE1B, bin, lamisc2.raw.853757070]
-  - [0x6EF041, bin, lamisc2_dl.raw.853756993]
-  - [0x6EF138, bin, lagrage4.raw.853757071]
-  - [0x6EF6A9, bin, lagrage4_dl.raw.853756994]
-  - [0x6EF925, bin, lamisc4.raw.853757071]
-  - [0x6EFBF4, bin, lamisc4_dl.raw.853756994]
-  - [0x6EFD47, bin, laflat5.raw.853757071]
-  - [0x6F06E4, bin, laflat5_dl.raw.853756994]
-  - [0x6F09F8, bin, lawine5.raw.853757072]
-  - [0x6F1266, bin, lawine5_dl.raw.853756995]
-  - [0x6F1557, bin, lamisc5.raw.853757072]
-  - [0x6F16D3, bin, lamisc5_dl.raw.853756995]
-  - [0x6F17B2, bin, laflat3.raw.853757072]
-  - [0x6F22B1, bin, laflat3_dl.raw.853756996]
-  - [0x6F26C0, bin, lamisc3.raw.853757072]
-  - [0x6F27EE, bin, lamisc3_dl.raw.853756996]
-  - [0x6F28A0, bin, lashop8.raw.853757073]
-  - [0x6F385C, bin, lashop8_dl.raw.853756997]
-  - [0x6F3D05, bin, laflat8.raw.853757073]
-  - [0x6F439A, bin, laflat8_dl.raw.853756997]
-  - [0x6F4654, bin, labigo7.raw.853757073]
-  - [0x6F570B, bin, labigo7_dl.raw.853756998]
-  - [0x6F5D1D, bin, lanicl7.raw.853757074]
-  - [0x6F5E95, bin, lanicl7_dl.raw.853756998]
-  - [0x6F5F7F, bin, laflat7.raw.853757074]
-  - [0x6F6899, bin, laflat7_dl.raw.853756998]
-  - [0x6F6B6D, bin, laflat9.raw.853757074]
-  - [0x6F6E32, bin, laflat9_dl.raw.853756999]
-  - [0x6F6F73, bin, laflt10.raw.853757074]
-  - [0x6F7844, bin, laflt10_dl.raw.853756999]
-  - [0x6F7BE2, bin, laflt11.raw.853757075]
-  - [0x6F84A3, bin, laflt11_dl.raw.853756999]
-  - [0x6F883B, bin, laorp12.raw.853757075]
-  - [0x6F9100, bin, laorp12_dl.raw.853757000]
-  - [0x6F9408, bin, laflt13.raw.853757075]
-  - [0x6F9E42, bin, laflt13_dl.raw.853757000]
-  - [0x6FA272, bin, laflt14.raw.853757076]
-  - [0x6FADBA, bin, laflt14_dl.raw.853757000]
-  - [0x6FB1EB, bin, lamsc14.raw.853757076]
-  - [0x6FB330, bin, lamsc14_dl.raw.853757001]
-  - [0x6FB3E3, bin, laflt15.raw.853757076]
-  - [0x6FBE21, bin, laflt15_dl.raw.853757001]
-  - [0x6FC218, bin, lamsc16.raw.853757077]
-  - [0x6FC4FB, bin, lamsc16_dl.raw.853757001]
-  - [0x6FC62F, bin, ladrm16.raw.853757077]
-  - [0x6FC84C, bin, ladrm16_dl.raw.853757001]
-  - [0x6FC94B, bin, laflt17.raw.853757077]
-  - [0x6FCB24, bin, laflt17_dl.raw.853757002]
-  - [0x6FCC33, bin, chrod17.raw.853757077]
-  - [0x6FD076, bin, chrod17_dl.raw.853757002]
-  - [0x6FD24D, bin, chlx7a.raw.853757078]
-  - [0x6FD364, bin, chlx7a_dl.raw.853757002]
-  - [0x6FD405, bin, chsta5.raw.853757078]
-  - [0x6FDB10, bin, chsta5_dl.raw.853757003]
-  - [0x6FDD91, bin, chbar8.raw.853757078]
-  - [0x6FEF10, bin, chbar8_dl.raw.853757003]
-  - [0x6FF372, bin, chmisc8.raw.853757079]
-  - [0x6FF56E, bin, chmisc8_dl.raw.853757003]
-  - [0x6FF699, bin, chwag8.raw.853757079]
-  - [0x6FF95A, bin, chwag8_dl.raw.853757003]
-  - [0x6FFAAA, bin, chshd6.raw.853757079]
-  - [0x6FFF9A, bin, chshd6_dl.raw.853757004]
-  - [0x7000F3, bin, chbog9.raw.853757079]
-  - [0x700330, bin, chbog9_dl.raw.853757004]
-  - [0x70044F, bin, chbat6.raw.853757080]
-  - [0x700625, bin, chbat6_dl.raw.853757004]
-  - [0x700714, bin, chmisc6.raw.853757080]
-  - [0x700A28, bin, chmisc6_dl.raw.853757005]
-  - [0x700B54, bin, chwin5.raw.853757080]
-  - [0x700DB3, bin, chwin5_dl.raw.853757005]
-  - [0x700EE2, bin, chbur9.raw.853757080]
-  - [0x7013CC, bin, chbur9_dl.raw.853757006]
-  - [0x7015AC, bin, chmisc9.raw.853757081]
-  - [0x70187D, bin, chmisc9_dl.raw.853757006]
-  - [0x701A02, bin, chhse3.raw.853757081]
-  - [0x702464, bin, chhse3_dl.raw.853757006]
-  - [0x7027B2, bin, chmisc3.raw.853757081]
-  - [0x7029C8, bin, chmisc3_dl.raw.853757007]
-  - [0x702AD2, bin, chlfa12.raw.853757082]
-  - [0x703846, bin, chlfa12_dl.raw.853757007]
-  - [0x703BDE, bin, chmsc12.raw.853757082]
-  - [0x703FF0, bin, chmsc12_dl.raw.853757008]
-  - [0x70419B, bin, chtra12.raw.853757082]
-  - [0x7049B3, bin, chtra12_dl.raw.853757008]
-  - [0x704CD7, bin, chgin14.raw.853757083]
-  - [0x70556A, bin, chgin14_dl.raw.853757008]
-  - [0x70583D, bin, chhar15.raw.853757083]
-  - [0x706376, bin, chhar15_dl.raw.853757009]
-  - [0x706624, bin, chhor10.raw.853757083]
-  - [0x706EB1, bin, chhor10_dl.raw.853757009]
-  - [0x7071AC, bin, lacar1.raw.853757083]
-  - [0x70741D, bin, lacar1_dl.raw.853757009]
-  - [0x70755E, bin, docno1.raw.853757084]
-  - [0x7077BB, bin, docno1_dl.raw.853757009]
-  - [0x707919, bin, docng1.raw.853757084]
-  - [0x707B6A, bin, docng1_dl.raw.853757010]
-  - [0x707CDF, bin, docnw1.raw.853757084]
-  - [0x707F6F, bin, docnw1_dl.raw.853757010]
-  - [0x7080F7, bin, moiron1.raw.853757084]
-  - [0x708351, bin, moiron1_dl.raw.859051515]
-  - [0x70847E, bin, truck4.raw.853757085]
-  - [0x7092EA, bin, truck4_dl.raw.853757010]
-  - [0x709762, bin, trucker3US.raw.859051545]
-  - [0x70A4EE, bin, trucker3US_dl.raw.859051515]
-  - [0x70A8DE, bin, chgun16.raw.853757085]
-  - [0x70B30A, bin, chgun16_dl.raw.853757011]
-  - [0x70B62E, bin, chmsc16.raw.853757086]
-  - [0x70B8FC, bin, chmsc16_dl.raw.853757011]
-  - [0x70BA0C, bin, chhut16.raw.853757086]
-  - [0x70BCCB, bin, chhut16_dl.raw.853757011]
-  - [0x70BDF7, bin, chhse17.raw.853757086]
-  - [0x70C5FD, bin, chhse17_dl.raw.853757012]
-  - [0x70C84D, bin, chgar17.raw.853757086]
-  - [0x70CADF, bin, chgar17_dl.raw.853757012]
-  - [0x70CC0D, bin, chgas17.raw.853757087]
-  - [0x70D111, bin, chgas17_dl.raw.853757012]
-  - [0x70D294, bin, chhut17.raw.853757087]
-  - [0x70D5A5, bin, chhut17_dl.raw.853757012]
-  - [0x70D6D2, bin, chmsc17.raw.853757087]
-  - [0x70D7DB, bin, chmsc17_dl.raw.853757013]
-  - [0x70D87D, bin, chsha18.raw.853757087]
-  - [0x70DE20, bin, chsha18_dl.raw.853757013]
-  - [0x70DFB8, bin, chmsc18.raw.853757088]
-  - [0x70E1BA, bin, chmsc18_dl.raw.853757013]
-  - [0x70E2CE, bin, chmsc19.raw.853757088]
-  - [0x70E5F3, bin, chmsc19_dl.raw.853757013]
-  - [0x70E739, bin, chhse18.raw.853757088]
-  - [0x70F1FB, bin, chhse18_dl.raw.853757013]
-  - [0x70F51F, bin, chgar18.raw.853757088]
-  - [0x70F786, bin, chgar18_dl.raw.853757014]
-  - [0x70F8ED, bin, chhse20.raw.853757089]
-  - [0x710563, bin, chhse20_dl.raw.853757014]
-  - [0x7108D0, bin, chmsc20.raw.853757089]
-  - [0x710D2F, bin, chmsc20_dl.raw.853757014]
-  - [0x710EBF, bin, chhse21.raw.853757089]
-  - [0x711979, bin, chhse21_dl.raw.853757014]
-  - [0x711C80, bin, chmsc21.raw.853757090]
-  - [0x711E2D, bin, chmsc21_dl.raw.853757015]
-  - [0x711F34, bin, chhot22.raw.853757090]
-  - [0x71284F, bin, chhot22_dl.raw.853757015]
-  - [0x712A55, bin, chmsc22.raw.853757090]
-  - [0x712BFA, bin, chmsc22_dl.raw.853757015]
-  - [0x712CFD, bin, chhse23.raw.853757090]
-  - [0x7137E5, bin, chhse23_dl.raw.853757015]
-  - [0x713ACB, bin, chmsc23.raw.853757091]
-  - [0x713C74, bin, chmsc23_dl.raw.853757016]
-  - [0x713D7C, bin, chhse24.raw.853757091]
-  - [0x714840, bin, chhse24_dl.raw.853757016]
-  - [0x714B1F, bin, chbar25.raw.853757091]
-  - [0x7158C7, bin, chbar25_dl.raw.853757016]
-  - [0x715C42, bin, chmsc25.raw.853757092]
-  - [0x716012, bin, chmsc25_dl.raw.853757016]
-  - [0x716162, bin, chmsc26.raw.853757092]
-  - [0x71632D, bin, chmsc26_dl.raw.853757017]
-  - [0x716434, bin, chhut26.raw.853757092]
-  - [0x716B20, bin, chhut26_dl.raw.853757017]
-  - [0x716D77, bin, chmsc27.raw.853757092]
-  - [0x71704D, bin, chmsc27_dl.raw.853757017]
-  - [0x717185, bin, chhut27.raw.853757093]
-  - [0x7176DE, bin, chhut27_dl.raw.853757017]
-  - [0x7178C8, bin, chmsc28.raw.853757093]
-  - [0x717B4E, bin, chmsc28_dl.raw.853757018]
-  - [0x717C66, bin, chhse29.raw.853757093]
-  - [0x71841F, bin, chhse29_dl.raw.853757018]
-  - [0x718689, bin, chhut30.raw.853757093]
-  - [0x718B14, bin, chhut30_dl.raw.853757018]
-  - [0x718CE6, bin, chhse30.raw.854558970]
-  - [0x719805, bin, chhse30_dl.raw.854558949]
-  - [0x719B0E, bin, chmsc30.raw.853757094]
-  - [0x719D9E, bin, chmsc30_dl.raw.853757019]
-  - [0x719EB6, bin, chhse31.raw.853757094]
-  - [0x71A861, bin, chhse31_dl.raw.853757019]
-  - [0x71AB3A, bin, chmsc31.raw.853757095]
-  - [0x71AEFF, bin, chmsc31_dl.raw.853757020]
-  - [0x71B069, bin, chhse32.raw.853757095]
-  - [0x71BCD9, bin, chhse32_dl.raw.853757020]
-  - [0x71C008, bin, chmsc32.raw.853757095]
-  - [0x71C212, bin, chmsc32_dl.raw.853757020]
-  - [0x71C321, bin, chhse33.raw.853757095]
-  - [0x71CE05, bin, chhse33_dl.raw.853757021]
-  - [0x71D13F, bin, chtreel.raw.853757096]
-  - [0x71D30C, bin, chtreel_dl.raw.853757021]
-  - [0x71D3EA, bin, chtrees.raw.853757096]
-  - [0x71D5BA, bin, chtrees_dl.raw.853757021]
-  - [0x71D695, bin, labigo2.raw.853757096]
-  - [0x71E74C, bin, labigo2_dl.raw.859051519]
-  - [0x71ED5E, bin, movan1.raw.853757097]
-  - [0x71F7D9, bin, movan1_dl.raw.859051519]
-  - [0x71FBE2, bin, mocono1.raw.853757097]
-  - [0x71FD7F, bin, mocono1_dl.raw.853757022]
-  - [0x71FE9D, bin, moconr1.raw.853757097]
-  - [0x720027, bin, moconr1_dl.raw.853757023]
-  - [0x720137, bin, moconw1.raw.853757097]
-  - [0x7202BC, bin, moconw1_dl.raw.853757023]
-  - [0x7203CC, bin, mocong1.raw.853757098]
-  - [0x72056A, bin, mocong1_dl.raw.853757023]
-  - [0x720688, bin, mocrat1.raw.853757098]
-  - [0x7207F3, bin, mocrat1_dl.raw.853757023]
-  - [0x72092E, bin, mogas1.raw.853757098]
-  - [0x720C81, bin, mogas1_dl.raw.853757024]
-  - [0x720E76, bin, mogas2.raw.853757098]
-  - [0x721582, bin, mogas2_dl.raw.853757024]
-  - [0x721884, bin, moconr2.raw.853757099]
-  - [0x721A20, bin, moconr2_dl.raw.853757024]
-  - [0x721B42, bin, moconb2.raw.853757099]
-  - [0x721CC6, bin, moconb2_dl.raw.853757024]
-  - [0x721DD6, bin, moconw2.raw.853757099]
-  - [0x721F63, bin, moconw2_dl.raw.853757025]
-  - [0x722072, bin, mocono2.raw.853757099]
-  - [0x722210, bin, mocono2_dl.raw.853757025]
-  - [0x72232D, bin, mocong2.raw.853757100]
-  - [0x7224CC, bin, mocong2_dl.raw.853757025]
-  - [0x7225E9, bin, mowhwr1.raw.853757100]
-  - [0x7229DA, bin, mowhwr1_dl.raw.853757025]
-  - [0x722BD2, bin, mowhbo1.raw.853757100]
-  - [0x722FA9, bin, mowhbo1_dl.raw.853757026]
-  - [0x723185, bin, mowhrr1.raw.853757100]
-  - [0x723567, bin, mowhrr1_dl.raw.853757026]
-  - [0x723737, bin, mowhwo1.raw.853757101]
-  - [0x723B2C, bin, mowhwo1_dl.raw.853757026]
-  - [0x723D2C, bin, mowhwb2.raw.853757101]
-  - [0x724127, bin, mowhwb2_dl.raw.853757026]
-  - [0x724324, bin, mosid1l.raw.853757101]
-  - [0x7246F3, bin, mosid1l_dl.raw.853757027]
-  - [0x7248B9, bin, mosid1r.raw.853757101]
-  - [0x724CDC, bin, mosid1r_dl.raw.853757027]
-  - [0x724E81, bin, mostep1.raw.853757102]
-  - [0x725A5B, bin, mostep1_dl.raw.853757027]
-  - [0x725E9C, bin, mosky1.raw.853757102]
-  - [0x7267F6, bin, mosky1_dl.raw.853757027]
-  - [0x726B31, bin, mosky2.raw.853757102]
-  - [0x727574, bin, mosky2_dl.raw.853757028]
-  - [0x727906, bin, mosky3.raw.853757103]
-  - [0x7289A5, bin, mosky3_dl.raw.853757028]
-  - [0x728E94, bin, mosky4.raw.853757103]
-  - [0x7299C1, bin, mosky4_dl.raw.853757028]
-  - [0x729DDA, bin, mosky5.raw.853757104]
-  - [0x72A9AD, bin, mosky5_dl.raw.853757028]
-  - [0x72ADCA, bin, mosky6.raw.853757104]
-  - [0x72B98E, bin, mosky6_dl.raw.853757029]
-  - [0x72BD75, bin, mosky7.raw.853757104]
-  - [0x72CB6A, bin, mosky7_dl.raw.853757029]
-  - [0x72D021, bin, mosky8.raw.853757105]
-  - [0x72DA78, bin, mosky8_dl.raw.853757029]
-  - [0x72DE4E, bin, mosky9.raw.853757105]
-  - [0x72EBED, bin, mosky9_dl.raw.853757030]
-  - [0x72F09F, bin, mosky10.raw.853757105]
-  - [0x72FB23, bin, mosky10_dl.raw.853757030]
-  - [0x72FF34, bin, mosky11.raw.853757106]
-  - [0x73099A, bin, mosky11_dl.raw.853757030]
-  - [0x730DA7, bin, mosky12.raw.853757106]
-  - [0x731566, bin, mosky12_dl.raw.853757030]
-  - [0x731965, bin, chfact1.raw.853757106]
-  - [0x73255C, bin, chfact1_dl.raw.853757031]
-  - [0x7328F6, bin, chwhse1.raw.853757107]
-  - [0x732C54, bin, chwhse1_dl.raw.853757031]
-  - [0x732DA8, bin, chwhse2.raw.853757107]
-  - [0x733144, bin, chwhse2_dl.raw.853757031]
-  - [0x733292, bin, chwhse3.raw.853757107]
-  - [0x73363B, bin, chwhse3_dl.raw.853757031]
-  - [0x73377E, bin, chconc1.raw.854367592]
-  - [0x734514, bin, chconc1_dl.raw.854367577]
-  - [0x7349A8, bin, chsilo1.raw.853757108]
-  - [0x735246, bin, chsilo1_dl.raw.853757032]
-  - [0x735476, bin, laorphx.raw.853757108]
-  - [0x735AF4, bin, laorphx_dl.raw.853757032]
-  - [0x735D6F, bin, lapcab1.raw.853757108]
-  - [0x73616F, bin, lapcab1_dl.raw.853757032]
-  - [0x73630A, bin, laslid1.raw.854467127]
-  - [0x737077, bin, laslid1_dl.raw.854467114]
-  - [0x7374B6, bin, laconc1.raw.854367592]
-  - [0x738723, bin, laconc1_dl.raw.854367577]
-  - [0x738AD7, bin, labuil1.raw.853757109]
-  - [0x738F99, bin, labuil1_dl.raw.853757033]
-  - [0x739159, bin, lastor1.raw.853757109]
-  - [0x739595, bin, lastor1_dl.raw.853757034]
-  - [0x7396E8, bin, lamscf.raw.853757110]
-  - [0x739A82, bin, lamscf_dl.raw.853757034]
-  - [0x739BCB, bin, chpost1.raw.853757110]
-  - [0x739D3D, bin, chpost1_dl.raw.853757034]
-  - [0x739E0B, bin, chdes3.raw.853757110]
-  - [0x73AC47, bin, chdes3_dl.raw.859051524]
-  - [0x73B183, bin, modam2.raw.853757111]
-  - [0x73B2D9, bin, modam2_dl.raw.859051524]
-  - [0x73B3D2, bin, dsout1.raw.853757111]
-  - [0x73B67E, bin, dsout1_dl.raw.853757035]
-  - [0x73B792, bin, dspylo1.raw.853757111]
-  - [0x73B993, bin, dspylo1_dl.raw.853757035]
-  - [0x73BA9E, bin, laft15b.raw.853757111]
-  - [0x73C098, bin, laft15b_dl.raw.853757035]
-  - [0x73C233, bin, mocons1.raw.853757112]
-  - [0x73CC97, bin, mocons1_dl.raw.853757036]
-  - [0x73CFDD, bin, mocons2.raw.853757112]
-  - [0x73DA37, bin, mocons2_dl.raw.853757036]
-  - [0x73DD23, bin, mocons3.raw.853757112]
-  - [0x73E685, bin, mocons3_dl.raw.853757036]
-  - [0x73E93C, bin, mocons4.raw.853757113]
-  - [0x73F346, bin, mocons4_dl.raw.853757037]
-  - [0x73F69F, bin, mocons5.raw.853757113]
-  - [0x740064, bin, mocons5_dl.raw.853757037]
-  - [0x74037D, bin, mocons6.raw.853757113]
-  - [0x740CA6, bin, mocons6_dl.raw.853757037]
-  - [0x740F61, bin, moboat1.raw.853757113]
-  - [0x7419E0, bin, moboat1_dl.raw.853757037]
-  - [0x741D40, bin, mosid2t.raw.853757114]
-  - [0x742268, bin, mosid2t_dl.raw.853757038]
-  - [0x742503, bin, mosid2b.raw.853757114]
-  - [0x74292E, bin, mosid2b_dl.raw.853757038]
-  - [0x742B19, bin, mosid3l.raw.853757114]
-  - [0x742F88, bin, mosid3l_dl.raw.853757038]
-  - [0x74314C, bin, mosid3r.raw.853757114]
-  - [0x743670, bin, mosid3r_dl.raw.853757038]
-  - [0x7438ED, bin, mosid5t.raw.853757115]
-  - [0x74423D, bin, mosid5t_dl.raw.853757039]
-  - [0x74455C, bin, mosid5b.raw.853757115]
-  - [0x744CC7, bin, mosid5b_dl.raw.853757039]
-  - [0x744F2B, bin, mosid6t.raw.853757115]
-  - [0x74534D, bin, mosid6t_dl.raw.853757039]
-  - [0x745508, bin, mosid6b.raw.853757116]
-  - [0x74591F, bin, mosid6b_dl.raw.853757039]
-  - [0x745AFA, bin, mocast2.raw.854725446]
-  - [0x7467B1, bin, mocast2_dl.raw.859051526]
-  - [0x746BF1, bin, mocran1.raw.853757116]
-  - [0x7476F3, bin, mocran1_dl.raw.853757040]
-  - [0x747AED, bin, mocran2.raw.853757117]
-  - [0x74861B, bin, mocran2_dl.raw.853757040]
-  - [0x748A15, bin, moboat2.raw.853757117]
-  - [0x7494CE, bin, moboat2_dl.raw.853757041]
-  - [0x749894, bin, labigox.raw.853757117]
-  - [0x749CA4, bin, labigox_dl.raw.853757041]
-  - [0x749ED9, bin, chhseb.raw.853757118]
-  - [0x74A957, bin, chhseb_dl.raw.853757041]
-  - [0x74ACBC, bin, lasup1.raw.853757118]
-  - [0x74AE55, bin, lasup1_dl.raw.859051527]
-  - [0x74AF50, bin, lamsc10.raw.853757118]
-  - [0x74B146, bin, lamsc10_dl.raw.853757042]
-  - [0x74B241, bin, chvalfm.raw.853757118]
-  - [0x74B5BF, bin, chvalfm_dl.raw.853757042]
-  - [0x74B6D7, bin, mohot1.raw.853757119]
-  - [0x74C441, bin, mohot1_dl.raw.853757042]
-  - [0x74C947, bin, mohot2.raw.853757119]
-  - [0x74D42E, bin, mohot2_dl.raw.853757043]
-  - [0x74D896, bin, mohot3.raw.853757119]
-  - [0x74E68B, bin, mohot3_dl.raw.853757043]
-  - [0x74EA2A, bin, chhse40.raw.853757120]
-  - [0x74F5D0, bin, chhse40_dl.raw.853757043]
-  - [0x74F8C0, bin, chhse41.raw.853757120]
-  - [0x75054C, bin, chhse41_dl.raw.853757043]
-  - [0x7508AC, bin, la2gsx.raw.853757120]
-  - [0x750D12, bin, la2gsx_dl.raw.853757044]
-  - [0x750F13, bin, mohot4.raw.853757121]
-  - [0x751F1A, bin, mohot4_dl.raw.853757044]
-  - [0x75243E, bin, mohot5.raw.853757121]
-  - [0x7534AC, bin, mohot5_dl.raw.853757045]
-  - [0x753A5C, bin, token1.raw.853757121]
-  - [0x753FAC, bin, token1_dl.raw.853757045]
-  - [0x7541D4, bin, moart1.raw.853757122]
-  - [0x7543D4, bin, moart1_dl.raw.859051528]
-  - [0x754535, bin, larock1.raw.853757122]
-  - [0x754F01, bin, larock1_dl.raw.859051528]
-  - [0x755202, bin, larock2.raw.854558978]
-  - [0x755B2A, bin, larock2_dl.raw.859051528]
-  - [0x755E0B, bin, ball1.raw.853757123]
-  - [0x7567D8, bin, ball1_dl.raw.859051529]
-  - [0x756AA6, bin, ball2.raw.853757123]
-  - [0x7578A0, bin, ball2_dl.raw.853757046]
-  - [0x757C16, bin, ball3.raw.853757123]
-  - [0x7588C0, bin, ball3_dl.raw.853757046]
-  - [0x758B81, bin, float1.raw.853757123]
-  - [0x758F43, bin, float1_dl.raw.853757047]
-  - [0x75910D, bin, cohse1.raw.853757124]
-  - [0x7599B0, bin, cohse1_dl.raw.853757047]
-  - [0x759BD5, bin, cohse2.raw.853757124]
-  - [0x75A1E0, bin, cohse2_dl.raw.853757047]
-  - [0x75A451, bin, lablk1.raw.853757124]
-  - [0x75A691, bin, lablk1_dl.raw.853757047]
-  - [0x75A815, bin, stbac1.raw.854558979]
-  - [0x75B1B5, bin, stbac1_dl.raw.854558957]
-  - [0x75B51A, bin, stbar1.raw.853757125]
-  - [0x75B753, bin, stbar1_dl.raw.853757048]
-  - [0x75B88C, bin, stdnut1.raw.853757125]
-  - [0x75BD4A, bin, stdnut1_dl.raw.853757048]
-  - [0x75BF3B, bin, stgls1.raw.853757125]
-  - [0x75C5A0, bin, stgls1_dl.raw.853757048]
-  - [0x75C806, bin, stncp1.raw.853757126]
-  - [0x75D387, bin, stncp1_dl.raw.853757049]
-  - [0x75D757, bin, ststat1.raw.853757126]
-  - [0x75DDEC, bin, ststat1_dl.raw.853757049]
-  - [0x75E036, bin, cochim1.raw.853757126]
-  - [0x75E495, bin, cochim1_dl.raw.853757049]
-  - [0x75E650, bin, cohut1.raw.853757127]
-  - [0x75EB1F, bin, cohut1_dl.raw.853757049]
-  - [0x75ED15, bin, copit1.raw.853757127]
-  - [0x75F12F, bin, copit1_dl.raw.853757050]
-  - [0x75F2D3, bin, palite2.raw.859051559]
-  - [0x75FD07, bin, palite2_dl.raw.859051530]
-  - [0x75FFA1, bin, pacran1.raw.853757127]
-  - [0x760847, bin, pacran1_dl.raw.853757050]
-  - [0x760C41, bin, lafire3.raw.853757128]
-  - [0x76160F, bin, lafire3_dl.raw.859051530]
-  - [0x7619A6, bin, lafire4.raw.853757128]
-  - [0x76207D, bin, lafire4_dl.raw.859051531]
-  - [0x762375, bin, lanewf3.raw.853757129]
-  - [0x762D71, bin, lanewf3_dl.raw.859051531]
-  - [0x7631CC, bin, lasky1.raw.853757129]
-  - [0x763C37, bin, lasky1_dl.raw.853757051]
-  - [0x763FFD, bin, lasky2.raw.853757129]
-  - [0x764A45, bin, lasky2_dl.raw.853757052]
-  - [0x764E10, bin, door1.raw.853757130]
-  - [0x764ECF, bin, door1_dl.raw.859051531]
-  - [0x764F6D, bin, door2.raw.853757130]
-  - [0x76502C, bin, door2_dl.raw.853757052]
-  - [0x7650CA, bin, mohot1a.raw.853757130]
-  - [0x7655EB, bin, mohot1a_dl.raw.853757052]
-  - [0x7658C1, bin, mohot1b.raw.853757131]
-  - [0x765CAF, bin, mohot1b_dl.raw.853757053]
-  - [0x765F1D, bin, mohot1c.raw.853757131]
-  - [0x76624D, bin, mohot1c_dl.raw.853757053]
-  - [0x76644C, bin, mohot1d.raw.853757131]
-  - [0x766736, bin, mohot1d_dl.raw.853757053]
-  - [0x766902, bin, mohot2a.raw.853757131]
-  - [0x766B8C, bin, mohot2a_dl.raw.853757053]
-  - [0x766D09, bin, mohot2b.raw.853757132]
-  - [0x76708E, bin, mohot2b_dl.raw.853757054]
-  - [0x7672B4, bin, mohot2c.raw.853757132]
-  - [0x767541, bin, mohot2c_dl.raw.853757054]
-  - [0x7676CA, bin, mohot2d.raw.853757132]
-  - [0x767A5B, bin, mohot2d_dl.raw.853757054]
-  - [0x767CB4, bin, mohot3a.raw.853757132]
-  - [0x7680E0, bin, mohot3a_dl.raw.853757054]
-  - [0x76834A, bin, mohot3b.raw.853757133]
-  - [0x768689, bin, mohot3b_dl.raw.853757055]
-  - [0x768864, bin, mohot3c.raw.853757133]
-  - [0x768C47, bin, mohot3c_dl.raw.853757055]
-  - [0x768E5C, bin, mohot3d.raw.853757133]
-  - [0x7690DB, bin, mohot3d_dl.raw.853757055]
-  - [0x769227, bin, head1.raw.853757134]
-  - [0x76A1AE, bin, head1_dl.raw.853757055]
-  - [0x76A73E, bin, head2.raw.853757134]
-  - [0x76B802, bin, head2_dl.raw.853757056]
-  - [0x76BECC, bin, head3.raw.853757134]
-  - [0x76CE93, bin, head3_dl.raw.853757056]
-  - [0x76D44A, bin, head4.raw.853757135]
-  - [0x76DE61, bin, head4_dl.raw.853757056]
-  - [0x76E435, bin, mostat1.raw.853757135]
-  - [0x76F2F6, bin, mostat1_dl.raw.853757057]
-  - [0x76F73E, bin, cork1.raw.853757135]
-  - [0x76F8A1, bin, cork1_dl.raw.853757057]
-  - [0x76F96D, bin, ghdig1.raw.853757135]
-  - [0x77021C, bin, ghdig1_dl.raw.859051533]
-  - [0x7704FE, bin, mocrat2.raw.853757136]
-  - [0x770668, bin, mocrat2_dl.raw.853757058]
-  - [0x7707A3, bin, ghdig2.raw.853757136]
-  - [0x77105A, bin, ghdig2_dl.raw.859051533]
-  - [0x77134D, bin, ghdig3.raw.853757136]
-  - [0x771CD6, bin, ghdig3_dl.raw.859051534]
-  - [0x771FBE, bin, ghdig4.raw.853757137]
-  - [0x772924, bin, ghdig4_dl.raw.859051534]
-  - [0x772C1B, bin, modam3.raw.853757137]
-  - [0x77310F, bin, modam3_dl.raw.859051534]
-  - [0x773316, bin, cohse3.raw.853757137]
-  - [0x773BB5, bin, cohse3_dl.raw.853757059]
-  - [0x773DDA, bin, cohse4.raw.853757138]
-  - [0x774AFC, bin, cohse4_dl.raw.853757059]
-  - [0x774DFF, bin, cohse5.raw.853757138]
-  - [0x775560, bin, cohse5_dl.raw.853757060]
-  - [0x775785, bin, cohse6.raw.853757138]
-  - [0x776305, bin, cohse6_dl.raw.853757060]
-  - [0x776608, bin, cosqr1.raw.853757138]
-  - [0x776FEF, bin, cosqr1_dl.raw.853757060]
-  - [0x7772EA, bin, coshd1.raw.853757139]
-  - [0x777647, bin, coshd1_dl.raw.853757060]
-  - [0x77777D, bin, cohut1.raw.853757127.77777D]
-  - [0x777C4C, bin, cohut1_dl.raw.853757049.777C4C]
-  - [0x777E42, bin, costor2.raw.853757139]
-  - [0x7781B1, bin, costor2_dl.raw.853757061]
-  - [0x778350, bin, colong2.raw.853757139]
-  - [0x778766, bin, colong2_dl.raw.853757061]
-  - [0x7788EF, bin, cochim2.raw.853757139]
-  - [0x778B7B, bin, cochim2_dl.raw.853757061]
-  - [0x778CC1, bin, copit2.raw.853757140]
-  - [0x77913B, bin, copit2_dl.raw.853757061]
-  - [0x779339, bin, cosid4.raw.853757140]
-  - [0x779980, bin, cosid4_dl.raw.853757062]
-  - [0x779C0E, bin, cofact2.raw.853757140]
-  - [0x77A6F2, bin, cofact2_dl.raw.853757062]
-  - [0x77AA86, bin, corail2.raw.853757140]
-  - [0x77ACC5, bin, corail2_dl.raw.853757062]
-  - [0x77ADE5, bin, spcen1.raw.853757141]
-  - [0x77B8A5, bin, spcen1_dl.raw.853757062]
-  - [0x77BC56, bin, sparmn1.raw.853757141]
-  - [0x77C014, bin, sparmn1_dl.raw.853757063]
-  - [0x77C228, bin, sparme1.raw.853757141]
-  - [0x77C5EB, bin, sparme1_dl.raw.853757063]
-  - [0x77C7FF, bin, sparmw1.raw.853757142]
-  - [0x77CBBB, bin, sparmw1_dl.raw.853757063]
-  - [0x77CDD1, bin, sparms1.raw.853757142]
-  - [0x77D177, bin, sparms1_dl.raw.853757063]
-  - [0x77D38D, bin, spbox1.raw.853757142]
-  - [0x77DC20, bin, spbox1_dl.raw.853757064]
-  - [0x77DF4B, bin, spsola1.raw.853757142]
-  - [0x77E251, bin, spsola1_dl.raw.853757064]
-  - [0x77E3C8, bin, spsola2.raw.853757143]
-  - [0x77E6D9, bin, spsola2_dl.raw.853757064]
-  - [0x77E851, bin, spsola3.raw.853757143]
-  - [0x77EB19, bin, spsola3_dl.raw.853757064]
-  - [0x77EC90, bin, spcons1.raw.853757143]
-  - [0x77F0A1, bin, spcons1_dl.raw.853757064]
-  - [0x77F211, bin, spcons2.raw.853757143]
-  - [0x77F96B, bin, spcons2_dl.raw.853757065]
-  - [0x77FBC0, bin, spcons3.raw.853757144]
-  - [0x7800BE, bin, spcons3_dl.raw.853757065]
-  - [0x78026C, bin, spflt1.raw.853757144]
-  - [0x7815F5, bin, spflt1_dl.raw.853757065]
-  - [0x781A7C, bin, shnob1.raw.853757144]
-  - [0x782010, bin, shnob1_dl.raw.853757065]
-  - [0x782292, bin, desflt1.raw.853757145]
-  - [0x7824D1, bin, desflt1_dl.raw.853757066]
-  - [0x78264B, bin, desflt2.raw.853757145]
-  - [0x7828E8, bin, desflt2_dl.raw.853757066]
-  - [0x782A84, bin, desnew1.raw.853757145]
-  - [0x782C20, bin, desnew1_dl.raw.853757066]
-  - [0x782D1E, bin, desnew2.raw.853757145]
-  - [0x782EC8, bin, desnew2_dl.raw.853757066]
-  - [0x782FCA, bin, desnew3.raw.853757146]
-  - [0x783D10, bin, desnew3_dl.raw.853757067]
-  - [0x7841E3, bin, desnew4.raw.854375920]
-  - [0x784477, bin, desnew4_dl.raw.854375905]
-  - [0x78461D, bin, destow1.raw.853757146]
-  - [0x7848D9, bin, destow1_dl.raw.853757067]
-  - [0x784A78, bin, laezflt.raw.853757146]
-  - [0x785339, bin, laezflt_dl.raw.853757067]
-  - [0x78567E, bin, lapump1.raw.853757147]
-  - [0x78580C, bin, lapump1_dl.raw.853757068]
-  - [0x7858CD, bin, chpump1.raw.853757147]
-  - [0x785A83, bin, chpump1_dl.raw.853757068]
-  - [0x785B5A, bin, endsid1.raw.859051565]
-  - [0x786014, bin, endsid1_dl.raw.859051537]
-  - [0x786192, bin, endsid2.raw.859051566]
-  - [0x7866A6, bin, endsid2_dl.raw.859051537]
-  - [0x786852, bin, endsid3.raw.859051566]
-  - [0x786F2C, bin, endsid3_dl.raw.859051538]
-  - [0x7870FD, bin, endsid4.raw.859051566]
-  - [0x7876F2, bin, endsid4_dl.raw.859051538]
-  - [0x7878BF, bin, endsid5.raw.859051567]
-  - [0x787EBF, bin, endsid5_dl.raw.859051539]
-  #
+  - [0x4CE0, bin, texture_table]                # offset/length/type of 4096 textures
+  - [0xCCE0, bin, textures]                     # blast-compressed textures
+  - [0x350950, bin, music_ctl]                  # music bank .ctl (LZSS)
+  - [0x3539A0, bin, music_tbl]                  # music bank .tbl
+  - [0x3A1920, bin, sfx_ctl]                    # sound effects bank .ctl (LZSS)
+  - [0x3A48C0, bin, sfx_tbl]                    # sound effects bank .tbl
+  - [0x44F5C0, bin, sequences]                  # ALSeqFile
+  - [0x487190, bin, titlelogo_usa]              # titlelogo_usa.raw
+  - [0x489FB0, bin, titlepicture_usa]           # titlepicture_usa.raw
+  - [0x48F6E0, bin, nink]                       # nink.raw
+  - [0x48FAB0, bin, 64k]                        # 64k.raw
+  - [0x48FBB0, bin, copyrightLogo]              # copyrightLogo.raw
+  - [0x48FFD0, bin, scientist]                  # scientist.raw
+  - [0x4902D1, bin, scientist_dl]               # scientist_dl.raw
+  - [0x490500, bin, commpoint]                  # commpoint.raw
+  - [0x49098A, bin, commpoint_dl]               # commpoint_dl.raw
+  - [0x490C00, bin, buggy]                      # buggy.raw
+  - [0x49195C, bin, buggy_dl]                   # buggy_dl.raw
+  - [0x491F40, bin, driver]                     # driver.raw
+  - [0x492818, bin, driver_dl]                  # driver_dl.raw
+  - [0x492B10, bin, sideswipe]                  # sideswipe.raw
+  - [0x493E28, bin, sideswipe_dl]               # sideswipe_dl.raw
+  - [0x4944D0, bin, magoo]                      # magoo.raw
+  - [0x49640C, bin, magoo_dl]                   # magoo_dl.raw
+  - [0x496C10, bin, bulldozer]                  # bulldozer.raw
+  - [0x49777A, bin, bulldozer_dl]               # bulldozer_dl.raw
+  - [0x497C30, bin, truck]                      # truck.raw
+  - [0x498693, bin, truck_dl]                   # truck_dl.raw
+  - [0x498B20, bin, chopper]                    # chopper.raw
+  - [0x4993E1, bin, chopper_dl]                 # chopper_dl.raw
+  - [0x4997D0, bin, cmo]                        # cmo.raw
+  - [0x49A79F, bin, cmo_dl]                     # cmo_dl.raw
+  - [0x49AE60, bin, crane]                      # crane.raw
+  - [0x49B4B5, bin, crane_dl]                   # crane_dl.raw
+  - [0x49B770, bin, train]                      # train.raw
+  - [0x49BC21, bin, train_dl]                   # train_dl.raw
+  - [0x49BE20, bin, hotrod]                     # hotrod.raw
+  - [0x49C2E0, bin, hotrod_dl]                  # hotrod_dl.raw
+  - [0x49C5C0, bin, jetpack]                    # jetpack.raw
+  - [0x49E1AC, bin, jetpack_dl]                 # jetpack_dl.raw
+  - [0x49EA20, bin, bike]                       # bike.raw
+  - [0x49F454, bin, bike_dl]                    # bike_dl.raw
+  - [0x49F8E0, bin, barge]                      # barge.raw
+  - [0x49FDE5, bin, barge_dl]                   # barge_dl.raw
+  - [0x4A00B0, bin, police]                     # police.raw
+  - [0x4A0546, bin, police_dl]                  # police_dl.raw
+  - [0x4A0860, bin, ateam]                      # ateam.raw
+  - [0x4A0E2F, bin, ateam_dl]                   # ateam_dl.raw
+  - [0x4A1140, bin, starski]                    # starski.raw
+  - [0x4A1516, bin, starski_dl]                 # starski_dl.raw
+  - [0x4A17D0, bin, minimagoo]                  # minimagoo.raw
+  - [0x4A3922, bin, minimagoo_dl]               # minimagoo_dl.raw
+  - [0x4A4260, bin, shuttle]                    # shuttle.raw
+  - [0x4A50AD, bin, shuttle_dl]                 # shuttle_dl.raw
+  - [0x4A57A0, bin, lagp]                       # lagp.raw (level)
+  - [0x4AC0D2, bin, lagp_dl]                    # lagp_dl.raw
+  - [0x4ACD60, bin, chimp]                      # chimp.raw (level)
+  - [0x4B72FB, bin, chimp_dl]                   # chimp_dl.raw
+  - [0x4B8AB0, bin, valley]                     # valley.raw (level)
+  - [0x4BEF35, bin, valley_dl]                  # valley_dl.raw
+  - [0x4BFEB0, bin, fact]                       # fact.raw (level)
+  - [0x4C3397, bin, fact_dl]                    # fact_dl.raw
+  - [0x4C3C10, bin, dip]                        # dip.raw (level)
+  - [0x4D3CC6, bin, dip_dl]                     # dip_dl.raw
+  - [0x4D60E0, bin, beetle]                     # beetle.raw (level)
+  - [0x4E1988, bin, beetle_dl]                  # beetle_dl.raw
+  - [0x4E30C0, bin, bonus1]                     # bonus1.raw (level)
+  - [0x4E4A34, bin, bonus1_dl]                  # bonus1_dl.raw
+  - [0x4E4FD0, bin, bonus2]                     # bonus2.raw (level)
+  - [0x4E75A8, bin, bonus2_dl]                  # bonus2_dl.raw
+  - [0x4E7D50, bin, bonus3]                     # bonus3.raw (level)
+  - [0x4E8D47, bin, bonus3_dl]                  # bonus3_dl.raw
+  - [0x4E90C0, bin, level9]                     # level9.raw (level)
+  - [0x4F456E, bin, level9_dl]                  # level9_dl.raw
+  - [0x4F5D60, bin, level10]                    # level10.raw (level)
+  - [0x4FF611, bin, level10_dl]                 # level10_dl.raw
+  - [0x500670, bin, level11]                    # level11.raw (level)
+  - [0x506EC3, bin, level11_dl]                 # level11_dl.raw
+  - [0x507FD0, bin, level12]                    # level12.raw (level)
+  - [0x51029A, bin, level12_dl]                 # level12_dl.raw
+  - [0x511490, bin, level13]                    # level13.raw (level)
+  - [0x521507, bin, level13_dl]                 # level13_dl.raw
+  - [0x5231D0, bin, level14]                    # level14.raw (level)
+  - [0x52BAC4, bin, level14_dl]                 # level14_dl.raw
+  - [0x52CE50, bin, level15]                    # level15.raw (level)
+  - [0x5319D5, bin, level15_dl]                 # level15_dl.raw
+  - [0x532850, bin, level16]                    # level16.raw (level)
+  - [0x53D47E, bin, level16_dl]                 # level16_dl.raw
+  - [0x53EB00, bin, level17]                    # level17.raw (level)
+  - [0x5491EA, bin, level17_dl]                 # level17_dl.raw
+  - [0x54A970, bin, level18]                    # level18.raw (level)
+  - [0x551EFA, bin, level18_dl]                 # level18_dl.raw
+  - [0x552F30, bin, level19]                    # level19.raw (level)
+  - [0x554B83, bin, level19_dl]                 # level19_dl.raw
+  - [0x555150, bin, level20]                    # level20.raw (level)
+  - [0x55F355, bin, level20_dl]                 # level20_dl.raw
+  - [0x560FE0, bin, level21]                    # level21.raw (level)
+  - [0x56481B, bin, level21_dl]                 # level21_dl.raw
+  - [0x565420, bin, level22]                    # level22.raw (level)
+  - [0x56E247, bin, level22_dl]                 # level22_dl.raw
+  - [0x56F540, bin, level23]                    # level23.raw (level)
+  - [0x571FD8, bin, level23_dl]                 # level23_dl.raw
+  - [0x572330, bin, level24]                    # level24.raw (level)
+  - [0x5734A4, bin, level24_dl]                 # level24_dl.raw
+  - [0x573830, bin, level25]                    # level25.raw (level)
+  - [0x579708, bin, level25_dl]                 # level25_dl.raw
+  - [0x57A410, bin, level26]                    # level26.raw (level)
+  - [0x5801AF, bin, level26_dl]                 # level26_dl.raw
+  - [0x580CB0, bin, level27]                    # level27.raw (level)
+  - [0x587DF0, bin, level27_dl]                 # level27_dl.raw
+  - [0x588E30, bin, level28]                    # level28.raw (level)
+  - [0x58B68D, bin, level28_dl]                 # level28_dl.raw
+  - [0x58BFD0, bin, level29]                    # level29.raw (level)
+  - [0x596351, bin, level29_dl]                 # level29_dl.raw
+  - [0x597CD0, bin, level30]                    # level30.raw (level)
+  - [0x59B017, bin, level30_dl]                 # level30_dl.raw
+  - [0x59B920, bin, level31]                    # level31.raw (level)
+  - [0x5A45A1, bin, level31_dl]                 # level31_dl.raw
+  - [0x5A5990, bin, level32]                    # level32.raw (level)
+  - [0x5AF811, bin, level32_dl]                 # level32_dl.raw
+  - [0x5B0C60, bin, level33]                    # level33.raw (level)
+  - [0x5B4FB0, bin, level33_dl]                 # level33_dl.raw
+  - [0x5B5B80, bin, level34]                    # level34.raw (level)
+  - [0x5B865E, bin, level34_dl]                 # level34_dl.raw
+  - [0x5B8D00, bin, level35]                    # level35.raw (level)
+  - [0x5C37BC, bin, level35_dl]                 # level35_dl.raw
+  - [0x5C4DD0, bin, level36]                    # level36.raw (level)
+  - [0x5C9E7D, bin, level36_dl]                 # level36_dl.raw
+  - [0x5CAB10, bin, level37]                    # level37.raw (level)
+  - [0x5CC9BE, bin, level37_dl]                 # level37_dl.raw
+  - [0x5CD0A0, bin, level38]                    # level38.raw (level)
+  - [0x5D0908, bin, level38_dl]                 # level38_dl.raw
+  - [0x5D11B0, bin, level39]                    # level39.raw (level)
+  - [0x5DB24C, bin, level39_dl]                 # level39_dl.raw
+  - [0x5DC980, bin, level40]                    # level40.raw (level)
+  - [0x5E5C79, bin, level40_dl]                 # level40_dl.raw
+  - [0x5E7030, bin, level41]                    # level41.raw (level)
+  - [0x5EB618, bin, level41_dl]                 # level41_dl.raw
+  - [0x5EC950, bin, level42]                    # level42.raw (level)
+  - [0x5F2DB7, bin, level42_dl]                 # level42_dl.raw
+  - [0x5F3BD0, bin, level43]                    # level43.raw (level)
+  - [0x6000C9, bin, level43_dl]                 # level43_dl.raw
+  - [0x601600, bin, level44]                    # level44.raw (level)
+  - [0x609711, bin, level44_dl]                 # level44_dl.raw
+  - [0x60A860, bin, level45]                    # level45.raw (level)
+  - [0x612815, bin, level45_dl]                 # level45_dl.raw
+  - [0x613BF0, bin, level46]                    # level46.raw (level)
+  - [0x61C9DC, bin, level46_dl]                 # level46_dl.raw
+  - [0x61DEC0, bin, level47]                    # level47.raw (level)
+  - [0x62133D, bin, level47_dl]                 # level47_dl.raw
+  - [0x621C40, bin, level48]                    # level48.raw (level)
+  - [0x625DFC, bin, level48_dl]                 # level48_dl.raw
+  - [0x626B30, bin, level49]                    # level49.raw (level)
+  - [0x62F9C1, bin, level49_dl]                 # level49_dl.raw
+  - [0x630D80, bin, level50]                    # level50.raw (level)
+  - [0x634E85, bin, level50_dl]                 # level50_dl.raw
+  - [0x635850, bin, level51]                    # level51.raw (level)
+  - [0x63BE50, bin, level51_dl]                 # level51_dl.raw
+  - [0x63CB60, bin, level52]                    # level52.raw (level)
+  - [0x641826, bin, level52_dl]                 # level52_dl.raw
+  - [0x642080, bin, level53]                    # level53.raw (level)
+  - [0x64421C, bin, level53_dl]                 # level53_dl.raw
+  - [0x644960, bin, level54]                    # level54.raw (level)
+  - [0x645EA5, bin, level54_dl]                 # level54_dl.raw
+  - [0x6461D0, bin, level55]                    # level55.raw (level)
+  - [0x647207, bin, level55_dl]                 # level55_dl.raw
+  - [0x6476A0, bin, level56]                    # level56.raw (level)
+  - [0x65377E, bin, level56_dl]                 # level56_dl.raw
+  - [0x655110, bin, level57]                    # level57.raw (level)
+  - [0x65F479, bin, level57_dl]                 # level57_dl.raw
+  - [0x660AA0, bin, level58]                    # level58.raw (level)
+  - [0x66565A, bin, level58_dl]                 # level58_dl.raw
+  - [0x6660D0, bin, level59]                    # level59.raw (level)
+  - [0x66BC99, bin, level59_dl]                 # level59_dl.raw
+  - [0x66CA50, bin, worldtextures]              # worldtextures.raw
+  - [0x68B6A0, bin, ambertextures]              # ambertextures.raw
+  - [0x6A3400, bin, traffictextures]            # traffictextures.raw
+  - [0x6A8EF0, bin, controllertextures]         # controllertextures.raw
+  - [0x6AA060, bin, attract]                    # attract.raw
+  - [0x6AD540, bin, bg_image_1]                 # 320x240 RGBA16 image (LZSS)
+  - [0x6BF440, bin, bg_image_2]                 # 320x240 RGBA16 image (LZSS)
+  - [0x6D3E80, bin, bg_image_3]                 # 320x240 RGBA16 image (LZSS)
+  - [0x6E8AD0, bin, usa_star]                   # usa_star.raw
+  - [0x6EA34E, bin, usa_star_dl]                # usa_star_dl.raw
+  - [0x6EA9A0, bin, ninlogo]                    # ninlogo.raw
+  - [0x6EAB75, bin, ninlogo_dl]                 # ninlogo_dl.raw
+  - [0x6EACE0, bin, reflectlogo]                # reflectlogo.raw
+  - [0x6EBF24, bin, reflectlogo_dl]             # reflectlogo_dl.raw
+  - [0x6EC610, bin, model_table]                # offsets of the models (from here)
+  - [0x6ECE10, bin, lamisc1]                    # lamisc1.raw
+  - [0x6ED1B8, bin, lamisc1_dl]                 # lamisc1_dl.raw
+  - [0x6ED308, bin, lapetrol1]                  # lapetrol1.raw
+  - [0x6ED772, bin, lapetrol1_dl]               # lapetrol1_dl.raw
+  - [0x6ED8F0, bin, laburger1]                  # laburger1.raw
+  - [0x6EDC92, bin, laburger1_dl]               # laburger1_dl.raw
+  - [0x6EDDFE, bin, laorph6]                    # laorph6.raw
+  - [0x6EE51C, bin, laorph6_dl]                 # laorph6_dl.raw
+  - [0x6EE797, bin, lashop2]                    # lashop2.raw
+  - [0x6EEC5C, bin, lashop2_dl]                 # lashop2_dl.raw
+  - [0x6EEE1B, bin, lamisc2]                    # lamisc2.raw
+  - [0x6EF041, bin, lamisc2_dl]                 # lamisc2_dl.raw
+  - [0x6EF138, bin, lagrage4]                   # lagrage4.raw
+  - [0x6EF6A9, bin, lagrage4_dl]                # lagrage4_dl.raw
+  - [0x6EF925, bin, lamisc4]                    # lamisc4.raw
+  - [0x6EFBF4, bin, lamisc4_dl]                 # lamisc4_dl.raw
+  - [0x6EFD47, bin, laflat5]                    # laflat5.raw
+  - [0x6F06E4, bin, laflat5_dl]                 # laflat5_dl.raw
+  - [0x6F09F8, bin, lawine5]                    # lawine5.raw
+  - [0x6F1266, bin, lawine5_dl]                 # lawine5_dl.raw
+  - [0x6F1557, bin, lamisc5]                    # lamisc5.raw
+  - [0x6F16D3, bin, lamisc5_dl]                 # lamisc5_dl.raw
+  - [0x6F17B2, bin, laflat3]                    # laflat3.raw
+  - [0x6F22B1, bin, laflat3_dl]                 # laflat3_dl.raw
+  - [0x6F26C0, bin, lamisc3]                    # lamisc3.raw
+  - [0x6F27EE, bin, lamisc3_dl]                 # lamisc3_dl.raw
+  - [0x6F28A0, bin, lashop8]                    # lashop8.raw
+  - [0x6F385C, bin, lashop8_dl]                 # lashop8_dl.raw
+  - [0x6F3D05, bin, laflat8]                    # laflat8.raw
+  - [0x6F439A, bin, laflat8_dl]                 # laflat8_dl.raw
+  - [0x6F4654, bin, labigo7]                    # labigo7.raw
+  - [0x6F570B, bin, labigo7_dl]                 # labigo7_dl.raw
+  - [0x6F5D1D, bin, lanicl7]                    # lanicl7.raw
+  - [0x6F5E95, bin, lanicl7_dl]                 # lanicl7_dl.raw
+  - [0x6F5F7F, bin, laflat7]                    # laflat7.raw
+  - [0x6F6899, bin, laflat7_dl]                 # laflat7_dl.raw
+  - [0x6F6B6D, bin, laflat9]                    # laflat9.raw
+  - [0x6F6E32, bin, laflat9_dl]                 # laflat9_dl.raw
+  - [0x6F6F73, bin, laflt10]                    # laflt10.raw
+  - [0x6F7844, bin, laflt10_dl]                 # laflt10_dl.raw
+  - [0x6F7BE2, bin, laflt11]                    # laflt11.raw
+  - [0x6F84A3, bin, laflt11_dl]                 # laflt11_dl.raw
+  - [0x6F883B, bin, laorp12]                    # laorp12.raw
+  - [0x6F9100, bin, laorp12_dl]                 # laorp12_dl.raw
+  - [0x6F9408, bin, laflt13]                    # laflt13.raw
+  - [0x6F9E42, bin, laflt13_dl]                 # laflt13_dl.raw
+  - [0x6FA272, bin, laflt14]                    # laflt14.raw
+  - [0x6FADBA, bin, laflt14_dl]                 # laflt14_dl.raw
+  - [0x6FB1EB, bin, lamsc14]                    # lamsc14.raw
+  - [0x6FB330, bin, lamsc14_dl]                 # lamsc14_dl.raw
+  - [0x6FB3E3, bin, laflt15]                    # laflt15.raw
+  - [0x6FBE21, bin, laflt15_dl]                 # laflt15_dl.raw
+  - [0x6FC218, bin, lamsc16]                    # lamsc16.raw
+  - [0x6FC4FB, bin, lamsc16_dl]                 # lamsc16_dl.raw
+  - [0x6FC62F, bin, ladrm16]                    # ladrm16.raw
+  - [0x6FC84C, bin, ladrm16_dl]                 # ladrm16_dl.raw
+  - [0x6FC94B, bin, laflt17]                    # laflt17.raw
+  - [0x6FCB24, bin, laflt17_dl]                 # laflt17_dl.raw
+  - [0x6FCC33, bin, chrod17]                    # chrod17.raw
+  - [0x6FD076, bin, chrod17_dl]                 # chrod17_dl.raw
+  - [0x6FD24D, bin, chlx7a]                     # chlx7a.raw
+  - [0x6FD364, bin, chlx7a_dl]                  # chlx7a_dl.raw
+  - [0x6FD405, bin, chsta5]                     # chsta5.raw
+  - [0x6FDB10, bin, chsta5_dl]                  # chsta5_dl.raw
+  - [0x6FDD91, bin, chbar8]                     # chbar8.raw
+  - [0x6FEF10, bin, chbar8_dl]                  # chbar8_dl.raw
+  - [0x6FF372, bin, chmisc8]                    # chmisc8.raw
+  - [0x6FF56E, bin, chmisc8_dl]                 # chmisc8_dl.raw
+  - [0x6FF699, bin, chwag8]                     # chwag8.raw
+  - [0x6FF95A, bin, chwag8_dl]                  # chwag8_dl.raw
+  - [0x6FFAAA, bin, chshd6]                     # chshd6.raw
+  - [0x6FFF9A, bin, chshd6_dl]                  # chshd6_dl.raw
+  - [0x7000F3, bin, chbog9]                     # chbog9.raw
+  - [0x700330, bin, chbog9_dl]                  # chbog9_dl.raw
+  - [0x70044F, bin, chbat6]                     # chbat6.raw
+  - [0x700625, bin, chbat6_dl]                  # chbat6_dl.raw
+  - [0x700714, bin, chmisc6]                    # chmisc6.raw
+  - [0x700A28, bin, chmisc6_dl]                 # chmisc6_dl.raw
+  - [0x700B54, bin, chwin5]                     # chwin5.raw
+  - [0x700DB3, bin, chwin5_dl]                  # chwin5_dl.raw
+  - [0x700EE2, bin, chbur9]                     # chbur9.raw
+  - [0x7013CC, bin, chbur9_dl]                  # chbur9_dl.raw
+  - [0x7015AC, bin, chmisc9]                    # chmisc9.raw
+  - [0x70187D, bin, chmisc9_dl]                 # chmisc9_dl.raw
+  - [0x701A02, bin, chhse3]                     # chhse3.raw
+  - [0x702464, bin, chhse3_dl]                  # chhse3_dl.raw
+  - [0x7027B2, bin, chmisc3]                    # chmisc3.raw
+  - [0x7029C8, bin, chmisc3_dl]                 # chmisc3_dl.raw
+  - [0x702AD2, bin, chlfa12]                    # chlfa12.raw
+  - [0x703846, bin, chlfa12_dl]                 # chlfa12_dl.raw
+  - [0x703BDE, bin, chmsc12]                    # chmsc12.raw
+  - [0x703FF0, bin, chmsc12_dl]                 # chmsc12_dl.raw
+  - [0x70419B, bin, chtra12]                    # chtra12.raw
+  - [0x7049B3, bin, chtra12_dl]                 # chtra12_dl.raw
+  - [0x704CD7, bin, chgin14]                    # chgin14.raw
+  - [0x70556A, bin, chgin14_dl]                 # chgin14_dl.raw
+  - [0x70583D, bin, chhar15]                    # chhar15.raw
+  - [0x706376, bin, chhar15_dl]                 # chhar15_dl.raw
+  - [0x706624, bin, chhor10]                    # chhor10.raw
+  - [0x706EB1, bin, chhor10_dl]                 # chhor10_dl.raw
+  - [0x7071AC, bin, lacar1]                     # lacar1.raw
+  - [0x70741D, bin, lacar1_dl]                  # lacar1_dl.raw
+  - [0x70755E, bin, docno1]                     # docno1.raw
+  - [0x7077BB, bin, docno1_dl]                  # docno1_dl.raw
+  - [0x707919, bin, docng1]                     # docng1.raw
+  - [0x707B6A, bin, docng1_dl]                  # docng1_dl.raw
+  - [0x707CDF, bin, docnw1]                     # docnw1.raw
+  - [0x707F6F, bin, docnw1_dl]                  # docnw1_dl.raw
+  - [0x7080F7, bin, moiron1]                    # moiron1.raw
+  - [0x708351, bin, moiron1_dl]                 # moiron1_dl.raw
+  - [0x70847E, bin, truck4]                     # truck4.raw
+  - [0x7092EA, bin, truck4_dl]                  # truck4_dl.raw
+  - [0x709762, bin, trucker3US]                 # trucker3US.raw
+  - [0x70A4EE, bin, trucker3US_dl]              # trucker3US_dl.raw
+  - [0x70A8DE, bin, chgun16]                    # chgun16.raw
+  - [0x70B30A, bin, chgun16_dl]                 # chgun16_dl.raw
+  - [0x70B62E, bin, chmsc16]                    # chmsc16.raw
+  - [0x70B8FC, bin, chmsc16_dl]                 # chmsc16_dl.raw
+  - [0x70BA0C, bin, chhut16]                    # chhut16.raw
+  - [0x70BCCB, bin, chhut16_dl]                 # chhut16_dl.raw
+  - [0x70BDF7, bin, chhse17]                    # chhse17.raw
+  - [0x70C5FD, bin, chhse17_dl]                 # chhse17_dl.raw
+  - [0x70C84D, bin, chgar17]                    # chgar17.raw
+  - [0x70CADF, bin, chgar17_dl]                 # chgar17_dl.raw
+  - [0x70CC0D, bin, chgas17]                    # chgas17.raw
+  - [0x70D111, bin, chgas17_dl]                 # chgas17_dl.raw
+  - [0x70D294, bin, chhut17]                    # chhut17.raw
+  - [0x70D5A5, bin, chhut17_dl]                 # chhut17_dl.raw
+  - [0x70D6D2, bin, chmsc17]                    # chmsc17.raw
+  - [0x70D7DB, bin, chmsc17_dl]                 # chmsc17_dl.raw
+  - [0x70D87D, bin, chsha18]                    # chsha18.raw
+  - [0x70DE20, bin, chsha18_dl]                 # chsha18_dl.raw
+  - [0x70DFB8, bin, chmsc18]                    # chmsc18.raw
+  - [0x70E1BA, bin, chmsc18_dl]                 # chmsc18_dl.raw
+  - [0x70E2CE, bin, chmsc19]                    # chmsc19.raw
+  - [0x70E5F3, bin, chmsc19_dl]                 # chmsc19_dl.raw
+  - [0x70E739, bin, chhse18]                    # chhse18.raw
+  - [0x70F1FB, bin, chhse18_dl]                 # chhse18_dl.raw
+  - [0x70F51F, bin, chgar18]                    # chgar18.raw
+  - [0x70F786, bin, chgar18_dl]                 # chgar18_dl.raw
+  - [0x70F8ED, bin, chhse20]                    # chhse20.raw
+  - [0x710563, bin, chhse20_dl]                 # chhse20_dl.raw
+  - [0x7108D0, bin, chmsc20]                    # chmsc20.raw
+  - [0x710D2F, bin, chmsc20_dl]                 # chmsc20_dl.raw
+  - [0x710EBF, bin, chhse21]                    # chhse21.raw
+  - [0x711979, bin, chhse21_dl]                 # chhse21_dl.raw
+  - [0x711C80, bin, chmsc21]                    # chmsc21.raw
+  - [0x711E2D, bin, chmsc21_dl]                 # chmsc21_dl.raw
+  - [0x711F34, bin, chhot22]                    # chhot22.raw
+  - [0x71284F, bin, chhot22_dl]                 # chhot22_dl.raw
+  - [0x712A55, bin, chmsc22]                    # chmsc22.raw
+  - [0x712BFA, bin, chmsc22_dl]                 # chmsc22_dl.raw
+  - [0x712CFD, bin, chhse23]                    # chhse23.raw
+  - [0x7137E5, bin, chhse23_dl]                 # chhse23_dl.raw
+  - [0x713ACB, bin, chmsc23]                    # chmsc23.raw
+  - [0x713C74, bin, chmsc23_dl]                 # chmsc23_dl.raw
+  - [0x713D7C, bin, chhse24]                    # chhse24.raw
+  - [0x714840, bin, chhse24_dl]                 # chhse24_dl.raw
+  - [0x714B1F, bin, chbar25]                    # chbar25.raw
+  - [0x7158C7, bin, chbar25_dl]                 # chbar25_dl.raw
+  - [0x715C42, bin, chmsc25]                    # chmsc25.raw
+  - [0x716012, bin, chmsc25_dl]                 # chmsc25_dl.raw
+  - [0x716162, bin, chmsc26]                    # chmsc26.raw
+  - [0x71632D, bin, chmsc26_dl]                 # chmsc26_dl.raw
+  - [0x716434, bin, chhut26]                    # chhut26.raw
+  - [0x716B20, bin, chhut26_dl]                 # chhut26_dl.raw
+  - [0x716D77, bin, chmsc27]                    # chmsc27.raw
+  - [0x71704D, bin, chmsc27_dl]                 # chmsc27_dl.raw
+  - [0x717185, bin, chhut27]                    # chhut27.raw
+  - [0x7176DE, bin, chhut27_dl]                 # chhut27_dl.raw
+  - [0x7178C8, bin, chmsc28]                    # chmsc28.raw
+  - [0x717B4E, bin, chmsc28_dl]                 # chmsc28_dl.raw
+  - [0x717C66, bin, chhse29]                    # chhse29.raw
+  - [0x71841F, bin, chhse29_dl]                 # chhse29_dl.raw
+  - [0x718689, bin, chhut30]                    # chhut30.raw
+  - [0x718B14, bin, chhut30_dl]                 # chhut30_dl.raw
+  - [0x718CE6, bin, chhse30]                    # chhse30.raw
+  - [0x719805, bin, chhse30_dl]                 # chhse30_dl.raw
+  - [0x719B0E, bin, chmsc30]                    # chmsc30.raw
+  - [0x719D9E, bin, chmsc30_dl]                 # chmsc30_dl.raw
+  - [0x719EB6, bin, chhse31]                    # chhse31.raw
+  - [0x71A861, bin, chhse31_dl]                 # chhse31_dl.raw
+  - [0x71AB3A, bin, chmsc31]                    # chmsc31.raw
+  - [0x71AEFF, bin, chmsc31_dl]                 # chmsc31_dl.raw
+  - [0x71B069, bin, chhse32]                    # chhse32.raw
+  - [0x71BCD9, bin, chhse32_dl]                 # chhse32_dl.raw
+  - [0x71C008, bin, chmsc32]                    # chmsc32.raw
+  - [0x71C212, bin, chmsc32_dl]                 # chmsc32_dl.raw
+  - [0x71C321, bin, chhse33]                    # chhse33.raw
+  - [0x71CE05, bin, chhse33_dl]                 # chhse33_dl.raw
+  - [0x71D13F, bin, chtreel]                    # chtreel.raw
+  - [0x71D30C, bin, chtreel_dl]                 # chtreel_dl.raw
+  - [0x71D3EA, bin, chtrees]                    # chtrees.raw
+  - [0x71D5BA, bin, chtrees_dl]                 # chtrees_dl.raw
+  - [0x71D695, bin, labigo2]                    # labigo2.raw
+  - [0x71E74C, bin, labigo2_dl]                 # labigo2_dl.raw
+  - [0x71ED5E, bin, movan1]                     # movan1.raw
+  - [0x71F7D9, bin, movan1_dl]                  # movan1_dl.raw
+  - [0x71FBE2, bin, mocono1]                    # mocono1.raw
+  - [0x71FD7F, bin, mocono1_dl]                 # mocono1_dl.raw
+  - [0x71FE9D, bin, moconr1]                    # moconr1.raw
+  - [0x720027, bin, moconr1_dl]                 # moconr1_dl.raw
+  - [0x720137, bin, moconw1]                    # moconw1.raw
+  - [0x7202BC, bin, moconw1_dl]                 # moconw1_dl.raw
+  - [0x7203CC, bin, mocong1]                    # mocong1.raw
+  - [0x72056A, bin, mocong1_dl]                 # mocong1_dl.raw
+  - [0x720688, bin, mocrat1]                    # mocrat1.raw
+  - [0x7207F3, bin, mocrat1_dl]                 # mocrat1_dl.raw
+  - [0x72092E, bin, mogas1]                     # mogas1.raw
+  - [0x720C81, bin, mogas1_dl]                  # mogas1_dl.raw
+  - [0x720E76, bin, mogas2]                     # mogas2.raw
+  - [0x721582, bin, mogas2_dl]                  # mogas2_dl.raw
+  - [0x721884, bin, moconr2]                    # moconr2.raw
+  - [0x721A20, bin, moconr2_dl]                 # moconr2_dl.raw
+  - [0x721B42, bin, moconb2]                    # moconb2.raw
+  - [0x721CC6, bin, moconb2_dl]                 # moconb2_dl.raw
+  - [0x721DD6, bin, moconw2]                    # moconw2.raw
+  - [0x721F63, bin, moconw2_dl]                 # moconw2_dl.raw
+  - [0x722072, bin, mocono2]                    # mocono2.raw
+  - [0x722210, bin, mocono2_dl]                 # mocono2_dl.raw
+  - [0x72232D, bin, mocong2]                    # mocong2.raw
+  - [0x7224CC, bin, mocong2_dl]                 # mocong2_dl.raw
+  - [0x7225E9, bin, mowhwr1]                    # mowhwr1.raw
+  - [0x7229DA, bin, mowhwr1_dl]                 # mowhwr1_dl.raw
+  - [0x722BD2, bin, mowhbo1]                    # mowhbo1.raw
+  - [0x722FA9, bin, mowhbo1_dl]                 # mowhbo1_dl.raw
+  - [0x723185, bin, mowhrr1]                    # mowhrr1.raw
+  - [0x723567, bin, mowhrr1_dl]                 # mowhrr1_dl.raw
+  - [0x723737, bin, mowhwo1]                    # mowhwo1.raw
+  - [0x723B2C, bin, mowhwo1_dl]                 # mowhwo1_dl.raw
+  - [0x723D2C, bin, mowhwb2]                    # mowhwb2.raw
+  - [0x724127, bin, mowhwb2_dl]                 # mowhwb2_dl.raw
+  - [0x724324, bin, mosid1l]                    # mosid1l.raw
+  - [0x7246F3, bin, mosid1l_dl]                 # mosid1l_dl.raw
+  - [0x7248B9, bin, mosid1r]                    # mosid1r.raw
+  - [0x724CDC, bin, mosid1r_dl]                 # mosid1r_dl.raw
+  - [0x724E81, bin, mostep1]                    # mostep1.raw
+  - [0x725A5B, bin, mostep1_dl]                 # mostep1_dl.raw
+  - [0x725E9C, bin, mosky1]                     # mosky1.raw
+  - [0x7267F6, bin, mosky1_dl]                  # mosky1_dl.raw
+  - [0x726B31, bin, mosky2]                     # mosky2.raw
+  - [0x727574, bin, mosky2_dl]                  # mosky2_dl.raw
+  - [0x727906, bin, mosky3]                     # mosky3.raw
+  - [0x7289A5, bin, mosky3_dl]                  # mosky3_dl.raw
+  - [0x728E94, bin, mosky4]                     # mosky4.raw
+  - [0x7299C1, bin, mosky4_dl]                  # mosky4_dl.raw
+  - [0x729DDA, bin, mosky5]                     # mosky5.raw
+  - [0x72A9AD, bin, mosky5_dl]                  # mosky5_dl.raw
+  - [0x72ADCA, bin, mosky6]                     # mosky6.raw
+  - [0x72B98E, bin, mosky6_dl]                  # mosky6_dl.raw
+  - [0x72BD75, bin, mosky7]                     # mosky7.raw
+  - [0x72CB6A, bin, mosky7_dl]                  # mosky7_dl.raw
+  - [0x72D021, bin, mosky8]                     # mosky8.raw
+  - [0x72DA78, bin, mosky8_dl]                  # mosky8_dl.raw
+  - [0x72DE4E, bin, mosky9]                     # mosky9.raw
+  - [0x72EBED, bin, mosky9_dl]                  # mosky9_dl.raw
+  - [0x72F09F, bin, mosky10]                    # mosky10.raw
+  - [0x72FB23, bin, mosky10_dl]                 # mosky10_dl.raw
+  - [0x72FF34, bin, mosky11]                    # mosky11.raw
+  - [0x73099A, bin, mosky11_dl]                 # mosky11_dl.raw
+  - [0x730DA7, bin, mosky12]                    # mosky12.raw
+  - [0x731566, bin, mosky12_dl]                 # mosky12_dl.raw
+  - [0x731965, bin, chfact1]                    # chfact1.raw
+  - [0x73255C, bin, chfact1_dl]                 # chfact1_dl.raw
+  - [0x7328F6, bin, chwhse1]                    # chwhse1.raw
+  - [0x732C54, bin, chwhse1_dl]                 # chwhse1_dl.raw
+  - [0x732DA8, bin, chwhse2]                    # chwhse2.raw
+  - [0x733144, bin, chwhse2_dl]                 # chwhse2_dl.raw
+  - [0x733292, bin, chwhse3]                    # chwhse3.raw
+  - [0x73363B, bin, chwhse3_dl]                 # chwhse3_dl.raw
+  - [0x73377E, bin, chconc1]                    # chconc1.raw
+  - [0x734514, bin, chconc1_dl]                 # chconc1_dl.raw
+  - [0x7349A8, bin, chsilo1]                    # chsilo1.raw
+  - [0x735246, bin, chsilo1_dl]                 # chsilo1_dl.raw
+  - [0x735476, bin, laorphx]                    # laorphx.raw
+  - [0x735AF4, bin, laorphx_dl]                 # laorphx_dl.raw
+  - [0x735D6F, bin, lapcab1]                    # lapcab1.raw
+  - [0x73616F, bin, lapcab1_dl]                 # lapcab1_dl.raw
+  - [0x73630A, bin, laslid1]                    # laslid1.raw
+  - [0x737077, bin, laslid1_dl]                 # laslid1_dl.raw
+  - [0x7374B6, bin, laconc1]                    # laconc1.raw
+  - [0x738723, bin, laconc1_dl]                 # laconc1_dl.raw
+  - [0x738AD7, bin, labuil1]                    # labuil1.raw
+  - [0x738F99, bin, labuil1_dl]                 # labuil1_dl.raw
+  - [0x739159, bin, lastor1]                    # lastor1.raw
+  - [0x739595, bin, lastor1_dl]                 # lastor1_dl.raw
+  - [0x7396E8, bin, lamscf]                     # lamscf.raw
+  - [0x739A82, bin, lamscf_dl]                  # lamscf_dl.raw
+  - [0x739BCB, bin, chpost1]                    # chpost1.raw
+  - [0x739D3D, bin, chpost1_dl]                 # chpost1_dl.raw
+  - [0x739E0B, bin, chdes3]                     # chdes3.raw
+  - [0x73AC47, bin, chdes3_dl]                  # chdes3_dl.raw
+  - [0x73B183, bin, modam2]                     # modam2.raw
+  - [0x73B2D9, bin, modam2_dl]                  # modam2_dl.raw
+  - [0x73B3D2, bin, dsout1]                     # dsout1.raw
+  - [0x73B67E, bin, dsout1_dl]                  # dsout1_dl.raw
+  - [0x73B792, bin, dspylo1]                    # dspylo1.raw
+  - [0x73B993, bin, dspylo1_dl]                 # dspylo1_dl.raw
+  - [0x73BA9E, bin, laft15b]                    # laft15b.raw
+  - [0x73C098, bin, laft15b_dl]                 # laft15b_dl.raw
+  - [0x73C233, bin, mocons1]                    # mocons1.raw
+  - [0x73CC97, bin, mocons1_dl]                 # mocons1_dl.raw
+  - [0x73CFDD, bin, mocons2]                    # mocons2.raw
+  - [0x73DA37, bin, mocons2_dl]                 # mocons2_dl.raw
+  - [0x73DD23, bin, mocons3]                    # mocons3.raw
+  - [0x73E685, bin, mocons3_dl]                 # mocons3_dl.raw
+  - [0x73E93C, bin, mocons4]                    # mocons4.raw
+  - [0x73F346, bin, mocons4_dl]                 # mocons4_dl.raw
+  - [0x73F69F, bin, mocons5]                    # mocons5.raw
+  - [0x740064, bin, mocons5_dl]                 # mocons5_dl.raw
+  - [0x74037D, bin, mocons6]                    # mocons6.raw
+  - [0x740CA6, bin, mocons6_dl]                 # mocons6_dl.raw
+  - [0x740F61, bin, moboat1]                    # moboat1.raw
+  - [0x7419E0, bin, moboat1_dl]                 # moboat1_dl.raw
+  - [0x741D40, bin, mosid2t]                    # mosid2t.raw
+  - [0x742268, bin, mosid2t_dl]                 # mosid2t_dl.raw
+  - [0x742503, bin, mosid2b]                    # mosid2b.raw
+  - [0x74292E, bin, mosid2b_dl]                 # mosid2b_dl.raw
+  - [0x742B19, bin, mosid3l]                    # mosid3l.raw
+  - [0x742F88, bin, mosid3l_dl]                 # mosid3l_dl.raw
+  - [0x74314C, bin, mosid3r]                    # mosid3r.raw
+  - [0x743670, bin, mosid3r_dl]                 # mosid3r_dl.raw
+  - [0x7438ED, bin, mosid5t]                    # mosid5t.raw
+  - [0x74423D, bin, mosid5t_dl]                 # mosid5t_dl.raw
+  - [0x74455C, bin, mosid5b]                    # mosid5b.raw
+  - [0x744CC7, bin, mosid5b_dl]                 # mosid5b_dl.raw
+  - [0x744F2B, bin, mosid6t]                    # mosid6t.raw
+  - [0x74534D, bin, mosid6t_dl]                 # mosid6t_dl.raw
+  - [0x745508, bin, mosid6b]                    # mosid6b.raw
+  - [0x74591F, bin, mosid6b_dl]                 # mosid6b_dl.raw
+  - [0x745AFA, bin, mocast2]                    # mocast2.raw
+  - [0x7467B1, bin, mocast2_dl]                 # mocast2_dl.raw
+  - [0x746BF1, bin, mocran1]                    # mocran1.raw
+  - [0x7476F3, bin, mocran1_dl]                 # mocran1_dl.raw
+  - [0x747AED, bin, mocran2]                    # mocran2.raw
+  - [0x74861B, bin, mocran2_dl]                 # mocran2_dl.raw
+  - [0x748A15, bin, moboat2]                    # moboat2.raw
+  - [0x7494CE, bin, moboat2_dl]                 # moboat2_dl.raw
+  - [0x749894, bin, labigox]                    # labigox.raw
+  - [0x749CA4, bin, labigox_dl]                 # labigox_dl.raw
+  - [0x749ED9, bin, chhseb]                     # chhseb.raw
+  - [0x74A957, bin, chhseb_dl]                  # chhseb_dl.raw
+  - [0x74ACBC, bin, lasup1]                     # lasup1.raw
+  - [0x74AE55, bin, lasup1_dl]                  # lasup1_dl.raw
+  - [0x74AF50, bin, lamsc10]                    # lamsc10.raw
+  - [0x74B146, bin, lamsc10_dl]                 # lamsc10_dl.raw
+  - [0x74B241, bin, chvalfm]                    # chvalfm.raw
+  - [0x74B5BF, bin, chvalfm_dl]                 # chvalfm_dl.raw
+  - [0x74B6D7, bin, mohot1]                     # mohot1.raw
+  - [0x74C441, bin, mohot1_dl]                  # mohot1_dl.raw
+  - [0x74C947, bin, mohot2]                     # mohot2.raw
+  - [0x74D42E, bin, mohot2_dl]                  # mohot2_dl.raw
+  - [0x74D896, bin, mohot3]                     # mohot3.raw
+  - [0x74E68B, bin, mohot3_dl]                  # mohot3_dl.raw
+  - [0x74EA2A, bin, chhse40]                    # chhse40.raw
+  - [0x74F5D0, bin, chhse40_dl]                 # chhse40_dl.raw
+  - [0x74F8C0, bin, chhse41]                    # chhse41.raw
+  - [0x75054C, bin, chhse41_dl]                 # chhse41_dl.raw
+  - [0x7508AC, bin, la2gsx]                     # la2gsx.raw
+  - [0x750D12, bin, la2gsx_dl]                  # la2gsx_dl.raw
+  - [0x750F13, bin, mohot4]                     # mohot4.raw
+  - [0x751F1A, bin, mohot4_dl]                  # mohot4_dl.raw
+  - [0x75243E, bin, mohot5]                     # mohot5.raw
+  - [0x7534AC, bin, mohot5_dl]                  # mohot5_dl.raw
+  - [0x753A5C, bin, token1]                     # token1.raw
+  - [0x753FAC, bin, token1_dl]                  # token1_dl.raw
+  - [0x7541D4, bin, moart1]                     # moart1.raw
+  - [0x7543D4, bin, moart1_dl]                  # moart1_dl.raw
+  - [0x754535, bin, larock1]                    # larock1.raw
+  - [0x754F01, bin, larock1_dl]                 # larock1_dl.raw
+  - [0x755202, bin, larock2]                    # larock2.raw
+  - [0x755B2A, bin, larock2_dl]                 # larock2_dl.raw
+  - [0x755E0B, bin, ball1]                      # ball1.raw
+  - [0x7567D8, bin, ball1_dl]                   # ball1_dl.raw
+  - [0x756AA6, bin, ball2]                      # ball2.raw
+  - [0x7578A0, bin, ball2_dl]                   # ball2_dl.raw
+  - [0x757C16, bin, ball3]                      # ball3.raw
+  - [0x7588C0, bin, ball3_dl]                   # ball3_dl.raw
+  - [0x758B81, bin, float1]                     # float1.raw
+  - [0x758F43, bin, float1_dl]                  # float1_dl.raw
+  - [0x75910D, bin, cohse1]                     # cohse1.raw
+  - [0x7599B0, bin, cohse1_dl]                  # cohse1_dl.raw
+  - [0x759BD5, bin, cohse2]                     # cohse2.raw
+  - [0x75A1E0, bin, cohse2_dl]                  # cohse2_dl.raw
+  - [0x75A451, bin, lablk1]                     # lablk1.raw
+  - [0x75A691, bin, lablk1_dl]                  # lablk1_dl.raw
+  - [0x75A815, bin, stbac1]                     # stbac1.raw
+  - [0x75B1B5, bin, stbac1_dl]                  # stbac1_dl.raw
+  - [0x75B51A, bin, stbar1]                     # stbar1.raw
+  - [0x75B753, bin, stbar1_dl]                  # stbar1_dl.raw
+  - [0x75B88C, bin, stdnut1]                    # stdnut1.raw
+  - [0x75BD4A, bin, stdnut1_dl]                 # stdnut1_dl.raw
+  - [0x75BF3B, bin, stgls1]                     # stgls1.raw
+  - [0x75C5A0, bin, stgls1_dl]                  # stgls1_dl.raw
+  - [0x75C806, bin, stncp1]                     # stncp1.raw
+  - [0x75D387, bin, stncp1_dl]                  # stncp1_dl.raw
+  - [0x75D757, bin, ststat1]                    # ststat1.raw
+  - [0x75DDEC, bin, ststat1_dl]                 # ststat1_dl.raw
+  - [0x75E036, bin, cochim1]                    # cochim1.raw
+  - [0x75E495, bin, cochim1_dl]                 # cochim1_dl.raw
+  - [0x75E650, bin, cohut1]                     # cohut1.raw
+  - [0x75EB1F, bin, cohut1_dl]                  # cohut1_dl.raw
+  - [0x75ED15, bin, copit1]                     # copit1.raw
+  - [0x75F12F, bin, copit1_dl]                  # copit1_dl.raw
+  - [0x75F2D3, bin, palite2]                    # palite2.raw
+  - [0x75FD07, bin, palite2_dl]                 # palite2_dl.raw
+  - [0x75FFA1, bin, pacran1]                    # pacran1.raw
+  - [0x760847, bin, pacran1_dl]                 # pacran1_dl.raw
+  - [0x760C41, bin, lafire3]                    # lafire3.raw
+  - [0x76160F, bin, lafire3_dl]                 # lafire3_dl.raw
+  - [0x7619A6, bin, lafire4]                    # lafire4.raw
+  - [0x76207D, bin, lafire4_dl]                 # lafire4_dl.raw
+  - [0x762375, bin, lanewf3]                    # lanewf3.raw
+  - [0x762D71, bin, lanewf3_dl]                 # lanewf3_dl.raw
+  - [0x7631CC, bin, lasky1]                     # lasky1.raw
+  - [0x763C37, bin, lasky1_dl]                  # lasky1_dl.raw
+  - [0x763FFD, bin, lasky2]                     # lasky2.raw
+  - [0x764A45, bin, lasky2_dl]                  # lasky2_dl.raw
+  - [0x764E10, bin, door1]                      # door1.raw
+  - [0x764ECF, bin, door1_dl]                   # door1_dl.raw
+  - [0x764F6D, bin, door2]                      # door2.raw
+  - [0x76502C, bin, door2_dl]                   # door2_dl.raw
+  - [0x7650CA, bin, mohot1a]                    # mohot1a.raw
+  - [0x7655EB, bin, mohot1a_dl]                 # mohot1a_dl.raw
+  - [0x7658C1, bin, mohot1b]                    # mohot1b.raw
+  - [0x765CAF, bin, mohot1b_dl]                 # mohot1b_dl.raw
+  - [0x765F1D, bin, mohot1c]                    # mohot1c.raw
+  - [0x76624D, bin, mohot1c_dl]                 # mohot1c_dl.raw
+  - [0x76644C, bin, mohot1d]                    # mohot1d.raw
+  - [0x766736, bin, mohot1d_dl]                 # mohot1d_dl.raw
+  - [0x766902, bin, mohot2a]                    # mohot2a.raw
+  - [0x766B8C, bin, mohot2a_dl]                 # mohot2a_dl.raw
+  - [0x766D09, bin, mohot2b]                    # mohot2b.raw
+  - [0x76708E, bin, mohot2b_dl]                 # mohot2b_dl.raw
+  - [0x7672B4, bin, mohot2c]                    # mohot2c.raw
+  - [0x767541, bin, mohot2c_dl]                 # mohot2c_dl.raw
+  - [0x7676CA, bin, mohot2d]                    # mohot2d.raw
+  - [0x767A5B, bin, mohot2d_dl]                 # mohot2d_dl.raw
+  - [0x767CB4, bin, mohot3a]                    # mohot3a.raw
+  - [0x7680E0, bin, mohot3a_dl]                 # mohot3a_dl.raw
+  - [0x76834A, bin, mohot3b]                    # mohot3b.raw
+  - [0x768689, bin, mohot3b_dl]                 # mohot3b_dl.raw
+  - [0x768864, bin, mohot3c]                    # mohot3c.raw
+  - [0x768C47, bin, mohot3c_dl]                 # mohot3c_dl.raw
+  - [0x768E5C, bin, mohot3d]                    # mohot3d.raw
+  - [0x7690DB, bin, mohot3d_dl]                 # mohot3d_dl.raw
+  - [0x769227, bin, head1]                      # head1.raw
+  - [0x76A1AE, bin, head1_dl]                   # head1_dl.raw
+  - [0x76A73E, bin, head2]                      # head2.raw
+  - [0x76B802, bin, head2_dl]                   # head2_dl.raw
+  - [0x76BECC, bin, head3]                      # head3.raw
+  - [0x76CE93, bin, head3_dl]                   # head3_dl.raw
+  - [0x76D44A, bin, head4]                      # head4.raw
+  - [0x76DE61, bin, head4_dl]                   # head4_dl.raw
+  - [0x76E435, bin, mostat1]                    # mostat1.raw
+  - [0x76F2F6, bin, mostat1_dl]                 # mostat1_dl.raw
+  - [0x76F73E, bin, cork1]                      # cork1.raw
+  - [0x76F8A1, bin, cork1_dl]                   # cork1_dl.raw
+  - [0x76F96D, bin, ghdig1]                     # ghdig1.raw
+  - [0x77021C, bin, ghdig1_dl]                  # ghdig1_dl.raw
+  - [0x7704FE, bin, mocrat2]                    # mocrat2.raw
+  - [0x770668, bin, mocrat2_dl]                 # mocrat2_dl.raw
+  - [0x7707A3, bin, ghdig2]                     # ghdig2.raw
+  - [0x77105A, bin, ghdig2_dl]                  # ghdig2_dl.raw
+  - [0x77134D, bin, ghdig3]                     # ghdig3.raw
+  - [0x771CD6, bin, ghdig3_dl]                  # ghdig3_dl.raw
+  - [0x771FBE, bin, ghdig4]                     # ghdig4.raw
+  - [0x772924, bin, ghdig4_dl]                  # ghdig4_dl.raw
+  - [0x772C1B, bin, modam3]                     # modam3.raw
+  - [0x77310F, bin, modam3_dl]                  # modam3_dl.raw
+  - [0x773316, bin, cohse3]                     # cohse3.raw
+  - [0x773BB5, bin, cohse3_dl]                  # cohse3_dl.raw
+  - [0x773DDA, bin, cohse4]                     # cohse4.raw
+  - [0x774AFC, bin, cohse4_dl]                  # cohse4_dl.raw
+  - [0x774DFF, bin, cohse5]                     # cohse5.raw
+  - [0x775560, bin, cohse5_dl]                  # cohse5_dl.raw
+  - [0x775785, bin, cohse6]                     # cohse6.raw
+  - [0x776305, bin, cohse6_dl]                  # cohse6_dl.raw
+  - [0x776608, bin, cosqr1]                     # cosqr1.raw
+  - [0x776FEF, bin, cosqr1_dl]                  # cosqr1_dl.raw
+  - [0x7772EA, bin, coshd1]                     # coshd1.raw
+  - [0x777647, bin, coshd1_dl]                  # coshd1_dl.raw
+  - [0x77777D, bin, cohut1_77777D]              # cohut1.raw
+  - [0x777C4C, bin, cohut1_dl_777C4C]           # cohut1_dl.raw
+  - [0x777E42, bin, costor2]                    # costor2.raw
+  - [0x7781B1, bin, costor2_dl]                 # costor2_dl.raw
+  - [0x778350, bin, colong2]                    # colong2.raw
+  - [0x778766, bin, colong2_dl]                 # colong2_dl.raw
+  - [0x7788EF, bin, cochim2]                    # cochim2.raw
+  - [0x778B7B, bin, cochim2_dl]                 # cochim2_dl.raw
+  - [0x778CC1, bin, copit2]                     # copit2.raw
+  - [0x77913B, bin, copit2_dl]                  # copit2_dl.raw
+  - [0x779339, bin, cosid4]                     # cosid4.raw
+  - [0x779980, bin, cosid4_dl]                  # cosid4_dl.raw
+  - [0x779C0E, bin, cofact2]                    # cofact2.raw
+  - [0x77A6F2, bin, cofact2_dl]                 # cofact2_dl.raw
+  - [0x77AA86, bin, corail2]                    # corail2.raw
+  - [0x77ACC5, bin, corail2_dl]                 # corail2_dl.raw
+  - [0x77ADE5, bin, spcen1]                     # spcen1.raw
+  - [0x77B8A5, bin, spcen1_dl]                  # spcen1_dl.raw
+  - [0x77BC56, bin, sparmn1]                    # sparmn1.raw
+  - [0x77C014, bin, sparmn1_dl]                 # sparmn1_dl.raw
+  - [0x77C228, bin, sparme1]                    # sparme1.raw
+  - [0x77C5EB, bin, sparme1_dl]                 # sparme1_dl.raw
+  - [0x77C7FF, bin, sparmw1]                    # sparmw1.raw
+  - [0x77CBBB, bin, sparmw1_dl]                 # sparmw1_dl.raw
+  - [0x77CDD1, bin, sparms1]                    # sparms1.raw
+  - [0x77D177, bin, sparms1_dl]                 # sparms1_dl.raw
+  - [0x77D38D, bin, spbox1]                     # spbox1.raw
+  - [0x77DC20, bin, spbox1_dl]                  # spbox1_dl.raw
+  - [0x77DF4B, bin, spsola1]                    # spsola1.raw
+  - [0x77E251, bin, spsola1_dl]                 # spsola1_dl.raw
+  - [0x77E3C8, bin, spsola2]                    # spsola2.raw
+  - [0x77E6D9, bin, spsola2_dl]                 # spsola2_dl.raw
+  - [0x77E851, bin, spsola3]                    # spsola3.raw
+  - [0x77EB19, bin, spsola3_dl]                 # spsola3_dl.raw
+  - [0x77EC90, bin, spcons1]                    # spcons1.raw
+  - [0x77F0A1, bin, spcons1_dl]                 # spcons1_dl.raw
+  - [0x77F211, bin, spcons2]                    # spcons2.raw
+  - [0x77F96B, bin, spcons2_dl]                 # spcons2_dl.raw
+  - [0x77FBC0, bin, spcons3]                    # spcons3.raw
+  - [0x7800BE, bin, spcons3_dl]                 # spcons3_dl.raw
+  - [0x78026C, bin, spflt1]                     # spflt1.raw
+  - [0x7815F5, bin, spflt1_dl]                  # spflt1_dl.raw
+  - [0x781A7C, bin, shnob1]                     # shnob1.raw
+  - [0x782010, bin, shnob1_dl]                  # shnob1_dl.raw
+  - [0x782292, bin, desflt1]                    # desflt1.raw
+  - [0x7824D1, bin, desflt1_dl]                 # desflt1_dl.raw
+  - [0x78264B, bin, desflt2]                    # desflt2.raw
+  - [0x7828E8, bin, desflt2_dl]                 # desflt2_dl.raw
+  - [0x782A84, bin, desnew1]                    # desnew1.raw
+  - [0x782C20, bin, desnew1_dl]                 # desnew1_dl.raw
+  - [0x782D1E, bin, desnew2]                    # desnew2.raw
+  - [0x782EC8, bin, desnew2_dl]                 # desnew2_dl.raw
+  - [0x782FCA, bin, desnew3]                    # desnew3.raw
+  - [0x783D10, bin, desnew3_dl]                 # desnew3_dl.raw
+  - [0x7841E3, bin, desnew4]                    # desnew4.raw
+  - [0x784477, bin, desnew4_dl]                 # desnew4_dl.raw
+  - [0x78461D, bin, destow1]                    # destow1.raw
+  - [0x7848D9, bin, destow1_dl]                 # destow1_dl.raw
+  - [0x784A78, bin, laezflt]                    # laezflt.raw
+  - [0x785339, bin, laezflt_dl]                 # laezflt_dl.raw
+  - [0x78567E, bin, lapump1]                    # lapump1.raw
+  - [0x78580C, bin, lapump1_dl]                 # lapump1_dl.raw
+  - [0x7858CD, bin, chpump1]                    # chpump1.raw
+  - [0x785A83, bin, chpump1_dl]                 # chpump1_dl.raw
+  - [0x785B5A, bin, endsid1]                    # endsid1.raw
+  - [0x786014, bin, endsid1_dl]                 # endsid1_dl.raw
+  - [0x786192, bin, endsid2]                    # endsid2.raw
+  - [0x7866A6, bin, endsid2_dl]                 # endsid2_dl.raw
+  - [0x786852, bin, endsid3]                    # endsid3.raw
+  - [0x786F2C, bin, endsid3_dl]                 # endsid3_dl.raw
+  - [0x7870FD, bin, endsid4]                    # endsid4.raw
+  - [0x7876F2, bin, endsid4_dl]                 # endsid4_dl.raw
+  - [0x7878BF, bin, endsid5]                    # endsid5.raw
+  - [0x787EBF, bin, endsid5_dl]                 # endsid5_dl.raw
+  - [0x788090, bin, static_data]                # viewport and display list (LZSS)
   - [0x788120, bin, hd_code_text.eu]            # main asm code      862230153
   - [0x7D845C, bin, hd_code_data.eu]            # data for main asm  862230153
-  - [0x7E493C, bin]                            # zero padding
+  - [0x7E493C, bin]                             # zero padding
   - [0x7E4940, bin, hd_front_end_text.eu]       # UI asm code        862230154
   - [0x7F75A4, bin, hd_front_end_data.eu]       # data for UI asm    862230154
   - [0x7FB7C0, bin, trailer]                    # 0xff to end

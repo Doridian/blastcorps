@@ -180,13 +180,16 @@ What `split_data` in `tools/gen_code_yaml.py` assumes, and why:
 - [x] Make the ROM offsets that code uses to find assets and the compressed
       modules into linker symbols. init's boot code takes hd_code's and
       hd_front_end's ROM range from `tools/rom_syms.py` (placed by the
-      compressed sizes), and every reference to the start of a top-level
-      segment (89 in hd_code, 10 in hd_front_end) is that segment's
-      `_ROM_START`. Left as numbers: offsets that aren't a segment start
-      (hd_code `0x350950`, `0x3539A0`, `0x3A1920`, `0x3A48C0`, `0x44F5C0`,
-      `0x6AD3F0`, and `0x787F40`/`0x788000`, which straddle hd_code_text's
-      start; hd_front_end `0x6AD3F0`, `0x6BF2F0`, `0x6D3D30`, `0x6EC4C0`).
-      They become symbols once the top-level split names those assets.
+      compressed sizes), and every ROM address the code uses (99 in hd_code,
+      14 in hd_front_end) is a segment's `_ROM_START`. The ones that used to
+      be left as numbers are named by the top-level split now (Phase 4): the
+      sound banks and sequences (hd_code `0x350950`, `0x3539A0`, `0x3A1920`,
+      `0x3A48C0`, `0x44F5C0`), the background images (`0x6AD3F0`,
+      `0x6BF2F0`, `0x6D3D30`), the model table (`0x6EC4C0`, also reached by
+      hd_code 5CB60's handwritten loader) and static_data (`0x787F40`, with
+      `0x788000` its `_DMA_END`); and the texture table at `0x4CE0`, which
+      5BF40's handwritten loaders build with `lui 0; addiu` (postsplit
+      symbolizes it). The link reports list no "ROM offset" left.
 - [x] Shiftability test: `SHIFT=1` (CLAUDE.md) pads the start of
       hd_code's and hd_front_end's `.text` and `.data`. In mupen64plus
       (rice video plugin, SDL's offscreen driver, a scripted input plugin)
@@ -263,9 +266,41 @@ Mostly done alongside Phase 2, but it's its own effort.
 
 ## Phase 4: assets
 
-- Extract every ROM asset through the existing `blast`/`rzip` splat
-  extensions into editable formats (PNG textures, structured level data), and
-  rebuild them byte for byte.
+docs/ASSETS.md has the inventory and the formats.
+
+- [x] Name every piece of the ROM in the top-level config (still generated,
+      `tools/gen_build_yaml.py` over `tools/assetlib/romlayout.py`, which
+      finds each boundary from the data): the texture table and textures,
+      the two sound banks (LZSS `.ctl`, `.tbl`) and the sequence bank, the
+      738 gzip members by their header names, the LZSS background images and
+      static_data, the model table.
+- [x] Extract them into editable files with a byte-exact rebuild, checked
+      by `make extract` for all four versions (`tools/assets.py`): textures
+      as PNGs, levels as YAML following `LevelHeader` (records where the
+      layout is known, hex elsewhere), the sound banks and sequences as
+      libultra's `.ctl`/`.tbl`/`.seq`, the background images as PNGs, the
+      other gzip members inflated. The ROM link builds from them and
+      regenerates the texture and model tables.
+- [x] Rare's LZSS identified (Nelson's, BREAK_EVEN 2) and reproduced; gzip
+      1.2.4 reproduces every member.
+- [x] Shifted assets: `SHIFT=1` also puts `ASSET_SHIFT_PAD` (0x10) bytes
+      before the texture table and every 16-aligned asset (92 places), so
+      every asset moves. In mupen64plus (rice, the scripted input of
+      port/tools/m64p_pace.c "play", screenshots every 300 polls to 3000),
+      the shifted ROM reaches Simian Acres like the original: the same mode
+      sequence, every screenshot the original reproduces is identical, and
+      the audio is sample-identical for the first 13.1 s, where two runs of
+      the original also part. An edited texture PNG (recompressed by our
+      encoder, moving everything after it by 0xD90 bytes) shows in the game.
+- [ ] The blast encoder can't reproduce Rare's streams (the compression is
+      lossy and Rare matched on the unquantized source), so the build keeps
+      the ROM's stream for each texture and only recompresses changed ones.
+- [ ] Which LUT each type 4/5 texture uses (set up by the loader, not in the
+      table), and the image sizes of the ~170 textures no display list or
+      old table gives.
+- [ ] Types for what's still binary: the models and their display lists
+      (and the levels' `_dl`), the level sections left as hex, the title and
+      texture-set images.
 - Describe level/model data as typed records rather than blobs. The PC build
   reads the same assets but byteswaps them and widens their pointers at load
   time.

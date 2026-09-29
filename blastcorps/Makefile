@@ -250,11 +250,19 @@ $(BUILD_DIR)/shift.stamp: FORCE
 	@mkdir -p $(BUILD_DIR)
 	@if [ "$$(cat $@ 2>/dev/null)" != "$(SHIFT) $(SHIFT_LDFLAGS)" ]; then echo "$(SHIFT) $(SHIFT_LDFLAGS)" > $@; fi
 
-$(ROM_SYMS_FIXED): ../blastcorps.$(VERSION).yaml $(TOOLS_DIR)/rom_syms.py
+# The assets' positions come from their built sizes, so the top level's
+# asset build (tools/assets.py, shifted too with SHIFT=1) goes first.  A tree
+# without the top level's assets extracted gets the config's positions.
+../build/assets/.stamp: FORCE
+	@if [ -f ../assets/layout.yaml ]; then \
+		$(MAKE) --no-print-directory -C .. VERSION=$(VERSION) SHIFT=$(SHIFT) assets; \
+	elif [ ! -f $@ ]; then mkdir -p $(@D) && touch $@; fi
+
+$(ROM_SYMS_FIXED): ../blastcorps.$(VERSION).yaml $(TOOLS_DIR)/rom_syms.py ../build/assets/.stamp
 	@mkdir -p $(BUILD_DIR)
 	cd .. && $(PYTHON) tools/rom_syms.py $(VERSION) --fixed-only --out blastcorps/$@
 
-$(ROM_SYMS): ../blastcorps.$(VERSION).yaml $(TOOLS_DIR)/rom_syms.py $(GZ_FILES)
+$(ROM_SYMS): ../blastcorps.$(VERSION).yaml $(TOOLS_DIR)/rom_syms.py $(GZ_FILES) ../build/assets/.stamp
 	cd .. && $(PYTHON) tools/rom_syms.py $(VERSION) --out blastcorps/$@ \
 		$(foreach m,hd_code_text hd_code_data hd_front_end_text hd_front_end_data,--module $(m)=blastcorps/$(BUILD_DIR)/$(m).$(VERSION).gz)
 
