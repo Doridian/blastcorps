@@ -282,6 +282,16 @@ selected with `TARGET_PC`. The N64 build stays matching.
       original in unicorn, on random states and on RDRAM snapshots from
       real play. All 688 functions match. See docs/PORT.md for the
       interface, results and what's left.
+- [x] First PC build (`port/`, docs/PORT.md): CMake, 32-bit x86 with RDRAM
+      at `0x80000000` and every game variable at its N64 address, the game's
+      C built big-endian by an LLVM pass (BEPass), libultra replaced
+      (fibers, PI from the ROM file, SDL input, EEPROM file, host clock),
+      generated glue to the translated engine, a software Fast3D renderer.
+      Runs the Rare logo, the title screen and the attract mode, and with
+      Start/A the name entry, the world map and Simian Acres.
+- [ ] Pacing: the RSP/RDP finish instantly, so the intro runs too fast and
+      gameplay at 60 fps (docs/PORT.md, "Status").
+- [ ] Audio (audio-ucode HLE, SDL output) and an accelerated renderer.
 - Later: widescreen, higher framerate (the game loop is tied to VI retrace),
   and mod support.
 
@@ -292,7 +302,7 @@ selected with `TARGET_PC`. The N64 build stays matching.
 3. libultra fully in C.
 4. 50% of `hd_code` by bytes.
 5. 100% matching.
-6. The PC build reaches the title screen.
+6. The PC build reaches the title screen. (Done: docs/PORT.md.)
 7. The PC build is playable start to finish.
 
 A partial port can start before 100%: once data is symbolic, a PC build could

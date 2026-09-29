@@ -157,7 +157,13 @@ char *func_8025B558(u16 *arg0) {
 
     sp4 = 0;
     while (arg0[sp4] != 0 && sp4 < 0xFF) {
+#ifdef TARGET_PC
+        /* unsequenced: IDO stores to the old index */
+        D_80365458[sp4] = arg0[sp4];
+        sp4++;
+#else
         D_80365458[sp4] = arg0[sp4++];
+#endif
     }
     D_80365458[sp4] = 0;
     return D_80365458;

@@ -1,4 +1,196 @@
-# The handwritten asm on the PC port
+# The PC port
+
+The PC build (`port/`, milestone 1 of ROADMAP Phase 5) and the translator
+it runs Rare's handwritten asm through.  The build is described first; the
+translator and its test follow from "The handwritten asm".
+
+## Building and running
+
+```
+make VERSION=us.v11 -C blastcorps          # the N64 build: the port reads its ELFs and asm/
+make -C tools/recomp                       # translate the handwritten engine
+cmake -S port -B build/port -G Ninja -DCMAKE_C_COMPILER=clang \
+      -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_ASM_COMPILER=clang
+cmake --build build/port
+build/port/blastcorps baserom.us.v11.z64   # the user's own ROM
+```
+
+It needs clang/LLVM with its development headers (BEPass is an LLVM
+plugin), a 32-bit (multilib) libc and SDL2, and Python 3.  Keys: arrows or
+WASD for the stick, X = A, C = B, Z = Z, Enter = Start, Q/E = L/R, IJKL = C
+buttons, TFGH = D-pad; an SDL game controller works too.  `--help` lists
+the options: `--headless`, `--deterministic` (virtual time: as fast as the
+host can, identical every run), `--frames N`, `--screenshot PREFIX`,
+`--save PATH` (the 4 Kbit EEPROM, default `blastcorps.eep`).
+`PORT_AUTOSTART=1` taps Start and A, which is enough to get from the title
+through the name entry into Simian Acres; `PORT_DUMP=N,...` writes RDRAM at
+the Nth controller read, counted as `tools/recomp/test/snapshot.c` counts
+them in mupen64plus, so the two can be compared byte for byte.
+
+## Memory model
+
+The decompiled C, the translated asm, the game's data and whatever the ROM
+holds all have to agree on memory.  The port keeps the N64's view of it
+exactly, and adapts the host to that, rather than the other way round:
+
+- **32-bit addresses.**  The whole program is a 32-bit x86 program
+  (`-m32 -malign-double`), so a pointer is 4 bytes and every struct has its
+  N64 layout.  The executable is linked at `0x80400000`.
+- **RDRAM at `0x80000000`.**  The first 4 MB of the address space is the
+  image's `.rdram` section (`tools/gen_ld.py`), so a KSEG0 address *is* the
+  host address.  The translated code's `rdram + (addr & 0x1FFFFFFF)` with
+  `rdram = 0x80000000` is the identity; `K0_TO_PHYS`, `PHYS_TO_K0`,
+  `osVirtualToPhysical` and segment addresses round-trip; the game's fixed
+  buffers (framebuffers at `0x80000400`, the level pool from `0x8004B400`,
+  the heap after `.bss` at `0x803FF600`) are where it expects them.  The
+  hardware registers (`0xA4000000`) are mapped as plain memory, and the
+  fibers' host stacks sit at `0x90000000`, inside the KSEG0 window, so the
+  address of a local means the same to the translated code.
+- **Every game variable at its N64 address.**  The decompiled C relies on
+  the layout of the data, not just its contents: structs read past one
+  variable into the next (the scheduler's frame counter is `sc->unk284`,
+  which is the separate variable `D_803156C4`), tables are indexed from a
+  neighbour, the front end's area is cleared by address.  The game's C is
+  built with `-fdata-sections`, the data files are converted one section per
+  file (`tools/asm2x86.py`), and `gen_ld.py` places each at its address in
+  the N64 link; the build checks all 3,937 symbols afterwards.  Anything in
+  RDRAM the port doesn't define is simply there, at its N64 address
+  (`tools/gen_syms.py`).
+- **Big-endian memory.**  The data files, the ROM's assets and most of the
+  C-owned data are untyped bytes: a native little-endian reading would need
+  every structure typed first (Phase 3/4).  Instead the game's C is compiled
+  by clang with **BEPass** (`port/bepass/`), an LLVM pass that byte-swaps
+  every multi-byte load and store, so memory holds exactly the N64's bytes.
+  Type punning, unions, `u64` halves, reading a struct from the ROM: all
+  behave as on the N64.  The translated asm stays in its tested big-endian
+  mode, and DMA is a plain copy.  Initialized data is fixed at startup: the
+  pass records the scalars in C initializers and a constructor swaps them
+  (`__bepass_fixup`), and symbolic `.word`s in the data files are listed in
+  a `port_bswap32` section and swapped by `port_fixups()`.  Swaps on locals
+  fold away; what's left costs a `bswap` or `movbe`.  Only code built with
+  the pass is on the "N64 side"; host code (`port/host/`) that touches game
+  memory does so through `port_be32()` and friends (`port/include/port.h`).
+  Functions that use `va_start` are left unswapped (the argument area is
+  the host's); the game's are empty debug printfs, and `sprintf` is the
+  host's `vsprintf`.
+- **Why this and not native pointers.**  It is the quickest way to run the
+  code as it is: no data needs typing, the translated engine is used exactly
+  as tested, and the game's own assumptions about addresses hold.  The path
+  to a clean port stays open and is incremental: as structures get typed
+  (Phase 3) and assets get loaders that swap and widen them (Phase 4),
+  BEPass and `-m32` go away together; the translated code has a native-endian
+  mode (`RECOMP_NATIVE_ENDIAN`) for then, and every place the port depends
+  on the layout is a symbol or a documented fixed address.
+
+BEPass also puts a call to `__port_poll()` on every loop back edge.  The
+game busy-waits on counters that another thread or an interrupt advances
+(`while (D_803156C4 - sp60 < 15) {}` waits for retraces); the port runs its
+threads one at a time, and the poll is where it lets a due event in.  As an
+opaque call it also stops clang from hoisting the load out of the loop, as
+IDO never would.
+
+## The platform layer
+
+- **Threads** (`port/host/threads.c`): each OSThread is a fiber (ucontext) on
+  the one OS thread, scheduled as libultra does: the highest-priority
+  runnable thread runs until it blocks, yields, or wakes a thread of higher
+  priority.  The idle thread parks when it drops to priority 0.  Each thread
+  has its own `recomp_context`, whose `$sp` is the N64 stack the game gave
+  `osCreateThread` (only the translated code uses it).
+- **The loop** (`port/host/main.c`) runs when no thread can: it raises the
+  events the hardware would (VI retrace at 60 Hz, timers, SP and DP task
+  completion) and sleeps until the next one.
+- **libultra** (`port/src/ultra.c`, N64 side): messages, events, timers,
+  `osGetTime` from the host clock (at 46.875 MHz), PI DMA from the ROM
+  file, the controller from SDL, EEPROM to a file, no Controller Pak, VI
+  swap, SP tasks, AI (ignored).  The stubs of `src.us.v11` that include only
+  libultra's os/io (and libc's printf and string functions) aren't built;
+  gu, libaudio and the rest of libc are.  hd_code's entry point
+  (`func_802447C0`) runs on a boot thread (`port/src/boot.c`).
+- **The overlay** (`port/src/overlay.c`): the front end is linked in, and
+  "loading" it (`func_8028B3E0`, wrapped at link time) restores its `.data`
+  from a startup copy and clears its `.bss`, which is what the N64's inflate
+  leaves behind.
+- **Graphics** (`port/host/gfx.c`): a software Fast3D (gbi 2.0D) renderer
+  that draws into the game's framebuffer in RDRAM, as the RDP would, and
+  shows the VI's current framebuffer.  RSP: matrices, vertices, lighting,
+  texgen, clipping, culling.  RDP: TMEM loads, tiles, all texture formats,
+  the combiner (both cycles), a simplified blender, alpha compare, a float
+  z-buffer tied to the z image, 8/16/32-bit color images.  OS_EVENT_DP is
+  raised only for a display list that ends in a full sync, as the game's
+  scheduler expects.  Point sampling, no anti-aliasing, no fog.
+- **Audio**: the game's audio thread and libaudio run; the audio task is
+  reported done without running, so there is no sound.
+
+## The glue to the translated code
+
+`port/tools/gen_glue.py` generates both directions from the C:
+
+- `entry.c`: for each of the 167 translated functions the C calls, a native
+  function with the C's prototype that puts the arguments where the o32 ABI
+  does (`a0`-`a3`, `f12`/`f14` when the first argument is a float, the
+  stack from `sp+16`, doubles and `u64`s as register pairs), calls
+  `recomp_func_X` with the thread's context, and returns `v0` or `f0`.
+- `externs.c`: `recomp_extern_X` for the 53 calls out, the reverse; it saves
+  and restores the callee-saved registers around the native call, as the
+  IDO-compiled callee would.
+
+Prototypes come from the definition for a C function (K&R ones included)
+and from the most common declaration for a translated one.
+`port/tools/liveness.py` computes each translated function's live-in
+registers; the generator checks the prototypes against them (no entry reads
+an argument outside `a0`-`a3`/`f12`/`f14`) and lists disagreements in
+`glue_report.txt`.
+
+## Source changes for the port
+
+Guarded with `#ifdef TARGET_PC`; the N64 build still matches.
+
+- `hd_code/26570.c`: `func_8026BBD0` is `void`, but its callers use the
+  result, which on the N64 is `v0` left over from `func_8026BCE0`; the port
+  returns that.  Two string copies whose unsequenced `a[i] = b[i++]` IDO
+  evaluates with the old index.
+- `hd_code/168B0.c`: the same unsequenced copy.
+- `tools/recomp/runtime/recomp.h`: `dmult`/`dmultu` without `__int128` on a
+  32-bit host (checked against the `__int128` version).
+
+## Status
+
+- Boots, runs every thread, and plays the Rare logo, the title screen and
+  the attract mode (the story sequence and the demo levels) for as long as
+  it is left running; with Start/A it goes through the save-erase prompt,
+  the name entry, the world map and into Simian Acres, which plays (the
+  bulldozer, the carrier, the pause menu).
+- Known problems: the game's pacing.  The RSP and RDP finish instantly and
+  the CPU is fast, and the intro modes don't wait for the retrace (the
+  scheduler swaps at once when `D_80364A90` has certain bits), so the
+  attract sequence runs about 15 times faster than on the hardware, and
+  gameplay at 60 frames a second instead of about 30.  Rendering: some
+  textures glitch (no TMEM swizzle, no bilinear filtering or LOD), the
+  blender is approximate.  No audio.  Non-void functions that fall off the
+  end (`func_8024B4B8`, `func_80271F48`, `func_8027E164`, `func_801F6160`,
+  `func_801F61C8`, `func_801F6ED4`) return whatever the host leaves.
+
+## What's left for the port
+
+- **Timing.**  Charge the RDP's (and the CPU's) time: raise OS_EVENT_DP
+  after the time the RDP would take, as `--deterministic` already
+  estimates, and find what the game uses to pace its modes.
+- **Audio.**  An audio-ucode HLE for the audio task, and SDL output from
+  `osAiSetNextBuffer`.
+- **An accelerated renderer** (OpenGL, or Fast3D in the style of sm64-port's
+  gfx_pc) in place of the software one, at `host_gfx_task()`.
+- **Real call states** for the translated code's test.  Recording `ctx` and
+  memory at each translated function's entry during play would replace the
+  random registers, and reach the 30% of blocks the random states don't.
+- **Toward native code**: type the data (Phase 3), load assets through typed
+  swapping loaders (Phase 4), then drop BEPass and `-m32` together and
+  switch the translated code to `RECOMP_NATIVE_ENDIAN`.
+- **Readable C.** Replace translated functions with hand-written C one at a
+  time. Each replacement can be checked with the same harness: point the
+  test library at the new C instead of the generated file.
+
+# The handwritten asm
 
 About a third of hd_code (us.v11 `0x56040`–`0x8E910`, 31 objects, 688
 functions, 55k instructions) and hd_front_end's `0x1B100` run are Rare's
@@ -80,12 +272,9 @@ void recomp_func_8029A800(uint8_t *rdram, recomp_context *ctx);
   anything that reads one datum at two widths would need checking. Doubles
   and `ld`/`sd` are two words, high word first, in both modes.
 
-So the port runs decompiled C with host pointers, and the engine runs inside
-an emulated 4 MB (or larger) RDRAM arena. Data the two share has to live in
-that arena. The game already allocates from a heap at `0x803FF600`, and its
-globals can be placed there by the port's linker or loader. Crossing between
-the two sides goes through the glue above. That covers 167 call sites in and
-53 callees out, few enough to write and check by hand.
+How the PC build meets this interface (RDRAM at `0x80000000`, big-endian
+memory, the glue generated from the C) is under "Memory model" and "The
+glue to the translated code" above.
 
 ## Semantics worth knowing
 
@@ -199,23 +388,3 @@ What this can't test:
   unextended values, divide by zero) are checked against QEMU's behaviour in
   the test build. The port build's VR4300 behaviour for them is not
   exercised.
-
-## What's left for the port
-
-- **Real call states.** Recording `ctx` and memory at each translated
-  function's entry during play would replace the random registers. That
-  needs a debugger-enabled mupen64plus core or a breakpoint hook, and it
-  would reach the 30% of blocks that the random states don't.
-- **Glue.** Write the 53 extern wrappers and the entry wrappers for the 167
-  C call sites. Each entry wrapper must know which registers the Rare
-  function takes.
-- **The arena.** Put the game's shared globals and its heap in the RDRAM
-  arena, and decide between big-endian and native-endian storage for data
-  the native C touches.
-- **Not translated:** `init`'s boot code and libultra's `.s` files (exception
-  vectors, TLB, cache and thread switching). The platform layer replaces
-  them. `recomp_mfc0`/`mtc0` stand in for the two COP0 accesses in Rare's
-  code.
-- **Readable C.** Replace translated functions with hand-written C one at a
-  time. Each replacement can be checked with the same harness: point the
-  test library at the new C instead of the generated file.

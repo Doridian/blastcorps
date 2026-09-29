@@ -46,6 +46,16 @@ sections (`hd_code`, `hd_code_data`, `hd_code_bss`, and the same for
 exists because stale output from another version otherwise links in silently and
 surfaces only as a confusing sha1 mismatch.
 
+The PC port (docs/PORT.md) is a separate CMake build over the same source,
+after the N64 build and `make -C tools/recomp`:
+
+```
+cmake -S port -B build/port -G Ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_ASM_COMPILER=clang
+cmake --build build/port && build/port/blastcorps baserom.us.v11.z64
+```
+
+Port-only source changes in `src.us.v11` go under `#ifdef TARGET_PC`.
+
 ## What "matching" depends on
 
 The sha1 checks are the arbiter. Everything below is a way to keep them passing.

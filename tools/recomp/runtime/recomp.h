@@ -189,6 +189,7 @@ static inline void recomp_multu(recomp_context *ctx, uint64_t a, uint64_t b) {
     uint64_t p = (uint64_t)(uint32_t)a * (uint64_t)(uint32_t)b;
     ctx->lo = S32(p); ctx->hi = S32(p >> 32);
 }
+#ifdef __SIZEOF_INT128__
 static inline void recomp_dmult(recomp_context *ctx, uint64_t a, uint64_t b) {
     __int128 p = (__int128)(int64_t)a * (__int128)(int64_t)b;
     ctx->lo = (uint64_t)p; ctx->hi = (uint64_t)((unsigned __int128)p >> 64);
@@ -197,6 +198,22 @@ static inline void recomp_dmultu(recomp_context *ctx, uint64_t a, uint64_t b) {
     unsigned __int128 p = (unsigned __int128)a * (unsigned __int128)b;
     ctx->lo = (uint64_t)p; ctx->hi = (uint64_t)(p >> 64);
 }
+#else
+/* 32-bit hosts (the PC port is -m32): the 128-bit product from 32-bit halves */
+static inline void recomp_dmultu(recomp_context *ctx, uint64_t a, uint64_t b) {
+    uint64_t al = (uint32_t)a, ah = a >> 32, bl = (uint32_t)b, bh = b >> 32;
+    uint64_t ll = al * bl, lh = al * bh, hl = ah * bl, hh = ah * bh;
+    uint64_t mid = (ll >> 32) + (uint32_t)lh + (uint32_t)hl;
+    ctx->lo = (mid << 32) | (uint32_t)ll;
+    ctx->hi = hh + (lh >> 32) + (hl >> 32) + (mid >> 32);
+}
+static inline void recomp_dmult(recomp_context *ctx, uint64_t a, uint64_t b) {
+    recomp_dmultu(ctx, a, b);
+    /* signed high word: subtract b if a < 0 and a if b < 0 */
+    if ((int64_t)a < 0) ctx->hi -= b;
+    if ((int64_t)b < 0) ctx->hi -= a;
+}
+#endif
 static inline void recomp_div(recomp_context *ctx, uint64_t a, uint64_t b) {
     int32_t n = (int32_t)a, d = (int32_t)b;
     if (d == 0) {

@@ -2015,7 +2015,14 @@ typedef struct {
 
 Gfx *func_8026BCE0(Gfx *, UnkStruct_803156F8 *, s32 *);
 
+#ifdef TARGET_PC
+/* The callers use the result, which on the N64 is whatever is left in v0:
+   func_8026BCE0's return value. */
+Gfx *func_8026BBD0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
+    Gfx *ret;
+#else
 void func_8026BBD0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
+#endif
     Gfx *gfx;
 
     gfx = arg0;
@@ -2026,8 +2033,14 @@ void func_8026BBD0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
     if (D_8036BB1C == 1 && D_8036BB18 != -1) {
         func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "!(yoshiState==YOSHI_OFF && currentYoshiWindow!=NO_YOSHI_WINDOW)", "yoshi.c", 0x623);
     }
+#ifdef TARGET_PC
+    ret = gfx;
+#endif
     gDPPipeSync(gfx++);
     *arg2 += gfx - arg0;
+#ifdef TARGET_PC
+    return ret;
+#endif
 }
 
 extern u8 D_802E8BD4;
@@ -2720,11 +2733,22 @@ void *func_8026F004(UnkStruct_802F8BDC *arg0, u16 arg1, u8 arg2) {
                 sp28 = 0;
                 if (arg2) {
                     while (sp30[sp28] != D_802E8C98[sp3B]) {
+#ifdef TARGET_PC
+                        /* unsequenced: IDO stores to the old index */
+                        D_8036BB48[sp28] = sp30[sp28];
+                        sp28++;
+#else
                         D_8036BB48[sp28] = sp30[sp28++];
+#endif
                     }
                 } else {
                     while (sp34[sp28] != D_802E8C98[sp3B]) {
+#ifdef TARGET_PC
+                        D_8036BB48[sp28] = sp34[sp28];
+                        sp28++;
+#else
                         D_8036BB48[sp28++] = sp34[sp28];
+#endif
                     }
                 }
                 D_8036BB48[sp28] = D_802E8C98[sp3B];

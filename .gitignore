@@ -1,5 +1,6 @@
 # files
 *.bin
+*.eep
 *.ext
 *.ld
 *.ok
@@ -16,3 +17,4 @@ junk/
 permuter/
 .env/
 .version
+!port/port_fixed.ld

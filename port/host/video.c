@@ -1,0 +1,234 @@
+/*
+ * Window, input and presentation (SDL2).
+ *
+ * Until a display-list renderer is wired in, what's shown is the VI's
+ * current framebuffer as it is in RDRAM (RGBA 5551), i.e. whatever the CPU
+ * drew into it; the RDP's work is not emulated.
+ */
+#include <SDL.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "host.h"
+
+int host_max_frames;
+const char *host_screenshot_prefix;
+int host_headless;
+
+static SDL_Window *win;
+static SDL_Renderer *ren;
+static SDL_Texture *tex;
+static SDL_GameController *pad;
+static uint32_t vi_fb;
+static int vi_width = 320;
+static int frame;
+static int quit;
+static uint32_t pixels[640 * 480];
+
+void host_vi_set_framebuffer(uint32_t fb, int width) {
+    vi_fb = fb;
+    if (width > 0 && width <= 640)
+        vi_width = width;
+}
+
+void host_video_init(void) {
+    if (host_headless)
+        SDL_setenv("SDL_VIDEODRIVER", "offscreen", 1);
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_EVENTS) != 0)
+        host_fatal("SDL_Init: %s", SDL_GetError());
+    win = SDL_CreateWindow("Blast Corps", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480,
+                           SDL_WINDOW_RESIZABLE);
+    if (!win)
+        host_fatal("SDL_CreateWindow: %s", SDL_GetError());
+    ren = SDL_CreateRenderer(win, -1, 0);
+    if (!ren)
+        ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_SOFTWARE);
+    if (!ren)
+        host_fatal("SDL_CreateRenderer: %s", SDL_GetError());
+    tex = SDL_CreateTexture(ren, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, 320, 240);
+    for (int i = 0; i < SDL_NumJoysticks(); i++)
+        if (SDL_IsGameController(i) && (pad = SDL_GameControllerOpen(i)))
+            break;
+}
+
+void host_video_shutdown(void) {
+    SDL_Quit();
+}
+
+static void save_bmp(const char *path, int w, int h) {
+    FILE *f = fopen(path, "wb");
+    if (!f)
+        return;
+    uint32_t rowbytes = (uint32_t)w * 3, pad4 = (4 - rowbytes % 4) % 4, size = (rowbytes + pad4) * (uint32_t)h;
+    uint8_t hdr[54] = { 'B', 'M' };
+    uint32_t v[] = { 54 + size, 0, 54, 40, (uint32_t)w, (uint32_t)h, 1 | (24 << 16), 0, size, 2835, 2835, 0, 0 };
+    memcpy(hdr + 2, v, sizeof v);
+    fwrite(hdr, 1, 54, f);
+    for (int y = h - 1; y >= 0; y--) {
+        for (int x = 0; x < w; x++) {
+            uint32_t p = pixels[y * w + x];
+            uint8_t bgr[3] = { (uint8_t)p, (uint8_t)(p >> 8), (uint8_t)(p >> 16) };
+            fwrite(bgr, 1, 3, f);
+        }
+        fwrite("\0\0\0", 1, pad4, f);
+    }
+    fclose(f);
+}
+
+void host_video_frame(void) {
+    SDL_Event e;
+    while (SDL_PollEvent(&e)) {
+        if (e.type == SDL_QUIT)
+            quit = 1;
+        if (e.type == SDL_CONTROLLERDEVICEADDED && !pad)
+            pad = SDL_GameControllerOpen(e.cdevice.which);
+    }
+    frame++;
+    if (host_verbose && frame % 300 == 0) {
+        host_log("frame %d\n", frame);
+        host_threads_dump();
+    }
+    /* the VI framebuffer, RGBA5551 big-endian */
+    if (vi_fb) {
+        const uint8_t *src = port_ptr(vi_fb);
+        for (int y = 0; y < 240; y++)
+            for (int x = 0; x < 320; x++) {
+                uint16_t c = port_be16(src + 2 * (y * vi_width + x));
+                uint32_t r = (c >> 11) & 31, g = (c >> 6) & 31, b = (c >> 1) & 31;
+                pixels[y * 320 + x] = 0xFF000000u | (r << 19 | (r >> 2) << 16) | (g << 11 | (g >> 2) << 8) |
+                                      (b << 3 | b >> 2);
+            }
+    }
+    SDL_UpdateTexture(tex, NULL, pixels, 320 * 4);
+    SDL_RenderClear(ren);
+    SDL_RenderCopy(ren, tex, NULL, NULL);
+    SDL_RenderPresent(ren);
+    const char *every = getenv("PORT_SHOT_EVERY");
+    int ev = every ? atoi(every) : 0;
+    if (host_screenshot_prefix && ((host_max_frames && frame == host_max_frames) || (ev > 0 && frame % ev == 0))) {
+        char path[512];
+        snprintf(path, sizeof path, "%s%05d.bmp", host_screenshot_prefix, frame);
+        save_bmp(path, 320, 240);
+        host_log("saved %s\n", path);
+    }
+    if (host_max_frames && frame >= host_max_frames)
+        quit = 1;
+}
+
+int host_quit_requested(void) { return quit; }
+
+/* N64 buttons */
+enum {
+    B_A = 0x8000, B_B = 0x4000, B_Z = 0x2000, B_START = 0x1000, B_DU = 0x0800, B_DD = 0x0400,
+    B_DL = 0x0200, B_DR = 0x0100, B_L = 0x0020, B_R = 0x0010, B_CU = 0x0008, B_CD = 0x0004,
+    B_CL = 0x0002, B_CR = 0x0001,
+};
+
+static uint16_t scripted_buttons(void) {
+    /* PORT_AUTOSTART=1: tap Start/A now and then, to get past the title */
+    const char *s = getenv("PORT_AUTOSTART");
+    if (!s || !*s || *s == '0')
+        return 0;
+    int f = frame % 120;
+    if (f < 4)
+        return B_START;
+    if (f >= 60 && f < 64)
+        return B_A;
+    return 0;
+}
+
+void host_input(int n, uint16_t *buttons, int8_t *x, int8_t *y) {
+    uint16_t b = 0;
+    int sx = 0, sy = 0;
+    if (n == 0) {
+        const Uint8 *k = SDL_GetKeyboardState(NULL);
+        if (k[SDL_SCANCODE_X]) b |= B_A;
+        if (k[SDL_SCANCODE_C]) b |= B_B;
+        if (k[SDL_SCANCODE_Z]) b |= B_Z;
+        if (k[SDL_SCANCODE_RETURN]) b |= B_START;
+        if (k[SDL_SCANCODE_Q]) b |= B_L;
+        if (k[SDL_SCANCODE_E]) b |= B_R;
+        if (k[SDL_SCANCODE_I]) b |= B_CU;
+        if (k[SDL_SCANCODE_K]) b |= B_CD;
+        if (k[SDL_SCANCODE_J]) b |= B_CL;
+        if (k[SDL_SCANCODE_L]) b |= B_CR;
+        if (k[SDL_SCANCODE_T]) b |= B_DU;
+        if (k[SDL_SCANCODE_G]) b |= B_DD;
+        if (k[SDL_SCANCODE_F]) b |= B_DL;
+        if (k[SDL_SCANCODE_H]) b |= B_DR;
+        if (k[SDL_SCANCODE_UP] || k[SDL_SCANCODE_W]) sy += 80;
+        if (k[SDL_SCANCODE_DOWN] || k[SDL_SCANCODE_S]) sy -= 80;
+        if (k[SDL_SCANCODE_LEFT] || k[SDL_SCANCODE_A]) sx -= 80;
+        if (k[SDL_SCANCODE_RIGHT] || k[SDL_SCANCODE_D]) sx += 80;
+        b |= scripted_buttons();
+        if (pad) {
+            struct { int btn; uint16_t bit; } map[] = {
+                { SDL_CONTROLLER_BUTTON_A, B_A }, { SDL_CONTROLLER_BUTTON_B, B_B },
+                { SDL_CONTROLLER_BUTTON_START, B_START }, { SDL_CONTROLLER_BUTTON_LEFTSHOULDER, B_L },
+                { SDL_CONTROLLER_BUTTON_RIGHTSHOULDER, B_R }, { SDL_CONTROLLER_BUTTON_DPAD_UP, B_DU },
+                { SDL_CONTROLLER_BUTTON_DPAD_DOWN, B_DD }, { SDL_CONTROLLER_BUTTON_DPAD_LEFT, B_DL },
+                { SDL_CONTROLLER_BUTTON_DPAD_RIGHT, B_DR }, { SDL_CONTROLLER_BUTTON_X, B_CL },
+                { SDL_CONTROLLER_BUTTON_Y, B_CU },
+            };
+            for (unsigned i = 0; i < sizeof map / sizeof map[0]; i++)
+                if (SDL_GameControllerGetButton(pad, map[i].btn))
+                    b |= map[i].bit;
+            if (SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_TRIGGERLEFT) > 16000) b |= B_Z;
+            int ax = SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTX);
+            int ay = SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_LEFTY);
+            if (ax > 4000 || ax < -4000) sx = ax * 80 / 32767;
+            if (ay > 4000 || ay < -4000) sy = -ay * 80 / 32767;
+            int cx = SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_RIGHTX);
+            int cy = SDL_GameControllerGetAxis(pad, SDL_CONTROLLER_AXIS_RIGHTY);
+            if (cx > 16000) b |= B_CR;
+            if (cx < -16000) b |= B_CL;
+            if (cy > 16000) b |= B_CD;
+            if (cy < -16000) b |= B_CU;
+        }
+    }
+    port_wbe16(buttons, b);         /* N64-side memory: big-endian */
+    *x = (int8_t)sx;
+    *y = (int8_t)sy;
+}
+
+/* ---- the rest of the "hardware" (stubs for now) --------------------------- */
+
+void host_audio_buffer(uint32_t addr, uint32_t len, uint32_t freq) {
+    (void)addr; (void)len; (void)freq;
+}
+
+const char *host_save_path = "blastcorps.eep";
+static uint8_t eeprom[512];
+static int eeprom_loaded;
+
+static void eeprom_load(void) {
+    if (eeprom_loaded)
+        return;
+    eeprom_loaded = 1;
+    FILE *f = fopen(host_save_path, "rb");
+    if (f) {
+        if (fread(eeprom, 1, sizeof eeprom, f) != sizeof eeprom)
+            memset(eeprom, 0, sizeof eeprom);
+        fclose(f);
+    }
+}
+
+void host_eeprom_read(int block, uint32_t dst) {
+    eeprom_load();
+    if (block >= 0 && block < 64)
+        memcpy(port_ptr(dst), eeprom + block * 8, 8);
+}
+
+void host_eeprom_write(int block, uint32_t src) {
+    eeprom_load();
+    if (block < 0 || block >= 64)
+        return;
+    memcpy(eeprom + block * 8, port_ptr(src), 8);
+    FILE *f = fopen(host_save_path, "wb");
+    if (f) {
+        fwrite(eeprom, 1, sizeof eeprom, f);
+        fclose(f);
+    }
+}
+
