@@ -1,6 +1,6 @@
 # Blast Corps
 
-- This repo is about to contain a full decompilation of Blast Corps `(Japan)`, `(USA)`, `(USA) (Rev 1)` and `(Europe) (En,De)`.
+- This repo contains a decompilation, and a PC port in progress, of Blast Corps `(Japan)`, `(USA)`, `(USA) (Rev 1)` and `(Europe) (En,De)`.
 - Naming and documentation of the source code and data structures are in progress.
 
 It uses the following ROMs:
@@ -20,7 +20,7 @@ A prior copy of the game is required to extract the assets.
 Clone recursivley to initialize the splat submodule.
 
 ```
-git clone https://github.com/retroplastic/blastcorps.git --recursive
+git clone https://github.com/Doridian/blastcorps.git --recursive
 ```
 
 If you cloned it without `--recursive`, you can initialize the submodule later.
@@ -200,7 +200,18 @@ ninja -C build-tools
 ./build-tools/tools/src/gen_splat_yaml
 ```
 
-# Related
+# Credits
+
+* retroplastic's [blastcorps](https://github.com/retroplastic/blastcorps)
+
+  The repository this one started as a fork of: the splat-based two-stage
+  build, the ROM and module configs, and the `gzip`/`rzip`/`blast` splat
+  extensions.
+
+* retroplastic's [splat](https://github.com/retroplastic/splat) fork
+
+  The splat used as the `tools/splat` submodule (0.7.10 plus the `gzip` and
+  `shebang` branches' changes).
 
 * mkst's [blastcorps](https://github.com/mkst/blastcorps)
 
