@@ -27,6 +27,13 @@
  * The pass runs at the start of the pipeline, before anything can combine
  * or reorder accesses; later passes see explicit bswaps and optimise them
  * (a swapped store to a local followed by a swapped load folds away).
+ *
+ * A second pass (ICount), at the end of the optimisation pipeline, adds each
+ * basic block's size to the global counter __port_icount_c, as a stand-in for
+ * the MIPS instructions the N64 would execute there: the port charges the
+ * CPU's time from it (docs/PORT.md, "Timing").  The size is the optimised
+ * IR's, without what is free or doesn't exist on the N64 (phis, casts,
+ * constant address arithmetic, the byte swaps, debug intrinsics).
  */
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/DataLayout.h"
@@ -287,11 +294,61 @@ struct BEPass : PassInfoMixin<BEPass> {
     }
 };
 
+struct ICount : PassInfoMixin<ICount> {
+    static bool isRequired() { return true; }
+
+    static bool costs(const Instruction &i) {
+        if (isa<PHINode>(i) || isa<CastInst>(i) || isa<DbgInfoIntrinsic>(i))
+            return false;
+        if (auto *ii = dyn_cast<IntrinsicInst>(&i)) {
+            switch (ii->getIntrinsicID()) {
+            case Intrinsic::bswap:
+            case Intrinsic::lifetime_start:
+            case Intrinsic::lifetime_end:
+            case Intrinsic::assume:
+                return false;
+            default:
+                return true;
+            }
+        }
+        if (auto *gep = dyn_cast<GetElementPtrInst>(&i))
+            return !gep->hasAllConstantIndices();
+        return true;
+    }
+
+    PreservedAnalyses run(Module &m, ModuleAnalysisManager &) {
+        LLVMContext &c = m.getContext();
+        Type *i32 = Type::getInt32Ty(c);
+        GlobalVariable *cnt = m.getGlobalVariable("__port_icount_c");
+        if (!cnt)
+            cnt = new GlobalVariable(m, i32, false, GlobalValue::ExternalLinkage, nullptr, "__port_icount_c");
+        for (Function &f : m) {
+            if (f.isDeclaration())
+                continue;
+            for (BasicBlock &bb : f) {
+                unsigned n = 0;
+                for (Instruction &i : bb)
+                    n += costs(i);
+                if (n == 0)
+                    continue;
+                IRBuilder<> b(&*bb.getFirstInsertionPt());
+                Value *v = b.CreateLoad(i32, cnt);
+                b.CreateStore(b.CreateAdd(v, ConstantInt::get(i32, n)), cnt);
+            }
+        }
+        return PreservedAnalyses::none();
+    }
+};
+
 } // namespace
 
 extern "C" LLVM_ATTRIBUTE_WEAK PassPluginLibraryInfo llvmGetPassPluginInfo() {
     return {LLVM_PLUGIN_API_VERSION, "BEPass", "1", [](PassBuilder &pb) {
                 pb.registerPipelineStartEPCallback(
                     [](ModulePassManager &mpm, OptimizationLevel) { mpm.addPass(BEPass()); });
+                pb.registerOptimizerLastEPCallback(
+                    [](ModulePassManager &mpm, OptimizationLevel, ThinOrFullLTOPhase) {
+                        mpm.addPass(ICount());
+                    });
             }};
 }

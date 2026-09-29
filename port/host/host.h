@@ -11,6 +11,14 @@ void host_threads_dump(void);
 recomp_context *port_ctx(void);
 
 void host_charge(uint64_t ns);
+uint64_t host_busy_wake(void);       /* threads.c: when a busy thread may go on */
+extern double host_ns_per_instr, host_c_scale;          /* the N64's clock: real or virtual time */
+
+/* audio.c */
+extern int host_audio_enabled;
+extern const char *host_wav_path;
+uint64_t host_audio_samples(void);
+void host_audio_shutdown(void);
 
 /* video.c */
 extern int host_max_frames;

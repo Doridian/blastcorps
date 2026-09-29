@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
+#include <sys/prctl.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -100,16 +101,25 @@ uint32_t host_rom_word(uint32_t addr) {
 
 /* ---- time ------------------------------------------------------------------ */
 
-/* --deterministic: time only passes when every thread waits (it jumps to
-   the next event) or while one spins (a little per poll); runs as fast as
-   the host can and the same every time */
+/* --deterministic: time only passes when every thread waits or is busy
+   (threads.c): it jumps to the next event; runs as fast as the host can and
+   the same every time */
 static int deterministic;
 static uint64_t virtual_ns;
 
-/* work that takes time on the N64 (the RDP drawing) */
-void host_charge(uint64_t ns) {
-    if (deterministic)
-        virtual_ns += ns;
+/* The RDP's time for the display list being run, as the renderer estimates
+   it (host_charge from gfx.c), times PORT_RDP_SCALE (default 0: the RDP is
+   instant, as in mupen64plus, which is what the pacing is matched to).
+   ultra.c delays OS_EVENT_DP by it. */
+static uint64_t rdp_ns;
+static double rdp_scale = 0;
+
+void host_charge(uint64_t ns) { rdp_ns += (uint64_t)(ns * rdp_scale); }
+
+uint64_t host_take_rdp_ns(void) {
+    uint64_t ns = rdp_ns;
+    rdp_ns = 0;
+    return ns;
 }
 
 static uint64_t now_ns(void) {
@@ -119,6 +129,8 @@ static uint64_t now_ns(void) {
     clock_gettime(CLOCK_MONOTONIC, &t);
     return (uint64_t)(t.tv_sec - t0.tv_sec) * 1000000000ull + (uint64_t)(t.tv_nsec - t0.tv_nsec);
 }
+
+uint64_t host_now_ns(void) { return now_ns(); }
 
 /* the CPU counter runs at half the 93.75 MHz clock */
 uint64_t host_ticks(void) {
@@ -133,6 +145,34 @@ static int npending;
 void host_raise(int event) {
     if (npending < 32)
         pending[npending++] = event;
+}
+
+/* events due later (the RDP's full sync) */
+static struct { int event; uint64_t at; } later[16];
+static int nlater;
+
+void host_raise_at(int event, uint64_t at_ns) {
+    if (at_ns <= now_ns() || nlater == 16) {
+        host_raise(event);
+        return;
+    }
+    later[nlater].event = event;
+    later[nlater++].at = at_ns;
+}
+
+static uint64_t raise_due(uint64_t now) {
+    uint64_t next = ~0ull;
+    for (int i = 0; i < nlater;) {
+        if (later[i].at <= now) {
+            host_raise(later[i].event);
+            later[i] = later[--nlater];
+        } else {
+            if (later[i].at < next)
+                next = later[i].at;
+            i++;
+        }
+    }
+    return next;
 }
 
 static void deliver_pending(void) {
@@ -152,7 +192,8 @@ void __port_poll(void) {
     static unsigned n;
     if (++n & 63)
         return;
-    if (deterministic)
+    host_cpu_sync();                /* spinning takes time too */
+    if (deterministic && host_ns_per_instr <= 0)
         virtual_ns += 2000;
     if (npending || now_ns() >= next_event_ns)
         host_yield();
@@ -163,9 +204,19 @@ void __port_poll(void) {
 void host_controller_poll(void) {
     static unsigned polls;
     static const char *spec = (const char *)1;
-    if (spec == (const char *)1)
+    static FILE *pace;
+    if (spec == (const char *)1) {
         spec = getenv("PORT_DUMP");
+        /* PORT_PACE=FILE: what port/tools/m64p_pace.c records in mupen64plus */
+        const char *p = getenv("PORT_PACE");
+        if (p && (pace = fopen(p, "w")))
+            fprintf(pace, "poll,retraces,frames,mode,audio_samples\n");
+    }
     polls++;
+    if (pace)
+        fprintf(pace, "%u,%u,%u,%08X%08X,%llu\n", polls, port_be32(port_ptr(0x803156C4)),
+                port_be32(port_ptr(0x80358064)), port_be32(port_ptr(0x80364A90)),
+                port_be32(port_ptr(0x80364A94)), (unsigned long long)host_audio_samples());
     if (!spec)
         return;
     for (const char *p = spec; *p;) {
@@ -223,8 +274,12 @@ static void usage(const char *argv0) {
             "  --scale N            gl: internal resolution 320x240 times N (default: the\n"
             "                       window's)\n"
             "  --filter F           textures: n64 (3-point, default), bilinear or point\n"
+            "  --wav PATH           write the sound to a WAV file too\n"
+            "  --no-audio           no sound (--headless and --deterministic imply it)\n"
             "environment: PORT_AUTOSTART=1 taps Start/A; PORT_DUMP=N,... writes RDRAM\n"
-            "at the Nth controller read (and on a crash)\n", argv0);
+            "at the Nth controller read (and on a crash); PORT_PACE=FILE logs the pacing\n"
+            "per controller read; PORT_COUNT_PER_OP=N: CPU count ticks charged per\n"
+            "instruction (default 2, as mupen64plus; 0: the CPU takes no time)\n", argv0);
     exit(2);
 }
 
@@ -239,6 +294,10 @@ int main(int argc, char **argv) {
             host_screenshot_prefix = argv[++i];
         else if (!strcmp(argv[i], "--save") && i + 1 < argc)
             host_save_path = argv[++i];
+        else if (!strcmp(argv[i], "--wav") && i + 1 < argc)
+            host_wav_path = argv[++i];
+        else if (!strcmp(argv[i], "--no-audio"))
+            host_audio_enabled = 0;
         else if (!strcmp(argv[i], "--deterministic"))
             deterministic = 1;
         else if (!strcmp(argv[i], "--headless"))
@@ -258,6 +317,18 @@ int main(int argc, char **argv) {
         else
             rom_path = argv[i];
     }
+    if (deterministic || host_headless)
+        host_audio_enabled = 0;
+    const char *rs = getenv("PORT_RDP_SCALE");
+    if (rs)
+        rdp_scale = atof(rs);
+    const char *cs = getenv("PORT_C_SCALE");
+    if (cs)
+        host_c_scale = atof(cs);
+    const char *cpo = getenv("PORT_COUNT_PER_OP");
+    if (cpo)
+        host_ns_per_instr = atof(cpo) * 64.0 / 3;     /* not real time, or no one listening */
+    prctl(PR_SET_TIMERSLACK, 1);    /* wake on time: the pacing is in 50 us steps */
     clock_gettime(CLOCK_MONOTONIC, &t0);
     struct sigaction sa;
     memset(&sa, 0, sizeof sa);
@@ -295,8 +366,14 @@ int main(int argc, char **argv) {
         }
         uint64_t deadline = port_irq_timers(host_ticks());
         uint64_t wake = next_vi;
-        if (deadline != ~0ull && deadline * 64 / 3 < wake)
-            wake = deadline * 64 / 3;
+        /* (rounded up: at deadline * 64 / 3 the counter may not be there yet) */
+        if (deadline != ~0ull && (deadline * 64 + 2) / 3 < wake)
+            wake = (deadline * 64 + 2) / 3;
+        if (host_busy_wake() < wake)
+            wake = host_busy_wake();
+        uint64_t due = raise_due(now);
+        if (due < wake)
+            wake = due;
         next_event_ns = wake;
         if (npending)
             continue;
@@ -317,6 +394,7 @@ int main(int argc, char **argv) {
         extern void host_gfx_dump_stats(void);
         host_gfx_dump_stats();
     }
+    host_audio_shutdown();
     host_video_shutdown();
     return 0;
 }

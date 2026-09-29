@@ -154,12 +154,24 @@ enum {
     B_CL = 0x0002, B_CR = 0x0001,
 };
 
-static uint16_t scripted_buttons(void) {
-    /* PORT_AUTOSTART=1: tap Start/A now and then, to get past the title */
+static uint16_t scripted_buttons(int *sy) {
+    /* PORT_AUTOSTART=1: tap Start/A now and then, to get past the title;
+       =2: the same by the game's own retrace count (the scheduler's,
+       D_803156C4), and once in the level (D_80364A90 == 4) drive forward
+       instead, which is what port/tools/m64p_pace.c's "play" does */
     const char *s = getenv("PORT_AUTOSTART");
     if (!s || !*s || *s == '0')
         return 0;
-    int f = frame % 120;
+    if (*s == '2') {
+        static int in_level;
+        if (port_be32(port_ptr(0x80364A90)) == 0 && port_be32(port_ptr(0x80364A94)) == 4)
+            in_level = 1;
+        if (in_level) {
+            *sy = 80;
+            return 0;
+        }
+    }
+    int f = (*s == '2' ? (int)port_be32(port_ptr(0x803156C4)) : frame) % 120;
     if (f < 4)
         return B_START;
     if (f >= 60 && f < 64)
@@ -190,7 +202,7 @@ void host_input(int n, uint16_t *buttons, int8_t *x, int8_t *y) {
         if (k[SDL_SCANCODE_DOWN] || k[SDL_SCANCODE_S]) sy -= 80;
         if (k[SDL_SCANCODE_LEFT] || k[SDL_SCANCODE_A]) sx -= 80;
         if (k[SDL_SCANCODE_RIGHT] || k[SDL_SCANCODE_D]) sx += 80;
-        b |= scripted_buttons();
+        b |= scripted_buttons(&sy);
         if (pad) {
             struct { int btn; uint16_t bit; } map[] = {
                 { SDL_CONTROLLER_BUTTON_A, B_A }, { SDL_CONTROLLER_BUTTON_B, B_B },
@@ -222,10 +234,6 @@ void host_input(int n, uint16_t *buttons, int8_t *x, int8_t *y) {
 }
 
 /* ---- the rest of the "hardware" (stubs for now) --------------------------- */
-
-void host_audio_buffer(uint32_t addr, uint32_t len, uint32_t freq) {
-    (void)addr; (void)len; (void)freq;
-}
 
 const char *host_save_path = "blastcorps.eep";
 static uint8_t eeprom[512];

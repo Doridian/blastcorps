@@ -5,9 +5,14 @@
  * sprintf formats with the host's vsprintf: it has va_start, so BEPass
  * leaves it alone and the arguments are read as the native call passed
  * them.  The output is bytes, which need no swapping.
+ *
+ * The copies charge the CPU about what libultra's unrolled bcopy/bzero
+ * take (half and a quarter of an instruction a byte): being host calls,
+ * BEPass's instruction count doesn't see inside them.
  */
 #include <stdarg.h>
 #include "common.h"
+#include "port.h"
 
 typedef unsigned int port_size_t;
 extern int vsprintf(char *, const char *, va_list);
@@ -25,14 +30,17 @@ int n64_sprintf(char *buf, const char *fmt, ...) {
 }
 
 void n64_bcopy(const void *src, void *dst, int n) {
+    host_cpu_charge(n / 2);
     memmove(dst, src, n);
 }
 
 void n64_bzero(void *p, int n) {
+    host_cpu_charge(n / 4);
     memset(p, 0, n);
 }
 
 void *n64_memcpy(void *dst, const void *src, port_size_t n) {
+    host_cpu_charge(n / 2);
     return memmove(dst, src, n);
 }
 

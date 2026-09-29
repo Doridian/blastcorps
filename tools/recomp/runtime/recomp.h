@@ -106,6 +106,12 @@ extern uint32_t recomp_cov[];
 #define CHECK_RA(pc) do { if (ctx->ra != entry_ra) \
         recomp_trap(ctx, RECOMP_TRAP_RA, (pc), 0); } while (0)
 #define ENTRY_RA const uint64_t entry_ra = ctx->ra
+#elif defined(RECOMP_COUNT)
+/* the port charges the CPU's time by instructions executed */
+extern uint32_t __port_icount;
+#define BB(id, n) (__port_icount += (n))
+#define CHECK_RA(pc) do { } while (0)
+#define ENTRY_RA do { } while (0)
 #else
 #define BB(id, n) do { } while (0)
 #define CHECK_RA(pc) do { } while (0)

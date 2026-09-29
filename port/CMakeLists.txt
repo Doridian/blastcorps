@@ -155,6 +155,7 @@ add_custom_target(recomp_headers DEPENDS ${GEN}/port_recomp_syms.h)
 set(HOST_FLAGS ${M32} -O2 -g -ffp-contract=off -fno-strict-aliasing -Wall)
 add_library(recomp OBJECT ${RECOMP_C} ${GEN}/entry.c ${GEN}/externs.c)
 target_include_directories(recomp PRIVATE ${ROOT}/tools/recomp/runtime ${RECOMP_GEN} ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_compile_definitions(recomp PRIVATE RECOMP_COUNT)
 target_compile_options(recomp PRIVATE ${HOST_FLAGS} -O1 -Wno-unused-label -Wno-unused-variable
     -include ${GEN}/port_recomp_syms.h)
 add_dependencies(recomp recomp_headers)

@@ -37,6 +37,8 @@ void osCreateMesgQueue(OSMesgQueue *mq, OSMesg *msg, s32 count) {
 }
 
 static s32 send(OSMesgQueue *mq, OSMesg msg, s32 flag, int jam) {
+    host_cpu_charge(COST_MESG);
+    host_cpu_sync();
     while (mq->validCount >= mq->msgCount) {
         if (flag != OS_MESG_BLOCK)
             return -1;
@@ -58,6 +60,8 @@ s32 osSendMesg(OSMesgQueue *mq, OSMesg msg, s32 flag) { return send(mq, msg, fla
 s32 osJamMesg(OSMesgQueue *mq, OSMesg msg, s32 flag) { return send(mq, msg, flag, 1); }
 
 s32 osRecvMesg(OSMesgQueue *mq, OSMesg *msg, s32 flag) {
+    host_cpu_charge(COST_MESG);
+    host_cpu_sync();
     while (mq->validCount == 0) {
         if (flag == OS_MESG_NOBLOCK)
             return -1;
@@ -86,6 +90,7 @@ void osSetEventMesg(OSEvent e, OSMesgQueue *mq, OSMesg msg) {
 }
 
 void port_irq_event(int e) {
+    host_irq_cost(COST_IRQ);
     if (e >= 0 && e < OS_NUM_EVENTS && events[e].mq != NULL)
         osSendMesg(events[e].mq, events[e].msg, OS_MESG_NOBLOCK);
 }
@@ -148,9 +153,9 @@ void __osRestoreInt(u32 s) { }
 
 static OSTime time_base;
 
-OSTime osGetTime(void) { return host_ticks() - time_base; }
+OSTime osGetTime(void) { host_cpu_sync(); return host_ticks() - time_base; }
 void osSetTime(OSTime t) { time_base = host_ticks() - t; }
-u32 osGetCount(void) { return (u32)host_ticks(); }
+u32 osGetCount(void) { host_cpu_sync(); return (u32)host_ticks(); }
 
 #define MAX_TIMERS 16
 static OSTimer *timers[MAX_TIMERS];
@@ -187,9 +192,44 @@ int osStopTimer(OSTimer *t) {
     return -1;
 }
 
+/* PI DMAs complete one after another, at mupen64plus's rate for the
+   cartridge (a count tick per 8 bytes: cart_rom.c), which is much faster
+   than the hardware's few MB/s; the data is copied at once, the message
+   comes when the transfer would be done */
+#define PI_MAX 256
+static struct { OSTime due; OSMesgQueue *mq; OSMesg msg; } pi_q[PI_MAX];
+static int pi_head, pi_n;
+static OSTime pi_free_at;
+
+static void pi_complete(OSMesgQueue *mq, OSMesg msg, u32 nbytes) {
+    OSTime now = host_ticks();
+    if (pi_free_at < now)
+        pi_free_at = now;
+    pi_free_at += nbytes / 8 + 1;
+    if (mq == NULL)
+        return;
+    if (pi_n == PI_MAX) {
+        osSendMesg(pi_q[pi_head].mq, pi_q[pi_head].msg, OS_MESG_NOBLOCK);
+        pi_head = (pi_head + 1) % PI_MAX;
+        pi_n--;
+    }
+    int i = (pi_head + pi_n++) % PI_MAX;
+    pi_q[i].due = pi_free_at;
+    pi_q[i].mq = mq;
+    pi_q[i].msg = msg;
+}
+
 u64 port_irq_timers(u64 now) {
     u64 next = ~0ull;
     int i;
+    while (pi_n > 0 && pi_q[pi_head].due <= now) {
+        host_irq_cost(COST_IRQ);
+        osSendMesg(pi_q[pi_head].mq, pi_q[pi_head].msg, OS_MESG_NOBLOCK);
+        pi_head = (pi_head + 1) % PI_MAX;
+        pi_n--;
+    }
+    if (pi_n > 0)
+        next = pi_q[pi_head].due;
     for (i = 0; i < MAX_TIMERS; i++) {
         OSTimer *t = timers[i];
         if (t == NULL)
@@ -202,6 +242,7 @@ u64 port_irq_timers(u64 now) {
             } else {
                 timers[i] = NULL;
             }
+            host_irq_cost(COST_IRQ);
             if (t->mq != NULL)
                 osSendMesg(t->mq, t->msg, OS_MESG_NOBLOCK);
         }
@@ -251,12 +292,13 @@ s32 osPiStartDma(OSIoMesg *mb, s32 pri, s32 dir, u32 devAddr, void *vAddr, u32 n
     mb->dramAddr = vAddr;
     mb->devAddr = devAddr;
     mb->size = nbytes;
+    host_cpu_charge(COST_PI_DMA);
+    host_cpu_sync();
     if (dir == OS_READ)
         host_rom_read((u32)vAddr, devAddr, nbytes);
     else
         host_log("PI write to %08X ignored\n", (unsigned)devAddr);
-    if (mq != NULL)
-        osSendMesg(mq, (OSMesg)mb, OS_MESG_NOBLOCK);
+    pi_complete(mq, (OSMesg)mb, nbytes);
     return 0;
 }
 
@@ -284,8 +326,23 @@ static void si_done(OSMesgQueue *mq) {
     port_irq_event(OS_EVENT_SI);
 }
 
+/* the waits libultra's SI code does, on a timer of its own */
+typedef struct { OSMesgQueue q; OSMesg m; OSTimer timer; } Delay;
+
+static void delay(Delay *d, OSTime ticks) {
+    osCreateMesgQueue(&d->q, &d->m, 1);
+    osSetTimer(&d->timer, ticks, 0, &d->q, &d->m);
+    osRecvMesg(&d->q, NULL, OS_MESG_BLOCK);
+}
+
 s32 osContInit(OSMesgQueue *mq, u8 *bitpattern, OSContStatus *status) {
     int i;
+    /* libultra's: the controllers need half a second after power-on */
+    OSTime t = osGetTime();
+    if (t < OS_USEC_TO_CYCLES(500000)) {
+        static Delay d;
+        delay(&d, OS_USEC_TO_CYCLES(500000) - t);
+    }
     for (i = 0; i < MAXCONTROLLERS; i++) {
         status[i].type = i == 0 ? CONT_TYPE_NORMAL : 0;
         status[i].status = 0;
@@ -357,9 +414,13 @@ s32 osEepromLongRead(OSMesgQueue *mq, u8 addr, u8 *buf, int n) {
     return 0;
 }
 
+/* libultra's: 12 ms after each block, the EEPROM's write cycle */
 s32 osEepromLongWrite(OSMesgQueue *mq, u8 addr, u8 *buf, int n) {
-    for (; n > 0; n -= 8, addr++, buf += 8)
+    static Delay d;
+    for (; n > 0; n -= 8, addr++, buf += 8) {
         host_eeprom_write(addr, (u32)buf);
+        delay(&d, OS_USEC_TO_CYCLES(12000));
+    }
     return 0;
 }
 
@@ -404,7 +465,7 @@ void osViSetEvent(OSMesgQueue *mq, OSMesg msg, u32 retraceCount) {
         host_log("osViSetEvent(%08X, %X, %u)\n", (unsigned)mq, (unsigned)msg, (unsigned)retraceCount);
 }
 
-void osViSwapBuffer(void *fb) { vi_next_fb = fb; }
+void osViSwapBuffer(void *fb) { host_cpu_sync(); vi_next_fb = fb; }
 void *osViGetCurrentFramebuffer(void) { return vi_cur_fb; }
 void *osViGetNextFramebuffer(void) { return vi_next_fb; }
 void osViBlack(u8 active) { vi_black = active; }
@@ -415,6 +476,7 @@ u32 osViGetCurrentLine(void) { return 0; }
 u32 osViGetCurrentField(void) { return 0; }
 
 void port_irq_vi(void) {
+    host_irq_cost(COST_IRQ);
     if (vi_next_fb != NULL)
         vi_cur_fb = vi_next_fb;
     host_vi_set_framebuffer(vi_black ? 0 : (u32)vi_cur_fb,
@@ -429,16 +491,49 @@ void port_irq_vi(void) {
 
 static OSTask *sp_task;
 
+/* The RDP's freeze bit.  The scheduler freezes the RDP when it swaps
+   buffers and thaws it at the retrace that shows the new one, so the next
+   frame can't finish drawing (and swap) in the same field.  A full sync
+   that comes while frozen is held until the thaw, as on the hardware (and
+   in mupen64plus).  Without this, the modes whose swap doesn't wait for the
+   next retrace (D_80364A90 in func_80271904) run as fast as the host. */
+static int dp_frozen, dp_held;
+static u64 dp_held_ns;
+
+void osDpSetStatus(u32 v) {
+    if (v & DPC_SET_FREEZE)
+        dp_frozen = 1;
+    if (v & DPC_CLR_FREEZE) {
+        dp_frozen = 0;
+        if (dp_held) {
+            dp_held = 0;
+            host_raise_at(OS_EVENT_DP, host_now_ns() + dp_held_ns);
+        }
+    }
+}
+
+u32 osDpGetStatus(void) { return dp_frozen ? DPC_STATUS_FREEZE : 0; }
+
 void osSpTaskLoad(OSTask *t) { sp_task = t; }
 
 void osSpTaskStartGo(OSTask *t) {
+    host_cpu_sync();
     if (t->t.type == M_GFXTASK) {
         int sync = host_gfx_task((u32)t->t.data_ptr, t->t.data_size, (u32)t->t.ucode);
+        u64 rdp = host_take_rdp_ns();
         host_raise(OS_EVENT_SP);
-        if (sync)
-            host_raise(OS_EVENT_DP);    /* the RDP's full sync */
+        if (sync) {                     /* the RDP's full sync */
+            if (dp_frozen) {
+                dp_held = 1;
+                dp_held_ns = rdp;
+            } else {
+                host_raise_at(OS_EVENT_DP, host_now_ns() + rdp);
+            }
+        }
     } else {
-        /* audio (and anything else): no RSP; report it done */
+        /* the audio microcode, run at once */
+        if (t->t.type == M_AUDTASK)
+            host_audio_task((u32)t->t.data_ptr, t->t.data_size, (u32)t->t.ucode_data);
         host_raise(OS_EVENT_SP);
     }
 }
@@ -447,26 +542,27 @@ void osSpTaskYield(void) { }
 OSYieldResult osSpTaskYielded(OSTask *t) { return 0; }
 u32 __osSpGetStatus(void) { return SP_STATUS_HALT; }
 void __osSpSetStatus(u32 v) { }
-void osDpSetStatus(u32 v) { }
-u32 osDpGetStatus(void) { return 0; }
 s32 osDpSetNextBuffer(void *p, u64 n) { return 0; }
 
 /* ---- AI ----------------------------------------------------------------------------------- */
 
-static u32 ai_freq = 32000;
-
+/* libultra's arithmetic: the DAC divides the VI clock, so 22050 Hz becomes
+   22047 */
 s32 osAiSetFrequency(u32 f) {
-    ai_freq = f;
-    return f;
+    u32 dacRate = (u32)((f32)osViClock / (f32)f + .5f);
+    if (dacRate < 132)
+        return -1;
+    host_ai_set_dacrate(dacRate);
+    return osViClock / (s32)dacRate;
 }
 
 s32 osAiSetNextBuffer(void *buf, u32 size) {
-    host_audio_buffer((u32)buf, size, ai_freq);
-    return 0;
+    host_cpu_sync();
+    return host_ai_submit((u32)buf, size);
 }
 
-u32 osAiGetLength(void) { return 0; }
-u32 osAiGetStatus(void) { return 0; }
+u32 osAiGetLength(void) { host_cpu_sync(); return host_ai_length(); }
+u32 osAiGetStatus(void) { return host_ai_status(); }
 
 /* ---- debug output --------------------------------------------------------------------------- */
 

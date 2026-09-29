@@ -23,21 +23,26 @@ WASD for the stick, X = A, C = B, Z = Z, Enter = Start, Q/E = L/R, IJKL = C
 buttons, TFGH = D-pad; an SDL game controller works too.  `--help` lists
 the options: `--headless`, `--deterministic` (virtual time: as fast as the
 host can, identical every run), `--frames N`, `--screenshot PREFIX`,
-`--save PATH` (the 4 Kbit EEPROM, default `blastcorps.eep`),
+`--save PATH` (the 4 Kbit EEPROM, default `blastcorps.eep`; runs meant to
+be compared should each start from the same one, or none),
 `--renderer gl|sw` (default: OpenGL with a window, software headless),
 `--scale N` (OpenGL: render at 320x240 times N; by default it follows the
 window's height, so resizing the window changes it) and
 `--filter n64|bilinear|point` (textures: the N64's 3-point filter where
 the game asks for bilinear filtering, which is the default, a 4-tap
-bilinear one, or point sampling throughout).
+bilinear one, or point sampling throughout), `--wav PATH` (everything the game plays, at the AI's rate) and `--no-audio`; sound goes
+to SDL unless the run is `--headless` or `--deterministic`.
 `PORT_AUTOSTART=1` taps Start and A, which is enough to get from the title
-through the name entry into Simian Acres; `PORT_DUMP=N,...` writes RDRAM at
+through the name entry into Simian Acres (`=2` taps by the game's own
+retrace count and then drives forward in the level, as
+`port/tools/m64p_pace.c` does in mupen64plus); `PORT_DUMP=N,...` writes RDRAM at
 the Nth controller read, counted as `tools/recomp/test/snapshot.c` counts
 them in mupen64plus, so the two can be compared byte for byte.
 `PORT_SHOT_EVERY=N` saves a screenshot every N frames (at the internal
 resolution with OpenGL); `PORT_GL_QUANT=1` makes the OpenGL renderer write
 5-bit color, as the RDRAM framebuffer holds it, and `PORT_GL_READBACK=1`
 copies its framebuffers back to RDRAM after every task (see "Graphics").
+`PORT_PACE=FILE` logs the pacing at every controller read (see "Timing").
 
 ## Memory model
 
@@ -110,22 +115,126 @@ IDO never would.
   has its own `recomp_context`, whose `$sp` is the N64 stack the game gave
   `osCreateThread` (only the translated code uses it).
 - **The loop** (`port/host/main.c`) runs when no thread can: it raises the
-  events the hardware would (VI retrace at 60 Hz, timers, SP and DP task
-  completion) and sleeps until the next one.
+  events the hardware would (VI retrace at 60 Hz, timers, PI, SP and DP task
+  completion) and sleeps until the next one, or until a busy thread's work
+  is done (see "Timing").
 - **libultra** (`port/src/ultra.c`, N64 side): messages, events, timers,
   `osGetTime` from the host clock (at 46.875 MHz), PI DMA from the ROM
   file, the controller from SDL, EEPROM to a file, no Controller Pak, VI
-  swap, SP tasks, AI (ignored).  The stubs of `src.us.v11` that include only
+  swap, SP tasks, the RDP's freeze bit, AI (`port/host/audio.c`).  The
+  waits libultra itself does are kept: `osContInit`'s half second after
+  power-on, `osEepromLongWrite`'s 12 ms per block.  The stubs of `src.us.v11` that include only
   libultra's os/io (and libc's printf and string functions) aren't built;
   gu, libaudio and the rest of libc are.  hd_code's entry point
   (`func_802447C0`) runs on a boot thread (`port/src/boot.c`).
 - **The overlay** (`port/src/overlay.c`): the front end is linked in, and
   "loading" it (`func_8028B3E0`, wrapped at link time) restores its `.data`
   from a startup copy and clears its `.bss`, which is what the N64's inflate
-  leaves behind.
+  leaves behind.  It runs the N64's DMA and inflate first, into the same
+  memory, for the time they take.
 - **Graphics**: see "Graphics" below.
-- **Audio**: the game's audio thread and libaudio run; the audio task is
-  reported done without running, so there is no sound.
+- **Audio**: the game's audio thread and libaudio run, the audio task goes
+  through an HLE of the audio microcode, and the AI plays it through SDL
+  (see "Audio").
+
+## Timing
+
+How the game paces itself, and what the port does about each part:
+
+- **Retraces.**  The scheduler (`hd_code/2C560.c`, a variant of the SDK's
+  sample `sched.c`) gets a message every retrace (`osViSetEvent(..., 1)`)
+  and counts them (`sc->unk284`, i.e. `D_803156C4`, which the game's own
+  waits read).  The VI is raised at 60 Hz, as mupen64plus does.
+- **The swap.**  When a frame's RDP work is done (OS_EVENT_DP), the
+  scheduler swaps at once if a retrace has gone by since the last swap
+  showed, or if `D_80364A90` (the game mode) is one of the front-end modes
+  in `0xC9FD0FE79BFF80B0`; otherwise it holds the frame to the next
+  retrace.  After a swap it freezes the RDP (`DPC_SET_FREEZE`) and thaws it
+  at the retrace that shows the new frame.  The port keeps the freeze: a
+  full sync that comes while frozen is held until the thaw.  That is what
+  keeps the intro modes at one frame per retrace (they ran about 15 times
+  too fast without it) and gameplay at two.
+- **The game's frame** waits for its task's done message
+  (`func_80285110`), and in the levels for the texture DMAs of the frame.
+  How long a frame takes is then the CPU's time, which on the port is
+  charged, not spent: the translated engine counts the MIPS instructions it
+  executes (the translator's `BB()` per basic block, built with
+  `RECOMP_COUNT`), the game's C counts its optimised IR instructions
+  (BEPass's second pass, ICount, into `__port_icount_c`), and libultra's
+  own work that the port doesn't run is charged at rough fixed costs
+  (`COST_*` in `port.h`, and the copies in `port/src/libc.c`).  At each
+  call into libultra the running thread is charged for what it did since
+  (`host_cpu_sync`, `port/host/threads.c`), at mupen64plus's CountPerOp = 2
+  (42.7 ns an instruction; `PORT_COUNT_PER_OP` changes it, 0 turns the model
+  off) and 1.6 MIPS instructions per IR instruction for the C
+  (`PORT_C_SCALE`; IDO's `-O1` code is bigger than clang's `-O2`).  A
+  thread that is ahead of the clock goes "busy": it holds the CPU against
+  lower priorities, higher ones preempt it (and push its end back), and
+  `--deterministic` jumps its virtual clock through it.
+- **The RDP** is instant, as in mupen64plus.  The renderer's estimate of
+  its time (`host_charge`) delays OS_EVENT_DP by that much times
+  `PORT_RDP_SCALE` (default 0).  It used to advance `--deterministic`'s
+  clock directly, which stalled every thread, VI included.
+- **PI DMA** completes at mupen64plus's rate for the cartridge (a count tick
+  per 8 bytes), one transfer after another.  **Audio** is paced by the AI
+  (see "Audio").  `osGetTime`/`osGetCount` are the same clock; the game uses
+  them for profiling and for random seeds.
+
+Measured against mupen64plus 2.6 (rsp-hle, rice), with
+`port/tools/m64p_pace.c` (a headless front end that logs the same things
+the port's `PORT_PACE=FILE` does: at each controller read, the scheduler's
+retrace count, the mode and the samples played) and
+`port/tools/pace_cmp.py`, both from no save, `--deterministic`:
+
+| mode (D_80364A90)            | port: retraces a frame | mupen64plus |
+| ---                          | ---                    | ---         |
+| N64 logo (0x10), 250 frames  | 1.01                   | 1.00        |
+| Rare logo (0x20), 250 frames | 1.30                   | 1.27        |
+| title and intro story (0x2)  | 2.31, 2.61, 2.43       | 2.34, 2.69, 2.47 |
+| "leaders of" screens (1<<48) | 1.14, 1.11             | 1.13, 1.10  |
+| world map (0x4000)           | 3.45                   | 3.51        |
+| Simian Acres, driving (0x4)  | 2.00 (30 fps)          | 2.00        |
+
+The title comes up at retrace 639 (mupen64plus: 617), and the attract
+sequence's fourth mode change is at 9802 (9937).  Before, the logos took
+11 retraces for their 250 frames and gameplay ran at a frame a retrace.
+In real time the pace is the same, except where the host's own work (the
+software renderer, above all) doesn't fit in the time the model gives it:
+the intro story ran about 3% slower than `--deterministic` here.
+`--deterministic` stays identical from run to run.
+
+## Audio
+
+- **The microcode** (`port/host/aspmain.c`): the audio task's command list
+  runs at `osSpTaskStartGo`.  This game's libaudio is older than
+  ultralib's (`src/libultra/audio`), and so is its microcode: the sixteen
+  commands of PR/abi.h, with a linear envelope (env.c's `_getRate` is a
+  straight line, the rate a step per eight samples).  ADPCM (with the loop
+  state), the 4-tap resampler, the envelope mixer with its dry and wet
+  sends, the mixer, interleave, load/save, DMEM moves, the reverb's
+  one-pole filter.  It is written from what libaudio asks of each command
+  and the SDK's description of the formats, not from another HLE (none was
+  copied; mupen64plus-rsp-hle, which is GPL, was the reference it was
+  compared against, only by output); the resampler's filter table is read
+  from the microcode's own data in RDRAM (`D_8030EB90 + 0xD0`).
+- **The AI** (`port/host/audio.c`): `osAiSetFrequency(22050)` gives the
+  DAC divider libultra would (2208: 22047 Hz); the two-deep DMA queue drains
+  at that rate on the same clock as the retraces and timers, so
+  `osAiGetLength`, which the audio thread sizes each frame by, reads what it
+  would on the hardware.  Each queued buffer goes to SDL (at 22048 Hz, at
+  most 0.2 s queued) and to `--wav`.
+- **Checked** against mupen64plus's own output (its rsp-hle runs the audio
+  lists; `m64p_pace` is also its audio plugin and writes `audio.wav`): the
+  attract music has the same RMS second by second, correlates 0.997-0.9998
+  with it over half-second windows (the difference is -22 to -36 dB: a
+  sub-sample timing offset and rounding), and gameplay's engine and
+  destruction sounds correlate about 0.8-0.9 at a steady lag, with equal
+  RMS.  Steady state the port plays 367.5 samples a retrace, what 22047 Hz
+  at 60 Hz is.
+- **What's approximate**: rounding in the envelope and mixer; the envelope
+  state layout is the port's own (the game never reads it).  In real time
+  SDL's device clock and the host clock drift apart slowly; the queue cap
+  drops a buffer if the host fell far behind.
 
 ## Graphics
 
@@ -145,9 +254,10 @@ interface between them.
   pair and LOD_FRACTION from texels per pixel, which the terrain's
   mip-mapped 2-cycle mode uses), and the combiner and blender decoding.
   OS_EVENT_DP is raised only for a display list that ends in a full sync,
-  as the game's scheduler expects.  For `--deterministic` the RDP's time is
-  charged from the geometry (the covered area), so both renderers see the
-  same timeline and their frames can be compared.
+  as the game's scheduler expects.  The RDP's time is estimated from the
+  geometry (the covered area), not from what a back end drew, so both
+  renderers see the same timeline; it delays OS_EVENT_DP only when
+  `PORT_RDP_SCALE` is set (see "Timing").
 - **Software renderer**: draws into the game's color image in RDRAM, as
   the RDP would, and the VI shows RDRAM.  The combiner (both cycles), the
   blender (P * A + M * B over A + B, per cycle; without FORCE_BL the last
@@ -246,22 +356,24 @@ Guarded with `#ifdef TARGET_PC`; the N64 build still matches.
   it is left running; with Start/A it goes through the save-erase prompt,
   the name entry, the world map and into Simian Acres, which plays (the
   bulldozer, the carrier, the pause menu).
-- Known problems: the game's pacing.  The RSP and RDP finish instantly and
-  the CPU is fast, and the intro modes don't wait for the retrace (the
-  scheduler swaps at once when `D_80364A90` has certain bits), so the
-  attract sequence runs about 15 times faster than on the hardware, and
-  gameplay at 60 frames a second instead of about 30.  Rendering: no
-  anti-aliasing (see "Graphics").  No audio.  Non-void functions that fall off the
+- Pacing matches mupen64plus to a few percent in every mode measured
+  ("Timing"), and the music and sound effects play ("Audio").
+- Known problems: the CPU's time is a model (instruction counts, a scale for
+  the C, fixed costs for libultra), and the reference is mupen64plus, not
+  the hardware: its CPU is CountPerOp = 2, its RDP instant.  The loading
+  screens (the level's drop-in, 0x800) differ most: they are short and
+  their frames are all loading.  The boot before hd_code (IPL3, init's
+  inflate of hd_code) isn't run or charged; by the scheduler's count the
+  N64 logo comes 14 retraces later than in mupen64plus and the title 22.
+  Rendering: no anti-aliasing (see "Graphics").  Non-void functions that fall off the
   end (`func_8024B4B8`, `func_80271F48`, `func_8027E164`, `func_801F6160`,
   `func_801F61C8`, `func_801F6ED4`) return whatever the host leaves.
 
 ## What's left for the port
 
-- **Timing.**  Charge the RDP's (and the CPU's) time: raise OS_EVENT_DP
-  after the time the RDP would take, as `--deterministic` already
-  estimates, and find what the game uses to pace its modes.
-- **Audio.**  An audio-ucode HLE for the audio task, and SDL output from
-  `osAiSetNextBuffer`.
+- **Timing.**  A better RDP estimate would let `PORT_RDP_SCALE` default to
+  1; the C's instruction scale could come from IDO's actual code size per
+  function instead of one number.
 - **Real call states** for the translated code's test.  Recording `ctx` and
   memory at each translated function's entry during play would replace the
   random registers, and reach the 30% of blocks the random states don't.

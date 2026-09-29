@@ -92,12 +92,26 @@ void host_wake(uint32_t key);
 /* let a higher-priority runnable thread run now (libultra preemption) */
 void host_preempt(void);
 void host_yield(void);
+/* charge the running thread for the instructions it executed (see
+   threads.c); it may be held back until the clock catches up */
+void host_cpu_sync(void);
+/* add instructions to the count, for work done by host code */
+void host_cpu_charge(uint32_t instructions);
+/* instructions an interrupt's handling takes from the running thread */
+void host_irq_cost(uint32_t instructions);
+/* rough costs of libultra's own code, which the port doesn't run */
+#define COST_MESG 60            /* osSendMesg/osRecvMesg */
+#define COST_IRQ 300            /* __osException, the dispatch, the handler */
+#define COST_PI_DMA 300         /* osPiStartDma through the PI manager */
 
 /* "interrupts" the host raises from its loop, into port/src */
 void port_irq_vi(void);             /* one retrace */
 uint64_t port_irq_timers(uint64_t now);   /* fire due timers; next deadline or ~0 */
 void port_irq_event(int event);     /* OS_EVENT_* */
 void host_raise(int event);         /* queue an event for the loop */
+void host_raise_at(int event, uint64_t at_ns);  /* ... at host_now_ns() == at_ns */
+uint64_t host_now_ns(void);
+uint64_t host_take_rdp_ns(void);    /* the RDP time of the last graphics task */
 
 /* RSP/RDP */
 /* runs a graphics task; 1 if its display list ended in a full sync */
@@ -114,7 +128,13 @@ void host_controller_poll(void);
 void host_eeprom_read(int block, uint32_t dst);
 void host_eeprom_write(int block, uint32_t src);
 
-void host_audio_buffer(uint32_t addr, uint32_t len, uint32_t freq);
+/* audio: the RSP's audio task (port/host/aspmain.c) and the AI
+   (port/host/audio.c) */
+void host_audio_task(uint32_t data_ptr, uint32_t data_size, uint32_t ucode_data);
+void host_ai_set_dacrate(uint32_t dacrate);
+int host_ai_submit(uint32_t addr, uint32_t len);
+uint32_t host_ai_length(void);
+uint32_t host_ai_status(void);
 
 #ifdef __cplusplus
 }

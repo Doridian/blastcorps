@@ -9,6 +9,14 @@
  * inside the KSEG0 window, see port.h), and its N64 stack, the one the game
  * passed to osCreateThread, which only the translated code uses (through
  * ctx->sp).  Each also has its own recomp_context.
+ *
+ * The CPU's time: the game's C and the translated engine count the
+ * instructions they execute (__port_icount, BEPass's ICount and the
+ * translator's BB()), and at each call into libultra (host_cpu_sync) the
+ * running thread is charged for what it did since.  A thread with enough
+ * owed goes "busy" until the clock catches up: it holds the CPU (nothing
+ * of lower priority runs meanwhile) but a higher-priority one that wakes
+ * up can preempt it, which pushes the busy thread's end back by as much.
  */
 #include <stdlib.h>
 #include <string.h>
@@ -16,8 +24,8 @@
 
 #include "host.h"
 
-enum { T_FREE, T_STOPPED, T_RUNNABLE, T_WAITING, T_PARKED, T_DEAD };
-static const char *state_names[] = { "free", "stopped", "runnable", "waiting", "parked", "dead" };
+enum { T_FREE, T_STOPPED, T_RUNNABLE, T_WAITING, T_PARKED, T_DEAD, T_BUSY };
+static const char *state_names[] = { "free", "stopped", "runnable", "waiting", "parked", "dead", "busy" };
 
 typedef struct {
     int state;
@@ -30,6 +38,10 @@ typedef struct {
     ucontext_t uc;
     recomp_context ctx;
     int started;
+    uint32_t imark, imark_c;    /* the counters when last charged */
+    double owed;                /* ns not charged yet (under 1) */
+    uint64_t clock;             /* how far its own work has got (ns) */
+    uint64_t busy_until;        /* T_BUSY: host_now_ns() it may resume at */
 } HThread;
 
 static HThread threads[PORT_MAX_THREADS];
@@ -189,17 +201,88 @@ void host_yield(void) {
     to_loop();
 }
 
+/* ---- the CPU's time ---------------------------------------------------------- */
+
+uint32_t __port_icount;                     /* MIPS instructions: the translated code */
+uint32_t __port_icount_c;                   /* LLVM IR instructions: the C (BEPass) */
+/* IDO's -O1 code is bigger than clang's -O2 IR: MIPS instructions per
+   counted IR instruction, set so the attract mode's pace is mupen64plus's */
+double host_c_scale = 1.6;
+double host_ns_per_instr = 2 * 64.0 / 3;    /* mupen64plus's CountPerOp = 2 */
+#define MIN_BUSY_NS 50000                    /* run ahead of the clock by up to 50 us */
+
+/* The thread's clock runs on from where its last busy stretch ended, not
+   from when the host got round to resuming it, so late wakeups don't add
+   up. */
+void host_cpu_sync(void) {
+    if (!cur || host_ns_per_instr <= 0)
+        return;
+    cur->owed += ((uint32_t)(__port_icount - cur->imark) +
+                  (uint32_t)(__port_icount_c - cur->imark_c) * host_c_scale) * host_ns_per_instr;
+    cur->imark = __port_icount;
+    cur->imark_c = __port_icount_c;
+    uint64_t ns = (uint64_t)cur->owed;
+    cur->owed -= (double)ns;
+    cur->clock += ns;
+    for (int i = 0; i < PORT_MAX_THREADS; i++)
+        if (threads[i].state == T_BUSY) {
+            threads[i].busy_until += ns;    /* preempted by this one */
+            threads[i].clock += ns;
+        }
+    if (cur->clock < host_now_ns() + MIN_BUSY_NS)
+        return;
+    cur->busy_until = cur->clock;
+    if (host_verbose > 3)
+        host_log("busy: %08X pri %d at %.3f for %.3f ms\n", cur->key, cur->pri, host_now_ns() / 1e6,
+                 (cur->clock - host_now_ns()) / 1e6);
+    cur->state = T_BUSY;
+    to_loop();
+}
+
+void host_cpu_charge(uint32_t n) { __port_icount += n; }
+
+/* an interrupt's handling (libultra's exception handler, the dispatch):
+   it takes the CPU from whatever is computing */
+void host_irq_cost(uint32_t n) {
+    uint64_t ns = (uint64_t)(n * host_ns_per_instr);
+    for (int i = 0; i < PORT_MAX_THREADS; i++)
+        if (threads[i].state == T_BUSY) {
+            threads[i].busy_until += ns;
+            threads[i].clock += ns;
+        }
+}
+
+uint64_t host_busy_wake(void) {
+    uint64_t w = ~0ull;
+    for (int i = 0; i < PORT_MAX_THREADS; i++)
+        if (threads[i].state == T_BUSY && threads[i].busy_until < w)
+            w = threads[i].busy_until;
+    return w;
+}
+
 int host_run_one(void) {
     HThread *best = NULL;
     for (int i = 0; i < PORT_MAX_THREADS; i++) {
         HThread *t = &threads[i];
-        if (t->state != T_RUNNABLE)
+        if (t->state != T_RUNNABLE && t->state != T_BUSY)
             continue;
         if (!best || t->pri > best->pri || (t->pri == best->pri && t->seq < best->seq))
             best = t;
     }
     if (!best)
         return 0;
+    if (best->state == T_BUSY) {
+        /* still computing: nothing below it may run */
+        if (host_now_ns() < best->busy_until)
+            return 0;
+        best->state = T_RUNNABLE;
+    } else if (best->clock < host_now_ns()) {
+        best->clock = host_now_ns();        /* it was waiting */
+    }
+    best->imark = __port_icount;
+    best->imark_c = __port_icount_c;
+    if (host_verbose > 3)
+        host_log("run %08X pri %d at %.3f\n", best->key, best->pri, host_now_ns() / 1e6);
     cur = best;
     swapcontext(&loop_uc, &best->uc);
     cur = NULL;
