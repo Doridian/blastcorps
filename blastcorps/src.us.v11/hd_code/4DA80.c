@@ -1,4 +1,6 @@
 #include "common.h"
+#include "game/frame.h"
+#include "game/audio.h"
 
 typedef struct {
     /* 0x00 */ s32 x;
@@ -36,20 +38,13 @@ extern void func_802CDF94(s16);
 extern void func_802CE5BC(s32, s32, s32, s16, s32, s32);
 extern void func_802CDB70(s16, s16);
 extern s32 func_802CE6F8(s32, s32, s32);
-typedef struct {
-    /* 0x0000 */ Mtx unk0[8];
-    /* 0x0200 */ u8 unk200[0xB00];
-    /* 0x0D00 */ Mtx unkD00[4];
-} UnkStruct_80292EB8;
-
-extern UnkStruct_80292EB8 D_02000000;
+extern FrameGame D_02000000;
 
 extern void func_802AC61C(s32, s32, s32, u8, s32);
-extern void *func_80260650(void *, s16, void *);
+extern void *func_80260650(SndBank *, s16, void *);
 
 extern u8 D_802E8BE4;
 extern s32 D_802E8BE8;
-extern void *D_80367738;
 extern u8 D_803643D9;
 extern s16 D_803A7410;
 extern s16 D_803A7412;
@@ -282,7 +277,7 @@ void func_80292DDC(s32 arg0) {
     func_80260650(D_80367738, 0x10, NULL);
 }
 
-void func_80292EB8(Gfx **arg0, UnkStruct_80292EB8 *arg1) {
+void func_80292EB8(Gfx **arg0, FrameGame *arg1) {
     Gfx *gfx;
     s32 i;
     f32 mf[4][4];
@@ -305,8 +300,8 @@ void func_80292EB8(Gfx **arg0, UnkStruct_80292EB8 *arg1) {
             guMtxCatF(mf, tmp, mf);
             guTranslateF(tmp, D_8039C960[i].x / 32.0f, D_8039C960[i].y / 32.0f, D_8039C960[i].z / 32.0f);
             guMtxCatF(mf, tmp, mf);
-            guMtxF2L(mf, &arg1->unkD00[i]);
-            gSPMatrix(gfx++, &D_02000000.unkD00[i], G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+            guMtxF2L(mf, &arg1->unk2C0[0x29 + i]);
+            gSPMatrix(gfx++, &D_02000000.unk2C0[0x29 + i], G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
             gDPPipeSync(gfx++);
             gDPSetPrimColor(gfx++, 0, 0, D_8039C960[i].unk29, 0, 0, 255);
             gSPDisplayList(gfx++, osVirtualToPhysical(&D_802FE3C0[D_8039C960[i].unk18]));

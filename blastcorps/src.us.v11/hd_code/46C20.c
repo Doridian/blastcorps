@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/game.h"
 
 extern u32 D_803FFFF8;
 extern u32 D_803FFFFC;

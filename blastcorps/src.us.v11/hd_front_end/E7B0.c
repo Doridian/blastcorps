@@ -1,42 +1,16 @@
 #include "common.h"
+#include "game/audio.h"
+#include "game/game.h"
+#include "game/sched.h"
+#include "game/yoshi.h"
+#include "game/level.h"
+#include "game/player.h"
 
-typedef struct {
-    /* 0x00 */ u8 unk0;
-    /* 0x01 */ u8 unk1[0x43];
-} UnkStruct_802E8F94; /* size = 0x44 */
-
-typedef struct {
-    /* 0x00 */ u8 unk0[0x10];
-    /* 0x10 */ u32 unk10;
-    /* 0x14 */ u8 unk14[4];
-    /* 0x18 */ u8 unk18[0x3C];
-    /* 0x54 */ u8 unk54[0x3C];
-    /* 0x90 */ u8 unk90;
-    /* 0x91 */ u8 unk91;
-    /* 0x92 */ u8 unk92[0x6E];
-} UnkStruct_80364AF0; /* size = 0x100 */
-
-/* Menu entries, sorted with func_801F7FF4. */
-typedef struct {
-    /* 0x00 */ u16 unk0;
-    /* 0x02 */ s16 unk2;
-    /* 0x04 */ s16 unk4;
-    /* 0x06 */ s16 unk6;
-    /* 0x08 */ s16 unk8;
-    /* 0x0C */ char *unkC;
-    /* 0x10 */ s32 unk10;
-    /* 0x14 */ u8 unk14;
-    /* 0x16 */ u16 unk16;
-    /* 0x18 */ u8 unk18;
-    /* 0x19 */ u8 unk19;
-    /* 0x1A */ u8 unk1A;
-} UnkStruct_8036BB24; /* size = 0x1C */
-
+/* YoshiWindow entries, sorted with func_801F7FF4. */
 void func_8029A7E4(char *, ...);
 u8 func_8028FCD4(OSMesgQueue *, u8 *);
 u8 func_8028A370(void);
 s32 func_8025B300(u8 *);
-void func_80270E50(void *sc, void *client, OSMesgQueue *mq, s32 arg3, s32 arg4);
 u8 __osContDataCrc(u8 *);
 void func_801F58E8();
 void func_801F74B0(u8 *);
@@ -57,101 +31,44 @@ s32 func_801F6ED4(u8);
 extern s8 D_8039C4B0;
 extern s32 D_8036BF10;
 extern OSThread D_80310BD0;
-extern u64 D_80364A98;
-extern s16 D_8036BB18;
-extern s16 D_8036BB1C;
 
-extern u8 D_80315440[];
 extern s32 D_80370C00;
 extern OSMesgQueue D_80370BF8;
 extern OSPfs D_8039B630;
 extern s32 D_8039B698[];
 extern u8 D_8039C538;
-extern s32 D_802E8BDC;
-extern UnkStruct_802E8F94 D_802E8F94[];
-extern UnkStruct_80364AF0 D_80364AF0[];
-extern u8 D_80364AEA;
 extern u32 D_8021A828;
 extern u8 D_8021A7E8[];
 
 
-typedef struct {
-    /* 0x00 */ u8 unk0[0x10];
-    /* 0x10 */ s16 unk10;
-    /* 0x12 */ u8 unk12[6];
-    /* 0x18 */ u16 unk18;
-} UnkStruct_802F8BDC_268;
-
-typedef struct {
-    /* 0x000 */ u8 unk0[0x208];
-    /* 0x208 */ s16 unk208;
-    /* 0x20A */ u8 unk20A[6];
-    /* 0x210 */ s16 unk210;
-    /* 0x212 */ u8 unk212[0x56];
-    /* 0x268 */ UnkStruct_802F8BDC_268 unk268;
-} UnkStruct_802F8BDC;
-
-typedef struct {
-    /* 0x000 */ u8 unk0[0x124];
-    /* 0x124 */ char *unk124;
-    /* 0x128 */ void *unk128;
-    /* 0x12C */ u8 unk12C[0x2B4];
-    /* 0x3E0 */ char *unk3E0;
-    /* 0x3E4 */ u8 unk3E4[0x18];
-    /* 0x3FC */ char *unk3FC;
-    /* 0x400 */ u8 unk400[0x18];
-    /* 0x418 */ char *unk418;
-} UnkStruct_8020C070;
-
-typedef struct {
-    /* 0x00 */ char *unk0;
-    /* 0x04 */ u8 unk4[0x18];
-} UnkStruct_8020C488; /* size = 0x1C */
-
 Gfx *func_80272ED8(Gfx *, s32, s32, s32, s32, s32, f32);
 Gfx *func_80274868(Gfx *);
 Gfx *func_80274AA4(Gfx *);
-void func_80260650(s32, s32, s32);
+void func_80260650(SndBank *, s32, s32);
 void func_801E8EB8(u8, s32);
 s32 func_801F81B4(u8);
 void func_801F8228(void);
 
-extern u8 D_802E8BF8;
-extern u64 D_80364A90;
 extern char D_8020FF34[];
 extern char D_8020FF60[];
 extern char D_8020FF70[];
-extern u8 D_80370C50;
-extern u8 D_802E8C44[];
-extern u16 D_80364EF0[][16];
-extern u8 D_80364AE8;
 extern u8 D_80365060[];
-extern s32 D_80367738;
-extern u16 D_80370C28;
-extern u16 D_80370C2A;
-extern UnkStruct_8036BB24 *D_8036BB24;
-extern UnkStruct_802F8BDC D_802F8BDC[];
 extern u8 D_8021A7D0[];
 extern u8 D_8021A8F0;
 extern u8 D_8039B6B0[];
 extern u8 D_8039C4B8[];
 extern s32 D_8039C4B4;
 extern s32 D_802FA264;
-extern u16 D_80364F70[];
-extern UnkStruct_8020C070 D_8020C070[];
-extern UnkStruct_8020C488 D_8020C488[];
-extern u8 D_80301080[];
+extern u16 D_80301080[];
 void func_801F7410(u8 *);
 void func_801F8354(u8);
 s32 func_801F7F74();
-s32 func_801F7FF4(UnkStruct_8036BB24 *, UnkStruct_8036BB24 *);
+s32 func_801F7FF4(YoshiEntry *, YoshiEntry *);
 s32 func_801EF2BC(u16, s32, u8);
 void func_801FDE50(void);
 void func_802595E0(void *, s32, s32, void *);
 void func_80264A34(char *, u16, s32);
 
-extern s32 D_80358070;
-extern u8 D_8039C53C[];
 extern char D_80219FD0[][0x20];
 extern char D_8020D800[][4];
 extern char D_8020FF20[];
@@ -176,7 +93,7 @@ u8 D_80218D20[4];
 s32 D_80218D24;
 s32 D_80218D28;
 OSThread D_80218D30;
-u8 D_80218EE0[0x10];
+SchedClient D_80218EE0;
 s32 D_80218EF0;
 u8 D_80218EF8[0x1000];
 OSMesgQueue D_80219EF8;
@@ -218,7 +135,7 @@ void func_801F57B0(void) {
     func_801F74B0(D_8020C014);
     func_8029A7E4("current pak file size is %d bytes\n", sp24);
     func_8029A7E4("current playerInfo size is %d bytes\n", 0x100);
-    func_80270E50(D_80315440, D_80218EE0, &D_80219F30, 1, 3);
+    osScAddClient(&D_80315440, &D_80218EE0, &D_80219F30, 1, 3);
     if (sp24 >= 0xE00) {
         func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "filesize<PFS_FILE_SIZE", "pfsHandler.c", 0x68);
     }
@@ -511,7 +428,7 @@ s32 func_801F6264(u8 arg0, u8 arg1) {
     }
     func_8029A7E4("\n");
     /* An assert that folds away; only its strings are left. */
-    if (sizeof(UnkStruct_80364AF0) > 512) {
+    if (sizeof(PlayerInfo) > 512) {
         func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "sizeof(playerInfo)<=512", "pfsHandler.c", 0);
     }
     if (arg1 == 1) {
@@ -616,8 +533,8 @@ s32 func_801F67E4(u8 arg0, u8 arg1, u8 arg2) {
         } else {
             osEepromRead(&D_80370BF8, (u32)(sp37 * 2 + 0x100) >> 3, sp30);
             for (sp38 = 0; sp38 < 2; sp38++, arg1++) {
-                if (((D_80364AF0[arg0].unk18[arg1] > 0 && D_80364AF0[arg0].unk18[arg1] < 6) ? 1 : 0) &&
-                    arg1 != 0x31 && arg1 != 0x2F && arg1 != 0x26) {
+                if (LEVEL_DONE_IN(D_80364AF0[arg0], arg1) &&
+                    !DUMMY_LEVELS(arg1)) {
                     D_80364EF0[arg0][D_802E8C44[D_80364AF0[arg0].unk92[arg1]]] = D_80364F70[arg1 * 2];
                     func_8029A7E4("%d EETIMES: %d %d\n", arg1, D_80364F70[arg1 * 2], D_80364F70[arg1 * 2 + 1] ^ 0x55AA);
                     if (D_80364F70[arg1 * 2] != (D_80364F70[arg1 * 2 + 1] ^ 0x55AA)) {
@@ -632,7 +549,7 @@ s32 func_801F67E4(u8 arg0, u8 arg1, u8 arg2) {
 
 s32 func_801F6AF4(u8 arg0, u64 arg2) {
     s32 sp24;
-    UnkStruct_80364AF0 *sp20;
+    PlayerInfo *sp20;
 
     sp24 = 0;
     sp20 = &D_80364AF0[arg0];
@@ -647,7 +564,7 @@ s32 func_801F6AF4(u8 arg0, u64 arg2) {
 
 s32 func_801F6BD0(u8 arg0, u64 *arg1) {
     s32 sp44;
-    UnkStruct_80364AF0 *sp40;
+    PlayerInfo *sp40;
     u64 sp20[4];
 
     sp44 = 0;
@@ -672,7 +589,7 @@ s32 func_801F6CA4(u8 arg0, u8 arg1, u8 arg2) {
     sp34 = 0;
     sp28 = 0;
     for (sp2C = 0; sp2C < arg1; sp2C++) {
-        if (D_802E8F94[sp2C].unk0 == 1 && sp2C != 0x31 && sp2C != 0x2F && sp2C != 0x26) {
+        if (D_802E8F94[sp2C].unk0 == 1 && !DUMMY_LEVELS(sp2C)) {
             sp28++;
         }
     }
@@ -741,27 +658,27 @@ s32 func_801F6F18(void) {
             if (sp34 < 9) {
                 sprintf(D_80218740[sp44], "%s ", D_80218740[sp44]);
             }
-            D_8020C488[D_80218D28].unk0 = D_80218740[sp44];
+            D_8020C488[D_80218D28].text = D_80218740[sp44];
             D_80218D28++;
         }
     }
     if (D_80218D28 == 0) {
         sprintf(D_80218740[0], "%s", "PAK EMPTY!");
-        D_8020C070[0].unk418 = D_80218740[0];
+        D_8020C070[37].text = D_80218740[0];
         sp2C = 1;
     } else {
         sp2C = 0;
     }
-    D_802F8BDC[0].unk210 = (D_80218D28 + sp2C + 1) / 2 + 0x24;
-    D_802F8BDC[0].unk208 = D_80218D28 + sp2C + 4;
+    D_802F8BDC[18].unk18 = (D_80218D28 + sp2C + 1) / 2 + 0x24;
+    D_802F8BDC[18].count = D_80218D28 + sp2C + 4;
     osSendMesg(&D_80219EF8, (OSMesg)0x0100000E, OS_MESG_BLOCK);
     osRecvMesg(&D_80219F50, NULL, OS_MESG_BLOCK);
     sprintf(D_80219F90, "%d PAGES FREE", D_80218EF0 / 32 / 8);
-    D_8020C070[0].unk3E0 = D_80219F90;
+    D_8020C070[35].text = D_80219F90;
     sprintf(D_80219FB0, "%d NEEDED PER PLAYER", 0xE);
-    D_8020C070[0].unk3FC = D_80219FB0;
-    D_8020C070[0].unk124 = "DELETE THIS FILE?";
-    D_8020C070[0].unk128 = D_80301080;
+    D_8020C070[36].text = D_80219FB0;
+    D_8020C070[10].text = "DELETE THIS FILE?";
+    D_8020C070[10].unk10 = D_80301080;
     return D_80218D28 != 0;
 }
 

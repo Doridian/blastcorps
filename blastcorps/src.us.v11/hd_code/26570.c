@@ -1,136 +1,18 @@
 #include "common.h"
-
-typedef struct {
-    /* 0x0 */ u16 unk0[2];
-} UnkStruct_802FA8A0;
-
-typedef struct {
-    /* 0x0 */ s16 unk0;
-    /* 0x2 */ u8 pad2[2];
-    /* 0x4 */ u8 *unk4;
-    /* 0x8 */ u8 unk8;
-    /* 0x9 */ u8 unk9;
-    /* 0xA */ u8 unkA;
-    /* 0xB */ u8 unkB;
-} UnkStruct_802FA280; /* size = 0xC */
-
-/* The game's variant of the libultra sample scheduler (sched.h). */
-typedef struct {
-    /* 0x0 */ s32 unk0;
-    /* 0x4 */ OSMesgQueue *unk4;
-    /* 0x8 */ u32 unk8;
-} UnkStruct_SchedTask50;
-
-typedef struct UnkSchedTask {
-    /* 0x00 */ struct UnkSchedTask *next;
-    /* 0x04 */ s32 state;
-    /* 0x08 */ u32 flags;
-    /* 0x0C */ void *framebuffer;
-    /* 0x10 */ OSTask list;
-    /* 0x50 */ UnkStruct_SchedTask50 *unk50;
-    /* 0x54 */ OSMesgQueue *msgQ;
-    /* 0x58 */ OSMesg msg;
-} UnkSchedTask;
-
-typedef struct UnkSchedClient {
-    /* 0x0 */ struct UnkSchedClient *next;
-    /* 0x4 */ OSMesgQueue *msgQ;
-    /* 0x8 */ s32 unk8;
-    /* 0xC */ s32 unkC;
-} UnkSchedClient;
-
-typedef struct {
-    /* 0x000 */ OSMesgQueue interruptQ;
-    /* 0x018 */ OSMesg intBuf[16];
-    /* 0x058 */ OSMesgQueue cmdQ;
-    /* 0x070 */ OSMesg cmdMsgBuf[16];
-    /* 0x0B0 */ OSThread thread;
-    /* 0x260 */ UnkSchedClient *clientList;
-    /* 0x264 */ UnkSchedTask *audioListHead;
-    /* 0x268 */ UnkSchedTask *gfxListHead;
-    /* 0x26C */ UnkSchedTask *audioListTail;
-    /* 0x270 */ UnkSchedTask *gfxListTail;
-    /* 0x274 */ UnkSchedTask *curRSPTask;
-    /* 0x278 */ UnkSchedTask *curRDPTask;
-    /* 0x27C */ s32 unk27C;
-    /* 0x280 */ s32 unk280;
-    /* 0x284 */ u32 unk284;
-    /* 0x288 */ OSTime unk288;
-    /* 0x290 */ OSTime unk290;
-} UnkSched;
-
-typedef struct {
-    /* 0x00 */ u16 unk0;
-    /* 0x02 */ u16 unk2;
-    /* 0x04 */ s16 unk4;
-    /* 0x06 */ s16 unk6;
-    /* 0x08 */ s32 unk8;
-    /* 0x0C */ u16 unkC;
-    /* 0x0E */ u16 unkE;
-    /* 0x10 */ u16 unk10;
-    /* 0x12 */ u16 unk12;
-    /* 0x14 */ u16 unk14;
-    /* 0x16 */ u16 unk16;
-    /* 0x18 */ u16 unk18;
-    /* 0x1A */ u8 unk1A;
-    /* 0x1B */ u8 pad1B;
-} UnkStruct_802F8BDC; /* size = 0x1C */
+#include "game/frame.h"
+#include "game/audio.h"
+#include "game/vehicle.h"
+#include "game/game.h"
+#include "game/sched.h"
+#include "game/yoshi.h"
+#include "game/level.h"
+#include "game/player.h"
 
 /* Element type of the arrays D_8036BB10 points at. */
-typedef struct {
-    /* 0x00 */ u16 unk0;
-    /* 0x02 */ s16 unk2;
-    /* 0x04 */ s16 unk4;
-    /* 0x06 */ u16 unk6;
-    /* 0x08 */ u16 unk8;
-    /* 0x0A */ u8 padA[2];
-    /* 0x0C */ char *unkC;
-    /* 0x10 */ u16 *unk10;
-    /* 0x14 */ u8 unk14;
-    /* 0x15 */ u8 pad15;
-    /* 0x16 */ u16 unk16;
-    /* 0x18 */ u8 unk18;
-    /* 0x19 */ u8 unk19;
-    /* 0x1A */ u8 unk1A;
-} UnkStruct_8036BB10; /* size = 0x1C */
-
-typedef struct {
-    /* 0x00 */ s16 unk0;
-    /* 0x02 */ s16 unk2;
-    /* 0x04 */ u8 unk4;
-    /* 0x05 */ u8 pad5;
-    /* 0x06 */ u8 unk6[0x14];
-    /* 0x1A */ u8 unk1A;
-    /* 0x1B */ u8 unk1B[10];
-    /* 0x25 */ u8 unk25;
-    /* 0x26 */ u8 unk26;
-    /* 0x27 */ u8 pad27;
-    /* 0x28 */ f32 unk28;
-    /* 0x2C */ u8 unk2C;
-    /* 0x2D */ u8 unk2D;
-    /* 0x2E */ s8 unk2E;
-    /* 0x2F */ u8 pad2F;
-} UnkStruct_802F49F4; /* size = 0x30 */
-
 typedef struct {
     /* 0x00 */ u8 pad0[2];
     /* 0x02 */ u16 unk2;
 } UnkStruct_8026F644;
-
-typedef struct {
-    /* 0x00 */ s16 unk0;
-    /* 0x02 */ s16 unk2;
-    /* 0x04 */ s16 unk4;
-} UnkStruct_8026FBB0; /* size = 0x6 */
-
-typedef struct {
-    /* 0x00 */ s16 unk0;
-    /* 0x02 */ s16 unk2;
-    /* 0x04 */ s16 unk4;
-    /* 0x06 */ u8 unk6;
-    /* 0x07 */ u8 unk7;
-    /* 0x08 */ Vtx unk8[2][4];
-} UnkStruct_8036BED8; /* size = 0x88 */
 
 typedef struct {
     /* 0x00 */ u8 unk0;
@@ -143,12 +25,6 @@ typedef struct {
     /* 0x02 */ s16 unk2[16];
 } UnkStruct_802F48D0; /* size = 0x22 */
 
-typedef struct {
-    /* 0x00 */ u8 unk0[0x88];
-    /* 0x88 */ u8 unk88[0x78];
-} UnkStruct_80364AF0; /* size = 0x100 */
-
-extern s32 D_802E8BDC;
 extern f32 D_80364414;
 extern u16 D_802E8C8C[];
 extern u16 D_802E8C90[];
@@ -157,58 +33,33 @@ extern u16 D_802E8C98[];
 extern u16 D_802E8C9C[];
 extern u32 D_803156C4;
 extern u16 D_803C30A8[];
-extern UnkStruct_8036BB10 D_8020C070[];
-extern u64 D_80364A98;
 extern u32 D_80364AA8;
 extern s32 D_803F7684;
-extern u8 D_802E8BD0;
-extern s32 D_803643E0;
-extern s32 D_803643E4;
-extern s32 D_803643E8;
-extern u8 D_80364456;
-extern s32 D_80367738;
-extern u8 *D_80358070;
-extern u16 D_8036EA7C;
-extern u16 D_8036EB90;
 extern s32 D_803BE70C;
 extern s32 D_803BE710;
 extern s16 D_803BE714;
 extern u8 D_802F499A[];
-extern u64 D_80364A90;
-extern u8 D_80364AE8;
-extern UnkStruct_80364AF0 D_80364AF0[];
 
 void func_8026AF6C(u16 arg0);
 void func_8029A7E4(char *, ...);
-s32 func_80270A54(UnkStruct_8036BED8 *arg0);
+s32 func_80270A54(Rdu *arg0);
 char *func_8025B558(u16 *);
-void func_8026BA7C(UnkStruct_802F8BDC *arg0);
+void func_8026BA7C(YoshiWindow *arg0);
 s32 func_8026F92C(u64);
 u8 func_8026FA38(char **, u16 **);
-void func_8026FB50(UnkStruct_802F8BDC *);
+void func_8026FB50(YoshiWindow *);
 u16 func_8026F8A8(u16, u16, u16, u16);
 void func_8026A5CC(u64 *dst, u64 *src, s32 size);
 s32 func_8026A6F0(s32, s32, s32, s32, s32, s32);
 void func_802AC544(s32, s32, s32);
-void func_80260650(s32, u16, s32);
+void func_80260650(SndBank *, u16, s32);
 s8 func_80272C5C(u8 *, s32, s32, s32, s32, f32);
 
 /*
- * Menu and dialogue text, reached only through the pointer tables in this
+ * YoshiWindow and dialogue text, reached only through the pointer tables in this
  * file's .data (still asm), so they are defined here to keep their place at
  * the start of the .rodata.
  */
-
-typedef struct {
-    /* 0x0 */ u8 unk0;
-    /* 0x1 */ u8 unk1;
-    /* 0x2 */ u8 unk2;
-    /* 0x3 */ u8 unk3;
-    /* 0x4 */ u8 unk4;
-    /* 0x5 */ u8 unk5;
-    /* 0x6 */ u8 unk6;
-    /* 0x7 */ u8 unk7;
-} UnkStruct_802F47B0; /* size = 0x8 */
 
 /* .bss, 0x8036B980-0x8036BEF0 (tools/bss_c.py) */
 char D_8036B980[0x28];
@@ -231,7 +82,7 @@ u16 D_8036BB06;
 f32 D_8036BB08;
 s16 D_8036BB0C;
 s8 D_8036BB0E;
-UnkStruct_8036BB10 *D_8036BB10;
+YoshiEntry *D_8036BB10;
 u16 D_8036BB14;
 u16 D_8036BB16;
 s16 D_8036BB18;
@@ -239,7 +90,7 @@ s16 D_8036BB1A;
 s16 D_8036BB1C;
 s16 D_8036BB1E;
 s16 D_8036BB20;
-UnkStruct_8036BB10 *D_8036BB24;
+YoshiEntry *D_8036BB24;
 f32 D_8036BB28;
 f32 D_8036BB2C;
 s32 D_8036BB30;
@@ -258,14 +109,9 @@ u8 D_8036BBB2[2];
 u8 D_8036BBB4[4];
 u8 D_8036BBB8[0x31C];
 s32 D_8036BED4;
-UnkStruct_8036BED8 *D_8036BED8;
+Rdu *D_8036BED8;
 f32 D_8036BEDC;
 u8 D_8036BEE0;
-
-typedef struct {
-    /* 0x00 */ u16 unk0;
-    /* 0x02 */ u8 unk2[0x1A];
-} UnkStruct_802F8BF4; /* size = 0x1C */
 
 extern u16 D_80301098[];
 extern u16 D_803010A0[];
@@ -702,7 +548,7 @@ extern u16 D_803035B4[];
 extern u16 D_803035BC[];
 extern u16 D_803035C8[];
 /* .data, 0x802F47B0-0x802FA270 (tools/data_c.py) */
-UnkStruct_802F47B0 D_802F47B0[0x17] = {
+ColorPair D_802F47B0[0x17] = {
     { 0, 0, 0, 255, 0, 0, 0, 255 },
     { 90, 90, 220, 255, 90, 90, 220, 255 },
     { 0, 255, 0, 255, 0, 255, 0, 255 },
@@ -742,7 +588,7 @@ UnkStruct_802F48D0 D_802F48D0[8] = {
     { 10, { 85, -1 } },
 };
 u8 D_802F49E0[0x14] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-UnkStruct_802F49F4 D_802F49F4[0x4b] = {
+YoshiIcon D_802F49F4[0x4b] = {
     { 0, 0, 0, 0, { 0 }, 1, { 0 }, 0, 1, 0, 1.0f, 1, 0, 0, 0 },
     {
         0, -8, 3, 0, { 9, 61, 9, 61, 9, 62, 9, 62, 9, 63, 9, 63 }, 4, { 2, 1, 2, 3 }, 1, 8, 0,
@@ -853,7 +699,7 @@ UnkStruct_802F49F4 D_802F49F4[0x4b] = {
     { 0, 0, 1, 0, { 7, 18, 7, 17 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
     { 0, 0, 1, 0, { 13, 68, 13, 67 }, 1, { 1 }, 1, 8, 0, 1.0f, 2, 1, 0, 0 },
 };
-UnkStruct_8036BB10 D_802F5804[0x1da] = {
+YoshiEntry D_802F5804[0x1da] = {
     { 32, 56, 48, 24, 24, { 0 }, "SELECT OPTION", D_80301B98, 0, 0, 30, 7, 0, 0 },
     { 97, 80, 82, 20, 20, { 0 }, "MORE", D_80301BD4, 0, 0, 30, 7, 4, 0 },
     { 97, 80, 102, 20, 20, { 0 }, "VIEW STATS", D_80301BA8, 0, 0, 30, 7, 4, 0 },
@@ -1451,7 +1297,7 @@ UnkStruct_8036BB10 D_802F5804[0x1da] = {
     { 0x10A0, 0, 828, 16, 16, { 0 }, "THOSE WHO CAN ACHIEVE", D_8030178C, 0, 0, 30, 6, 6, 0 },
     { 0x10A0, 0, 846, 16, 16, { 0 }, "A PERFECT RECORD ...", D_80301790, 0, 0, 30, 6, 6, 0 },
 };
-UnkStruct_802F8BDC D_802F8BDC[0x6c] = {
+YoshiWindow D_802F8BDC[0x6c] = {
     { 0x100, 208, 32, 16, -0xEFFFFC7, 0, 0, 5, 27, 28, 29, 0, 0, 0 },
     { 0x100, 208, 32, 16, -0x4EFFFFC7, 0, 5, 5, 0, 28, 29, 0, 0, 0 },
     { 0x100, 32, 32, 36, 0x8000008, 0, 10, 1, 0, 0, 0, 0, 0, 0 },
@@ -1754,7 +1600,7 @@ u8 func_8026AD30(s16 arg0) {
     if (!(D_80364A90 & 0x2104)) {
         return 0;
     }
-    if (D_80364AF0[D_80364AE8].unk88[9] >= 11) {
+    if (D_80364AF0[D_80364AE8].gameState >= 11) {
         return 0;
     }
     for (sp24 = 0; sp24 < 8 && sp2B == 0; sp24++) {
@@ -1762,11 +1608,11 @@ u8 func_8026AD30(s16 arg0) {
         if (sp2C->unk0 == D_802E8BDC) {
             for (sp20 = 0; sp20 < 16 && sp2B == 0 && sp2C->unk2[sp20] != -1; sp20++) {
                 if (sp2C->unk2[sp20] == arg0) {
-                    sp1C = D_80364AF0[D_80364AE8].unk88[arg0] < D_802F499A[arg0];
+                    sp1C = D_80364AF0[D_80364AE8].unk54[0x34 + arg0] < D_802F499A[arg0];
                     sp18 = D_802E8BDC == 0;
                     if (D_8036BAA2[arg0] == 0 && (sp18 || sp1C)) {
                         if (sp1C && !sp18) {
-                            D_80364AF0[D_80364AE8].unk88[arg0]++;
+                            D_80364AF0[D_80364AE8].unk54[0x34 + arg0]++;
                         }
                         D_8036BAA2[arg0] = 1;
                         func_8026AF6C(arg0 | 0x8000 | 0x2000);
@@ -1815,13 +1661,6 @@ u16 func_8026B10C(void) {
     return D_8036BB14;
 }
 
-typedef struct {
-    /* 0x00 */ u8 unk0;
-    /* 0x01 */ u8 unk1[0x43];
-} UnkStruct_802E8F94; /* size = 0x44 */
-
-extern UnkStruct_802E8F94 D_802E8F94[];
-extern u8 D_802E8BF8;
 extern u8 D_8036BAE8[];
 extern s16 D_8036BB0C;
 extern s8 D_8036BB0E;
@@ -1832,7 +1671,7 @@ s32 func_80297EF8(s32);
 void func_8026B118(arg0)
     u8 arg0;
 {
-    UnkStruct_802F8BDC *sp44;
+    YoshiWindow *sp44;
     UnkStruct_802F48D0 *sp40;
     u8 sp3F;
     s32 sp38;
@@ -1869,7 +1708,7 @@ void func_8026B118(arg0)
         case 0x40000000:
             sp44 = &D_802F8BDC[D_802F4868[func_8026F92C(D_802E8F94[D_802E8BDC].unk0)]];
             if (D_802E8BF8 != 0) {
-                D_8020C070[29].unk0 &= ~1;
+                D_8020C070[29].flags &= ~1;
                 D_8020C070[29].unk14 = 0xB;
             }
             if (D_802E8F94[D_802E8BDC].unk0 == 1) {
@@ -1879,8 +1718,8 @@ void func_8026B118(arg0)
                     D_8020C070[18].unk14 = 0;
                 }
             } else if (D_802E8F94[D_802E8BDC].unk0 == 0x20) {
-                D_8020C070[23].unk0 &= ~0x400;
-                D_8020C070[26].unk0 &= ~0x400;
+                D_8020C070[23].flags &= ~0x400;
+                D_8020C070[26].flags &= ~0x400;
                 D_8020C070[27].unk14 = 0;
                 D_8020C070[28].unk14 = 0;
             } else {
@@ -1899,8 +1738,8 @@ void func_8026B118(arg0)
         case 0x40:
             sp44 = &D_802F8BDC[D_802F4870[func_8026F92C(D_802E8F94[D_802E8BDC].unk0)]];
             if (D_802E8F94[D_802E8BDC].unk0 == 0x20) {
-                D_802F5804[27].unk0 &= ~0x400;
-                D_802F5804[28].unk0 &= ~0x400;
+                D_802F5804[27].flags &= ~0x400;
+                D_802F5804[28].flags &= ~0x400;
                 D_802F5804[29].unk14 = 0;
                 D_802F5804[30].unk14 = 0;
             } else {
@@ -1911,8 +1750,8 @@ void func_8026B118(arg0)
             }
             break;
         case 0x2000:
-            if (((D_80364AF0[D_80364AE8].unk0[D_802E8BDC + 0x18] > 0 &&
-                  D_80364AF0[D_80364AE8].unk0[D_802E8BDC + 0x18] < 6)
+            if (((D_80364AF0[D_80364AE8].medal[D_802E8BDC] > 0 &&
+                  D_80364AF0[D_80364AE8].medal[D_802E8BDC] < 6)
                      ? 1
                      : 0) &&
                 D_802E8F94[D_802E8BDC].unk0 == 1) {
@@ -1964,10 +1803,10 @@ void func_8026B118(arg0)
 
 void func_8026B8F8(void) {
     if (D_80364AA8 & 0x20) {
-        D_8020C070[23].unk0 |= 0x400;
-        D_8020C070[26].unk0 |= 0x400;
-        D_802F5804[27].unk0 |= 0x400;
-        D_802F5804[28].unk0 |= 0x400;
+        D_8020C070[23].flags |= 0x400;
+        D_8020C070[26].flags |= 0x400;
+        D_802F5804[27].flags |= 0x400;
+        D_802F5804[28].flags |= 0x400;
         D_8020C070[23].unk14 = D_8020C070[26].unk14 = D_802F5804[27].unk14 = D_802F5804[28].unk14 = func_8026FA38(NULL, NULL);
         if (D_80364A98 == 0x40) {
             func_8026BA7C(&D_802F8BDC[D_802F4870[func_8026F92C(D_80364AA8)]]);
@@ -1977,20 +1816,20 @@ void func_8026B8F8(void) {
     }
 }
 
-void func_8026BA7C(UnkStruct_802F8BDC *arg0) {
-    UnkStruct_802F49F4 *sp2C;
+void func_8026BA7C(YoshiWindow *arg0) {
+    YoshiIcon *sp2C;
     s32 sp28;
     u8 sp27;
-    UnkStruct_8036BB10 *sp20;
+    YoshiEntry *sp20;
 
     sp27 = 4;
     func_8026FB50(arg0);
     if (arg0->unk8 & 0x20000) {
         sp27 = 0;
     }
-    for (sp28 = arg0->unkE; sp28 < arg0->unkE + arg0->unk10; sp28++) {
+    for (sp28 = arg0->first; sp28 < arg0->first + arg0->count; sp28++) {
         sp20 = &D_8036BB10[sp28];
-        if (sp20->unk0 & 0x400) {
+        if (sp20->flags & 0x400) {
             sp2C = &D_802F49F4[sp20->unk14];
             if (sp2C->unk2E == -1) {
                 sp20->unk1A = func_80272C5C(sp2C->unk6, 0, sp2C->unk4, sp2C->unk2C, sp2C->unk2D | sp27, 1.0f);
@@ -2002,26 +1841,15 @@ void func_8026BA7C(UnkStruct_802F8BDC *arg0) {
     }
 }
 
-typedef struct {
-    /* 0x0000 */ u8 unk0[0x1240];
-    /* 0x1240 */ Mtx unk1240;
-    /* 0x1280 */ Mtx unk1280;
-    /* 0x12C0 */ Mtx unk12C0;
-    /* 0x1300 */ Mtx unk1300;
-    /* 0x1340 */ u8 unk1340[0xAC0];
-    /* 0x1E00 */ Vtx unk1E00[0x1E0];
-    /* 0x3C00 */ u8 unk3C00[0x1D898];
-} UnkStruct_803156F8; /* size = 0x21498 */
-
-Gfx *func_8026BCE0(Gfx *, UnkStruct_803156F8 *, s32 *);
+Gfx *func_8026BCE0(Gfx *, FrameBuf *, s32 *);
 
 #ifdef TARGET_PC
 /* The callers use the result, which on the N64 is whatever is left in v0:
    func_8026BCE0's return value. */
-Gfx *func_8026BBD0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
+Gfx *func_8026BBD0(Gfx *arg0, FrameBuf *arg1, s32 *arg2) {
     Gfx *ret;
 #else
-void func_8026BBD0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
+void func_8026BBD0(Gfx *arg0, FrameBuf *arg1, s32 *arg2) {
 #endif
     Gfx *gfx;
 
@@ -2045,7 +1873,6 @@ void func_8026BBD0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
 
 extern u8 D_802E8BD4;
 extern u8 D_802E8BD8;
-extern u8 D_8035805C;
 extern u8 D_803643D6;
 extern u8 D_803643DB;
 extern u8 D_8036BA48[];
@@ -2064,16 +1891,14 @@ extern s8 D_80370C11;
 extern s8 D_80370C12;
 extern s8 D_80370C13;
 extern s8 D_80370C14;
-extern u16 D_80370C28;
-extern u16 D_80370C2A;
 f32 func_802574F0(f32);
-void func_80259BD4(Gfx **, UnkStruct_803156F8 *);
-void func_80259DC8(UnkStruct_803156F8 *, void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32,
+void func_80259BD4(Gfx **, FrameBuf *);
+void func_80259DC8(FrameBuf *, void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32,
                    s32, s32, s32);
 s32 func_8025B498(s16, u16, char *, u16 *);
-void func_8026EF70(UnkStruct_802F8BDC *);
+void func_8026EF70(YoshiWindow *);
 void func_80261570(f32);
-void *func_8026F004(UnkStruct_802F8BDC *, u16, u8);
+void *func_8026F004(YoshiWindow *, u16, u8);
 u8 func_8026F644(UnkStruct_8026F644 *, u16 *, s16);
 u16 func_8026F82C(u16, u16, u16);
 Gfx *func_80272ED8(Gfx *, u8, s16, s16, u8, u8, f32);
@@ -2082,13 +1907,13 @@ Gfx *func_80274998(Gfx *);
 Gfx *func_80274AA4(Gfx *);
 Gfx *func_80274B08(Gfx *);
 Gfx *func_80275DA4(Gfx *, u8);
-s32 func_80276080(UnkStruct_803156F8 *, u8, s32, s32, s32, s32, s32, u8, u8, u8, u8);
-s32 func_80276130(UnkStruct_803156F8 *, u8, s32, s32, s32, s32, s32, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8,
+s32 func_80276080(FrameBuf *, u8, s32, s32, s32, s32, s32, u8, u8, u8, u8);
+s32 func_80276130(FrameBuf *, u8, s32, s32, s32, s32, s32, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8,
                   u8, u8, u8, u8);
 
-Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
-    UnkStruct_802F8BDC *sp14C;
-    UnkStruct_8036BB10 *sp148;
+Gfx *func_8026BCE0(Gfx *arg0, FrameBuf *arg1, s32 *arg2) {
+    YoshiWindow *sp14C;
+    YoshiEntry *sp148;
     void *sp144;
     s32 sp140;
     Gfx *sp13C;
@@ -2098,7 +1923,7 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
     u16 sp134;
     u16 sp132;
     u16 sp130;
-    UnkStruct_802F47B0 *sp12C;
+    ColorPair *sp12C;
     f32 sp128;
     u16 sp126;
     u16 sp124;
@@ -2120,20 +1945,20 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
         D_8036BB0E = -D_8036BB0E;
     }
     sp12C = &D_802F47B0[16];
-    sp12C->unk1 = 0xFF - D_8036BB0C;
-    sp12C->unk5 = D_8036BB0C;
+    sp12C->g0 = 0xFF - D_8036BB0C;
+    sp12C->g1 = D_8036BB0C;
     sp12C = &D_802F47B0[17];
-    sp12C->unk1 = 0xAA - D_8036BB0C * 2 / 3;
-    sp12C->unk5 = D_8036BB0C * 2 / 3;
+    sp12C->g0 = 0xAA - D_8036BB0C * 2 / 3;
+    sp12C->g1 = D_8036BB0C * 2 / 3;
     sp12C = &D_802F47B0[18];
-    sp12C->unk0 = sp12C->unk1 = 0xFF - D_8036BB0C;
-    sp12C->unk4 = sp12C->unk5 = D_8036BB0C;
+    sp12C->r0 = sp12C->g0 = 0xFF - D_8036BB0C;
+    sp12C->r1 = sp12C->g1 = D_8036BB0C;
     sp12C = &D_802F47B0[19];
-    sp12C->unk2 = sp12C->unk1 = 0xFF - D_8036BB0C;
-    sp12C->unk6 = sp12C->unk5 = D_8036BB0C;
+    sp12C->b0 = sp12C->g0 = 0xFF - D_8036BB0C;
+    sp12C->b1 = sp12C->g1 = D_8036BB0C;
     sp12C = &D_802F47B0[20];
-    sp12C->unk2 = 0xFF - D_8036BB0C;
-    sp12C->unk6 = D_8036BB0C;
+    sp12C->b0 = 0xFF - D_8036BB0C;
+    sp12C->b1 = D_8036BB0C;
     if (D_80364A90 == 0x200 && D_803643DB != 0 && D_803643D6 != 0) {
         D_8036BB1A = -1;
         if (D_8036BB1C == 4 || D_8036BB1C == 2) {
@@ -2186,7 +2011,7 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
             if (sp13A != 0) {
                 func_80260650(D_80367738, sp13A, 0);
             }
-            if (D_8036BB10[sp14C->unk18].unk0 & 0x10) {
+            if (D_8036BB10[sp14C->unk18].flags & 0x10) {
                 D_802E8BD4 = 1;
             }
             D_8036BB16 = sp14C->unk18;
@@ -2224,18 +2049,18 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
                     func_80260650(D_80367738, sp13A, 0);
                 }
                 if (!(sp14C->unk8 & 0x400)) {
-                    for (sp138 = sp14C->unkE; !(D_8036BB10[sp138].unk0 & 1) && sp138 < sp14C->unkE + sp14C->unk10;
+                    for (sp138 = sp14C->first; !(D_8036BB10[sp138].flags & 1) && sp138 < sp14C->first + sp14C->count;
                          sp138++) {
                     }
                     sp14C->unk18 = sp138;
                 }
-                for (sp138 = sp14C->unkE; sp138 < sp14C->unkE + sp14C->unk10; sp138++) {
+                for (sp138 = sp14C->first; sp138 < sp14C->first + sp14C->count; sp138++) {
                     sp148 = &D_8036BB10[sp138];
-                    if (sp148->unk0 & 0x20) {
+                    if (sp148->flags & 0x20) {
                         if (sp14C->unk8 & 0x80000) {
-                            sp148->unk2 = func_8025B498(sp14C->unk0 / 2, sp148->unk6, sp148->unkC, sp148->unk10);
+                            sp148->x = func_8025B498(sp14C->unk0 / 2, sp148->unk6, sp148->text, sp148->unk10);
                         } else {
-                            sp148->unk2 = func_8025B498(sp14C->unk0 / 2, sp148->unk6, sp148->unkC, sp148->unk10);
+                            sp148->x = func_8025B498(sp14C->unk0 / 2, sp148->unk6, sp148->text, sp148->unk10);
                         }
                     }
                 }
@@ -2248,7 +2073,7 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
                 if (sp14C->unk8 & 0x100000) {
                     D_8036BB28 = sp14C->unk2;
                 } else {
-                    D_8036BB28 = sp14C->unk2 / 2 - D_8036BB10[sp14C->unk18].unk4;
+                    D_8036BB28 = sp14C->unk2 / 2 - D_8036BB10[sp14C->unk18].y;
                     if (sp14C->unk8 & 0x40000) {
                         D_8036BB28 -= D_8036BB10[sp14C->unk18].unk8 / 2;
                     }
@@ -2275,7 +2100,7 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
     switch (D_8036BB1C) {
         case 2:
             if (sp14C->unk8 & 0x100000) {
-                sp11F = D_8036BB2C < sp14C->unk2 / 8 - D_8036BB10[sp14C->unkE + sp14C->unk10 - 1].unk4;
+                sp11F = D_8036BB2C < sp14C->unk2 / 8 - D_8036BB10[sp14C->first + sp14C->count - 1].y;
             } else {
                 sp11F = sp14C->unkC != 0 && (D_803156C4 - D_8036BAFC) / 60.0f > sp14C->unkC &&
                         (!(sp14C->unk8 & 0x400000) || !(D_8036BB1E != 0));
@@ -2310,7 +2135,7 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
                 } else {
                     sp14C->unk1A = 0;
                 }
-                if (func_8026F8A8(sp14C->unkE, sp14C->unk10, sp14C->unk18, 1) == sp14C->unk18) {
+                if (func_8026F8A8(sp14C->first, sp14C->count, sp14C->unk18, 1) == sp14C->unk18) {
                     sp14C->unk1A = 1;
                 }
             }
@@ -2337,25 +2162,25 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
     if (D_8036BB1C != 1 && D_8036BB38 * D_8036BB34 > 0.1) {
         sp136 = sp14C->unk0 / 2;
         sp134 = sp14C->unk2 / 2;
-        guOrtho(&arg1->unk1240, -sp14C->unk4 - sp136, -sp14C->unk4 - sp136 + 319, -sp14C->unk6 - sp134 + 239,
+        guOrtho(&arg1->mtx[73], -sp14C->unk4 - sp136, -sp14C->unk4 - sp136 + 319, -sp14C->unk6 - sp134 + 239,
                 -sp14C->unk6 - sp134, -256.0f, 256.0f, 256.0f);
-        gSPMatrix(sp13C++, OS_K0_TO_PHYSICAL(&arg1->unk1240), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
+        gSPMatrix(sp13C++, OS_K0_TO_PHYSICAL(&arg1->mtx[73]), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
         if (sp14C->unk8 & 0x10) {
-            guRotate(&arg1->unk12C0, 180.0 - D_8036BB38 * D_8036BB34 / sp128 * 180.0, 2.0f, 0.0f, 1.0f);
-            gSPMatrix(sp13C++, OS_K0_TO_PHYSICAL(&arg1->unk12C0), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
+            guRotate(&arg1->mtx[75], 180.0 - D_8036BB38 * D_8036BB34 / sp128 * 180.0, 2.0f, 0.0f, 1.0f);
+            gSPMatrix(sp13C++, OS_K0_TO_PHYSICAL(&arg1->mtx[75]), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
         } else {
-            guTranslate(&arg1->unk12C0, 0.0f, 0.0f, 0.0f);
-            gSPMatrix(sp13C++, OS_K0_TO_PHYSICAL(&arg1->unk12C0), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
+            guTranslate(&arg1->mtx[75], 0.0f, 0.0f, 0.0f);
+            gSPMatrix(sp13C++, OS_K0_TO_PHYSICAL(&arg1->mtx[75]), G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
         }
-        gSPMatrix(sp13C++, OS_K0_TO_PHYSICAL(&arg1->unk1300), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+        gSPMatrix(sp13C++, OS_K0_TO_PHYSICAL(&arg1->mtx[76]), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
         gSPPopMatrix(sp13C++, G_MTX_MODELVIEW);
         if (sp14C->unk8 & 8) {
-            guScale(&arg1->unk1300, sp136 * D_8036BB38 * D_8036BB34 / 1000.0f,
+            guScale(&arg1->mtx[76], sp136 * D_8036BB38 * D_8036BB34 / 1000.0f,
                     sp134 * D_8036BB38 * D_8036BB34 / 1000.0f, 1.0f);
-            gSPMatrix(sp13C++, OS_K0_TO_PHYSICAL(&arg1->unk1300), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+            gSPMatrix(sp13C++, OS_K0_TO_PHYSICAL(&arg1->mtx[76]), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
         } else {
-            guScale(&arg1->unk1300, sp136 / 1000.0f, sp134 / 1000.0f, 1.0f);
-            gSPMatrix(sp13C++, OS_K0_TO_PHYSICAL(&arg1->unk1300), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+            guScale(&arg1->mtx[76], sp136 / 1000.0f, sp134 / 1000.0f, 1.0f);
+            gSPMatrix(sp13C++, OS_K0_TO_PHYSICAL(&arg1->mtx[76]), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
         }
         gDPPipeSync(sp13C++);
         gDPSetRenderMode(sp13C++, G_RM_CLD_SURF, G_RM_CLD_SURF2);
@@ -2368,8 +2193,8 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
         }
         gSPPopMatrix(sp13C++, G_MTX_MODELVIEW);
         if (sp14C->unk8 & 8) {
-            guScale(&arg1->unk1280, D_8036BB38, D_8036BB38, 1.0f);
-            gSPMatrix(sp13C++, OS_K0_TO_PHYSICAL(&arg1->unk1280), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+            guScale(&arg1->mtx[74], D_8036BB38, D_8036BB38, 1.0f);
+            gSPMatrix(sp13C++, OS_K0_TO_PHYSICAL(&arg1->mtx[74]), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         }
         {
             s32 spD8;
@@ -2378,7 +2203,7 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
             u16 spD0;
             s32 spCC;
             s16 spCA;
-            UnkStruct_802F47B0 *spC4;
+            ColorPair *spC4;
 
             if ((sp14C->unk8 & 0x20) && D_8036BB1C == 2) {
                 spD8 = 0;
@@ -2406,7 +2231,7 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
                     spD4 = 0;
                 }
                 if (((D_80370C28 & D_8036BB3C) && !(D_80370C2A & D_8036BB3C)) || spD8 != 0) {
-                    spD2 = func_8026F82C(sp14C->unkE, sp14C->unk18, 1);
+                    spD2 = func_8026F82C(sp14C->first, sp14C->unk18, 1);
                     sp13A = sp14C->unk16;
                     if (sp13A != 0) {
                         if (spD2 != sp14C->unk18) {
@@ -2415,13 +2240,13 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
                             func_80260650(D_80367738, 0xD0, 0);
                         }
                     }
-                    D_8036BB28 += D_8036BB10[sp14C->unk18].unk4 - D_8036BB10[spD2].unk4;
+                    D_8036BB28 += D_8036BB10[sp14C->unk18].y - D_8036BB10[spD2].y;
                     sp14C->unk18 = spD2;
                 } else if ((((sp14C->unk1A != 0 ? 0 : 0x8000) | D_8036BB3E) & D_80370C28 &&
                             !(((sp14C->unk1A != 0 ? 0 : 0x8000) | D_8036BB3E) & D_80370C2A)) ||
                            spD4 != 0) {
-                    spD0 = func_8026F8A8(sp14C->unkE, sp14C->unk10, sp14C->unk18, 1);
-                    if (func_8026F8A8(sp14C->unkE, sp14C->unk10, spD0, 1) == spD0) {
+                    spD0 = func_8026F8A8(sp14C->first, sp14C->count, sp14C->unk18, 1);
+                    if (func_8026F8A8(sp14C->first, sp14C->count, spD0, 1) == spD0) {
                         sp14C->unk1A = 1;
                     }
                     sp13A = sp14C->unk16;
@@ -2432,7 +2257,7 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
                             func_80260650(D_80367738, 0xD0, 0);
                         }
                     }
-                    D_8036BB28 += D_8036BB10[sp14C->unk18].unk4 - D_8036BB10[spD0].unk4;
+                    D_8036BB28 += D_8036BB10[sp14C->unk18].y - D_8036BB10[spD0].y;
                     sp14C->unk18 = spD0;
                     D_8036BAFC = D_803156C4;
                 }
@@ -2466,34 +2291,34 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
                         D_8036BB44 -= D_802F9930 * 2;
                         D_802F9930 = -D_802F9930;
                     }
-                    if (func_8026F8A8(sp14C->unkE, sp14C->unk10, sp14C->unk18, 1) != sp14C->unk18) {
+                    if (func_8026F8A8(sp14C->first, sp14C->count, sp14C->unk18, 1) != sp14C->unk18) {
                         spC4 = &D_802F47B0[18];
                         spCC = func_80276130(arg1, 0, spCC, -sp136, sp134 - D_8036BB44 - spCA, 16, D_8036BB44 / 2 + 10,
-                                             spC4->unk0, spC4->unk1, spC4->unk2, D_8036BB20, spC4->unk4, spC4->unk5,
-                                             spC4->unk6, D_8036BB20, spC4->unk0, spC4->unk1, spC4->unk2, D_8036BB20,
-                                             spC4->unk4, spC4->unk5, spC4->unk6, D_8036BB20);
+                                             spC4->r0, spC4->g0, spC4->b0, D_8036BB20, spC4->r1, spC4->g1,
+                                             spC4->b1, D_8036BB20, spC4->r0, spC4->g0, spC4->b0, D_8036BB20,
+                                             spC4->r1, spC4->g1, spC4->b1, D_8036BB20);
                         spCC = func_80276080(arg1, 0, spCC, -3 - sp136, sp134 - D_8036BB44 - spCA + 3, 16,
                                              D_8036BB44 / 2 + 10, 0, 0, 0, D_8036BB20 / 2);
                         sp13C = func_80275DA4(sp13C, 1);
-                        gSPVertex(sp13C++, arg1->unk1E00, 8, 0);
+                        gSPVertex(sp13C++, arg1->vtx, 8, 0);
                         gSP1Triangle(sp13C++, 4, 5, 6, 0);
                         gSP1Triangle(sp13C++, 4, 6, 7, 0);
                         gSP1Triangle(sp13C++, 0, 1, 2, 0);
                         gSP1Triangle(sp13C++, 0, 2, 3, 0);
                     }
-                    if (func_8026F82C(sp14C->unkE, sp14C->unk18, 1) != sp14C->unk18) {
+                    if (func_8026F82C(sp14C->first, sp14C->unk18, 1) != sp14C->unk18) {
                         /* volatile: these colours are reloaded, not reused as in the call above. */
-                        volatile UnkStruct_802F47B0 *spAC;
+                        volatile ColorPair *spAC;
 
                         spAC = &D_802F47B0[18];
                         spCC = func_80276130(arg1, 1, spCC, -sp136, D_8036BB44 - sp134 + spCA, 16, D_8036BB44 / 2 + 10,
-                                             spAC->unk0, spAC->unk1, spAC->unk2, D_8036BB20, spAC->unk4, spAC->unk5,
-                                             spAC->unk6, D_8036BB20, spAC->unk0, spAC->unk1, spAC->unk2, D_8036BB20,
-                                             spAC->unk4, spAC->unk5, spAC->unk6, D_8036BB20);
+                                             spAC->r0, spAC->g0, spAC->b0, D_8036BB20, spAC->r1, spAC->g1,
+                                             spAC->b1, D_8036BB20, spAC->r0, spAC->g0, spAC->b0, D_8036BB20,
+                                             spAC->r1, spAC->g1, spAC->b1, D_8036BB20);
                         spCC = func_80276080(arg1, 1, spCC, -3 - sp136, D_8036BB44 - sp134 + spCA - 3, 16,
                                              D_8036BB44 / 2 + 10, 0, 0, 0, D_8036BB20 / 2);
                         sp13C = func_80275DA4(sp13C, 1);
-                        gSPVertex(sp13C++, &arg1->unk1E00[spCC - 8], 8, 0);
+                        gSPVertex(sp13C++, &arg1->vtx[spCC - 8], 8, 0);
                         gSP1Triangle(sp13C++, 4, 5, 6, 0);
                         gSP1Triangle(sp13C++, 4, 6, 7, 0);
                         gSP1Triangle(sp13C++, 0, 1, 2, 0);
@@ -2505,7 +2330,7 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
             }
         }
         {
-            UnkStruct_802F49F4 *sp94;
+            YoshiIcon *sp94;
             s16 sp92;
             s16 sp90;
             u8 sp8F;
@@ -2521,10 +2346,10 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
                 } else {
                     sp13C = func_80274998(sp13C);
                 }
-                for (sp138 = sp14C->unkE; sp138 < sp14C->unkE + sp14C->unk10; sp138++) {
+                for (sp138 = sp14C->first; sp138 < sp14C->first + sp14C->count; sp138++) {
                     sp148 = &D_8036BB10[sp138];
-                    if (!(sp148->unk0 & 0x800) && (sp148->unk0 & 0x400) &&
-                        (!(sp148->unk0 & 0x300) || sp138 <= D_8036BB04)) {
+                    if (!(sp148->flags & 0x800) && (sp148->flags & 0x400) &&
+                        (!(sp148->flags & 0x300) || sp138 <= D_8036BB04)) {
                         sp94 = &D_802F49F4[sp148->unk14];
                         if (sp14C->unk8 & 0x20000) {
                             sp92 = sp14C->unk4;
@@ -2538,7 +2363,7 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
                         }
                         sp8F = 1;
                         sp8E = sp94->unk25;
-                        if ((sp148->unk0 & 1) && sp138 != sp14C->unk18) {
+                        if ((sp148->flags & 1) && sp138 != sp14C->unk18) {
                             sp8F = 0;
                         }
                         sp8D = D_8036BA48[sp148->unk14];
@@ -2549,22 +2374,22 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
                         sp8B = sp94->unk1B[D_8036BA98[sp148->unk14]];
                         if (sp8B != 0) {
                             if (sp8F != 0) {
-                                if (sp138 == sp14C->unk18 && (sp148->unk0 & 0x40)) {
+                                if (sp138 == sp14C->unk18 && (sp148->flags & 0x40)) {
                                     sp8E |= 8;
                                 }
                                 sp13C = func_80272ED8(
-                                    sp13C, sp148->unk1A + sp8B - 1, sp94->unk0 + sp148->unk2 + sp92,
-                                    ((sp148->unk0 & 0x1000) ? D_8036BB30 : 0) + (sp94->unk2 + sp148->unk4 + sp90),
-                                    func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->unk0,
-                                                     sp148->unk4 + sp94->unk2 - sp134 + D_8036BB30 + 8) *
+                                    sp13C, sp148->unk1A + sp8B - 1, sp94->unk0 + sp148->x + sp92,
+                                    ((sp148->flags & 0x1000) ? D_8036BB30 : 0) + (sp94->unk2 + sp148->y + sp90),
+                                    func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->flags,
+                                                     sp148->y + sp94->unk2 - sp134 + D_8036BB30 + 8) *
                                         D_8036BB38 * D_8036BB34,
                                     sp8E, sp94->unk28);
                             } else {
                                 sp13C = func_80272ED8(
-                                    sp13C, sp148->unk1A + sp8B - 1, sp94->unk0 + sp148->unk2 + sp92,
-                                    ((sp148->unk0 & 0x1000) ? D_8036BB30 : 0) + (sp94->unk2 + sp148->unk4 + sp90),
-                                    func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->unk0,
-                                                     sp148->unk4 + sp94->unk2 - sp134 + D_8036BB30 + 8) *
+                                    sp13C, sp148->unk1A + sp8B - 1, sp94->unk0 + sp148->x + sp92,
+                                    ((sp148->flags & 0x1000) ? D_8036BB30 : 0) + (sp94->unk2 + sp148->y + sp90),
+                                    func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->flags,
+                                                     sp148->y + sp94->unk2 - sp134 + D_8036BB30 + 8) *
                                         D_8036BB38 * D_8036BB34 * 0.7,
                                     sp8E & ~1, sp94->unk28);
                             }
@@ -2579,74 +2404,74 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
             }
         }
         if (D_8036BB18 < 0x62 || D_8036BB18 >= 0x6C || D_80364A90 == 2) {
-            for (sp138 = sp14C->unkE; sp138 < sp14C->unkE + sp14C->unk10; sp138++) {
+            for (sp138 = sp14C->first; sp138 < sp14C->first + sp14C->count; sp138++) {
                 sp148 = &D_8036BB10[sp138];
                 sp140 = 0;
                 sp144 = func_8026F004(sp14C, sp138, 0);
-                if ((sp148->unk0 & 0x80) && !(sp148->unk0 & 0x800)) {
+                if ((sp148->flags & 0x80) && !(sp148->flags & 0x800)) {
                     if (sp138 == sp14C->unk18) {
                         func_80259DC8(
-                            arg1, sp144, sp140, sp148->unk0 & 8, 0, sp148->unk2 - sp136 - 3,
-                            ((sp148->unk0 & 0x1000) ? D_8036BB30 : 0) + (sp148->unk4 - sp134) + 3, sp148->unk6,
+                            arg1, sp144, sp140, sp148->flags & 8, 0, sp148->x - sp136 - 3,
+                            ((sp148->flags & 0x1000) ? D_8036BB30 : 0) + (sp148->y - sp134) + 3, sp148->unk6,
                             sp148->unk8, 1, 0, 0, 0,
-                            (D_8036BB20 * D_802F47B0[sp148->unk19].unk3) *
-                                func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->unk0,
-                                              sp148->unk4 - sp134 + D_8036BB30) / 65025 / 2,
+                            (D_8036BB20 * D_802F47B0[sp148->unk19].a0) *
+                                func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->flags,
+                                              sp148->y - sp134 + D_8036BB30) / 65025 / 2,
                             0, 0, 0,
-                            (D_8036BB20 * D_802F47B0[sp148->unk19].unk3) *
-                                func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->unk0,
-                                              sp148->unk4 - sp134 + D_8036BB30 + sp148->unk8) / 65025 / 2);
-                    } else if (!(sp148->unk0 & 4) || D_803156C4 % 23 * 60 / 60 < 16) {
+                            (D_8036BB20 * D_802F47B0[sp148->unk19].a0) *
+                                func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->flags,
+                                              sp148->y - sp134 + D_8036BB30 + sp148->unk8) / 65025 / 2);
+                    } else if (!(sp148->flags & 4) || D_803156C4 % 23 * 60 / 60 < 16) {
                         func_80259DC8(
-                            arg1, sp144, sp140, sp148->unk0 & 8, 0, sp148->unk2 - sp136 - 3,
-                            ((sp148->unk0 & 0x1000) ? D_8036BB30 : 0) + (sp148->unk4 - sp134) + 3, sp148->unk6,
+                            arg1, sp144, sp140, sp148->flags & 8, 0, sp148->x - sp136 - 3,
+                            ((sp148->flags & 0x1000) ? D_8036BB30 : 0) + (sp148->y - sp134) + 3, sp148->unk6,
                             sp148->unk8, 1, 0, 0, 0,
-                            (D_8036BB20 * D_802F47B0[sp148->unk18].unk3) *
-                                func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->unk0,
-                                              sp148->unk4 - sp134 + D_8036BB30) / 65025 / 2,
+                            (D_8036BB20 * D_802F47B0[sp148->unk18].a0) *
+                                func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->flags,
+                                              sp148->y - sp134 + D_8036BB30) / 65025 / 2,
                             0, 0, 0,
-                            (D_8036BB20 * D_802F47B0[sp148->unk18].unk3) *
-                                func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->unk0,
-                                              sp148->unk4 - sp134 + D_8036BB30 + sp148->unk8) / 65025 / 2);
+                            (D_8036BB20 * D_802F47B0[sp148->unk18].a0) *
+                                func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->flags,
+                                              sp148->y - sp134 + D_8036BB30 + sp148->unk8) / 65025 / 2);
                     }
                 }
             }
         }
-        for (sp138 = sp14C->unkE; sp138 < sp14C->unkE + sp14C->unk10; sp138++) {
+        for (sp138 = sp14C->first; sp138 < sp14C->first + sp14C->count; sp138++) {
             sp148 = &D_8036BB10[sp138];
             sp140 = 0;
             sp144 = func_8026F004(sp14C, sp138, 0);
-            if (!(sp148->unk0 & 0x800)) {
+            if (!(sp148->flags & 0x800)) {
                 if (sp138 == sp14C->unk18) {
-                    if ((!(sp148->unk0 & 4) || D_803156C4 % 23 * 60 / 60 < 16) &&
-                        (!(sp148->unk0 & 0x40) || D_803156C4 % 15 * 60 / 60 < 11)) {
-                        func_80259DC8(arg1, sp144, sp140, sp148->unk0 & 8, 0, sp148->unk2 - sp136,
-                                      ((sp148->unk0 & 0x1000) ? D_8036BB30 : 0) + (sp148->unk4 - sp134), sp148->unk6,
-                                      sp148->unk8, 1, D_802F47B0[sp148->unk19].unk0, D_802F47B0[sp148->unk19].unk1,
-                                      D_802F47B0[sp148->unk19].unk2,
-                                      (D_8036BB20 * D_802F47B0[sp148->unk19].unk3) *
-                                          func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->unk0,
-                                                        sp148->unk4 - sp134 + D_8036BB30) /
+                    if ((!(sp148->flags & 4) || D_803156C4 % 23 * 60 / 60 < 16) &&
+                        (!(sp148->flags & 0x40) || D_803156C4 % 15 * 60 / 60 < 11)) {
+                        func_80259DC8(arg1, sp144, sp140, sp148->flags & 8, 0, sp148->x - sp136,
+                                      ((sp148->flags & 0x1000) ? D_8036BB30 : 0) + (sp148->y - sp134), sp148->unk6,
+                                      sp148->unk8, 1, D_802F47B0[sp148->unk19].r0, D_802F47B0[sp148->unk19].g0,
+                                      D_802F47B0[sp148->unk19].b0,
+                                      (D_8036BB20 * D_802F47B0[sp148->unk19].a0) *
+                                          func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->flags,
+                                                        sp148->y - sp134 + D_8036BB30) /
                                           65025,
-                                      D_802F47B0[sp148->unk19].unk4, D_802F47B0[sp148->unk19].unk5,
-                                      D_802F47B0[sp148->unk19].unk6,
-                                      (D_8036BB20 * D_802F47B0[sp148->unk19].unk7) *
-                                          func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->unk0,
-                                                        sp148->unk4 - sp134 + D_8036BB30 + sp148->unk8) / 65025);
+                                      D_802F47B0[sp148->unk19].r1, D_802F47B0[sp148->unk19].g1,
+                                      D_802F47B0[sp148->unk19].b1,
+                                      (D_8036BB20 * D_802F47B0[sp148->unk19].a1) *
+                                          func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->flags,
+                                                        sp148->y - sp134 + D_8036BB30 + sp148->unk8) / 65025);
                     }
-                } else if (!(sp148->unk0 & 4) || D_803156C4 % 23 * 60 / 60 < 16) {
-                    func_80259DC8(arg1, sp144, sp140, sp148->unk0 & 8, 0, sp148->unk2 - sp136,
-                                  ((sp148->unk0 & 0x1000) ? D_8036BB30 : 0) + (sp148->unk4 - sp134), sp148->unk6,
-                                  sp148->unk8, 1, D_802F47B0[sp148->unk18].unk0, D_802F47B0[sp148->unk18].unk1,
-                                  D_802F47B0[sp148->unk18].unk2,
-                                  (D_8036BB20 * D_802F47B0[sp148->unk18].unk3) *
-                                      func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->unk0,
-                                                    sp148->unk4 - sp134 + D_8036BB30) / 65025,
-                                  D_802F47B0[sp148->unk18].unk4, D_802F47B0[sp148->unk18].unk5,
-                                  D_802F47B0[sp148->unk18].unk6,
-                                  (D_8036BB20 * D_802F47B0[sp148->unk18].unk7) *
-                                      func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->unk0,
-                                                    sp148->unk4 - sp134 + D_8036BB30 + sp148->unk8) / 65025);
+                } else if (!(sp148->flags & 4) || D_803156C4 % 23 * 60 / 60 < 16) {
+                    func_80259DC8(arg1, sp144, sp140, sp148->flags & 8, 0, sp148->x - sp136,
+                                  ((sp148->flags & 0x1000) ? D_8036BB30 : 0) + (sp148->y - sp134), sp148->unk6,
+                                  sp148->unk8, 1, D_802F47B0[sp148->unk18].r0, D_802F47B0[sp148->unk18].g0,
+                                  D_802F47B0[sp148->unk18].b0,
+                                  (D_8036BB20 * D_802F47B0[sp148->unk18].a0) *
+                                      func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->flags,
+                                                    sp148->y - sp134 + D_8036BB30) / 65025,
+                                  D_802F47B0[sp148->unk18].r1, D_802F47B0[sp148->unk18].g1,
+                                  D_802F47B0[sp148->unk18].b1,
+                                  (D_8036BB20 * D_802F47B0[sp148->unk18].a1) *
+                                      func_8026F644((UnkStruct_8026F644 *) sp14C, &sp148->flags,
+                                                    sp148->y - sp134 + D_8036BB30 + sp148->unk8) / 65025);
                 }
             }
         }
@@ -2655,11 +2480,11 @@ Gfx *func_8026BCE0(Gfx *arg0, UnkStruct_803156F8 *arg1, s32 *arg2) {
     return sp13C;
 }
 
-void func_8026EF70(UnkStruct_802F8BDC *arg0) {
+void func_8026EF70(YoshiWindow *arg0) {
     if (arg0->unk8 & 0x80) {
-        D_8036BB04 = func_8026F8A8(arg0->unkE, arg0->unk10, arg0->unkE - 1, 0x100);
+        D_8036BB04 = func_8026F8A8(arg0->first, arg0->count, arg0->first - 1, 0x100);
         D_8036BB06 = 0;
-        if (D_8036BB04 + 1 == arg0->unkE) {
+        if (D_8036BB04 + 1 == arg0->first) {
             D_8036BB1E = 0;
         } else {
             D_8036BB1E = 1;
@@ -2669,8 +2494,8 @@ void func_8026EF70(UnkStruct_802F8BDC *arg0) {
     }
 }
 
-void *func_8026F004(UnkStruct_802F8BDC *arg0, u16 arg1, u8 arg2) {
-    UnkStruct_8036BB10 *sp3C;
+void *func_8026F004(YoshiWindow *arg0, u16 arg1, u8 arg2) {
+    YoshiEntry *sp3C;
     u8 sp3B;
     u8 *sp34;
     u16 *sp30;
@@ -2684,7 +2509,7 @@ void *func_8026F004(UnkStruct_802F8BDC *arg0, u16 arg1, u8 arg2) {
     } else {
         sp3B = 0;
     }
-    sp34 = (u8 *)sp3C->unkC;
+    sp34 = (u8 *)sp3C->text;
     sp30 = sp3C->unk10;
     D_8036BB48[0] = D_802E8C98[sp3B];
     switch (D_8036BB1E) {
@@ -2753,7 +2578,7 @@ void *func_8026F004(UnkStruct_802F8BDC *arg0, u16 arg1, u8 arg2) {
                 }
                 D_8036BB48[sp28] = D_802E8C98[sp3B];
                 if (D_8036BB48[D_8036BB06] == D_802E8C98[sp3B]) {
-                    sp26 = func_8026F8A8(arg0->unkE, arg0->unk10, D_8036BB04, 0x100);
+                    sp26 = func_8026F8A8(arg0->first, arg0->count, D_8036BB04, 0x100);
                     if (sp26 == D_8036BB04) {
                         D_8036BB1E = 0;
                         if ((arg0->unk8 & 0x400000) && D_8036BB1C == 2) {
@@ -2766,7 +2591,7 @@ void *func_8026F004(UnkStruct_802F8BDC *arg0, u16 arg1, u8 arg2) {
                     D_8036BB06 = 0;
                 } else {
                     D_8036BB48[D_8036BB06] = D_802E8C98[sp3B];
-                    if (!(sp3C->unk0 & 0x4000) && D_803156C4 % 10 >= 6) {
+                    if (!(sp3C->flags & 0x4000) && D_803156C4 % 10 >= 6) {
                         D_8036BB48[D_8036BB06] = D_802E8C9C[sp3B];
                         D_8036BB48[D_8036BB06 + 1] = D_802E8C98[sp3B];
                     }
@@ -2778,7 +2603,7 @@ void *func_8026F004(UnkStruct_802F8BDC *arg0, u16 arg1, u8 arg2) {
             }
             break;
     }
-    if ((sp3C->unk0 & 0x100) || (sp3C->unk0 & 0x200)) {
+    if ((sp3C->flags & 0x100) || (sp3C->flags & 0x200)) {
         if (arg2) {
             return D_8036BB48;
         }
@@ -2805,7 +2630,7 @@ u16 func_8026F82C(u16 arg0, u16 arg1, u16 arg2) {
     s32 i;
 
     for (i = arg1 - 1; i >= arg0; i--) {
-        if (D_8036BB10[i].unk0 & arg2) {
+        if (D_8036BB10[i].flags & arg2) {
             return i;
         }
     }
@@ -2816,7 +2641,7 @@ u16 func_8026F8A8(u16 arg0, u16 arg1, u16 arg2, u16 arg3) {
     s32 i;
 
     for (i = arg2 + 1; i < arg0 + arg1; i++) {
-        if (D_8036BB10[i].unk0 & arg3) {
+        if (D_8036BB10[i].flags & arg3) {
             return i;
         }
     }
@@ -2861,7 +2686,7 @@ u8 func_8026FA38(char **arg0, u16 **arg1) {
     return sp18;
 }
 
-void func_8026FB50(UnkStruct_802F8BDC *arg0) {
+void func_8026FB50(YoshiWindow *arg0) {
     if (arg0->unk8 & 0x8000) {
         D_8036BB10 = D_8036BB24;
     } else if (arg0->unk8 & 0x800) {
@@ -2871,38 +2696,38 @@ void func_8026FB50(UnkStruct_802F8BDC *arg0) {
     }
 }
 
-void func_8026FBB0(UnkStruct_8026FBB0 *arg0, UnkStruct_8026FBB0 *arg1) {
+void func_8026FBB0(LevelRdu *arg0, LevelRdu *arg1) {
     s32 pad;
 
     D_8036EB90 = 0;
-    D_8036EA7C = 0;
+    D_8036EA70.rt = 0;
     if (D_80364A90 != 0x40) {
         D_8036BED4 = D_8036BBB0[0] = 0;
     }
-    D_8036BED8 = (UnkStruct_8036BED8 *) D_80358070;
+    D_8036BED8 = (Rdu *) D_80358070;
     D_8036BEE0 = 0;
     D_8036BEDC = 999999.0f;
     while (arg0 != arg1) {
-        D_8036BED8[D_8036EB90].unk0 = arg0->unk0;
-        D_8036BED8[D_8036EB90].unk2 = arg0->unk2;
-        D_8036BED8[D_8036EB90].unk4 = arg0->unk4;
-        D_8036BED8[D_8036EB90].unk6 = 0;
-        D_8036BED8[D_8036EB90].unk7 = (arg0->unk4 / (D_803BE710 >> 5)) * D_803BE714 + arg0->unk0 / (D_803BE70C >> 5);
-        func_8026A5CC((u64 *) D_8036BED8[D_8036EB90].unk8[0], (u64 *) D_802F99C0, 0x40);
-        func_8026A5CC((u64 *) D_8036BED8[D_8036EB90].unk8[1], (u64 *) D_802F99C0, 0x40);
+        D_8036BED8[D_8036EB90].x = arg0->x;
+        D_8036BED8[D_8036EB90].y = arg0->y;
+        D_8036BED8[D_8036EB90].z = arg0->z;
+        D_8036BED8[D_8036EB90].collected = 0;
+        D_8036BED8[D_8036EB90].cell = (arg0->z / (D_803BE710 >> 5)) * D_803BE714 + arg0->x / (D_803BE70C >> 5);
+        func_8026A5CC((u64 *) D_8036BED8[D_8036EB90].vtx[0], (u64 *) D_802F99C0, 0x40);
+        func_8026A5CC((u64 *) D_8036BED8[D_8036EB90].vtx[1], (u64 *) D_802F99C0, 0x40);
         D_8036EB90++;
         arg0++;
     }
-    D_80358070 += D_8036EB90 * sizeof(UnkStruct_8036BED8);
+    D_80358070 += D_8036EB90 * sizeof(Rdu);
 }
 
 u8 func_8026FE6C(s32 arg0) {
-    return D_8036BED8[arg0].unk6;
+    return D_8036BED8[arg0].collected;
 }
 
 void func_8026FE8C(s32 arg0) {
-    D_8036BED8[arg0].unk6 = 1;
-    D_8036EA7C++;
+    D_8036BED8[arg0].collected = 1;
+    D_8036EA70.rt++;
 }
 
 void func_8026FEC4(void) {
@@ -2915,19 +2740,19 @@ void func_8026FEC4(void) {
     sp2A = 0;
     sp2B = (D_803643E8 / D_803BE710) * D_803BE714 + D_803643E0 / D_803BE70C;
     for (i = 0; i < D_8036EB90; i++) {
-        if (D_8036BED8[i].unk7 == sp2B && D_8036BED8[i].unk6 == 0) {
-            sp2C = func_8026A6F0(D_803643E0 >> 5, D_803643E4 >> 5, D_803643E8 >> 5, D_8036BED8[i].unk0,
-                                 D_8036BED8[i].unk2, D_8036BED8[i].unk4);
+        if (D_8036BED8[i].cell == sp2B && D_8036BED8[i].collected == 0) {
+            sp2C = func_8026A6F0(D_803643E0 >> 5, D_803643E4 >> 5, D_803643E8 >> 5, D_8036BED8[i].x,
+                                 D_8036BED8[i].y, D_8036BED8[i].z);
             if (sp2C < D_802FA200[D_80364456]) {
-                if (++D_8036EA7C >= 4 && D_802E8BD0 == 0) {
+                if (++D_8036EA70.rt >= 4 && D_802E8BD0 == 0) {
                     func_8026AD30(0x46);
                 }
                 if (D_80364A90 != 0x40) {
                     D_8036BBB0[D_8036BED4] = D_8036BBB0[D_8036BED4 + 1] = i;
                     D_8036BED4++;
                 }
-                func_802AC544(D_8036BED8[i].unk0, D_8036BED8[i].unk2 + 5, D_8036BED8[i].unk4);
-                D_8036BED8[i].unk6 = 1;
+                func_802AC544(D_8036BED8[i].x, D_8036BED8[i].y + 5, D_8036BED8[i].z);
+                D_8036BED8[i].collected = 1;
                 if (sp2A == 0) {
                     sp2A = 1;
                     if (D_80364AA8 == 0x40) {
@@ -2966,17 +2791,17 @@ void func_802701A8(Gfx **arg0, s32 arg1) {
         }
         for (i = 0; i < D_8036EB90; i++) {
             for (j = 0; j < 4; j++) {
-                D_8036BED8[i].unk8[D_8036BEE0][j].v.ob[0] = (s16) x[j] + D_8036BED8[i].unk0;
-                D_8036BED8[i].unk8[D_8036BEE0][j].v.ob[1] = (s16) y[j] + D_8036BED8[i].unk2;
-                D_8036BED8[i].unk8[D_8036BEE0][j].v.ob[2] = (s16) z[j] + D_8036BED8[i].unk4;
+                D_8036BED8[i].vtx[D_8036BEE0][j].v.ob[0] = (s16) x[j] + D_8036BED8[i].x;
+                D_8036BED8[i].vtx[D_8036BEE0][j].v.ob[1] = (s16) y[j] + D_8036BED8[i].y;
+                D_8036BED8[i].vtx[D_8036BEE0][j].v.ob[2] = (s16) z[j] + D_8036BED8[i].z;
             }
         }
     }
     gDPLoadTextureBlock(gfx++, osVirtualToPhysical(D_802F9A00), G_IM_FMT_RGBA, G_IM_SIZ_32b, 16, 16, 0, G_TX_CLAMP,
                         G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
     for (i = 0; i < D_8036EB90; i++) {
-        if (D_8036BED8[i].unk6 == 0 && func_80270A54(&D_8036BED8[i])) {
-            gSPVertex(gfx++, D_8036BED8[i].unk8[D_8036BEE0], 4, 0);
+        if (D_8036BED8[i].collected == 0 && func_80270A54(&D_8036BED8[i])) {
+            gSPVertex(gfx++, D_8036BED8[i].vtx[D_8036BEE0], 4, 0);
             gSP1Triangle(gfx++, 0, 1, 2, 0);
             gSP1Triangle(gfx++, 0, 2, 3, 0);
         }
@@ -2985,8 +2810,8 @@ void func_802701A8(Gfx **arg0, s32 arg1) {
     gDPLoadTextureBlock(gfx++, osVirtualToPhysical(D_802F9E00), G_IM_FMT_RGBA, G_IM_SIZ_32b, 16, 16, 0, G_TX_CLAMP,
                         G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
     for (i = 0; i < D_8036EB90; i++) {
-        if (D_8036BED8[i].unk6 != 0 && func_80270A54(&D_8036BED8[i])) {
-            gSPVertex(gfx++, D_8036BED8[i].unk8[D_8036BEE0], 4, 0);
+        if (D_8036BED8[i].collected != 0 && func_80270A54(&D_8036BED8[i])) {
+            gSPVertex(gfx++, D_8036BED8[i].vtx[D_8036BEE0], 4, 0);
             gSP1Triangle(gfx++, 0, 1, 2, 0);
             gSP1Triangle(gfx++, 0, 2, 3, 0);
         }
@@ -2996,12 +2821,12 @@ void func_802701A8(Gfx **arg0, s32 arg1) {
     D_8036BEDC = D_80364414;
 }
 
-s32 func_80270A54(UnkStruct_8036BED8 *arg0) {
+s32 func_80270A54(Rdu *arg0) {
     s32 i;
     u8 spB;
 
     i = 0;
-    spB = arg0->unk7;
+    spB = arg0->cell;
     while (D_803C30A8[i] != 0xFFFF) {
         if (D_803C30A8[i++] == spB) {
             return 1;

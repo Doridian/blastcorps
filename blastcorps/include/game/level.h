@@ -1,0 +1,263 @@
+#ifndef GAME_LEVEL_H
+#define GAME_LEVEL_H
+
+#include "game/types.h"
+
+/*
+ * Level numbers: the index into D_802E8F94 and the switch in func_8025615C
+ * that picks each level's gzip file in ROM.  The names are the levels' own
+ * (docs/blast_corps_levels.txt, from the file names and the game).
+ * D_802E8BDC is the current one (academy.c's assert calls it `levelno`).
+ */
+enum LevelId {
+    LEVEL_SIMIAN_ACRES,      /*  0 chimp.raw */
+    LEVEL_ANGEL_CITY,        /*  1 lagp.raw */
+    LEVEL_OUTLAND_FARM,      /*  2 valley.raw */
+    LEVEL_BLACKRIDGE_WORKS,  /*  3 fact.raw */
+    LEVEL_GLORY_CROSSING,    /*  4 dip.raw */
+    LEVEL_SHUTTLE_GULLY,     /*  5 beetle.raw */
+    LEVEL_SALVAGE_WHARF,     /*  6 bonus1.raw */
+    LEVEL_SKYFALL,           /*  7 bonus2.raw */
+    LEVEL_TWILIGHT_FOUNDRY,  /*  8 bonus3.raw */
+    LEVEL_CRYSTAL_RIFT,      /*  9 */
+    LEVEL_ARGENT_TOWERS,     /* 10 */
+    LEVEL_SKERRIES,          /* 11 */
+    LEVEL_DIAMOND_SANDS,     /* 12 */
+    LEVEL_EBONY_COAST,       /* 13 */
+    LEVEL_OYSTER_HARBOR,     /* 14 */
+    LEVEL_CARRICK_POINT,     /* 15 */
+    LEVEL_HAVOC_DISTRICT,    /* 16 */
+    LEVEL_IRONSTONE_MINE,    /* 17 */
+    LEVEL_BEETON_TRACKS,     /* 18 */
+    LEVEL_J_BOMB,            /* 19 */
+    LEVEL_JADE_PLATEAU,      /* 20 */
+    LEVEL_MARINE_QUARTER,    /* 21 */
+    LEVEL_COOTER_CREEK,      /* 22 */
+    LEVEL_GIBBONS_GATE,      /* 23 */
+    LEVEL_BABOON_CATACOMB,   /* 24 */
+    LEVEL_SLEEK_STREETS,     /* 25 */
+    LEVEL_OBSIDIAN_MILE,     /* 26 */
+    LEVEL_CORVINE_BLUFF,     /* 27 */
+    LEVEL_SIDESWIPE,         /* 28 */
+    LEVEL_ECHO_MARCHES,      /* 29 */
+    LEVEL_KIPLING_PLANT,     /* 30 */
+    LEVEL_FALCHION_FIELD,    /* 31 */
+    LEVEL_MORGAN_HALL,       /* 32 */
+    LEVEL_TEMPEST_CITY,      /* 33 */
+    LEVEL_ORION_PLAZA,       /* 34 */
+    LEVEL_GLANDERS_RANCH,    /* 35 */
+    LEVEL_DAGGER_PASS,       /* 36 */
+    LEVEL_GEODE_SQUARE,      /* 37 */
+    LEVEL_SHUTTLE_ISLAND,    /* 38 */
+    LEVEL_MICA_PARK,         /* 39 */
+    LEVEL_MOON,              /* 40 */
+    LEVEL_COBALT_QUARRY,     /* 41 */
+    LEVEL_MORAINE_CHASE,     /* 42 */
+    LEVEL_MERCURY,           /* 43 */
+    LEVEL_VENUS,             /* 44 */
+    LEVEL_MARS,              /* 45 */
+    LEVEL_NEPTUNE,           /* 46 */
+    LEVEL_CMO_INTRO,         /* 47 */
+    LEVEL_SILVER_JUNCTION,   /* 48 */
+    LEVEL_END_SEQUENCE,      /* 49 */
+    LEVEL_SHUTTLE_CLEAR,     /* 50 */
+    LEVEL_DARK_HEARTLAND,    /* 51 */
+    LEVEL_MAGMA_PEAK,        /* 52 */
+    LEVEL_THUNDERFIST,       /* 53 */
+    LEVEL_SALINE_WATCH,      /* 54 */
+    LEVEL_BACKLASH,          /* 55 */
+    LEVEL_BISON_RIDGE,       /* 56 */
+    LEVEL_EMBER_HAMLET,      /* 57 */
+    LEVEL_CROMLECH_COURT,    /* 58 */
+    LEVEL_LIZARD_ISLAND,     /* 59 */
+    LEVEL_COUNT
+};
+
+/*
+ * Per-level constants, D_802E8F94[LEVEL_COUNT] (hd_code 1D990.c's .data).
+ * func_80262320 points D_80367C04 at the current level's entry.
+ */
+typedef struct LevelInfo {
+    /* 0x00 */ u8 unk0;           /* 1 for the ordinary levels; 2 gets a ghost buffer (hd.c "Allocating ghost buffer memory"); 0x20, 0x80 and the 0x81 bits are tested */
+    /* 0x01 */ u8 gameState;      /* the PlayerInfo.gameState the level belongs to (academy.c) */
+    /* 0x02 */ u16 unk2;          /* unk2..unk8: a rectangle, x/z in world units >> 5 */
+    /* 0x04 */ u16 unk4;
+    /* 0x06 */ u16 unk6;
+    /* 0x08 */ u16 unk8;
+    /* 0x0A */ u16 unkA;          /* unkA..unk10: another rectangle (func_8026394C) */
+    /* 0x0C */ u16 unkC;
+    /* 0x0E */ u16 unkE;
+    /* 0x10 */ u16 unk10;
+    /* 0x12 */ u8 unk12[4];
+    /* 0x16 */ u8 unk16[2];
+    /* 0x18 */ u32 goal;          /* "FINISH %d LAPS IN", "CAUSE $%d DAMAGE", "FIND %d RDUS IN" */
+    /* 0x1C */ s16 unk1C;         /* << 5 into D_803F7C10 */
+    /* 0x1E */ s16 unk1E;         /* << 5 into D_803F7C14 */
+    /* 0x20 */ u8 unk20[4];
+    /* 0x24 */ s16 unk24;         /* compared with the player's y >> 5 */
+    /* 0x26 */ s16 unk26;         /* unk26..unk2A: a position (<< 5 into D_803EF2EC..F4) */
+    /* 0x28 */ s16 unk28;
+    /* 0x2A */ s16 unk2A;
+    /* 0x2C */ u32 unk2C;         /* bit flags, 1 << n */
+    /* 0x30 */ u16 medalTimes[4]; /* in tenths of a second, fastest first (func_801EF2BC); [3] is the time limit */
+    /* 0x38 */ u8 unk38;
+    /* 0x39 */ u8 pad39[3];
+    /* 0x3C */ s32 unk3C;
+    /* 0x40 */ u16 unk40;
+    /* 0x42 */ u16 unk42;
+} LevelInfo;
+SIZE_CHECK(LevelInfo, 0x44);
+
+/* The levels that aren't played: stats.c's assert "!DUMMY_LEVELS(levelno)"
+ * tests these three. */
+#define DUMMY_LEVELS(l) ((l) == LEVEL_END_SEQUENCE || (l) == LEVEL_CMO_INTRO || (l) == LEVEL_SHUTTLE_ISLAND)
+
+extern LevelInfo D_802E8F94[LEVEL_COUNT];
+extern s32 D_802E8BDC; /* the current level: academy.c's `levelno` ("levelno==50") */
+
+/* PlayerInfo.medal[level] is 1..5 once the level is done. */
+#define LEVEL_DONE_IN(player, level) \
+    (((player).medal[level] > 0 && (player).medal[level] < 6) ? 1 : 0)
+
+/* D_802E8F38[6] (1D990.c's .data): a spot in six of the levels; 52D70.c
+ * copies the one for the current level to D_8039CAB0..B4. */
+typedef struct UnkStruct_802E8F38 {
+    /* 0x0 */ u8 level;
+    /* 0x2 */ s16 x;
+    /* 0x4 */ s16 y;
+    /* 0x6 */ s16 z;
+} UnkStruct_802E8F38;
+SIZE_CHECK(UnkStruct_802E8F38, 8);
+
+extern UnkStruct_802E8F38 D_802E8F38[6];
+
+/*
+ * The front end's per-level table, D_8020D810[LEVEL_COUNT] (hd_front_end
+ * 11530.c's .data): the level's name ("SIMIAN ACRES", ...; stats.c prints
+ * it), the name in the u16 text encoding, and what the front end's map uses
+ * (floats, two lists of other levels).
+ */
+typedef struct UnkStruct_8020D810 {
+    /* 0x00 */ u8 unk0[4];
+    /* 0x04 */ char *name;
+    /* 0x08 */ u16 *unk8;
+    /* 0x0C */ u8 unkC[4];
+    /* 0x10 */ f32 unk10;
+    /* 0x14 */ f32 unk14;
+    /* 0x18 */ s8 unk18[4];       /* level numbers, -1 terminated */
+    /* 0x1C */ s8 unk1C[8];       /* level numbers, -1 terminated */
+    /* 0x24 */ f32 unk24;
+    /* 0x28 */ f32 unk28;
+    /* 0x2C */ f32 unk2C;
+} UnkStruct_8020D810;
+SIZE_CHECK(UnkStruct_8020D810, 0x30);
+
+extern UnkStruct_8020D810 D_8020D810[LEVEL_COUNT];
+
+/*
+ * The header of a level file (the gzip members func_8025615C picks; loaded
+ * at D_80358074 by the level setup).  0xC8 bytes, followed by the display
+ * data that segment 8 points at.  From docs/blast_corps_levels.txt; only
+ * the handwritten engine reads it (func_802A1674 and what it calls).
+ *
+ * Every offset is from the start of the file, so a native port that keeps
+ * the file as loaded can use them as they are, after byteswapping.
+ */
+typedef struct LevelHeader {
+    /* 0x00 */ u16 unk0[2];
+    /* 0x04 */ u16 unk4[2];          /* << 5 */
+    /* 0x08 */ u16 unk8[2];          /* multiplied: the number of terrain groups */
+    /* 0x0C */ u16 unkC[2];          /* << 5 */
+    /* 0x10 */ u16 unk10[2];
+    /* 0x14 */ u16 unk14[2];         /* << 5 */
+    /* 0x18 */ s32 gravity;          /* -4, -2 on the planets */
+    /* 0x1C */ u32 unk1C;            /* 0 in dip, level9, level18, level20, level34, level43 */
+    /* 0x20 */ AssetOffset ammoBoxes;      /* s16 x, y, z, type (0 missiles, 1 hydraulics) */
+    /* 0x24 */ AssetOffset collisionFixes; /* 0x14-byte triangles */
+    /* 0x28 */ AssetOffset commPoint;
+    /* 0x2C */ AssetOffset animTextures;
+    /* 0x30 */ AssetOffset terrain;
+    /* 0x34 */ AssetOffset rdus;           /* s16 x, y, z */
+    /* 0x38 */ AssetOffset tntCrates;
+    /* 0x3C */ AssetOffset blocks;         /* square blocks and holes */
+    /* 0x40 */ AssetOffset bounds40;       /* 10-byte boxes, func_802A5510 */
+    /* 0x44 */ AssetOffset bounds44;
+    /* 0x48 */ AssetOffset unk48;
+    /* 0x4C */ AssetOffset levelBounds;
+    /* 0x50 */ AssetOffset vehicles;       /* 9-byte records: type, s16 x, y, z, heading */
+    /* 0x54 */ AssetOffset carrier;        /* the missile carrier's path */
+    /* 0x58 */ AssetOffset unk58;
+    /* 0x5C */ AssetOffset buildings;      /* 14-byte records */
+    /* 0x60 */ AssetOffset unk60;
+    /* 0x64 */ AssetOffset unk64;
+    /* 0x68 */ AssetOffset trainStops;
+    /* 0x6C */ AssetOffset collisionXZ;
+    /* 0x70 */ AssetOffset playerCollisionXZ;
+    /* 0x74 */ AssetOffset unk74;
+    /* 0x78 */ AssetOffset displayLists[10]; /* into the display data after the header */
+    /* 0xA0 */ AssetOffset unkA0[10];
+} LevelHeader;
+SIZE_CHECK(LevelHeader, 0xC8);
+
+/* The current level's file, at the bottom of the level's heap allocations. */
+extern LevelHeader *D_80358074;
+
+/*
+ * Objects the level file places.  The records are read straight out of the
+ * loaded file (at the LevelHeader offsets), so they are big-endian ROM data.
+ */
+
+/* LevelHeader.rdus: one RDU (docs/blast_corps_levels.txt, offset 0x34). */
+typedef struct LevelRdu {
+    /* 0x0 */ s16 x;
+    /* 0x2 */ s16 y;
+    /* 0x4 */ s16 z;
+} LevelRdu;
+SIZE_CHECK(LevelRdu, 6);
+
+/*
+ * The level's RDUs at run time: func_8026FBB0 copies the LevelRdu records
+ * into D_8036BED8[D_8036EB90], allocated from the heap.  D_8036EA7C
+ * (LevelStats.rt) counts the collected ones (LevelInfo.goal for "FIND %d
+ * RDUS IN").
+ */
+typedef struct Rdu {
+    /* 0x00 */ s16 x;
+    /* 0x02 */ s16 y;
+    /* 0x04 */ s16 z;
+    /* 0x06 */ u8 collected;
+    /* 0x07 */ u8 cell;           /* the level grid cell it is in (LevelHeader.unk0/unk4 sizes) */
+    /* 0x08 */ Vtx vtx[2][4];     /* its quad, double-buffered by D_8036BEE0 */
+} Rdu;
+SIZE_CHECK(Rdu, 0x88);
+
+/*
+ * A level's results, four copies in hd_code 409D0.c (stats_perm.c): the
+ * current attempt (D_8036EA70), the previous one (D_8036EA60) and two saved
+ * copies (D_8036EA80, D_8036EA90), moved about whole with func_80285A78.
+ * The field names are stats.c's, from its debug print ("new ip=%8d : tc=%5d
+ * : bd=%2d : cr=%2d : rt=%3d : coin=%1d : bdn=%1d"); other files still name
+ * the fields by their own symbols (D_8036EA7C is D_8036EA70.rt).
+ */
+typedef struct LevelStats {
+    /* 0x0 */ u32 ip;             /* the damage, shown as "$%d" */
+    /* 0x4 */ u32 tc;             /* the time, saved as the best time */
+    /* 0x8 */ u8 bd;              /* out of D_8036EB92, shown as a percentage */
+    /* 0x9 */ u8 cr;              /* out of D_8036EB93 */
+    /* 0xA */ u8 coin;            /* the medal (PlayerInfo.medal) */
+    /* 0xB */ u8 bdn;             /* PlayerInfo.unk92[level]: which time slot */
+    /* 0xC */ u16 rt;             /* RDUs collected, out of D_8036EB90 */
+    /* 0xE */ u8 padE[2];
+} LevelStats;
+SIZE_CHECK(LevelStats, 0x10);
+
+extern LevelStats D_8036EA60;
+extern LevelStats D_8036EA70;
+extern LevelStats D_8036EA80;
+extern LevelStats D_8036EA90;
+
+extern Rdu *D_8036BED8;
+extern u16 D_8036EB90;
+extern u16 D_8036EA7C;
+
+#endif

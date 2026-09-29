@@ -1,12 +1,11 @@
 #include "common.h"
+#include "game/game.h"
 
 /*
  * gen_symbols matched these to libultra's osViExtendVStart and its
  * __additional_scanline, but they are the game's own: D_8021AB80 holds a
  * 320x240 RGBA16 image that func_80200BE0 draws.
  */
-extern u64 D_80364A90;
-extern u8 *D_80358070;
 extern u8 D_006AD3F0[];
 extern u8 D_006BF2F0[];
 extern u8 D_006D3D30[];

@@ -1,4 +1,9 @@
 #include "common.h"
+#include "game/vehicle.h"
+#include "game/game.h"
+#include "game/yoshi.h"
+#include "game/level.h"
+#include "game/player.h"
 
 typedef struct {
     /* 0x00 */ s32 unk0;
@@ -27,16 +32,6 @@ typedef struct {
 } UnkStruct_802F3C10; /* size = 0x14 */
 
 typedef struct {
-    /* 0x00 */ u8 unk0[0x5C];
-    /* 0x5C */ s32 unk5C;
-    /* 0x60 */ s32 unk60;
-    /* 0x64 */ s32 unk64;
-    /* 0x68 */ s32 unk68;
-    /* 0x6C */ s32 unk6C;
-    /* 0x70 */ s32 unk70;
-} UnkStruct_80364460; /* size = 0x74 */
-
-typedef struct {
     /* 0x0 */ s32 unk0;
     /* 0x4 */ f32 unk4;
     /* 0x8 */ u8 unk8;
@@ -52,28 +47,13 @@ typedef struct {
     /* 0xC */ u8 unkC;
 } UnkStruct_802F3C48; /* size = 0x10 */
 
-typedef struct {
-    /* 0x00 */ u8 unk0[0x18];
-    /* 0x18 */ u8 unk18[0xE8];
-} UnkStruct_80364AF0; /* size = 0x100 */
-
-extern s32 D_802E8BDC;
 extern char D_80309830[];
 extern char D_8030985C[];
 extern char D_80309864[];
 extern f64 D_80309928;
-extern s32 D_803643E0;
-extern s32 D_803643E4;
-extern s32 D_803643E8;
 extern u8 D_803643D6;
 extern u8 D_803643D7;
-extern u8 D_80364456;
-extern UnkStruct_80364460 D_80364460[];
-extern UnkStruct_80364460 *D_803649D0;
 extern u8 D_803649ED;
-extern s64 D_80364A98;
-extern u8 D_80364AE8;
-extern UnkStruct_80364AF0 D_80364AF0[];
 extern u8 D_8036C7CC;
 extern u8 D_8036EB98;
 extern u8 D_803A7430;
@@ -290,7 +270,7 @@ void func_802683E0(void) {
     s32 i = 0;
     u8 found = 0;
     u8 found2;
-    UnkStruct_80364460 *p;
+    Vehicle *p;
 
     if (D_80364456 == 0 && D_803ED826 == 0) {
     /* An unused label keeps IDO from folding the first loop test. */
@@ -300,20 +280,20 @@ void func_802683E0(void) {
                 p = D_80364460;
                 found2 = 0;
                 while (found2 == 0 && D_803649D0 != p) {
-                    if (D_802F3C10[i].unk1 == p->unk5C) {
+                    if (D_802F3C10[i].unk1 == p->type) {
                         found2 = 1;
                     } else {
                         p++;
                     }
                 }
                 if (found2 != 0 &&
-                    (func_802AC4C4(p->unk64 >> 5, p->unk6C >> 5, D_802F3C10[i].unk2, D_802F3C10[i].unk4,
+                    (func_802AC4C4(p->x >> 5, p->z >> 5, D_802F3C10[i].unk2, D_802F3C10[i].unk4,
                                    D_802F3C10[i].unk6, D_802F3C10[i].unk8, D_802F3C10[i].unkA,
                                    D_802F3C10[i].unkC) != 0 ||
-                     func_802AC4C4(p->unk64 >> 5, p->unk6C >> 5, D_802F3C10[i].unk2, D_802F3C10[i].unk4,
+                     func_802AC4C4(p->x >> 5, p->z >> 5, D_802F3C10[i].unk2, D_802F3C10[i].unk4,
                                    D_802F3C10[i].unkA, D_802F3C10[i].unkC, D_802F3C10[i].unkE,
                                    D_802F3C10[i].unk10) != 0)) {
-                    if (func_8026A6F0(p->unk64, p->unk68, p->unk6C, D_803643E0, D_803643E4, D_803643E8) <
+                    if (func_8026A6F0(p->x, p->y, p->z, D_803643E0, D_803643E4, D_803643E8) <
                         D_802F3C10[i].unk12) {
                         D_803649ED = D_802F3C10[i].unk1;
                         found = 1;
@@ -487,21 +467,6 @@ void func_80268F54(void) {
 }
 
 
-typedef struct {
-    /* 0x00 */ u8 pad0[0xC];
-    /* 0x0C */ char *unkC;
-    /* 0x10 */ u16 *unk10;
-    /* 0x14 */ u8 pad14[8];
-} UnkStruct_802F5804; /* size = 0x1C */
-
-typedef struct {
-    /* 0x00 */ u8 pad0[0x12];
-    /* 0x12 */ s16 unk12;
-    /* 0x14 */ u8 pad14[8];
-} UnkStruct_802F8BDC; /* size = 0x1C */
-
-extern UnkStruct_802F5804 D_802F5804[];
-extern UnkStruct_802F8BDC D_802F8BDC[];
 extern u16 D_80303AF4[];
 extern u16 D_80303B00[];
 extern u16 D_80303B10[];
@@ -518,9 +483,7 @@ extern u8 D_803643D9;
 extern u8 D_803643DA;
 extern u8 D_802E8BD8;
 extern u8 D_80364A84;
-extern u64 D_80364A90;
 extern s32 D_80364AA8;
-extern u8 D_8036EA78;
 extern u8 D_8036EB92;
 f32 func_8026A184(f32, f32, f32, f32, f32, f32, f32);
 void func_8026A2E8(f32, f32 *);
@@ -664,7 +627,7 @@ void func_80269258(void) {
                     D_8036B95C = 1;
                 } else {
                     func_802C1DD0(0);
-                    if (D_8036EA78 < D_8036EB92) {
+                    if (D_8036EA70.bd < D_8036EB92) {
                         D_8036B964 = 1;
                         D_8036B95C = 1;
                     }
@@ -680,7 +643,7 @@ void func_80269258(void) {
                 D_803FCD70 = D_802F4224[idx[2]].unk14;
                 break;
             case 5:
-                D_802F5804[42].unkC = "LANDING ABORTED!";
+                D_802F5804[42].text = "LANDING ABORTED!";
                 D_802F5804[42].unk10 = D_80303AF4;
                 D_802F8BDC[23].unk12 = 0xDA;
                 if (D_80364A90 & 0x104) {
@@ -688,7 +651,7 @@ void func_80269258(void) {
                 }
                 break;
             case 6:
-                D_802F5804[42].unkC = "DITCHING IN SEA!";
+                D_802F5804[42].text = "DITCHING IN SEA!";
                 D_802F5804[42].unk10 = D_80303B00;
                 D_802F8BDC[23].unk12 = 0x77;
                 if (D_80364A90 & 0x104) {
@@ -696,7 +659,7 @@ void func_80269258(void) {
                 }
                 break;
             case 4:
-                D_802F5804[42].unkC = "ON FINAL APPROACH!";
+                D_802F5804[42].text = "ON FINAL APPROACH!";
                 D_802F5804[42].unk10 = D_80303B10;
                 D_802F8BDC[23].unk12 = 0xD7;
                 if (D_80364A90 & 0x104) {
@@ -704,7 +667,7 @@ void func_80269258(void) {
                 }
                 break;
             case 7:
-                D_802F5804[42].unkC = "SUCCESSFUL LANDING!";
+                D_802F5804[42].text = "SUCCESSFUL LANDING!";
                 D_802F5804[42].unk10 = D_80303B24;
                 D_802F8BDC[23].unk12 = 0x82;
                 if (D_80364A90 & 0x104) {
@@ -712,7 +675,7 @@ void func_80269258(void) {
                 }
                 break;
             case 8:
-                D_802F5804[42].unkC = "3000 FT!";
+                D_802F5804[42].text = "3000 FT!";
                 D_802F5804[42].unk10 = NULL;
                 D_802F8BDC[23].unk12 = 0xD5;
                 if (D_80364A90 & 0x104) {
@@ -720,7 +683,7 @@ void func_80269258(void) {
                 }
                 break;
             case 9:
-                D_802F5804[42].unkC = "2000 FT!";
+                D_802F5804[42].text = "2000 FT!";
                 D_802F5804[42].unk10 = NULL;
                 D_802F8BDC[23].unk12 = 0xD3;
                 if (D_80364A90 & 0x104) {
@@ -728,7 +691,7 @@ void func_80269258(void) {
                 }
                 break;
             case 10:
-                D_802F5804[42].unkC = "1000 FT!";
+                D_802F5804[42].text = "1000 FT!";
                 D_802F5804[42].unk10 = NULL;
                 D_802F8BDC[23].unk12 = 0xD1;
                 if (D_80364A90 & 0x104) {
@@ -866,7 +829,7 @@ void func_8026A988(void) {
 }
 
 void func_8026A9B4(void) {
-    UnkStruct_80364460 *p;
+    Vehicle *p;
     u8 hit;
     s32 min;
     s32 d;
@@ -889,14 +852,14 @@ void func_8026A9B4(void) {
     p = D_80364460;
     hit = 0;
     while (hit == 0 && D_803649D0 != p) {
-        if (p->unk5C != D_8036B978 && p->unk5C != D_80364456 && D_80364456 != 0 && p->unk5C != 0 &&
-            p->unk5C != 0xFE && p->unk5C != 0xFF && p->unk5C != 7 && p->unk5C != 6) {
-            d = func_8026A6F0(D_803643E0 >> 5, D_803643E4 >> 5, D_803643E8 >> 5, p->unk64 >> 5, p->unk68 >> 5,
-                              p->unk6C >> 5);
+        if (p->type != D_8036B978 && p->type != D_80364456 && D_80364456 != 0 && p->type != 0 &&
+            p->type != 0xFE && p->type != 0xFF && p->type != 7 && p->type != 6) {
+            d = func_8026A6F0(D_803643E0 >> 5, D_803643E4 >> 5, D_803643E8 >> 5, p->x >> 5, p->y >> 5,
+                              p->z >> 5);
             if (d < min) {
                 min = d;
             }
-            if (d < 100 && D_8036B970 == 0 && (func_802AB3C0(p->unk5C) == 0 || D_803EFECB == 0)) {
+            if (d < 100 && D_8036B970 == 0 && (func_802AB3C0(p->type) == 0 || D_803EFECB == 0)) {
                 func_8026AD30(0x4C);
                 D_8036B970 = 1;
                 hit = 1;
@@ -914,7 +877,7 @@ void func_8026A9B4(void) {
         func_8026AD30(0x53);
     }
     if (D_8036B971 != 0) {
-        if (D_80364AF0[D_80364AE8].unk18[D_802E8BDC] > 0 && D_80364AF0[D_80364AE8].unk18[D_802E8BDC] < 6) {
+        if (D_80364AF0[D_80364AE8].medal[D_802E8BDC] > 0 && D_80364AF0[D_80364AE8].medal[D_802E8BDC] < 6) {
             ok = 1;
         } else {
             ok = 0;

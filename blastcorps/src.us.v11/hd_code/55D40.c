@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/yoshi.h"
 
 typedef struct {
     /* 0x00 */ s32 unk0;
@@ -7,18 +8,6 @@ typedef struct {
     /* 0x06 */ char unk6[0x2A];
 } UnkStruct_80304A90; /* size = 0x30 */
 
-typedef struct {
-    /* 0x00 */ u8 unk0;
-    /* 0x01 */ u8 unk1;
-    /* 0x02 */ u8 unk2;
-    /* 0x03 */ u8 unk3;
-    /* 0x04 */ u8 unk4;
-    /* 0x05 */ u8 unk5;
-    /* 0x06 */ u8 unk6;
-    /* 0x07 */ u8 unk7;
-} UnkStruct_802F47B0; /* size = 0x8 */
-
-extern UnkStruct_802F47B0 D_802F47B0[];
 extern u32 D_80358060;
 extern u8 D_803643D6;
 extern s16 D_8036BB1C;
@@ -149,10 +138,10 @@ s32 func_8029A518(s32 arg0, s32 arg1) {
 
         if (sp54 - D_803A6B20 >= -0x31 && sp54 - D_803A6B20 < 0xF0) {
             func_80259DC8(arg0, sp60->unk6, 0, 0, sp50, sp58, sp54 - D_803A6B20, sp60->unk5, sp60->unk5, 1,
-                          D_802F47B0[sp60->unk4].unk0, D_802F47B0[sp60->unk4].unk1,
-                          D_802F47B0[sp60->unk4].unk2, D_802F47B0[sp60->unk4].unk3,
-                          D_802F47B0[sp60->unk4].unk4, D_802F47B0[sp60->unk4].unk5,
-                          D_802F47B0[sp60->unk4].unk6, D_802F47B0[sp60->unk4].unk7);
+                          D_802F47B0[sp60->unk4].r0, D_802F47B0[sp60->unk4].g0,
+                          D_802F47B0[sp60->unk4].b0, D_802F47B0[sp60->unk4].a0,
+                          D_802F47B0[sp60->unk4].r1, D_802F47B0[sp60->unk4].g1,
+                          D_802F47B0[sp60->unk4].b1, D_802F47B0[sp60->unk4].a1);
         }
         if (sp60->unk0 & 0x20) {
             sp54 += 0x26;

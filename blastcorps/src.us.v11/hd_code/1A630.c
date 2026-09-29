@@ -1,88 +1,19 @@
 #include "common.h"
-
-/* Rare's sound player, derived from libaudio's sndplayer.c. */
-typedef struct UnkSndState_s {
-    /* 0x00 */ ALLink node;
-    /* 0x08 */ ALSound *sound;
-    /* 0x0C */ ALVoice voice;
-    /* 0x28 */ f32 unk28;
-    /* 0x2C */ f32 pitch;
-    /* 0x30 */ struct UnkSndState_s **unk30;
-    /* 0x34 */ s16 unk34;
-    /* 0x36 */ u8 unk36;
-    /* 0x38 */ s32 unk38;
-    /* 0x3C */ u8 unk3C;
-    /* 0x3D */ u8 unk3D;
-    /* 0x3E */ u8 unk3E;
-    /* 0x3F */ u8 unk3F;
-} UnkSndState; /* size = 0x40 */
-
-typedef struct {
-    /* 0x00 */ u16 type;
-    /* 0x04 */ UnkSndState *state;
-    /* 0x08 */ s32 param;
-    /* 0x0C */ void *unkC;
-} UnkSndEvent; /* size = 0x10, an ALEvent */
-
-typedef struct {
-    /* 0x00 */ u8 unk0[0xC];
-    /* 0x0C */ ALSound *soundArray[1];
-} UnkSndInst;
-
-typedef struct {
-    /* 0x00 */ u8 unk0[0xC];
-    /* 0x0C */ UnkSndInst *unkC;
-} UnkSndBank;
-
-typedef struct {
-    /* 0x00 */ u8 unk0;
-    /* 0x01 */ u8 unk1[0x43];
-} UnkStruct_802E8F94; /* size = 0x44 */
-
-typedef struct {
-    /* 0x00 */ u8 unk0[0x18];
-    /* 0x18 */ u8 unk18[0xE8];
-} UnkStruct_80364AF0; /* size = 0x100 */
-
-typedef struct {
-    /* 0x00 */ u32 maxSounds;
-    /* 0x04 */ s32 maxEvents;
-    /* 0x08 */ s32 unk8;
-    /* 0x0C */ ALHeap *heap;
-    /* 0x10 */ u16 unk10;
-} UnkSndConfig;
-
-typedef struct {
-    /* 0x00 */ ALPlayer node;
-    /* 0x14 */ ALEventQueue evtq;
-    /* 0x28 */ ALEvent nextEvent;
-    /* 0x38 */ ALSynth *drvr;
-    /* 0x3C */ s32 unk3C;
-    /* 0x40 */ UnkSndState *unk40;
-    /* 0x44 */ UnkSndState *unk44;
-    /* 0x48 */ s32 unk48;
-    /* 0x4C */ ALMicroTime frameTime;
-    /* 0x50 */ ALMicroTime nextDelta;
-    /* 0x54 */ ALMicroTime curTime;
-} UnkSndPlayer;
-
-typedef struct {
-    /* 0x0 */ UnkSndState *head;
-    /* 0x4 */ UnkSndState *tail;
-    /* 0x8 */ UnkSndState *freeList;
-} UnkStruct_802E8CE0;
+#include "game/audio.h"
+#include "game/level.h"
+#include "game/player.h"
 
 void func_8029A7E4(char *, ...);
 ALMicroTime func_8025F044(void *node);
-void func_8025F0F0(UnkSndPlayer *sndp, UnkSndEvent *event);
-void func_80260148(ALEventQueue *evtq, UnkSndState *state, u16 eventType);
-UnkSndState *func_80260300(UnkSndBank *bank, ALSound *sound);
-UnkSndState *func_80260650(UnkSndBank *bank, s16 id, UnkSndState **handle);
+void func_8025F0F0(SndPlayer *sndp, SndEvent *event);
+void func_80260148(ALEventQueue *evtq, SndState *state, u16 eventType);
+SndState *func_80260300(SndBank *bank, ALSound *sound);
+SndState *func_80260650(SndBank *bank, s16 id, SndState **handle);
 void func_802609D0(void);
 void func_802609F0(void);
 void func_80260A10(void);
-void func_802604FC(UnkSndState *state);
-void func_802608C8(UnkSndState *state);
+void func_802604FC(SndState *state);
+void func_802608C8(SndState *state);
 void func_80260934(u8 arg0);
 
 /*
@@ -90,30 +21,29 @@ void func_80260934(u8 arg0);
  * func_80260300 stores head and tail through one shared lui, which IDO only
  * does for one object defined in the same file.  D_80366BD0 is .bss.
  */
-UnkStruct_802E8CE0 D_802E8CE0 = { NULL, NULL, NULL };
+SndStateLists D_802E8CE0 = { NULL, NULL, NULL };
 
 /* .bss, 0x80366BD0-0x80366C30 (tools/bss_c.py) */
-UnkSndPlayer D_80366BD0;
+SndPlayer D_80366BD0;
 u16 *D_80366C28;
 
-UnkSndPlayer *D_802E8CEC = &D_80366BD0;
+SndPlayer *D_802E8CEC = &D_80366BD0;
 s16 D_802E8CF0 = 0;
 
-extern s32 D_802E8BDC;
 extern u32 D_80358060;
 extern u16 *D_80366C28;
 
-void func_8025EDF0(UnkSndConfig *c) {
+void func_8025EDF0(SndConfig *c) {
     u32 i;
     u8 *ptr;
-    UnkSndEvent evt;
-    UnkSndState *sState;
+    SndEvent evt;
+    SndState *sState;
 
     D_802E8CEC->unk48 = c->unk8;
     D_802E8CEC->unk40 = NULL;
     D_802E8CEC->frameTime = 33000;
-    ptr = alHeapAlloc(c->heap, 1, c->maxSounds * sizeof(UnkSndState));
-    D_802E8CEC->unk44 = (UnkSndState *)ptr;
+    ptr = alHeapAlloc(c->heap, 1, c->maxSounds * sizeof(SndState));
+    D_802E8CEC->unk44 = (SndState *)ptr;
     ptr = alHeapAlloc(c->heap, 1, c->maxEvents * sizeof(ALEventListItem));
     alEvtqNew(&D_802E8CEC->evtq, (ALEventListItem *)ptr, c->maxEvents);
     D_802E8CE0.freeList = D_802E8CEC->unk44;
@@ -136,8 +66,8 @@ void func_8025EDF0(UnkSndConfig *c) {
 }
 
 ALMicroTime func_8025F044(void *node) {
-    UnkSndPlayer *sndp = (UnkSndPlayer *)node;
-    UnkSndEvent evt;
+    SndPlayer *sndp = (SndPlayer *)node;
+    SndEvent evt;
 
     do {
         switch (sndp->nextEvent.type) {
@@ -146,7 +76,7 @@ ALMicroTime func_8025F044(void *node) {
                 alEvtqPostEvent(&sndp->evtq, (ALEvent *)&evt, sndp->frameTime);
                 break;
             default:
-                func_8025F0F0(sndp, (UnkSndEvent *)&sndp->nextEvent);
+                func_8025F0F0(sndp, (SndEvent *)&sndp->nextEvent);
                 break;
         }
         sndp->nextDelta = alEvtqNextEvent(&sndp->evtq, &sndp->nextEvent);
@@ -155,21 +85,21 @@ ALMicroTime func_8025F044(void *node) {
     return sndp->nextDelta;
 }
 
-void func_80260AB8(UnkSndState *state, s16 type, s32 param);
+void func_80260AB8(SndState *state, s16 type, s32 param);
 u16 func_80260210(u16 *arg0, u16 *arg1);
-void func_8026005C(UnkSndState *state);
-void func_802600D8(UnkSndState *state);
+void func_8026005C(SndState *state);
+void func_802600D8(SndState *state);
 
 #define SND_VOL(vol) ((s16)D_80366C28[keyMap->keyMin & 0x3F] * ((vol) * state->unk34 * snd->sampleVolume / 16129) / 32767)
 
-void func_8025F0F0(UnkSndPlayer *sndp, UnkSndEvent *event) {
+void func_8025F0F0(SndPlayer *sndp, SndEvent *event) {
     ALVoiceConfig vc;
     ALSound *snd;
     ALKeyMap *keyMap;
     s32 unused;
     u8 pan;
-    UnkSndEvent evt;
-    UnkSndEvent evt2;
+    SndEvent evt;
+    SndEvent evt2;
     s32 delta;
     s32 fxmix;
     s32 vol;
@@ -179,13 +109,13 @@ void func_8025F0F0(UnkSndPlayer *sndp, UnkSndEvent *event) {
     s32 done;
     s32 unused2;
     s32 vAlloc;
-    UnkSndState *state;
-    UnkSndState *next;
+    SndState *state;
+    SndState *next;
     u16 statesFree;
     u16 statesBusy;
-    UnkSndState *iter;
-    UnkSndEvent evt3;
-    UnkSndState *newState;
+    SndState *iter;
+    SndEvent evt3;
+    SndState *newState;
 
     unused = 0;
     done = 1;
@@ -207,7 +137,7 @@ void func_8025F0F0(UnkSndPlayer *sndp, UnkSndEvent *event) {
             return;
         }
         keyMap = snd->keyMap;
-        next = (UnkSndState *)state->node.next;
+        next = (SndState *)state->node.next;
         switch (event->type) {
             case 0x1:
                 if (state->unk3F != 5 && state->unk3F != 4) {
@@ -241,7 +171,7 @@ void func_8025F0F0(UnkSndPlayer *sndp, UnkSndEvent *event) {
                                 alEvtqPostEvent(&sndp->evtq, (ALEvent *)&evt3, 1000);
                                 alSynSetVol(sndp->drvr, &iter->voice, 0, 1000);
                             }
-                            iter = (UnkSndState *)iter->node.prev;
+                            iter = (SndState *)iter->node.prev;
                         } while (isSpecial && iter != NULL);
                         if (!isSpecial) {
                             state->unk38 = 2;
@@ -380,7 +310,7 @@ void func_8025F0F0(UnkSndPlayer *sndp, UnkSndEvent *event) {
 
 #undef SND_VOL
 
-void func_8026005C(UnkSndState *state) {
+void func_8026005C(SndState *state) {
     if (state->unk3E & 4) {
         alSynStopVoice(D_802E8CEC->drvr, &state->voice);
         alSynFreeVoice(D_802E8CEC->drvr, &state->voice);
@@ -389,8 +319,8 @@ void func_8026005C(UnkSndState *state) {
     func_80260148(&D_802E8CEC->evtq, state, 0xFFFF);
 }
 
-void func_802600D8(UnkSndState *state) {
-    UnkSndEvent evt;
+void func_802600D8(SndState *state) {
+    SndEvent evt;
     f32 pitch;
 
     pitch = alCents2Ratio(state->sound->keyMap->detune) * state->pitch;
@@ -400,12 +330,12 @@ void func_802600D8(UnkSndState *state) {
     alEvtqPostEvent(&D_802E8CEC->evtq, (ALEvent *)&evt, 0x8235);
 }
 
-void func_80260148(ALEventQueue *evtq, UnkSndState *state, u16 eventType) {
+void func_80260148(ALEventQueue *evtq, SndState *state, u16 eventType) {
     ALLink *thisNode;
     ALLink *nextNode;
     ALEventListItem *thisItem;
     ALEventListItem *nextItem;
-    UnkSndEvent *thisEvent;
+    SndEvent *thisEvent;
     OSIntMask mask;
 
     mask = osSetIntMask(OS_IM_NONE);
@@ -414,7 +344,7 @@ void func_80260148(ALEventQueue *evtq, UnkSndState *state, u16 eventType) {
         nextNode = thisNode->next;
         thisItem = (ALEventListItem *)thisNode;
         nextItem = (ALEventListItem *)nextNode;
-        thisEvent = (UnkSndEvent *)&thisItem->evt;
+        thisEvent = (SndEvent *)&thisItem->evt;
         if (thisEvent->state == state && (thisEvent->type & eventType)) {
             if (nextItem != NULL) {
                 nextItem->delta += thisItem->delta;
@@ -432,9 +362,9 @@ u16 func_80260210(u16 *arg0, u16 *arg1) {
     u16 count1;
     u16 count2;
     u16 count3;
-    UnkSndState *p1;
-    UnkSndState *p2;
-    UnkSndState *p3;
+    SndState *p1;
+    SndState *p2;
+    SndState *p3;
 
     mask = osSetIntMask(OS_IM_NONE);
     count1 = 0;
@@ -444,19 +374,19 @@ u16 func_80260210(u16 *arg0, u16 *arg1) {
     if (p1 != NULL) {
         do {
             count1++;
-        } while ((p1 = (UnkSndState *)p1->node.next) != NULL);
+        } while ((p1 = (SndState *)p1->node.next) != NULL);
     }
     count2 = 0;
     if (p2 != NULL) {
         do {
             count2++;
-        } while ((p2 = (UnkSndState *)p2->node.next) != NULL);
+        } while ((p2 = (SndState *)p2->node.next) != NULL);
     }
     count3 = 0;
     if (p3 != NULL) {
         do {
             count3++;
-        } while ((p3 = (UnkSndState *)p3->node.prev) != NULL);
+        } while ((p3 = (SndState *)p3->node.prev) != NULL);
     }
     *arg0 = count2;
     *arg1 = count1;
@@ -464,8 +394,8 @@ u16 func_80260210(u16 *arg0, u16 *arg1) {
     return count3;
 }
 
-UnkSndState *func_80260300(UnkSndBank *bank, ALSound *sound) {
-    UnkSndState *state;
+SndState *func_80260300(SndBank *bank, ALSound *sound) {
+    SndState *state;
     ALKeyMap *keyMap;
     s32 isSpecial;
     s32 mask;
@@ -474,7 +404,7 @@ UnkSndState *func_80260300(UnkSndBank *bank, ALSound *sound) {
     state = D_802E8CE0.freeList;
     if (D_802E8CE0.freeList != NULL) {
         mask = osSetIntMask(1);
-        D_802E8CE0.freeList = (UnkSndState *)state->node.next;
+        D_802E8CE0.freeList = (SndState *)state->node.next;
         alUnlink(&state->node);
         if (D_802E8CE0.head != NULL) {
             state->node.next = (ALLink *)D_802E8CE0.head;
@@ -509,12 +439,12 @@ UnkSndState *func_80260300(UnkSndBank *bank, ALSound *sound) {
     return state;
 }
 
-void func_802604FC(UnkSndState *state) {
+void func_802604FC(SndState *state) {
     if (D_802E8CE0.head == state) {
-        D_802E8CE0.head = (UnkSndState *)state->node.next;
+        D_802E8CE0.head = (SndState *)state->node.next;
     }
     if (D_802E8CE0.tail == state) {
-        D_802E8CE0.tail = (UnkSndState *)state->node.prev;
+        D_802E8CE0.tail = (SndState *)state->node.prev;
     }
     alUnlink(&state->node);
     if (D_802E8CE0.freeList != NULL) {
@@ -538,30 +468,30 @@ void func_802604FC(UnkSndState *state) {
     }
 }
 
-void func_80260618(UnkSndState *state, u8 arg1) {
+void func_80260618(SndState *state, u8 arg1) {
     if (state != NULL) {
         state->unk36 = (s16)arg1;
     }
 }
 
-u8 func_80260634(UnkSndState *state) {
+u8 func_80260634(SndState *state) {
     if (state != NULL) {
         return state->unk3F;
     }
     return 0;
 }
 
-UnkSndState *func_80260650(UnkSndBank *bank, s16 id, UnkSndState **handle) {
-    UnkSndState *state;
-    UnkSndState *result;
+SndState *func_80260650(SndBank *bank, s16 id, SndState **handle) {
+    SndState *state;
+    SndState *result;
     ALKeyMap *keyMap;
     ALSound *sound;
     s16 firstId;
     s32 sp40;
     s32 sp3C;
     s32 sp38;
-    UnkSndEvent evt;
-    UnkSndEvent evt2;
+    SndEvent evt;
+    SndEvent evt2;
 
     result = NULL;
     firstId = 0;
@@ -571,7 +501,7 @@ UnkSndState *func_80260650(UnkSndBank *bank, s16 id, UnkSndState **handle) {
         return NULL;
     }
     do {
-        sound = bank->unkC->soundArray[id];
+        sound = bank->inst->soundArray[id];
         state = func_80260300(bank, sound);
         if (state != NULL) {
             D_802E8CEC->unk40 = state;
@@ -612,8 +542,8 @@ UnkSndState *func_80260650(UnkSndBank *bank, s16 id, UnkSndState **handle) {
     return result;
 }
 
-void func_802608C8(UnkSndState *state) {
-    UnkSndEvent evt;
+void func_802608C8(SndState *state) {
+    SndEvent evt;
 
     evt.type = 0x400;
     evt.state = state;
@@ -627,8 +557,8 @@ void func_802608C8(UnkSndState *state) {
 
 void func_80260934(u8 arg0) {
     OSIntMask mask;
-    UnkSndEvent evt;
-    UnkSndState *state;
+    SndEvent evt;
+    SndState *state;
 
     mask = osSetIntMask(OS_IM_NONE);
     state = D_802E8CE0.head;
@@ -639,7 +569,7 @@ void func_80260934(u8 arg0) {
             state->unk3E &= ~0x10;
             alEvtqPostEvent(&D_802E8CEC->evtq, (ALEvent *)&evt, 0);
         }
-        state = (UnkSndState *)state->node.next;
+        state = (SndState *)state->node.next;
     }
     osSetIntMask(mask);
 }
@@ -658,7 +588,7 @@ void func_80260A10(void) {
 
 void func_80260A30(u8 arg0) {
     OSIntMask mask;
-    UnkSndState *state;
+    SndState *state;
     s32 i;
 
     mask = osSetIntMask(OS_IM_NONE);
@@ -670,13 +600,13 @@ void func_80260A30(u8 arg0) {
                 func_802608C8(state);
             }
             i++;
-        } while ((state = (UnkSndState *)state->node.next) != NULL);
+        } while ((state = (SndState *)state->node.next) != NULL);
     }
     osSetIntMask(mask);
 }
 
-void func_80260AB8(UnkSndState *state, s16 type, s32 param) {
-    UnkSndEvent evt;
+void func_80260AB8(SndState *state, s16 type, s32 param) {
+    SndEvent evt;
 
     evt.type = type;
     evt.state = state;
@@ -694,9 +624,9 @@ u16 func_80260B24(u8 arg0) {
 
 void func_80260B40(u8 arg0, u16 arg1) {
     OSIntMask mask;
-    UnkSndState *state;
+    SndState *state;
     s32 i;
-    UnkSndEvent evt;
+    SndEvent evt;
 
     mask = osSetIntMask(OS_IM_NONE);
     state = D_802E8CE0.head;
@@ -709,7 +639,7 @@ void func_80260B40(u8 arg0, u16 arg1) {
             alEvtqPostEvent(&D_802E8CEC->evtq, (ALEvent *)&evt, 0);
         }
         i++;
-        state = (UnkSndState *)state->node.next;
+        state = (SndState *)state->node.next;
     }
     osSetIntMask(mask);
 }

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/game.h"
 
 /*
  * The older gbi.h's scissoring texture rectangle: it clamps without the
@@ -20,9 +21,6 @@
 
 extern u32 D_803156C4;
 extern u8 D_803B9888;
-extern s32 D_80358070;
-extern u64 D_80364A90;
-extern u8 D_8035805C;
 
 void func_80257490(s32 *, s32);
 void func_802A0700(void);
@@ -62,15 +60,15 @@ u8 func_80272C5C(u16 *arg0, u16 *arg1, u8 arg2, u8 arg3, u8 arg4, f32 arg5) {
     i = start;
     while (i < arg2 + start) {
         if (arg1 != NULL) {
-            func_80257490(&D_80358070, 0x10);
-            func_802A0EE0(arg1[i - start], sp3C = D_80358070);
+            func_80257490((s32 *)&D_80358070, 0x10);
+            func_802A0EE0(arg1[i - start], sp3C = (s32)D_80358070);
             D_80358070 += 0x80;
         } else {
-            func_80257490(&D_80358070, 0x10);
+            func_80257490((s32 *)&D_80358070, 0x10);
             sp3C = 0;
         }
         for (j = 0; j < arg3; j++) {
-            D_8036BFE0[i][j] = D_80358070;
+            D_8036BFE0[i][j] = (s32)D_80358070;
             func_802A0B00(arg0[arg3 * sp2C + j], sp3C);
         }
         D_8036C1E0[i] = arg3;

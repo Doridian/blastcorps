@@ -1,8 +1,8 @@
 #include "common.h"
+#include "game/game.h"
 
 extern u8 D_0048FA70[];
 extern u8 D_0048FE90[];
-extern u8 *D_80358070;
 
 void func_8028B4C4(u8 *, u8 *, s32 *, s32, s32, s32);
 

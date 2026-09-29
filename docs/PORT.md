@@ -64,9 +64,9 @@ exactly, and adapts the host to that, rather than the other way round:
   fibers' host stacks sit at `0x90000000`, inside the KSEG0 window, so the
   address of a local means the same to the translated code.
 - **Every game variable at its N64 address.**  The decompiled C relies on
-  the layout of the data, not just its contents: structs read past one
-  variable into the next (the scheduler's frame counter is `sc->unk284`,
-  which is the separate variable `D_803156C4`), tables are indexed from a
+  the layout of the data, not just its contents: code reads fields through
+  names of their own (other files read the scheduler's frame counter,
+  `Sched.frameCount`, as `D_803156C4`), tables are indexed from a
   neighbour, the front end's area is cleared by address.  The game's C is
   built with `-fdata-sections`, the data files are converted one section per
   file (`tools/asm2x86.py`), and `gen_ld.py` places each at its address in

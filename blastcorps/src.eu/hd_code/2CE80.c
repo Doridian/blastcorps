@@ -16,11 +16,11 @@
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/func_802727B0.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/func_802728CC.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/osScAddClient.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/osScRemoveClient.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/func_802729F0.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/osScGetCmdQ.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/func_802729F8.s")
 
@@ -34,13 +34,13 @@
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/func_80273424.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/func_80273604.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/__scTaskComplete.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/func_802737A4.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/__scAppendList.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/func_80273864.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/func_80273A68.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/__scYield.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/2CE80/func_80273B28.s")
 

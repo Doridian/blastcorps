@@ -1,4 +1,8 @@
 #include "common.h"
+#include "game/game.h"
+#include "game/audio.h"
+#include "game/level.h"
+#include "game/player.h"
 
 /* Saved sequence state: a copy of the player's 16 channel states, the
  * sequence position and tempo, and the song number. */
@@ -9,20 +13,11 @@ typedef struct {
     /* 0x1F0 */ u8 unk1F0;
 } UnkStruct_80366C30; /* size = 0x1F4 */
 
-/* 0x44-byte records, one per level (indexed by D_802E8BDC). */
-typedef struct {
-    /* 0x00 */ u8 unk0;
-    /* 0x01 */ u8 unk1[0x43];
-} UnkStruct_802E8F94; /* size = 0x44 */
-
-extern UnkStruct_802E8F94 D_802E8F94[];
-extern u64 D_80364A90;
-extern s32 D_802E8BDC;
 extern s32 D_803156C4;
 
 void func_8028B4C4(s32, u8 *, s32 *, s32, s32, s32);
 void func_8029A7E4(char *, ...);
-void func_80260650(s32, u16, s32);
+void func_80260650(SndBank *, u16, s32);
 void func_80260B40(s32, s32);
 void func_802609F0(void);
 void func_80260A10(void);
@@ -59,7 +54,7 @@ u8 D_8036772A;
 s32 D_8036772C;
 u8 D_80367730;
 ALCSPlayer *D_80367734;
-s32 D_80367738;
+SndBank *D_80367738;
 ALBank *D_8036773C;
 s32 D_80367740;
 u8 D_80367744[4];
@@ -281,27 +276,6 @@ void func_80261570(f32 arg0) {
     D_8036772A = 1;
 }
 
-/* ALSynConfig, with a u8 fxType. */
-typedef struct {
-    /* 0x00 */ s32 maxVVoices;
-    /* 0x04 */ s32 maxPVoices;
-    /* 0x08 */ s32 maxUpdates;
-    /* 0x0C */ s32 maxFXbusses;
-    /* 0x10 */ void *dmaproc;
-    /* 0x14 */ ALHeap *heap;
-    /* 0x18 */ s32 outputRate;
-    /* 0x1C */ u8 fxType;
-    /* 0x20 */ s32 *params;
-} UnkSynConfig;
-
-typedef struct {
-    /* 0x00 */ u32 maxSounds;
-    /* 0x04 */ s32 maxEvents;
-    /* 0x08 */ s32 unk8;
-    /* 0x0C */ ALHeap *heap;
-    /* 0x10 */ u16 unk10;
-} UnkSndConfig;
-
 /* ROM addresses of the two sound banks' .ctl/.tbl and the sequence file. */
 extern u8 D_00350950[];
 extern u8 D_003539A0[];
@@ -312,15 +286,15 @@ extern ALHeap D_80367718;
 extern ALBank *D_8036773C;
 extern u8 D_80370C80[];
 
-void func_802676A0(UnkSynConfig *c, OSPri pri);
+void func_802676A0(SynConfig *c, OSPri pri);
 void func_80267A74(void);
-void func_8025EDF0(UnkSndConfig *c);
+void func_8025EDF0(SndConfig *c);
 void func_802D97E0(ALCSPlayer *, ALBank *);
 
 void func_80261588(void) {
-    UnkSndConfig sndConfig;
+    SndConfig sndConfig;
     ALSeqpConfig seqConfig;
-    UnkSynConfig synConfig;
+    SynConfig synConfig;
     ALBankFile *sfxBankFile;
     ALBankFile *musicBankFile;
     s32 size;
@@ -342,7 +316,7 @@ void func_80261588(void) {
     sfxBankFile = alHeapAlloc(&D_80367718, 1, size);
     func_8028B4C4((s32)D_003A1920, (u8 *)sfxBankFile, &size2, 0xD, 0, 2);
     alBnkfNew(sfxBankFile, D_003A48C0);
-    D_80367738 = (s32)sfxBankFile->bankArray[0];
+    D_80367738 = (SndBank *)sfxBankFile->bankArray[0];
     D_80367514 = alHeapAlloc(&D_80367718, 1, 4);
     headerSize = 4;
     func_8028B4C4((s32)D_0044F5C0, (u8 *)D_80367514, &headerSize, 0, 0, 0);

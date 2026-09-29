@@ -1,4 +1,9 @@
 #include "common.h"
+#include "game/game.h"
+#include "game/sched.h"
+#include "game/yoshi.h"
+#include "game/level.h"
+#include "game/player.h"
 
 typedef struct {
     /* 0x0 */ u16 unk0[2];
@@ -14,124 +19,10 @@ typedef struct {
     /* 0xB */ u8 unkB;
 } UnkStruct_802FA280; /* size = 0xC */
 
-/* The game's variant of the libultra sample scheduler (sched.h). */
-typedef struct {
-    /* 0x0 */ s32 unk0;
-    /* 0x4 */ OSMesgQueue *unk4;
-    /* 0x8 */ u32 unk8;
-} UnkStruct_SchedTask50;
-
-typedef struct UnkSchedTask {
-    /* 0x00 */ struct UnkSchedTask *next;
-    /* 0x04 */ s32 state;
-    /* 0x08 */ u32 flags;
-    /* 0x0C */ void *framebuffer;
-    /* 0x10 */ OSTask list;
-    /* 0x50 */ UnkStruct_SchedTask50 *unk50;
-    /* 0x54 */ OSMesgQueue *msgQ;
-    /* 0x58 */ OSMesg msg;
-} UnkSchedTask;
-
-typedef struct UnkSchedClient {
-    /* 0x0 */ struct UnkSchedClient *next;
-    /* 0x4 */ OSMesgQueue *msgQ;
-    /* 0x8 */ s32 unk8;
-    /* 0xC */ s32 unkC;
-} UnkSchedClient;
-
-typedef struct {
-    /* 0x000 */ OSMesgQueue interruptQ;
-    /* 0x018 */ OSMesg intBuf[16];
-    /* 0x058 */ OSMesgQueue cmdQ;
-    /* 0x070 */ OSMesg cmdMsgBuf[16];
-    /* 0x0B0 */ OSThread thread;
-    /* 0x260 */ UnkSchedClient *clientList;
-    /* 0x264 */ UnkSchedTask *audioListHead;
-    /* 0x268 */ UnkSchedTask *gfxListHead;
-    /* 0x26C */ UnkSchedTask *audioListTail;
-    /* 0x270 */ UnkSchedTask *gfxListTail;
-    /* 0x274 */ UnkSchedTask *curRSPTask;
-    /* 0x278 */ UnkSchedTask *curRDPTask;
-    /* 0x27C */ s32 unk27C;
-    /* 0x280 */ s32 unk280;
-    /* 0x284 */ u32 unk284;
-    /* 0x288 */ OSTime unk288;
-    /* 0x290 */ OSTime unk290;
-} UnkSched;
-
-typedef struct {
-    /* 0x00 */ u8 pad0[8];
-    /* 0x08 */ s32 unk8;
-    /* 0x0C */ u8 padC[2];
-    /* 0x0E */ u16 unkE;
-    /* 0x10 */ u16 unk10;
-    /* 0x12 */ u8 pad12[0xA];
-} UnkStruct_802F8BDC; /* size = 0x1C */
-
-/* Element type of the arrays D_8036BB10 points at. */
-typedef struct {
-    /* 0x00 */ u16 unk0;
-    /* 0x02 */ u8 pad2[0xA];
-    /* 0x0C */ u8 *unkC;
-    /* 0x10 */ u16 *unk10;
-    /* 0x14 */ u8 unk14;
-    /* 0x15 */ u8 pad15[5];
-    /* 0x1A */ s8 unk1A;
-} UnkStruct_8036BB10; /* size = 0x1C */
-
-typedef struct {
-    /* 0x00 */ u8 pad0[4];
-    /* 0x04 */ u8 unk4;
-    /* 0x05 */ u8 pad5;
-    /* 0x06 */ u8 unk6[0x26];
-    /* 0x2C */ u8 unk2C;
-    /* 0x2D */ u8 unk2D;
-    /* 0x2E */ s8 unk2E;
-    /* 0x2F */ u8 pad2F;
-} UnkStruct_802F49F4; /* size = 0x30 */
-
-typedef struct {
-    /* 0x00 */ u8 pad0[2];
-    /* 0x02 */ u16 unk2;
-} UnkStruct_8026F644;
-
-typedef struct {
-    /* 0x00 */ s16 unk0;
-    /* 0x02 */ s16 unk2;
-    /* 0x04 */ s16 unk4;
-} UnkStruct_8026FBB0; /* size = 0x6 */
-
-typedef struct {
-    /* 0x00 */ s16 unk0;
-    /* 0x02 */ s16 unk2;
-    /* 0x04 */ s16 unk4;
-    /* 0x06 */ u8 unk6;
-    /* 0x07 */ u8 unk7;
-    /* 0x08 */ Vtx unk8[2][4];
-} UnkStruct_8036BED8; /* size = 0x88 */
-
-typedef struct {
-    /* 0x00 */ u8 unk0;
-    /* 0x01 */ char unk1[0xF];
-    /* 0x10 */ s32 unk10;
-} UnkStruct_802F9934; /* size = 0x14 */
-
-typedef struct {
-    /* 0x00 */ u8 unk0;
-    /* 0x02 */ s16 unk2[16];
-} UnkStruct_802F48D0; /* size = 0x22 */
-
-typedef struct {
-    /* 0x00 */ u8 unk0[0x88];
-    /* 0x88 */ u8 unk88[0x78];
-} UnkStruct_80364AF0; /* size = 0x100 */
-
 extern u32 D_803BE718;
 extern u32 D_803BE71C;
 extern u16 D_803BE720;
 extern u16 D_803BE722;
-extern UnkStruct_8036BB10 *D_8036BB10;
-extern u8 *D_80358070;
 
 void func_802A0B00(u16, s32);
 

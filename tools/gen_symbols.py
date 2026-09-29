@@ -253,7 +253,11 @@ def main():
         for om in mods:
             if om == m:
                 continue
-            for addr, name, kind, ev in lib[om]:
+            # libmatch's names and the hand-identified ones (symbols_known.txt)
+            theirs = [(addr, name, kind) for addr, name, kind, ev in lib[om]]
+            theirs += [(addr, name, kind) for addr, (name, kind, why) in copies[om].items()
+                       if kind == "func"]
+            for addr, name, kind in theirs:
                 if addr in own or name in names or owner(addr) == m or addr not in used:
                     continue
                 seen.setdefault(name, set()).add(addr)

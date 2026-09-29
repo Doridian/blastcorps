@@ -1,4 +1,8 @@
 #include "common.h"
+#include "game/game.h"
+#include "game/yoshi.h"
+#include "game/level.h"
+#include "game/player.h"
 
 typedef struct {
     /* 0x00 */ s32 unk0;
@@ -7,22 +11,8 @@ typedef struct {
 
 extern UnkStruct_8020D7E4 D_8020D7E4[];
 
-typedef struct {
-    /* 0x00 */ u8 unk0;
-    /* 0x01 */ u8 unk1[7];
-} UnkStruct_802E8F38; /* size = 0x8 */
-
-typedef struct {
-    /* 0x000 */ u8 unk0[0x904];
-    /* 0x904 */ char *unk904;
-} UnkStruct_8020C070;
-
-extern u64 D_80364A98;
-extern u8 D_80364AE8;
 extern u8 D_80364B80[][0x100];
 extern u8 D_80364B81[][0x100];
-extern UnkStruct_802E8F38 D_802E8F38[];
-extern UnkStruct_8020C070 D_8020C070[];
 extern s32 D_80358060;
 
 void func_801ECC8C(void);
@@ -53,7 +43,7 @@ void func_802860F0(void) {
                 sp37 = 0;
                 for (sp30 = 0; sp30 < 60 && sp37 == 0; sp30++) {
                     for (sp2C = 0, sp28 = 0; sp2C < 6 && sp28 == 0; sp2C++) {
-                        if (D_802E8F38[sp2C].unk0 == sp30) {
+                        if (D_802E8F38[sp2C].level == sp30) {
                             sp28 = 1;
                             if (!(D_80364B80[D_80364AE8][0] & (1 << sp2C))) {
                                 sp37 = 1;
@@ -62,7 +52,7 @@ void func_802860F0(void) {
                     }
                 }
                 sprintf(D_8036EBA0, "IN %s.", D_8020D7E4[sp30].unk0);
-                D_8020C070[0].unk904 = D_8036EBA0;
+                D_8020C070[82].text = D_8036EBA0;
                 break;
             case 6:
                 func_801ECC8C();
@@ -78,9 +68,7 @@ void func_802862DC(void) {
     }
 }
 
-extern s32 D_802E8BDC;
 extern u8 D_80364AF8[][0x100];
-extern u8 D_80370C50;
 extern u8 D_803643D5;
 void func_8029A7E4(char *, ...);
 void func_802995F0(s32);
@@ -131,29 +119,7 @@ void func_80286330(void) {
     }
 }
 
-typedef struct {
-    /* 0x00 */ u8 pad0[0xA];
-    /* 0x0A */ u16 unkA;
-    /* 0x0C */ u8 unkC;
-    /* 0x0D */ u8 padD[0xB];
-    /* 0x18 */ u8 unk18[60];
-    /* 0x54 */ u8 pad54[0x3C];
-    /* 0x90 */ u8 unk90;
-    /* 0x91 */ u8 unk91;
-    /* 0x92 */ u8 pad92[0x6E];
-} UnkStruct_80364AF0; /* size = 0x100 */
-
-typedef struct {
-    /* 0x00 */ u8 unk0;
-    /* 0x01 */ u8 unk1;
-    /* 0x02 */ u8 pad2[0x42];
-} UnkStruct_802E8F94; /* size = 0x44 */
-
-extern UnkStruct_80364AF0 D_80364AF0[];
-extern UnkStruct_802E8F94 D_802E8F94[];
-extern u64 D_80364A90;
 extern s32 D_802FA26C;
-extern u8 D_8039C53C[];
 void func_80261570(f32);
 void func_8028B3E0(void);
 void func_801ECF5C(void);
@@ -161,7 +127,7 @@ void func_801ED4B8(void);
 
 u8 func_8028653C(void) {
     s32 sp34;
-    UnkStruct_80364AF0 *sp30;
+    PlayerInfo *sp30;
     u8 sp2F;
     u8 sp2E;
     u8 sp2D;
@@ -171,10 +137,10 @@ u8 func_8028653C(void) {
     sp30 = &D_80364AF0[D_80364AE8];
     sp2F = 1;
     sp2E = 0;
-    sp2D = sp30->unk91;
+    sp2D = sp30->gameState;
     do {
         sp2F = 1;
-        switch (D_80364AF0[D_80364AE8].unk91) {
+        switch (D_80364AF0[D_80364AE8].gameState) {
             case 0:
                 if (D_80364A90 == 0x100000000000) {
                     sp2F = 0;
@@ -184,8 +150,8 @@ u8 func_8028653C(void) {
             case 2:
             case 3:
                 for (sp34 = 0; sp34 < 60 && sp2F != 0; sp34++) {
-                    if (D_802E8F94[sp34].unk1 == D_80364AF0[D_80364AE8].unk91) {
-                        if ((((D_80364AF0[D_80364AE8].unk18[sp34] > 0 && D_80364AF0[D_80364AE8].unk18[sp34] < 6) ? 1 : 0) == 0) &&
+                    if (D_802E8F94[sp34].gameState == D_80364AF0[D_80364AE8].gameState) {
+                        if ((LEVEL_DONE_IN(D_80364AF0[D_80364AE8], sp34) == 0) &&
                             D_802E8F94[sp34].unk0 == 1) {
                             sp2F = 0;
                         }
@@ -198,27 +164,27 @@ u8 func_8028653C(void) {
                 }
                 break;
             case 5:
-                if ((((D_80364AF0[D_80364AE8].unk18[49] > 0 && D_80364AF0[D_80364AE8].unk18[49] < 6) ? 1 : 0) == 0)) {
+                if ((LEVEL_DONE_IN(D_80364AF0[D_80364AE8], 49) == 0)) {
                     sp2F = 0;
                 }
                 break;
             case 6:
-                if ((((D_80364AF0[D_80364AE8].unk18[50] > 0 && D_80364AF0[D_80364AE8].unk18[50] < 6) ? 1 : 0) == 0)) {
+                if ((LEVEL_DONE_IN(D_80364AF0[D_80364AE8], 50) == 0)) {
                     sp2F = 0;
                 }
                 break;
             case 7:
-                if ((((D_80364AF0[D_80364AE8].unk18[40] > 0 && D_80364AF0[D_80364AE8].unk18[40] < 6) ? 1 : 0) == 0)) {
+                if ((LEVEL_DONE_IN(D_80364AF0[D_80364AE8], 40) == 0)) {
                     sp2F = 0;
                 }
                 break;
             case 8:
-                if (sp30->unkA < 222) {
+                if (sp30->units < 222) {
                     sp2F = 0;
                 }
                 break;
             case 9:
-                if (sp30->unkA >= 234 || D_802FA26C != 0) {
+                if (sp30->units >= 234 || D_802FA26C != 0) {
                     func_80261570(0.0f);
                     func_8028B3E0();
                     func_801ECF5C();
@@ -230,7 +196,7 @@ u8 func_8028653C(void) {
             case 10:
                 break;
             case 11:
-                if (sp30->unkA < 297 || D_802FA26C != 0) {
+                if (sp30->units < 297 || D_802FA26C != 0) {
                     sp2F = 0;
                 } else {
                     func_80261570(0.0f);
@@ -239,8 +205,8 @@ u8 func_8028653C(void) {
                 }
                 break;
             case 12:
-                if (sp30->unkA >= 354 || D_802FA26C != 0) {
-                    sp30->unkA = 360;
+                if (sp30->units >= 354 || D_802FA26C != 0) {
+                    sp30->units = 360;
                     sp30->unkC = 30;
                     func_8029A7E4(" ***** YOU CAN STOP NOW!! ***** \n");
                 } else {
@@ -254,18 +220,18 @@ u8 func_8028653C(void) {
                 func_8029A7E4("Undefined gameState case !!!!\n");
                 break;
         }
-        if (D_802FA26C != 0 && D_80364AF0[D_80364AE8].unk91 != 13) {
+        if (D_802FA26C != 0 && D_80364AF0[D_80364AE8].gameState != 13) {
             if (D_8039C53C[D_80364AE8] != 0) {
-                D_80364AF0[D_80364AE8].unk91++;
+                D_80364AF0[D_80364AE8].gameState++;
             }
         } else {
             if (sp2F != 0) {
-                D_80364AF0[D_80364AE8].unk91++;
+                D_80364AF0[D_80364AE8].gameState++;
             }
-            func_8029A7E4("going to game state %d\n", D_80364AF0[D_80364AE8].unk91);
+            func_8029A7E4("going to game state %d\n", D_80364AF0[D_80364AE8].gameState);
         }
     } while (sp2F != 0 && sp2E == 0 && D_802FA26C == 0);
-    sp2B = D_80364AF0[D_80364AE8].unk91 != sp2D;
-    func_8029A7E4("game state %d to %d\n", sp2D, D_80364AF0[D_80364AE8].unk91);
+    sp2B = D_80364AF0[D_80364AE8].gameState != sp2D;
+    func_8029A7E4("game state %d to %d\n", sp2D, D_80364AF0[D_80364AE8].gameState);
     return sp2B;
 }

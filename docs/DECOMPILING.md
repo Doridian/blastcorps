@@ -380,18 +380,82 @@ What worked on the last three:
   file can't keep a `GLOBAL_ASM`, so guRotate waits for it.
 
 
+## Shared types (include/game/)
+
+The game's structures have one definition each, in `blastcorps/include/game/`
+(one header per subsystem); a C file includes the headers it needs after
+`common.h` and keeps only the types nothing else uses.
+
+| header       | what's in it |
+| ---          | --- |
+| `types.h`    | the conventions below: `ROMPTR()`, `RomAddr`, `AssetOffset`, `SegAddr`, `SIZE_CHECK` |
+| `game.h`     | the shared game state: game mode words, the heap pointer, the frame index, the player's position, the controller buttons, `frontEndPresent` |
+| `player.h`   | `PlayerInfo` (pfsHandler.c's `playerInfo`, `players[playerNumber]`), the medal values, the best times, `saveIt`, the EEPROM and Controller Pak layouts (`EepromSave`, `PAK_*`) |
+| `level.h`    | the level numbers (`LEVEL_*`, `DUMMY_LEVELS`), `LevelInfo` (the per-level table), `LevelHeader` (the level file, ROM data), `LevelRdu`/`Rdu`, `LevelStats`, the front end's per-level table |
+| `vehicle.h`  | `VEHICLE_*` (the object loader's types) and `Vehicle` (the level's vehicles) |
+| `yoshi.h`    | the window system (yoshi.c): `YoshiWindow`, `YoshiEntry`, `YoshiIcon`, `ColorPair`, `yoshiState`/`currentYoshiWindow` |
+| `sched.h`    | the scheduler: `Sched`, `SchedTask`, `SchedClient`, its functions and messages |
+| `audio.h`    | the audio manager (`AMAudioMgr`, `AudioInfo`, `AMDMABuffer`, ...), the old-libaudio `SynConfig`/`SndBank`, the sound player |
+| `frame.h`    | the per-frame buffer's two layouts (`FrameBuf` for the front end, `FrameGame` for gameplay) |
+| `camera.h`   | the camera's shared variables |
+| `frontend.h` | hd_front_end-only structures and its `gDPSetPrimColorB` |
+
+Conventions:
+
+- Every struct gets `SIZE_CHECK(Type, size)`: a typedef that fails to compile,
+  on IDO and on the port's clang alike, if a field moves.
+- A field keeps its `unkXX` name unless there's evidence for a name, given in
+  a comment next to it (a string, an assert, a known source, docs/). A struct
+  whose meaning isn't known stays `UnkStruct_<address>` even when it's shared.
+  The `D_`/`func_` symbols keep their address names; the header says what one
+  is and why (`D_80364AE8` is academy.c's `playerNumber`). Renaming them is a
+  separate step (symbols_known.txt, gen_symbols.py), and the port refers to a
+  few of them by name.
+- Fields in data that comes from ROM at run time are marked: `ROMPTR(T *)`
+  for a pointer the loader relocates, `AssetOffset` for an offset from the
+  start of the asset, `RomAddr` for a cartridge address. They expand to the
+  N64 type, so they change no code; they are what a native port widens,
+  rebases or byteswaps on load. `.data`/`.bss` stay plain C.
+- Where two files read one field with different signedness, the header has
+  the type most uses need, and the other uses get a cast: IDO folds
+  `(s16)p->u16field` into `lh` and `(s8)p->u8field` into `lb`. A `char *`
+  field read as bytes in one place is cast there: `((u8 *)p->text)[i]`.
+- Views of one array at a constant offset (`D_802F8BDC[0].unk210` in a file
+  whose struct was 0x268 bytes) become an index and a field
+  (`D_802F8BDC[18].unk18`): the address is the same constant.
+- Folding a constant into a variable index compiled the same everywhere it
+  was tried: `D_02000000.unkD00[i]` and `.unk2C0[0x29 + i]`,
+  `unk88[i]` and `.unk54[0x34 + i]`.
+- A file's `.bss` variables can become one struct when they were laid out
+  back to back (the scheduler at `D_80315440`, the four `LevelStats` at
+  `D_8036EA60`), since the addresses don't change. Other files keep using
+  the inner names (`D_803156C4` is `D_80315440.frameCount`): the names are in
+  `module_syms_auto`, which `link_syms.py` makes relative to the struct;
+  a name only C uses needs a line in `undefined_syms`. `bss_c.py --check`
+  accepts a label inside a variable.
+- Changing a type that a `.data` initializer uses means regenerating it:
+  `tools/data_c.py <module> <object> --ref <saved .data.s>`. The reference
+  is the block's asm from an extract with the subsegment switched back to
+  `data` (save `asm/data/` from that, restore the yaml, re-extract). Remove
+  the old definitions after it writes the new ones.
+
+Things the headers don't cover yet: the per-frame buffer is declared per
+file (the front end as `FrameBuf[]`, gameplay as `FrameGame[]`), since it is
+one buffer with two layouts; some files still see segment 2 as a plain
+`Mtx[]`; about 80 file-local struct types are used by one file only.
+
 These are only guesses at meaning until they're in `symbols_known.txt`:
 
-- `D_803643E0`/`E4`/`E8` are s32 world coordinates, used as `>> 5`.
 - `func_8029A7E4` and `func_8029A7D0` are the debug printf, compiled out:
   `void (char *, ...)`.
-- `D_80364AF0` is 0x100-byte records indexed by `D_80364AE8`.
-- `D_802E8F94` is 0x44-byte records indexed by `D_802E8BDC`.
-- `D_80358070` is a bump-allocator pointer.
-- `D_80364A90`, `D_80364A98` and `D_8036C778` are u64 flag words.
+- `D_8036C778` is a u64 flag word.
   `func_80275270` takes `(u64, f32)`; `func_80275390` and `func_8026F92C`
   take `(u64)`.
 - `func_8028B4C4(u8 *romStart, u8 *dst, s32 *size, s32, s32, s32)` loads from
   ROM; callers pass `end - start` of ROM ranges.
-- Audio (1C460, 17E10, 20460) and scheduler (26570) structs follow libaudio
-  and SGI's sample code.
+- The C files' original names, from their asserts and prints: hd_code 00000
+  hd.c (with master_switch.c included), 14B30 drawtext.c, 168B0 font.c, 17210
+  recording.c, 22EE0 audio.c, 26570 yoshi.c, 2C560 sched.c, 30430 fade.c,
+  34430 mb.c, 409D0 stats_perm.c, 41930 academy.c, 45BB0 controller.c, 50670
+  ghostdigger.c; hd_front_end 00000 digger_loop.c, 10850 bestTimes.c, 17990
+  back_loop.c, 1C40 player.c, 7800 stats.c, E7B0 pfsHandler.c.

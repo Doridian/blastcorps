@@ -46,33 +46,33 @@
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/func_80270AE0.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/func_80270D20.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/osCreateScheduler.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/func_80270E50.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/osScAddClient.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/osScRemoveClient.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/func_80270F74.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/osScGetCmdQ.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/func_80270F7C.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/__scMain.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/func_802712B4.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/func_802712FC.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/func_80271358.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/__scHandleRetrace.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/func_802715DC.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/__scHandleRSP.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/func_80271904.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/__scHandleRDP.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/func_80271A84.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/__scTaskComplete.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/func_80271C24.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/__scAppendList.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/func_80271CE4.s")
 
-#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/func_80271E88.s")
+#pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/__scYield.s")
 
 #pragma GLOBAL_ASM("asm/nonmatchings/hd_code/26570/func_80271F48.s")
 

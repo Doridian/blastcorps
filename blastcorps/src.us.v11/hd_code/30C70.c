@@ -1,32 +1,12 @@
 #include "common.h"
+#include "game/frame.h"
+#include "game/game.h"
 
 typedef struct {
     /* 0x0 */ s16 unk0;
     /* 0x2 */ s16 unk2;
     /* 0x4 */ s16 unk4;
 } UnkStruct_8036C7A0; /* size = 0x6 */
-
-typedef struct {
-    /* 0x0 */ s16 unk0;
-    /* 0x2 */ s16 unk2;
-    /* 0x4 */ u8 unk4;
-    /* 0x8 */ s32 unk8;
-} UnkStruct_8036C8D0; /* size = 0xC */
-
-typedef struct {
-    /* 0x0 */ s16 unk0;
-    /* 0x2 */ u8 unk2;
-    /* 0x3 */ u8 unk3;
-    /* 0x4 */ u8 unk4;
-    /* 0x5 */ u8 unk5;
-    /* 0x6 */ u8 unk6;
-} UnkStruct_803BE6FC; /* size = 0x8 */
-
-typedef struct {
-    /* 0x0000 */ Mtx unk0[8];
-    /* 0x0200 */ u8 unk200[0x1C00];
-    /* 0x1E00 */ Vtx unk1E00[1];
-} UnkStruct_8027690C;
 
 void func_80276D1C(Mtx *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 *arg5, f32 *arg6, f32 *arg7, f32 *arg8);
 
@@ -86,11 +66,11 @@ s32 D_802FAD40 = 0;
 s32 D_802FAD44 = 0;
 u8 D_802FAD48 = 0;
 
-void func_8027690C(UnkStruct_8027690C *arg0, f32 x, f32 y, f32 z, s16 *outX, s16 *outY, Mtx *arg6, Mtx *arg7,
+void func_8027690C(FrameBuf *arg0, f32 x, f32 y, f32 z, s16 *outX, s16 *outY, Mtx *arg6, Mtx *arg7,
                    Mtx *arg8, f32 arg9);
 
 
-s32 func_80276130(UnkStruct_8027690C *arg0, u8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, u8 arg7,
+s32 func_80276130(FrameBuf *arg0, u8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, u8 arg7,
                   u8 arg8, u8 arg9, u8 arg10, u8 arg11, u8 arg12, u8 arg13, u8 arg14, u8 arg15, u8 arg16, u8 arg17,
                   u8 arg18, u8 arg19, u8 arg20, u8 arg21, u8 arg22);
 
@@ -99,15 +79,14 @@ void func_8026AF6C(s32);
 s32 func_802BCE40(void);
 void func_802BD10C(s32);
 Gfx *func_80275DA4(Gfx *arg0, u8 arg1);
-s32 func_80276080(UnkStruct_8027690C *arg0, u8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, u8 arg7,
+s32 func_80276080(FrameBuf *arg0, u8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, u8 arg7,
                   u8 arg8, u8 arg9, u8 arg10);
-void func_8027656C(UnkStruct_8027690C *arg0);
+void func_8027656C(FrameBuf *arg0);
 s32 func_802768A8(void);
 void func_80277EDC();
 
-extern UnkStruct_8027690C D_02000000;
+extern FrameBuf D_02000000;
 extern u16 D_8035807C;
-extern u8 D_802E8BD0;
 extern u8 D_803643DB;
 extern s16 D_8036443E;
 extern s32 D_80364AA8;
@@ -133,7 +112,7 @@ void func_80275430(void) {
     D_8036C7CC = 0;
 }
 
-void func_80275478(UnkStruct_8027690C *arg0, Gfx **arg1, u8 arg2) {
+void func_80275478(FrameBuf *arg0, Gfx **arg1, u8 arg2) {
     s16 i;
     s16 j;
     s16 vtxIdx;
@@ -280,7 +259,7 @@ void func_80275478(UnkStruct_8027690C *arg0, Gfx **arg1, u8 arg2) {
             D_8036C794 = NULL;
         }
         gfx = func_80275DA4(gfx, 0);
-        gSPVertex(gfx++, &D_02000000.unk1E00[16], 16, 0);
+        gSPVertex(gfx++, &D_02000000.vtx[16], 16, 0);
         vtxIdx = 0;
         for (j = 0; j < 4; j++) {
             gSP1Triangle(gfx++, vtxIdx, vtxIdx + 1, vtxIdx + 2, 0);
@@ -296,8 +275,8 @@ Gfx *func_80275DA4(Gfx *arg0, u8 arg1) {
     Gfx *gfx = arg0;
 
     if (!arg1) {
-        gSPMatrix(gfx++, &D_02000000.unk0[3], G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
-        gSPMatrix(gfx++, &D_02000000.unk0[7], G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
+        gSPMatrix(gfx++, &D_02000000.mtx[3], G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
+        gSPMatrix(gfx++, &D_02000000.mtx[7], G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
     }
     gSPClearGeometryMode(gfx++, 0xFFFFFFFF);
     gSPSetGeometryMode(gfx++, G_SHADE | G_SHADING_SMOOTH);
@@ -311,83 +290,83 @@ Gfx *func_80275DA4(Gfx *arg0, u8 arg1) {
     return gfx;
 }
 
-s32 func_80276080(UnkStruct_8027690C *arg0, u8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, u8 arg7,
+s32 func_80276080(FrameBuf *arg0, u8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, u8 arg7,
                   u8 arg8, u8 arg9, u8 arg10) {
     return func_80276130(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg7, arg8, arg9, arg10, arg7,
                   arg8, arg9, arg10, arg7, arg8, arg9, arg10);
 }
 
-s32 func_80276130(UnkStruct_8027690C *arg0, u8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, u8 arg7,
+s32 func_80276130(FrameBuf *arg0, u8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, u8 arg7,
                   u8 arg8, u8 arg9, u8 arg10, u8 arg11, u8 arg12, u8 arg13, u8 arg14, u8 arg15, u8 arg16, u8 arg17,
                   u8 arg18, u8 arg19, u8 arg20, u8 arg21, u8 arg22) {
     s32 sp4;
 
     switch (arg1) {
         case 0:
-            arg0->unk1E00[arg2].v.tc[0] = 0, arg0->unk1E00[arg2].v.tc[1] = 0;
-            arg0->unk1E00[arg2 + 1].v.tc[0] = 0x3E0, arg0->unk1E00[arg2 + 1].v.tc[1] = 0;
-            arg0->unk1E00[arg2 + 2].v.tc[0] = 0x3E0, arg0->unk1E00[arg2 + 2].v.tc[1] = 0x3E0;
-            arg0->unk1E00[arg2 + 3].v.tc[0] = 0, arg0->unk1E00[arg2 + 3].v.tc[1] = 0x3E0;
+            arg0->vtx[arg2].v.tc[0] = 0, arg0->vtx[arg2].v.tc[1] = 0;
+            arg0->vtx[arg2 + 1].v.tc[0] = 0x3E0, arg0->vtx[arg2 + 1].v.tc[1] = 0;
+            arg0->vtx[arg2 + 2].v.tc[0] = 0x3E0, arg0->vtx[arg2 + 2].v.tc[1] = 0x3E0;
+            arg0->vtx[arg2 + 3].v.tc[0] = 0, arg0->vtx[arg2 + 3].v.tc[1] = 0x3E0;
             break;
         case 1:
-            arg0->unk1E00[arg2].v.tc[0] = 0, arg0->unk1E00[arg2].v.tc[1] = 0x3E0;
-            arg0->unk1E00[arg2 + 1].v.tc[0] = 0x3E0, arg0->unk1E00[arg2 + 1].v.tc[1] = 0x3E0;
-            arg0->unk1E00[arg2 + 2].v.tc[0] = 0x3E0, arg0->unk1E00[arg2 + 2].v.tc[1] = 0;
-            arg0->unk1E00[arg2 + 3].v.tc[0] = 0, arg0->unk1E00[arg2 + 3].v.tc[1] = 0;
+            arg0->vtx[arg2].v.tc[0] = 0, arg0->vtx[arg2].v.tc[1] = 0x3E0;
+            arg0->vtx[arg2 + 1].v.tc[0] = 0x3E0, arg0->vtx[arg2 + 1].v.tc[1] = 0x3E0;
+            arg0->vtx[arg2 + 2].v.tc[0] = 0x3E0, arg0->vtx[arg2 + 2].v.tc[1] = 0;
+            arg0->vtx[arg2 + 3].v.tc[0] = 0, arg0->vtx[arg2 + 3].v.tc[1] = 0;
             break;
         case 2:
-            arg0->unk1E00[arg2].v.tc[0] = 0, arg0->unk1E00[arg2].v.tc[1] = 0;
-            arg0->unk1E00[arg2 + 1].v.tc[0] = 0, arg0->unk1E00[arg2 + 1].v.tc[1] = 0x3E0;
-            arg0->unk1E00[arg2 + 2].v.tc[0] = 0x3E0, arg0->unk1E00[arg2 + 2].v.tc[1] = 0x3E0;
-            arg0->unk1E00[arg2 + 3].v.tc[0] = 0x3E0, arg0->unk1E00[arg2 + 3].v.tc[1] = 0;
+            arg0->vtx[arg2].v.tc[0] = 0, arg0->vtx[arg2].v.tc[1] = 0;
+            arg0->vtx[arg2 + 1].v.tc[0] = 0, arg0->vtx[arg2 + 1].v.tc[1] = 0x3E0;
+            arg0->vtx[arg2 + 2].v.tc[0] = 0x3E0, arg0->vtx[arg2 + 2].v.tc[1] = 0x3E0;
+            arg0->vtx[arg2 + 3].v.tc[0] = 0x3E0, arg0->vtx[arg2 + 3].v.tc[1] = 0;
             break;
         case 3:
-            arg0->unk1E00[arg2].v.tc[0] = 0, arg0->unk1E00[arg2].v.tc[1] = 0x3E0;
-            arg0->unk1E00[arg2 + 1].v.tc[0] = 0, arg0->unk1E00[arg2 + 1].v.tc[1] = 0;
-            arg0->unk1E00[arg2 + 2].v.tc[0] = 0x3E0, arg0->unk1E00[arg2 + 2].v.tc[1] = 0;
-            arg0->unk1E00[arg2 + 3].v.tc[0] = 0x3E0, arg0->unk1E00[arg2 + 3].v.tc[1] = 0x3E0;
+            arg0->vtx[arg2].v.tc[0] = 0, arg0->vtx[arg2].v.tc[1] = 0x3E0;
+            arg0->vtx[arg2 + 1].v.tc[0] = 0, arg0->vtx[arg2 + 1].v.tc[1] = 0;
+            arg0->vtx[arg2 + 2].v.tc[0] = 0x3E0, arg0->vtx[arg2 + 2].v.tc[1] = 0;
+            arg0->vtx[arg2 + 3].v.tc[0] = 0x3E0, arg0->vtx[arg2 + 3].v.tc[1] = 0x3E0;
             break;
     }
-    arg0->unk1E00[arg2].v.ob[0] = arg3 - arg5;
-    arg0->unk1E00[arg2].v.ob[1] = arg4 - arg6;
-    arg0->unk1E00[arg2].v.ob[2] = -10;
-    arg0->unk1E00[arg2].v.flag = 0;
-    arg0->unk1E00[arg2].v.cn[0] = arg7;
-    arg0->unk1E00[arg2].v.cn[1] = arg8;
-    arg0->unk1E00[arg2].v.cn[2] = arg9;
-    arg0->unk1E00[arg2].v.cn[3] = arg10;
+    arg0->vtx[arg2].v.ob[0] = arg3 - arg5;
+    arg0->vtx[arg2].v.ob[1] = arg4 - arg6;
+    arg0->vtx[arg2].v.ob[2] = -10;
+    arg0->vtx[arg2].v.flag = 0;
+    arg0->vtx[arg2].v.cn[0] = arg7;
+    arg0->vtx[arg2].v.cn[1] = arg8;
+    arg0->vtx[arg2].v.cn[2] = arg9;
+    arg0->vtx[arg2].v.cn[3] = arg10;
     arg2++;
-    arg0->unk1E00[arg2].v.ob[0] = arg3 + arg5;
-    arg0->unk1E00[arg2].v.ob[1] = arg4 - arg6;
-    arg0->unk1E00[arg2].v.ob[2] = -10;
-    arg0->unk1E00[arg2].v.flag = 0;
-    arg0->unk1E00[arg2].v.cn[0] = arg11;
-    arg0->unk1E00[arg2].v.cn[1] = arg12;
-    arg0->unk1E00[arg2].v.cn[2] = arg13;
-    arg0->unk1E00[arg2].v.cn[3] = arg14;
+    arg0->vtx[arg2].v.ob[0] = arg3 + arg5;
+    arg0->vtx[arg2].v.ob[1] = arg4 - arg6;
+    arg0->vtx[arg2].v.ob[2] = -10;
+    arg0->vtx[arg2].v.flag = 0;
+    arg0->vtx[arg2].v.cn[0] = arg11;
+    arg0->vtx[arg2].v.cn[1] = arg12;
+    arg0->vtx[arg2].v.cn[2] = arg13;
+    arg0->vtx[arg2].v.cn[3] = arg14;
     arg2++;
-    arg0->unk1E00[arg2].v.ob[0] = arg3 + arg5;
-    arg0->unk1E00[arg2].v.ob[1] = arg4 + arg6;
-    arg0->unk1E00[arg2].v.ob[2] = -10;
-    arg0->unk1E00[arg2].v.flag = 0;
-    arg0->unk1E00[arg2].v.cn[0] = arg15;
-    arg0->unk1E00[arg2].v.cn[1] = arg16;
-    arg0->unk1E00[arg2].v.cn[2] = arg17;
-    arg0->unk1E00[arg2].v.cn[3] = arg18;
+    arg0->vtx[arg2].v.ob[0] = arg3 + arg5;
+    arg0->vtx[arg2].v.ob[1] = arg4 + arg6;
+    arg0->vtx[arg2].v.ob[2] = -10;
+    arg0->vtx[arg2].v.flag = 0;
+    arg0->vtx[arg2].v.cn[0] = arg15;
+    arg0->vtx[arg2].v.cn[1] = arg16;
+    arg0->vtx[arg2].v.cn[2] = arg17;
+    arg0->vtx[arg2].v.cn[3] = arg18;
     arg2++;
-    arg0->unk1E00[arg2].v.ob[0] = arg3 - arg5;
-    arg0->unk1E00[arg2].v.ob[1] = arg4 + arg6;
-    arg0->unk1E00[arg2].v.ob[2] = -10;
-    arg0->unk1E00[arg2].v.flag = 0;
-    arg0->unk1E00[arg2].v.cn[0] = arg19;
-    arg0->unk1E00[arg2].v.cn[1] = arg20;
-    arg0->unk1E00[arg2].v.cn[2] = arg21;
-    arg0->unk1E00[arg2].v.cn[3] = arg22;
+    arg0->vtx[arg2].v.ob[0] = arg3 - arg5;
+    arg0->vtx[arg2].v.ob[1] = arg4 + arg6;
+    arg0->vtx[arg2].v.ob[2] = -10;
+    arg0->vtx[arg2].v.flag = 0;
+    arg0->vtx[arg2].v.cn[0] = arg19;
+    arg0->vtx[arg2].v.cn[1] = arg20;
+    arg0->vtx[arg2].v.cn[2] = arg21;
+    arg0->vtx[arg2].v.cn[3] = arg22;
     arg2++;
     return arg2;
 }
 
-void func_8027656C(UnkStruct_8027690C *arg0) {
+void func_8027656C(FrameBuf *arg0) {
     s32 i;
     s32 j;
     UnkStruct_8036C7A0 *p;
@@ -481,7 +460,7 @@ s32 func_802768A8(void) {
     return 0;
 }
 
-void func_8027690C(UnkStruct_8027690C *arg0, f32 x, f32 y, f32 z, s16 *outX, s16 *outY, Mtx *arg6, Mtx *arg7,
+void func_8027690C(FrameBuf *arg0, f32 x, f32 y, f32 z, s16 *outX, s16 *outY, Mtx *arg6, Mtx *arg7,
                    Mtx *arg8, f32 arg9) {
     f32 w;
 
@@ -495,13 +474,13 @@ void func_8027690C(UnkStruct_8027690C *arg0, f32 x, f32 y, f32 z, s16 *outX, s16
     if (arg6 != NULL) {
         func_80276D1C(arg6, x, y, z, w, &x, &y, &z, &w);
     }
-    func_80276D1C(&arg0->unk0[5], x, y, z, w, &x, &y, &z, &w);
+    func_80276D1C(&arg0->mtx[5], x, y, z, w, &x, &y, &z, &w);
     if (z >= 0.0) {
         *outX = 0x4000;
         *outY = 0x4000;
         return;
     }
-    func_80276D1C(&arg0->unk0[2], x, y, z, w, &x, &y, &z, &w);
+    func_80276D1C(&arg0->mtx[2], x, y, z, w, &x, &y, &z, &w);
     x = x * ((u32)D_8035807C / 65535.0);
     y = y * ((u32)D_8035807C / 65535.0);
     w = w * ((u32)D_8035807C / 65535.0);
@@ -532,7 +511,7 @@ void func_80276D1C(Mtx *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 *arg5,
     *arg8 = mf[0][3] * arg1 + mf[1][3] * arg2 + mf[2][3] * arg3 + mf[3][3];
 }
 
-void func_80276E50(Gfx **arg0, UnkStruct_8027690C *arg1, u8 arg2, s32 arg3, s32 arg4, s32 arg5) {
+void func_80276E50(Gfx **arg0, FrameBuf *arg1, u8 arg2, s32 arg3, s32 arg4, s32 arg5) {
     s16 sx;
     s16 sy;
     Gfx *gfx;
@@ -578,7 +557,7 @@ void func_80276E50(Gfx **arg0, UnkStruct_8027690C *arg1, u8 arg2, s32 arg3, s32 
         guRotateF(mf2, 135.0 - D_8036443E / 4095.0 * 360.0, 0.0f, 0.0f, 1.0f);
         guMtxCatF(mf2, mf1, mf1);
         guMtxF2L(mf1, &D_8036C850[arg2]);
-        gSPMatrix(gfx++, &D_02000000.unk0[3], G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
+        gSPMatrix(gfx++, &D_02000000.mtx[3], G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
         gSPMatrix(gfx++, &D_8036C850[arg2], G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
         gDPPipeSync(gfx++);
         gDPSetCycleType(gfx++, G_CYC_1CYCLE);

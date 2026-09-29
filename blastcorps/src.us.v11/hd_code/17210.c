@@ -1,4 +1,6 @@
 #include "common.h"
+#include "game/vehicle.h"
+#include "game/game.h"
 
 /* 5-byte records: a u16 value (big-endian), a repeat count, and two s8s. */
 typedef struct {
@@ -9,13 +11,10 @@ typedef struct {
     /* 0x4 */ s8 unk4;
 } UnkStruct_80365588; /* size = 0x5 */
 
-extern u8 D_802E8BD0;
 extern u8 D_802E8BD8;
 extern u8 D_803643D6;
 extern u8 D_803643DB;
 extern u8 D_80364A50;
-extern u64 D_80364A90;
-extern u64 D_80364A98;
 extern s16 D_8036BB1C;
 extern u16 D_80370C30;
 extern s8 D_80370C32;
@@ -41,7 +40,6 @@ typedef struct {
 
 extern u8 D_006A9F10[];
 extern u8 D_006AD3F0[];
-extern u8 *D_80358070;
 extern u16 D_80366A04;
 
 void func_8028B4C4(u8 *, u8 *, s32 *, s32, s32, s32);
@@ -144,7 +142,6 @@ void func_8025BBE8(u16 arg0, s8 arg1, s8 arg2) {
     D_803669A8 = 0;
 }
 
-extern u8 D_80364456;
 extern s32 D_803649E8;
 
 void func_802AFC28(u8 *);

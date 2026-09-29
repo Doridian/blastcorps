@@ -1,14 +1,5 @@
 #include "common.h"
 
-/* 5-byte records: a u16 value (big-endian), a repeat count, and two s8s. */
-typedef struct {
-    /* 0x0 */ u8 unk0;
-    /* 0x1 */ u8 unk1;
-    /* 0x2 */ u8 unk2;
-    /* 0x3 */ s8 unk3;
-    /* 0x4 */ s8 unk4;
-} UnkStruct_80365588; /* size = 0x5 */
-
 extern u8 D_8039CAF0[][0x200];
 
 void func_8029A7E4(char *, ...);

@@ -1,4 +1,6 @@
 #include "common.h"
+#include "game/camera.h"
+#include "game/game.h"
 
 /* The older gbi.h this game used has no MAX(1, ...) in the 4b load-block DXT. */
 #undef TXL2WORDS_4b
@@ -48,13 +50,8 @@ typedef struct {
     /* 0x4 */ s32 unk4;
 } UnkStruct_8028A1D0; /* size = 0x8 */
 
-extern s32 D_80358070;
 extern UnkStruct_8036EC30 *D_802C4A20[];
 
-extern s32 D_803643F8;
-extern s32 D_803643FC;
-extern s32 D_80364400;
-extern s16 D_80364452;
 
 s32 func_8026A828(s32 lo, s32 hi);
 s32 func_8026A6F0(s32, s32, s32, s32, s32, s32);

@@ -1,4 +1,7 @@
 #include "common.h"
+#include "game/game.h"
+#include "game/level.h"
+#include "game/player.h"
 
 /*
  * This file's .bss: func_80274BF0 and func_80275270 store D_8036C778 (a u64)
@@ -34,11 +37,7 @@ f32 D_802FA930 = 8.0f;
 void func_80275270(u64 arg0, f32 arg2);
 
 extern s32 D_80358060;
-extern u64 D_80364A90;
-extern u64 D_80364A98;
-extern s32 D_802E8BDC;
 extern u32 D_803156C4;
-extern u8 D_8035805C;
 u16 func_8026B10C(void);
 void func_8026AF6C(u16);
 

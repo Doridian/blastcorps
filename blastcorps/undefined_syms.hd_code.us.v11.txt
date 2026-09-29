@@ -123,3 +123,6 @@ D_803FFFFC = 0x803FFFFC; /* fixed */
 /* named only by C, now that no asm .data labels it: a field inside another
    object's .data variable */
 D_802F8BF4 = 0x802F8BF4;
+/* named only by C: fields of LevelStats variables in 409D0.c (stats_perm.c) */
+D_8036EA89 = 0x8036EA89;
+D_8036EA99 = 0x8036EA99;

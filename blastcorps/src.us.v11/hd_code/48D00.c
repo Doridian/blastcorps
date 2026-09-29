@@ -1,4 +1,9 @@
 #include "common.h"
+#include "game/audio.h"
+#include "game/vehicle.h"
+#include "game/game.h"
+#include "game/level.h"
+#include "game/player.h"
 
 typedef struct {
     /* 0x0 */ s16 unk0;
@@ -55,8 +60,6 @@ typedef struct {
     /* 0x44 */ s32 unk44;
 } UnkStruct_8039B070; /* size = 0x48 */
 
-extern s32 D_80358070;
-extern s32 D_80367738;
 extern s8 D_802E8BE4;
 extern s32 D_802E8BE8;
 extern OSMesgQueue D_80370BF8;
@@ -65,13 +68,8 @@ extern u8 D_803F932C;
 extern Mtx D_02000000[];
 extern u8 D_803F932D;
 extern u8 D_803F932E;
-extern s32 D_802E8BDC;
 extern s32 D_80358060;
 extern s8 D_803643D9;
-extern s32 D_803643E0;
-extern s32 D_803643E4;
-extern s32 D_803643E8;
-extern u8 D_80364456;
 extern s32 D_803A73F0;
 extern s32 D_803A73F4;
 extern s32 D_803A73F8;
@@ -81,7 +79,7 @@ extern s8 D_803ED40C;
 extern s32 D_803F9320;
 extern s32 D_803F9324;
 
-void func_80260650(s32, s32, s32 *);
+void func_80260650(SndBank *, s32, s32 *);
 void func_802608C8(s32);
 s32 func_8026A6F0(s32, s32, s32, s32, s32, s32);
 s32 func_802A0CC8(s32, s32);

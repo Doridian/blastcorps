@@ -1,130 +1,9 @@
 #include "common.h"
-
-typedef struct {
-    /* 0x0 */ u16 unk0[2];
-} UnkStruct_802FA8A0;
-
-typedef struct {
-    /* 0x0 */ s16 unk0;
-    /* 0x2 */ u8 pad2[2];
-    /* 0x4 */ u8 *unk4;
-    /* 0x8 */ u8 unk8;
-    /* 0x9 */ u8 unk9;
-    /* 0xA */ u8 unkA;
-    /* 0xB */ u8 unkB;
-} UnkStruct_802FA280; /* size = 0xC */
-
-/* The game's variant of the libultra sample scheduler (sched.h). */
-typedef struct {
-    /* 0x0 */ s32 unk0;
-    /* 0x4 */ OSMesgQueue *unk4;
-    /* 0x8 */ u32 unk8;
-} UnkStruct_SchedTask50;
-
-typedef struct UnkSchedTask {
-    /* 0x00 */ struct UnkSchedTask *next;
-    /* 0x04 */ s32 state;
-    /* 0x08 */ u32 flags;
-    /* 0x0C */ void *framebuffer;
-    /* 0x10 */ OSTask list;
-    /* 0x50 */ UnkStruct_SchedTask50 *unk50;
-    /* 0x54 */ OSMesgQueue *msgQ;
-    /* 0x58 */ OSMesg msg;
-} UnkSchedTask;
-
-typedef struct UnkSchedClient {
-    /* 0x0 */ struct UnkSchedClient *next;
-    /* 0x4 */ OSMesgQueue *msgQ;
-    /* 0x8 */ s32 unk8;
-    /* 0xC */ s32 unkC;
-} UnkSchedClient;
-
-typedef struct {
-    /* 0x000 */ OSMesgQueue interruptQ;
-    /* 0x018 */ OSMesg intBuf[16];
-    /* 0x058 */ OSMesgQueue cmdQ;
-    /* 0x070 */ OSMesg cmdMsgBuf[16];
-    /* 0x0B0 */ OSThread thread;
-    /* 0x260 */ UnkSchedClient *clientList;
-    /* 0x264 */ UnkSchedTask *audioListHead;
-    /* 0x268 */ UnkSchedTask *gfxListHead;
-    /* 0x26C */ UnkSchedTask *audioListTail;
-    /* 0x270 */ UnkSchedTask *gfxListTail;
-    /* 0x274 */ UnkSchedTask *curRSPTask;
-    /* 0x278 */ UnkSchedTask *curRDPTask;
-    /* 0x27C */ s32 unk27C;
-    /* 0x280 */ s32 unk280;
-    /* 0x284 */ u32 unk284;
-    /* 0x288 */ OSTime unk288;
-    /* 0x290 */ OSTime unk290;
-} UnkSched;
-
-typedef struct {
-    /* 0x00 */ u8 pad0[8];
-    /* 0x08 */ s32 unk8;
-    /* 0x0C */ u8 padC[2];
-    /* 0x0E */ u16 unkE;
-    /* 0x10 */ u16 unk10;
-    /* 0x12 */ u8 pad12[0xA];
-} UnkStruct_802F8BDC; /* size = 0x1C */
-
-/* Element type of the arrays D_8036BB10 points at. */
-typedef struct {
-    /* 0x00 */ u16 unk0;
-    /* 0x02 */ u8 pad2[0xA];
-    /* 0x0C */ u8 *unkC;
-    /* 0x10 */ u16 *unk10;
-    /* 0x14 */ u8 unk14;
-    /* 0x15 */ u8 pad15[5];
-    /* 0x1A */ s8 unk1A;
-} UnkStruct_8036BB10; /* size = 0x1C */
-
-typedef struct {
-    /* 0x00 */ u8 pad0[4];
-    /* 0x04 */ u8 unk4;
-    /* 0x05 */ u8 pad5;
-    /* 0x06 */ u8 unk6[0x26];
-    /* 0x2C */ u8 unk2C;
-    /* 0x2D */ u8 unk2D;
-    /* 0x2E */ s8 unk2E;
-    /* 0x2F */ u8 pad2F;
-} UnkStruct_802F49F4; /* size = 0x30 */
-
-typedef struct {
-    /* 0x00 */ u8 pad0[2];
-    /* 0x02 */ u16 unk2;
-} UnkStruct_8026F644;
-
-typedef struct {
-    /* 0x00 */ s16 unk0;
-    /* 0x02 */ s16 unk2;
-    /* 0x04 */ s16 unk4;
-} UnkStruct_8026FBB0; /* size = 0x6 */
-
-typedef struct {
-    /* 0x00 */ s16 unk0;
-    /* 0x02 */ s16 unk2;
-    /* 0x04 */ s16 unk4;
-    /* 0x06 */ u8 unk6;
-    /* 0x07 */ u8 unk7;
-    /* 0x08 */ Vtx unk8[2][4];
-} UnkStruct_8036BED8; /* size = 0x88 */
-
-typedef struct {
-    /* 0x00 */ u8 unk0;
-    /* 0x01 */ char unk1[0xF];
-    /* 0x10 */ s32 unk10;
-} UnkStruct_802F9934; /* size = 0x14 */
-
-typedef struct {
-    /* 0x00 */ u8 unk0;
-    /* 0x02 */ s16 unk2[16];
-} UnkStruct_802F48D0; /* size = 0x22 */
-
-typedef struct {
-    /* 0x00 */ u8 unk0[0x88];
-    /* 0x88 */ u8 unk88[0x78];
-} UnkStruct_80364AF0; /* size = 0x100 */
+#include "game/game.h"
+#include "game/sched.h"
+#include "game/yoshi.h"
+#include "game/level.h"
+#include "game/player.h"
 
 extern OSViMode D_80306E70[];
 extern s32 D_80358060;
@@ -142,7 +21,7 @@ s32 D_8036BF0C;
 s32 D_8036BF10;
 s32 D_8036BF14;
 s32 D_8036BF18;
-struct UnkSchedTask *D_8036BF1C;
+struct SchedTask *D_8036BF1C;
 u32 D_8036BF20;
 u32 D_8036BF24;
 u8 D_8036BF28[4];
@@ -161,22 +40,19 @@ s32 D_8036BFBC;
 /* .data, 0x802FA270-0x802FA280 (tools/data_c.py) */
 u8 D_802FA270 = 1;
 
-extern UnkStruct_8036BB10 *D_8036BB10;
-extern u8 D_802E8BD0;
-extern u64 D_80364A90;
 
 void func_8029A7E4(char *, ...);
 void osCreateViManager(s32);
-void func_80270F7C(void *);
-void func_80271C24(UnkSched *, UnkSchedTask *);
-void func_80271CE4(UnkSched *, s32);
-void func_80271E88(UnkSched *);
-s32 func_80271A84(UnkSched *, UnkSchedTask *);
+void __scMain(void *);
+void __scAppendList(Sched *, SchedTask *);
+void func_80271CE4(Sched *, s32);
+void __scYield(Sched *);
+s32 __scTaskComplete(Sched *, SchedTask *);
 s32 func_80271F48(OSMesgQueue *, OSMesg, s32);
 
-void func_80270D20(UnkSched *sc, void *stack, OSPri priority, u8 mode, u8 numFields) {
-    sc->audioListTail = (UnkSchedTask *) &sc->audioListHead;
-    sc->gfxListTail = (UnkSchedTask *) &sc->gfxListHead;
+void osCreateScheduler(Sched *sc, void *stack, OSPri priority, u8 mode, u8 numFields) {
+    sc->audioListTail = (SchedTask *) &sc->audioListHead;
+    sc->gfxListTail = (SchedTask *) &sc->gfxListHead;
     D_8036BF10 = 0;
     D_8036BF1C = NULL;
     osCreateMesgQueue(&sc->interruptQ, sc->intBuf, 16);
@@ -189,11 +65,11 @@ void func_80270D20(UnkSched *sc, void *stack, OSPri priority, u8 mode, u8 numFie
     osSetEventMesg(OS_EVENT_PRENMI, &sc->interruptQ, (OSMesg) 0x29D);
     osSetEventMesg(OS_EVENT_FAULT, &sc->interruptQ, (OSMesg) 0x2A0);
     osViSetEvent(&sc->interruptQ, (OSMesg) 0x29A, numFields);
-    osCreateThread(&sc->thread, 5, func_80270F7C, sc, stack, priority);
+    osCreateThread(&sc->thread, 5, __scMain, sc, stack, priority);
     osStartThread(&sc->thread);
 }
 
-void func_80270E50(UnkSched *sc, UnkSchedClient *c, OSMesgQueue *msgQ, s32 arg3, s32 arg4) {
+void osScAddClient(Sched *sc, SchedClient *c, OSMesgQueue *msgQ, s32 arg3, s32 arg4) {
     OSIntMask mask;
 
     mask = osSetIntMask(OS_IM_NONE);
@@ -205,9 +81,9 @@ void func_80270E50(UnkSched *sc, UnkSchedClient *c, OSMesgQueue *msgQ, s32 arg3,
     osSetIntMask(mask);
 }
 
-void osScRemoveClient(UnkSched *sc, UnkSchedClient *c) {
-    UnkSchedClient *client;
-    UnkSchedClient *prev;
+void osScRemoveClient(Sched *sc, SchedClient *c) {
+    SchedClient *client;
+    SchedClient *prev;
     OSIntMask mask;
 
     client = sc->clientList;
@@ -228,23 +104,23 @@ void osScRemoveClient(UnkSched *sc, UnkSchedClient *c) {
     osSetIntMask(mask);
 }
 
-OSMesgQueue *func_80270F74(UnkSched *sc) {
+OSMesgQueue *osScGetCmdQ(Sched *sc) {
     return &sc->cmdQ;
 }
 
 extern OSMesgQueue *D_8036BF90;
 extern OSMesg D_8036BF94;
 u32 func_802A1320(void);
-void func_802712B4(UnkSched *, UnkSchedTask *);
-void func_802712FC(UnkSched *);
-void func_80271358(UnkSched *);
-void func_802715DC(UnkSched *);
-void func_80271904(UnkSched *);
+void func_802712B4(Sched *, SchedTask *);
+void func_802712FC(Sched *);
+void __scHandleRetrace(Sched *);
+void __scHandleRSP(Sched *);
+void __scHandleRDP(Sched *);
 
-void func_80270F7C(void *arg) {
+void __scMain(void *arg) {
     OSMesg msg;
-    UnkSched *sc;
-    UnkSchedClient *client;
+    Sched *sc;
+    SchedClient *client;
 
     sc = arg;
     for (;;) {
@@ -270,16 +146,16 @@ void func_80270F7C(void *arg) {
                     D_8036BEF8 = D_8036BF00;
                     D_8036BF08 = D_8036BF0C;
                 }
-                func_80271358(sc);
+                __scHandleRetrace(sc);
                 break;
             case 0x29E:
                 func_802712FC(sc);
                 break;
             case 0x29B:
-                func_802715DC(sc);
+                __scHandleRSP(sc);
                 break;
             case 0x29C:
-                func_80271904(sc);
+                __scHandleRDP(sc);
                 break;
             case 0x29F:
                 osSendMesg(D_8036BF90, D_8036BF94, OS_MESG_BLOCK);
@@ -306,35 +182,35 @@ void func_80270F7C(void *arg) {
                 for (;;) {
                 }
             default:
-                func_802712B4(sc, (UnkSchedTask *) msg);
+                func_802712B4(sc, (SchedTask *) msg);
                 break;
         }
     }
 }
 
-void func_802712B4(UnkSched *sc, UnkSchedTask *t) {
-    func_80271C24(sc, t);
+void func_802712B4(Sched *sc, SchedTask *t) {
+    __scAppendList(sc, t);
     if (sc->curRSPTask == NULL) {
         func_80271CE4(sc, 1);
     }
 }
 
-void func_802712FC(UnkSched *sc) {
+void func_802712FC(Sched *sc) {
     if (sc->curRSPTask != NULL) {
-        func_80271E88(sc);
+        __scYield(sc);
     } else {
         D_8036BF00 = 0;
         func_80271CE4(sc, 0);
     }
 }
 
-void func_80271358(UnkSched *sc) {
-    UnkSchedTask *t;
-    UnkSchedClient *client;
+void __scHandleRetrace(Sched *sc) {
+    SchedTask *t;
+    SchedClient *client;
     s32 i;
     s32 count;
 
-    sc->unk284++;
+    sc->frameCount++;
     if (D_802E8BD0 == 0) {
         sc->unk280++;
     }
@@ -342,7 +218,7 @@ void func_80271358(UnkSched *sc) {
     if (D_8036BF1C != NULL) {
         osViSwapBuffer(D_8036BF1C->framebuffer);
         D_8036BF18 = D_8036BF14;
-        D_8036BF14 = sc->unk284 + 1;
+        D_8036BF14 = sc->frameCount + 1;
         osDpSetStatus(DPC_SET_FREEZE);
         if (D_8036BF1C->msgQ != NULL) {
             func_80271F48(D_8036BF1C->msgQ, D_8036BF1C->msg, OS_MESG_NOBLOCK);
@@ -357,14 +233,14 @@ void func_80271358(UnkSched *sc) {
         if (osRecvMesg(&sc->cmdQ, (OSMesg *) &t, OS_MESG_NOBLOCK) == -1) {
             func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "osRecvMesg(&sc->cmdQ, (OSMesg *)&rspTask, OS_MESG_NOBLOCK) != -1", "sched.c", 0x1BD);
         }
-        if (sc->unk284 % t->unk50->unk8 == 0) {
-            func_80271C24(sc, t);
+        if (sc->frameCount % t->client->unk8 == 0) {
+            __scAppendList(sc, t);
         } else {
             osSendMesg(&sc->cmdQ, t, OS_MESG_NOBLOCK);
         }
     }
-    if (sc->audioListHead != NULL && !(sc->unk284 & 1)) {
-        osSetTimer(&D_8036BF78, 280000, 0, sc->audioListHead->unk50->unk4, (OSMesg) 5);
+    if (sc->audioListHead != NULL && !(sc->frameCount & 1)) {
+        osSetTimer(&D_8036BF78, 280000, 0, sc->audioListHead->client->msgQ, (OSMesg) 5);
     }
     for (client = sc->clientList; client != NULL; client = client->next) {
         if (client->unkC == 3) {
@@ -373,8 +249,8 @@ void func_80271358(UnkSched *sc) {
     }
 }
 
-void func_802715DC(UnkSched *sc) {
-    UnkSchedTask *t;
+void __scHandleRSP(Sched *sc) {
+    SchedTask *t;
     OSTime time;
 
     if (sc->curRSPTask == NULL) {
@@ -393,7 +269,7 @@ void func_802715DC(UnkSched *sc) {
         if (!osSpTaskYielded(&t->list)) {
             t->state = 2;
             t->flags |= 4;
-            func_80271A84(sc, t);
+            __scTaskComplete(sc, t);
         }
         if (sc->audioListHead == NULL) {
             func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "sc->audioListHead", "sched.c", 0x21A);
@@ -417,15 +293,15 @@ void func_802715DC(UnkSched *sc) {
     if (sc->curRSPTask != NULL) {
         func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "sc->curRSPTask==0", "sched.c", 0x230);
     }
-    if (func_80271A84(sc, t)) {
+    if (__scTaskComplete(sc, t)) {
         if (sc->gfxListHead != NULL && sc->gfxListHead->flags != 0x47) {
             func_80271CE4(sc, 1);
         }
     }
 }
 
-void func_80271904(UnkSched *sc) {
-    UnkSchedTask *t;
+void __scHandleRDP(Sched *sc) {
+    SchedTask *t;
     s32 pad;
     OSTime time;
 
@@ -435,11 +311,11 @@ void func_80271904(UnkSched *sc) {
     t = sc->curRDPTask;
     sc->curRDPTask = NULL;
     t->flags |= 8;
-    if (sc->unk284 != D_8036BF14 || (D_80364A90 & 0xC9FD0FE79BFF80B0)) {
+    if (sc->frameCount != D_8036BF14 || (D_80364A90 & 0xC9FD0FE79BFF80B0)) {
         D_8036BF1C = NULL;
         osViSwapBuffer(t->framebuffer);
         D_8036BF18 = D_8036BF14;
-        D_8036BF14 = sc->unk284 + 1;
+        D_8036BF14 = sc->frameCount + 1;
         osDpSetStatus(DPC_SET_FREEZE);
     } else {
         D_8036BF1C = t;
@@ -449,10 +325,10 @@ void func_80271904(UnkSched *sc) {
     if (D_80358060 == 3) {
         osViBlack(FALSE);
     }
-    func_80271A84(sc, t);
+    __scTaskComplete(sc, t);
 }
 
-s32 func_80271A84(UnkSched *sc, UnkSchedTask *t) {
+s32 __scTaskComplete(Sched *sc, SchedTask *t) {
     s32 sp24;
     s32 sp20;
     s32 sp1C;
@@ -472,7 +348,7 @@ s32 func_80271A84(UnkSched *sc, UnkSchedTask *t) {
             }
             sc->gfxListHead = sc->gfxListHead->next;
             if (sc->gfxListHead == NULL) {
-                sc->gfxListTail = (UnkSchedTask *) &sc->gfxListHead;
+                sc->gfxListTail = (SchedTask *) &sc->gfxListHead;
             }
         }
         if (t->msgQ != NULL && (D_8036BF1C == NULL || sp18 != M_GFXTASK)) {
@@ -492,7 +368,7 @@ s32 func_80271A84(UnkSched *sc, UnkSchedTask *t) {
     return D_8036BFBC;
 }
 
-void func_80271C24(UnkSched *sc, UnkSchedTask *t) {
+void __scAppendList(Sched *sc, SchedTask *t) {
     s32 type;
 
     type = t->list.t.type;
@@ -510,8 +386,8 @@ void func_80271C24(UnkSched *sc, UnkSchedTask *t) {
     t->state = 2;
 }
 
-void func_80271CE4(UnkSched *sc, s32 arg1) {
-    UnkSchedTask *t;
+void func_80271CE4(Sched *sc, s32 arg1) {
+    SchedTask *t;
     OSTime time;
 
     if (sc->curRSPTask != NULL) {
@@ -527,7 +403,7 @@ void func_80271CE4(UnkSched *sc, s32 arg1) {
         }
         sc->audioListHead = sc->audioListHead->next;
         if (sc->audioListHead == NULL) {
-            sc->audioListTail = (UnkSchedTask *) &sc->audioListHead;
+            sc->audioListTail = (SchedTask *) &sc->audioListHead;
         }
         D_8036BF48 = osGetTime();
     } else {
@@ -548,7 +424,7 @@ void func_80271CE4(UnkSched *sc, s32 arg1) {
     }
 }
 
-void func_80271E88(UnkSched *sc) {
+void __scYield(Sched *sc) {
     if (sc->curRSPTask->list.t.type == M_AUDTASK) {
         func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "sc->curRSPTask->list.t.type != M_AUDTASK", "sched.c", 0x2DF);
     }

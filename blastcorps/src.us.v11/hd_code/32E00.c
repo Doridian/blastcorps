@@ -1,10 +1,8 @@
 #include "common.h"
-
-typedef struct {
-    /* 0x0 */ s16 unk0;
-    /* 0x2 */ s16 unk2;
-    /* 0x4 */ s16 unk4;
-} UnkStruct_8036C7A0; /* size = 0x6 */
+#include "game/frame.h"
+#include "game/audio.h"
+#include "game/vehicle.h"
+#include "game/game.h"
 
 typedef struct {
     /* 0x0 */ s16 unk0;
@@ -21,12 +19,6 @@ typedef struct {
     /* 0x5 */ u8 unk5;
     /* 0x6 */ u8 unk6;
 } UnkStruct_803BE6FC; /* size = 0x8 */
-
-typedef struct {
-    /* 0x0000 */ Mtx unk0[8];
-    /* 0x0200 */ u8 unk200[0x1C00];
-    /* 0x1E00 */ Vtx unk1E00[1];
-} UnkStruct_8027690C;
 
 /* .bss, 0x8036C8D0-0x8036CB60 (tools/bss_c.py) */
 UnkStruct_8036C8D0 D_8036C8D0[50];
@@ -249,7 +241,7 @@ s16 D_802FBE80[0x28] = {
     2292, 2292,
 };
 
-void func_8027690C(UnkStruct_8027690C *arg0, f32 x, f32 y, f32 z, s16 *outX, s16 *outY, Mtx *arg6, Mtx *arg7,
+void func_8027690C(FrameBuf *arg0, f32 x, f32 y, f32 z, s16 *outX, s16 *outY, Mtx *arg6, Mtx *arg7,
                    Mtx *arg8, f32 arg9);
 
 s32 func_80277D34(void);
@@ -259,25 +251,22 @@ void func_802778FC(void);
 void func_80277AE0(void);
 void func_80277B84(void);
 
-s32 func_80276130(UnkStruct_8027690C *arg0, u8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, u8 arg7,
+s32 func_80276130(FrameBuf *arg0, u8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, u8 arg7,
                   u8 arg8, u8 arg9, u8 arg10, u8 arg11, u8 arg12, u8 arg13, u8 arg14, u8 arg15, u8 arg16, u8 arg17,
                   u8 arg18, u8 arg19, u8 arg20, u8 arg21, u8 arg22);
 
 s32 func_8026205C(s32);
-void func_80260650(s32, s32, s32);
+void func_80260650(SndBank *, s32, s32);
 s32 func_8026A828(s32, s32);
 void func_802A1040(s32, s32, s32);
-s32 func_80276080(UnkStruct_8027690C *arg0, u8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, u8 arg7,
+s32 func_80276080(FrameBuf *arg0, u8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, u8 arg7,
                   u8 arg8, u8 arg9, u8 arg10);
 void func_80277EDC();
 void func_8029A7E4(char *, ...);
 
-extern UnkStruct_8027690C D_02000000;
-extern s32 D_80358070;
+extern FrameBuf D_02000000;
 extern u8 D_803643D6;
 extern u8 D_803643DB;
-extern u8 D_80364456;
-extern s32 D_80367738;
 extern UnkStruct_8036C8D0 D_8036C8D0[50];
 extern u8 D_8036CB28;
 extern u8 D_8036CB29;
@@ -308,9 +297,9 @@ extern s32 D_803EF6E4;
 
 void func_802775C0(void) {
     D_8036CB34 = 0;
-    D_8036CB48[0] = D_80358070;
+    D_8036CB48[0] = (s32)D_80358070;
     D_80358070 += 0xC80;
-    D_8036CB48[1] = D_80358070;
+    D_8036CB48[1] = (s32)D_80358070;
     D_80358070 += 0xC80;
     D_8036CB28 = 0;
     D_8036CB29 = 0;
@@ -509,7 +498,6 @@ s32 func_80277E08(void) {
     return 1;
 }
 
-extern u64 D_80364A90;
 extern s32 D_80364AA8;
 extern u8 D_8036CB44;
 
@@ -658,8 +646,8 @@ void func_80278324(Gfx **arg0, s32 arg1, u8 arg2) {
         } else {
             D_8036CB51 = 0;
         }
-        gSPMatrix(gfx++, &D_02000000.unk0[3], G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
-        gSPMatrix(gfx++, &D_02000000.unk0[7], G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
+        gSPMatrix(gfx++, &D_02000000.mtx[3], G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
+        gSPMatrix(gfx++, &D_02000000.mtx[7], G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
         gDPPipeSync(gfx++);
         gDPSetCycleType(gfx++, G_CYC_2CYCLE);
         gDPSetRenderMode(gfx++, G_RM_OPA_SURF, G_RM_OPA_SURF2);

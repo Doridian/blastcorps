@@ -43,6 +43,7 @@ __osPfsRequestData = 0x80207810; // type:func lib:ref
 __osPfsGetInitData = 0x8020790C; // type:func lib:ref
 __additional_scanline = 0x8021D470; // type:data lib:ref
 __osPfsPifRam = 0x8021D810; // type:data lib:ref
+osScAddClient = 0x802728CC; // type:func from:hd_code
 osCreateThread = 0x802D6C20; // type:func from:hd_code
 osStartThread = 0x802D6D70; // type:func from:hd_code
 osSendMesg = 0x802D7130; // type:func from:hd_code

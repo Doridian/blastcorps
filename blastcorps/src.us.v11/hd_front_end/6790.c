@@ -1,27 +1,13 @@
 #include "common.h"
-
-typedef struct {
-    /* 0x00 */ u8 unk0[0xC];
-    /* 0x0C */ u8 unkC;
-    /* 0x0D */ u8 unkD[0xF3];
-} UnkStruct_80364AF0; /* size = 0x100 */
+#include "game/frame.h"
+#include "game/game.h"
+#include "game/level.h"
+#include "game/player.h"
 
 /* Per-frame buffer, double-buffered by D_8035805C. */
-typedef struct {
-    /* 0x0000 */ u8 unk0[0x140];
-    /* 0x0140 */ Mtx unk140;
-    /* 0x0180 */ u8 unk180[0x10C0];
-    /* 0x1240 */ Mtx unk1240;
-    /* 0x1280 */ Mtx unk1280;
-    /* 0x12C0 */ Mtx unk12C0;
-    /* 0x1300 */ Mtx unk1300;
-    /* 0x1340 */ u8 unk1340[0x28C0];
-    /* 0x3C00 */ LookAt unk3C00;
-} UnkStruct_803156F8;
-
 void func_801F4E70(s32);
-Gfx *func_801F4FBC(UnkStruct_803156F8 *, Gfx *);
-void func_80259CCC(UnkStruct_803156F8 *, char *, u16 *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+Gfx *func_801F4FBC(FrameBuf *, Gfx *);
+void func_80259CCC(FrameBuf *, char *, u16 *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 
 /* .bss, 0x80215960-0x802159C0 (tools/bss_c.py) */
 s32 D_80215960;
@@ -38,7 +24,7 @@ u8 D_80215980[0x18];
 u8 D_80215998[0x18];
 s16 D_802159B0;
 
-void func_80259DC8(UnkStruct_803156F8 *, char *, u16 *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32,
+void func_80259DC8(FrameBuf *, char *, u16 *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32,
                    s32, s32, s32);
 s32 func_8025B300(u8 *);
 
@@ -64,11 +50,6 @@ extern Mtx D_802182D0[];
 extern s32 D_802FA268;
 extern u32 D_80358060;
 extern u16 D_8035807C;
-extern u64 D_80364A98;
-extern u8 D_80364AE8;
-extern UnkStruct_80364AF0 D_80364AF0[];
-extern u16 D_80370C28;
-extern u16 D_80370C2A;
 
 void func_801ED790(void) {
     func_801F4E70(0);
@@ -88,11 +69,11 @@ u16 *D_802084B8 = D_80303B78;
 u16 *D_802084BC = D_80303B88;
 s8 D_802084C0 = 1;
 
-Gfx *func_801ED800(Gfx *arg0, UnkStruct_803156F8 *arg1, u8 arg2, s32 *arg3) {
+Gfx *func_801ED800(Gfx *arg0, FrameBuf *arg1, u8 arg2, s32 *arg3) {
     Gfx *sp74;
     s32 sp70;
     s32 sp6C;
-    UnkStruct_80364AF0 *sp68;
+    PlayerInfo *sp68;
     s32 sp64;
 
     sp74 = arg0;
@@ -208,12 +189,12 @@ Gfx *func_801ED800(Gfx *arg0, UnkStruct_803156F8 *arg1, u8 arg2, s32 *arg3) {
         D_80215968 -= 360.0;
     }
     if (D_80358060 < 2) {
-        guPerspective(&arg1->unk1240, &D_8035807C, 45.0f, 4.0f / 3.0f, 40.0f, 4000.0f, 1.0f);
-        guLookAtReflect(&arg1->unk140, &arg1->unk3C00, 5.0f, 7.0f, 400.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-        guMtxIdent(&arg1->unk1280);
-        guMtxIdent(&arg1->unk12C0);
+        guPerspective(&arg1->mtx[73], &D_8035807C, 45.0f, 4.0f / 3.0f, 40.0f, 4000.0f, 1.0f);
+        guLookAtReflect(&arg1->mtx[5], &arg1->lookAt, 5.0f, 7.0f, 400.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        guMtxIdent(&arg1->mtx[74]);
+        guMtxIdent(&arg1->mtx[75]);
     }
-    guScale(&arg1->unk1300, D_8021596C / 8.0f, D_8021596C / 8.0f, D_8021596C / 8.0f);
+    guScale(&arg1->mtx[76], D_8021596C / 8.0f, D_8021596C / 8.0f, D_8021596C / 8.0f);
     guRotate(&D_802182D0[arg2], D_80215968, 1.0f, 1.0f, 1.0f);
     if (D_8021596C > 0.2) {
         sp74 = func_801F4FBC(arg1, sp74);

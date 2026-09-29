@@ -1,4 +1,9 @@
 #include "common.h"
+#include "game/frame.h"
+#include "game/level.h"
+#include "game/game.h"
+#include "game/audio.h"
+#include "game/sched.h"
 
 typedef struct {
     /* 0x00 */ s16 unk0;
@@ -22,84 +27,14 @@ typedef struct {
     /* 0x20 */ f32 unk20;
 } UnkStruct_80367D60; /* size = 0x24 */
 
-/* The scheduler's OSScTask, with an extra field before msgQ. */
-typedef struct {
-    /* 0x00 */ void *next;
-    /* 0x04 */ u32 state;
-    /* 0x08 */ u32 flags;
-    /* 0x0C */ void *framebuffer;
-    /* 0x10 */ OSTask list;
-    /* 0x50 */ void *unk50;
-    /* 0x54 */ OSMesgQueue *msgQ;
-    /* 0x58 */ OSMesg msg;
-    /* 0x5C */ u32 unk5C;
-} UnkScTask; /* size = 0x60 */
-
-typedef struct {
-    /* 0x00 */ s16 *data;
-    /* 0x04 */ s16 frameSamples;
-    /* 0x08 */ UnkScTask task;
-} UnkAudioInfo; /* size = 0x68 */
-
-/* The sample audio manager's AMAudioMgr. */
-typedef struct {
-    /* 0x000 */ Acmd *ACMDList[2];
-    /* 0x008 */ UnkAudioInfo *audioInfo[3];
-    /* 0x018 */ OSThread thread;
-    /* 0x1C8 */ OSMesgQueue audioFrameMsgQ;
-    /* 0x1E0 */ OSMesg audioFrameMsgBuf[8];
-    /* 0x200 */ OSMesgQueue audioReplyMsgQ;
-    /* 0x218 */ OSMesg audioReplyMsgBuf[8];
-    /* 0x238 */ ALGlobals g;
-} UnkAudioMgr;
-
-typedef struct {
-    /* 0x00 */ ALLink node;
-    /* 0x08 */ u32 startAddr;
-    /* 0x0C */ u32 lastFrame;
-    /* 0x10 */ char *ptr;
-} UnkDMABuffer; /* size = 0x14 */
-
-/* OSIoMesg from before 2.0I added piHandle. */
-typedef struct {
-    /* 0x00 */ OSIoMesgHdr hdr;
-    /* 0x08 */ void *dramAddr;
-    /* 0x0C */ u32 devAddr;
-    /* 0x10 */ u32 size;
-} UnkIoMesg; /* size = 0x14 */
-
-typedef struct {
-    /* 0x0 */ u8 initialized;
-    /* 0x4 */ UnkDMABuffer *firstUsed;
-    /* 0x8 */ UnkDMABuffer *firstFree;
-} UnkDMAState;
-
 /* ALSynConfig, with a u8 fxType. */
-typedef struct {
-    /* 0x00 */ s32 maxVVoices;
-    /* 0x04 */ s32 maxPVoices;
-    /* 0x08 */ s32 maxUpdates;
-    /* 0x0C */ s32 maxFXbusses;
-    /* 0x10 */ void *dmaproc;
-    /* 0x14 */ ALHeap *heap;
-    /* 0x18 */ s32 outputRate;
-    /* 0x1C */ u8 fxType;
-    /* 0x20 */ s32 *params;
-} UnkSynConfig;
-
-typedef struct {
-    /* 0x000 */ s32 v[66];
-} UnkFxParams; /* size = 0x108 */
-
 typedef struct {
     /* 0x00 */ u8 unk0[0x12];
     /* 0x12 */ u8 unk12;
 } UnkStruct_80267614;
 
-typedef struct UnkSndState_s UnkSndState;
-typedef struct UnkSndBank_s UnkSndBank;
 
-UnkSndState *func_80260650(UnkSndBank *bank, s16 id, UnkSndState **handle);
+SndState *func_80260650(SndBank *bank, s16 id, SndState **handle);
 void func_80265428(void);
 void func_8026513C(void);
 s32 func_80265A0C(s32 arg0);
@@ -110,15 +45,10 @@ s32 func_8026A8E0(s32, s32);
 void func_8026AD30(s32);
 
 extern s32 osViClock;
-extern u8 D_802E8BD0;
 extern u16 D_803C30A8[];
-extern s32 D_803643E0;
-extern s32 D_803643E8;
 extern s16 D_8036443C;
 extern s16 D_8036443E;
-extern UnkSndBank *D_80367738;
 extern s32 D_8036B968;
-extern u8 D_8036EA79;
 extern s32 D_803EF308;
 extern s32 D_803EF30C;
 extern u8 D_803EF32C;
@@ -942,9 +872,9 @@ void func_80264C20(s32 arg0) {
     D_8036B968 = osGetCount();
     D_80368038 = 99999999;
     if (arg0 != 0) {
-        D_8036EA79 = D_80368040;
+        D_8036EA70.cr = D_80368040;
     } else {
-        D_8036EA79 = 0;
+        D_8036EA70.cr = 0;
     }
 }
 
@@ -957,7 +887,7 @@ void func_80264CB4(s16 arg0, s16 arg1, s16 arg2, s16 arg3, u8 arg4, s32 arg5) {
 
     i = 0;
     count = 0;
-    D_8036EA79 += arg5;
+    D_8036EA70.cr += arg5;
     if (arg5 != 0 && D_802E8BD0 == 0) {
         func_8026AD30(0x48);
     }
@@ -1208,7 +1138,7 @@ void func_80265B7C(s32 arg0) {
     }
 }
 
-void func_80260AB8(UnkSndState *state, s16 type, s32 param);
+void func_80260AB8(SndState *state, s16 type, s32 param);
 
 extern u8 D_803EF32D;
 extern s32 D_803EF2EC;
@@ -1301,14 +1231,7 @@ void func_802661EC(void) {
 }
 
 /* The segment 2 buffer as this function uses it. */
-typedef struct {
-    /* 0x0000 */ Mtx unk0[8];
-    /* 0x0200 */ Mtx unk200;
-    /* 0x0240 */ u8 pad240[0x16C0];
-    /* 0x1900 */ Vtx unk1900[1];
-} UnkStruct_80266248;
-
-extern UnkStruct_80266248 D_02000000;
+extern FrameGame D_02000000;
 extern f32 D_80364414;
 extern s32 D_803EF310;
 extern s32 D_803EF314;
@@ -1318,7 +1241,7 @@ extern u8 D_803EF32E;
 s32 func_80267614(UnkStruct_80267614 *arg0);
 void func_8026A5CC(u64 *dst, u64 *src, s32 size);
 
-void func_80266248(Gfx **gfxp, UnkStruct_80266248 *arg1) {
+void func_80266248(Gfx **gfxp, FrameGame *arg1) {
     Gfx *gfx;
     s32 vtxIdx;
     s32 i;
@@ -1564,8 +1487,8 @@ void func_80266248(Gfx **gfxp, UnkStruct_80266248 *arg1) {
                     arg1->unk1900[vtxIdx + j].v.ob[1] = y[j];
                     arg1->unk1900[vtxIdx + j].v.ob[2] = z[j];
                 }
-                guTranslate(&arg1->unk200, D_803EF310 / 32.0f, D_803EF314 / 32.0f, D_803EF318 / 32.0f);
-                gSPMatrix(gfx++, &D_02000000.unk200, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+                guTranslate(&arg1->unk0[8], D_803EF310 / 32.0f, D_803EF314 / 32.0f, D_803EF318 / 32.0f);
+                gSPMatrix(gfx++, &D_02000000.unk0[8], G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
                 gSPVertex(gfx++, &D_02000000.unk1900[vtxIdx], 4, 0);
                 vtxIdx += 4;
                 gSP1Triangle(gfx++, 0, 1, 2, 0);

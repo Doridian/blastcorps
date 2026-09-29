@@ -1,8 +1,8 @@
 #include "common.h"
+#include "game/game.h"
 
 extern u8 D_006A8DA0[];
 extern u8 D_006A9F10[];
-extern u8 *D_80358070;
 extern u16 D_80370C30;
 extern s8 D_80370C32;
 extern s8 D_80370C33;

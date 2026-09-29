@@ -1,76 +1,17 @@
 #include "common.h"
+#include "game/frame.h"
+#include "game/audio.h"
+#include "game/game.h"
+#include "game/yoshi.h"
+#include "game/level.h"
+#include "game/player.h"
 
 /* Per-frame buffer, double-buffered by D_8035805C. */
-typedef struct {
-    /* 0x00000 */ u8 unk0[0x140];
-    /* 0x00140 */ Mtx unk140;
-    /* 0x00180 */ u8 unk180[0x10C0];
-    /* 0x01240 */ Mtx unk1240;
-    /* 0x01280 */ Mtx unk1280;
-    /* 0x012C0 */ Mtx unk12C0;
-    /* 0x01300 */ Mtx unk1300;
-    /* 0x01340 */ u8 unk1340[0x28C0];
-    /* 0x03C00 */ LookAt unk3C00;
-    /* 0x03C20 */ u8 unk3C20[0xC90];
-    /* 0x048B0 */ Gfx unk48B0[0x397D];
-} UnkStruct_803156F8; /* size = 0x21498 */
-
-typedef struct {
-    /* 0x00 */ u8 unk0[0xA];
-    /* 0x0A */ u16 unkA;
-    /* 0x0C */ u8 unkC;
-    /* 0x0D */ u8 unkD[7];
-    /* 0x14 */ s32 unk14;
-    /* 0x18 */ u8 unk18[0x3C];
-    /* 0x54 */ u8 unk54[0x3D];
-    /* 0x91 */ u8 unk91;
-    /* 0x92 */ u8 unk92[0x6E];
-} UnkStruct_80364AF0; /* size = 0x100 */
-
-typedef struct {
-    /* 0x00 */ u8 unk0;
-    /* 0x01 */ u8 unk1[0x2F];
-    /* 0x30 */ u16 unk30;
-    /* 0x32 */ u16 unk32;
-    /* 0x34 */ u16 unk34;
-    /* 0x36 */ u16 unk36;
-    /* 0x38 */ u8 unk38[0xC];
-} UnkStruct_802E8F94; /* size = 0x44 */
-
-typedef struct {
-    /* 0x00 */ u8 unk0[4];
-    /* 0x04 */ char *unk4;
-    /* 0x08 */ u8 unk8[0x10];
-    /* 0x18 */ s8 unk18[0x18];
-} UnkStruct_8020D810; /* size = 0x30 */
-
-/* 0x1C-byte records; hd_code walks the same array through D_8036BB10. */
-typedef struct {
-    /* 0x00 */ u16 unk0;
-    /* 0x02 */ u8 unk2[0xA];
-    /* 0x0C */ char *unkC;
-    /* 0x10 */ u16 *unk10;
-    /* 0x14 */ u8 unk14[6];
-    /* 0x1A */ s8 unk1A;
-    /* 0x1B */ u8 unk1B;
-} UnkStruct_8020C070; /* size = 0x1C */
-
-typedef struct {
-    /* 0x00 */ u8 unk0[4];
-    /* 0x04 */ u8 unk4;
-    /* 0x05 */ u8 unk5;
-    /* 0x06 */ u16 unk6[0x13];
-    /* 0x2C */ u8 unk2C;
-    /* 0x2D */ u8 unk2D;
-    /* 0x2E */ s8 unk2E;
-    /* 0x2F */ u8 unk2F;
-} UnkStruct_802F49F4; /* size = 0x30 */
-
 void func_801E8DCC(u8);
 u8 func_801EEDB4(u8, u8, u8);
 u8 func_801EF2BC(u16, u8, u8);
-Gfx *func_801F4FBC(UnkStruct_803156F8 *, Gfx *);
-void func_80260650(s32, s32, s32);
+Gfx *func_801F4FBC(FrameBuf *, Gfx *);
+void func_80260650(SndBank *, s32, s32);
 void func_80264A34(char *, u16, s32);
 u8 func_80272C5C(u16 *, u16 *, u8, u8, u8, f32);
 void func_80284E54(Gfx *, s32, s32, s32, s32, s32);
@@ -85,18 +26,11 @@ extern Gfx D_01000010[];
 extern Gfx D_01000038[];
 extern char *D_802084D0[];
 extern u16 *D_802084E0[];
-extern UnkStruct_8020C070 D_8020C070[];
-extern UnkStruct_8020D810 D_8020D810[];
 extern Mtx D_802182D0[];
-extern s32 D_802E8BDC;
-extern u8 D_802E8C44[];
-extern UnkStruct_802E8F94 D_802E8F94[];
-extern UnkStruct_802F49F4 D_802F49F4[];
 extern s32 D_802FA268;
-extern UnkStruct_803156F8 D_803156F8[];
+extern FrameBuf D_803156F8[];
 extern void *D_80358050[];
 extern void *D_80358058;
-extern u8 D_8035805C;
 extern u32 D_80358060;
 extern void *D_8035806C;
 extern s32 D_80358078;
@@ -104,43 +38,8 @@ extern u16 D_8035807C;
 extern u8 D_803643D4;
 extern u8 D_803643D5;
 extern s32 D_803649F0;
-extern u64 D_80364A90;
-extern u64 D_80364A98;
-extern u8 D_80364AE8;
-extern u8 D_80364AEA;
-extern UnkStruct_80364AF0 D_80364AF0[];
-extern u16 D_80364EF0[][16];
-extern s32 D_80367738;
 extern char D_8036B980[];
 extern char D_8036B9A8[];
-extern u32 D_8036EA60;
-extern u32 D_8036EA64;
-extern u8 D_8036EA68;
-extern u8 D_8036EA69;
-extern u8 D_8036EA6A;
-extern u8 D_8036EA6B;
-extern u16 D_8036EA6C;
-extern u32 D_8036EA70;
-extern u32 D_8036EA74;
-extern u8 D_8036EA78;
-extern u8 D_8036EA79;
-extern u8 D_8036EA7A;
-extern u8 D_8036EA7B;
-extern u16 D_8036EA7C;
-extern u32 D_8036EA80;
-extern u32 D_8036EA84;
-extern u8 D_8036EA88;
-extern u8 D_8036EA89;
-extern u8 D_8036EA8A;
-extern u8 D_8036EA8B;
-extern u16 D_8036EA8C;
-extern u32 D_8036EA90;
-extern u32 D_8036EA94;
-extern u8 D_8036EA98;
-extern u8 D_8036EA99;
-extern u8 D_8036EA9A;
-extern u8 D_8036EA9B;
-extern u16 D_8036EA9C;
 
 /* .bss, 0x802159D0-0x80215A70 (tools/bss_c.py) */
 u16 D_802159D0;
@@ -153,8 +52,8 @@ u8 D_802159E8[8];
 u8 D_802159F0[0x80];
 
 u8 func_801EE800(u8 *arg0, u8 arg1, u8 arg2) {
-    UnkStruct_80364AF0 *sp3C;
-    UnkStruct_802E8F94 *sp38;
+    PlayerInfo *sp3C;
+    LevelInfo *sp38;
     u32 sp34;
     u8 sp33;
     s32 sp2C;
@@ -162,69 +61,69 @@ u8 func_801EE800(u8 *arg0, u8 arg1, u8 arg2) {
 
     sp3C = &D_80364AF0[D_80364AE8];
     sp38 = &D_802E8F94[D_802E8BDC];
-    func_8029A7E4("new ip=%8d : tc=%5d : bd=%2d : cr=%2d : rt=%3d : coin=%1d : bdn=%1d\n", D_8036EA70, D_8036EA74, D_8036EA78, D_8036EA79,
-                  D_8036EA7C, D_8036EA7A, D_8036EA7B);
-    func_8029A7E4("old ip=%8d : tc=%5d : bd=%2d : cr=%2d : rt=%3d : coin=%1d : bdn=%1d\n", D_8036EA60, D_8036EA64, D_8036EA68, D_8036EA69,
-                  D_8036EA6C, D_8036EA6A, D_8036EA6B);
-    func_8029A7E4("res ip=%8d : tc=%5d : bd=%2d : cr=%2d : rt=%3d : coin=%1d : bdn=%1d\n", D_8036EA80, D_8036EA84, D_8036EA88, D_8036EA89,
-                  D_8036EA8C, D_8036EA8A, D_8036EA8B);
-    func_8029A7E4("rs2 ip=%8d : tc=%5d : bd=%2d : cr=%2d : rt=%3d : coin=%1d : bdn=%1d\n", D_8036EA90, D_8036EA94, D_8036EA98, D_8036EA99,
-                  D_8036EA9C, D_8036EA9A, D_8036EA9B);
-    func_8029A7E4("units %d\n", sp3C->unkA);
+    func_8029A7E4("new ip=%8d : tc=%5d : bd=%2d : cr=%2d : rt=%3d : coin=%1d : bdn=%1d\n", D_8036EA70.ip, D_8036EA70.tc, D_8036EA70.bd, D_8036EA70.cr,
+                  D_8036EA70.rt, D_8036EA70.coin, D_8036EA70.bdn);
+    func_8029A7E4("old ip=%8d : tc=%5d : bd=%2d : cr=%2d : rt=%3d : coin=%1d : bdn=%1d\n", D_8036EA60.ip, D_8036EA60.tc, D_8036EA60.bd, D_8036EA60.cr,
+                  D_8036EA60.rt, D_8036EA60.coin, D_8036EA60.bdn);
+    func_8029A7E4("res ip=%8d : tc=%5d : bd=%2d : cr=%2d : rt=%3d : coin=%1d : bdn=%1d\n", D_8036EA80.ip, D_8036EA80.tc, D_8036EA80.bd, D_8036EA80.cr,
+                  D_8036EA80.rt, D_8036EA80.coin, D_8036EA80.bdn);
+    func_8029A7E4("rs2 ip=%8d : tc=%5d : bd=%2d : cr=%2d : rt=%3d : coin=%1d : bdn=%1d\n", D_8036EA90.ip, D_8036EA90.tc, D_8036EA90.bd, D_8036EA90.cr,
+                  D_8036EA90.rt, D_8036EA90.coin, D_8036EA90.bdn);
+    func_8029A7E4("units %d\n", sp3C->units);
     if (D_802E8F94[D_802E8BDC].unk0 == 1) {
         sp34 = func_802852EC();
         if (arg2) {
             if (arg1) {
                 if (sp34 >= 100) {
-                    D_8036EA7A = 3;
+                    D_8036EA70.coin = 3;
                 } else if (sp34 >= 90) {
-                    D_8036EA7A = 2;
+                    D_8036EA70.coin = 2;
                 } else if (sp34 >= 70) {
-                    D_8036EA7A = 1;
+                    D_8036EA70.coin = 1;
                 } else {
-                    D_8036EA7A = 5;
+                    D_8036EA70.coin = 5;
                 }
                 if (D_803643D5 != 0) {
                     func_8029A7E4("Units up 3\n");
-                    sp3C->unkA += 3;
+                    sp3C->units += 3;
                 }
-                D_8036EA7B = 1;
+                D_8036EA70.bdn = 1;
             } else {
-                D_8036EA7A = 0;
+                D_8036EA70.coin = 0;
             }
         }
-        sp33 = D_8036EA7A;
+        sp33 = D_8036EA70.coin;
     } else {
         sp33 = func_801EEDB4(D_802E8BDC, arg1, arg2);
     }
-    sprintf(D_8036B980, "%s", D_8020D810[D_802E8BDC].unk4);
+    sprintf(D_8036B980, "%s", D_8020D810[D_802E8BDC].name);
     *arg0 = 0;
     if (arg1 && arg2) {
-        if (D_802E8BDC == 0x31 || D_802E8BDC == 0x2F || D_802E8BDC == 0x26) {
+        if (DUMMY_LEVELS(D_802E8BDC)) {
             func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "!DUMMY_LEVELS(levelno)", "stats.c", 0x5E);
         }
         if (D_802E8F94[D_802E8BDC].unk0 == 1) {
             sp3C->unk14 = D_803649F0;
         }
-        if (sp3C->unkA < 360) {
-            func_8029A7E4("UNITS UP %d\n", D_8036EA7A % 5 - D_8036EA6A % 5);
-            sp3C->unkA += D_8036EA7A % 5 - D_8036EA6A % 5;
+        if (sp3C->units < 360) {
+            func_8029A7E4("UNITS UP %d\n", D_8036EA70.coin % 5 - D_8036EA60.coin % 5);
+            sp3C->units += D_8036EA70.coin % 5 - D_8036EA60.coin % 5;
         }
-        if (sp3C->unkA == 354) {
-            sp3C->unkA += 6;
+        if (sp3C->units == 354) {
+            sp3C->units += 6;
         }
-        if (sp3C->unkA / 12 > sp3C->unkC) {
+        if (sp3C->units / 12 > sp3C->unkC) {
             *arg0 = 1;
             sp3C->unkC++;
         }
         if (!(D_802E8F94[D_802E8BDC].unk0 & 0x81)) {
-            sp3C->unk92[D_802E8BDC] = D_8036EA7B;
+            sp3C->unk92[D_802E8BDC] = D_8036EA70.bdn;
         }
-        D_80364EF0[D_80364AE8][D_802E8C44[D_8036EA7B]] = D_8036EA74;
+        D_80364EF0[D_80364AE8][D_802E8C44[D_8036EA70.bdn]] = D_8036EA70.tc;
         if (D_803643D5 != 0 && D_802E8F94[D_802E8BDC].unk0 == 1) {
-            D_80364EF0[D_80364AE8][D_802E8C44[0]] = D_8036EA74;
+            D_80364EF0[D_80364AE8][D_802E8C44[0]] = D_8036EA70.tc;
         }
-        sp3C->unk18[D_802E8BDC] = sp33;
+        sp3C->medal[D_802E8BDC] = sp33;
         func_801E8DCC(D_80364AE8);
     }
     return sp33;
@@ -242,35 +141,35 @@ u8 func_801EEDB4(u8 arg0, u8 arg1, u8 arg2) {
     s32 sp6C;
     s32 sp68;
     s32 sp64;
-    UnkStruct_80364AF0 *sp60;
-    UnkStruct_802E8F94 *sp5C;
-    UnkStruct_802F49F4 *sp58;
-    UnkStruct_8020C070 *sp54;
+    PlayerInfo *sp60;
+    LevelInfo *sp5C;
+    YoshiIcon *sp58;
+    YoshiEntry *sp54;
     char sp34[0x20];
     u16 sp32;
 
     sp60 = &D_80364AF0[D_80364AE8];
     sp5C = &D_802E8F94[arg0];
     if (D_80364A98 == 0x08000000 && arg1 && sp5C->unk0 == 2) {
-        func_80295A20(func_80286038(D_8036EA74));
+        func_80295A20(func_80286038(D_8036EA70.tc));
     }
     if (arg2 && arg1) {
         if (D_802E8F94[arg0].unk0 == 0x80) {
-            D_8036EA7B = 0;
-        } else if (D_8036EA74 <= D_8036EA64) {
-            D_8036EA7B = D_803643D4;
-        } else if (D_8036EA74 != 0xFFFF) {
-            if ((sp32 = D_80364EF0[D_80364AE8][D_802E8C44[D_803643D4]]) == 0 || D_8036EA74 < sp32) {
-                D_80364EF0[D_80364AE8][D_802E8C44[D_803643D4]] = D_8036EA74;
+            D_8036EA70.bdn = 0;
+        } else if (D_8036EA70.tc <= D_8036EA60.tc) {
+            D_8036EA70.bdn = D_803643D4;
+        } else if (D_8036EA70.tc != 0xFFFF) {
+            if ((sp32 = D_80364EF0[D_80364AE8][D_802E8C44[D_803643D4]]) == 0 || D_8036EA70.tc < sp32) {
+                D_80364EF0[D_80364AE8][D_802E8C44[D_803643D4]] = D_8036EA70.tc;
             }
         }
     }
-    if (D_8036EA74 <= D_8036EA64 && arg1) {
-        D_8036EA7A = func_801EF2BC(D_8036EA74, arg0, D_80364AF0[D_80364AE8].unk91);
+    if (D_8036EA70.tc <= D_8036EA60.tc && arg1) {
+        D_8036EA70.coin = func_801EF2BC(D_8036EA70.tc, arg0, D_80364AF0[D_80364AE8].gameState);
     } else {
-        D_8036EA74 = D_8036EA64;
+        D_8036EA70.tc = D_8036EA60.tc;
     }
-    if (D_8036EA74 < D_8036EA64 && D_803643D5 == 0) {
+    if (D_8036EA70.tc < D_8036EA60.tc && D_803643D5 == 0) {
         sp6C = 0x484;
         if (arg2) {
             sp6C = 0x584;
@@ -278,28 +177,28 @@ u8 func_801EEDB4(u8 arg0, u8 arg1, u8 arg2) {
     } else {
         sp6C = 0x480;
     }
-    func_80264A34(sp34, D_8036EA74, 0);
+    func_80264A34(sp34, D_8036EA70.tc, 0);
     sprintf(D_8036B9A8 + 0x80, "****%s*", sp34);
     if (arg1) {
         sp54 = &D_8020C070[25];
-        D_8020C070[25].unk0 = sp6C;
-        func_8029A7E4("getting icon %d\n", D_8036EA7B);
-        sp54->unk14[0] = D_8036EA7B + 0x22;
-        sp58 = &D_802F49F4[sp54->unk14[0]];
-        sp54->unk1A = func_80272C5C(sp58->unk6, NULL, sp58->unk4, sp58->unk2C, sp58->unk2D | 4, 1.0f);
+        D_8020C070[25].flags = sp6C;
+        func_8029A7E4("getting icon %d\n", D_8036EA70.bdn);
+        sp54->unk14 = D_8036EA70.bdn + 0x22;
+        sp58 = &D_802F49F4[sp54->unk14];
+        sp54->unk1A = func_80272C5C((u16 *)sp58->unk6, NULL, sp58->unk4, sp58->unk2C, sp58->unk2D | 4, 1.0f);
         if (D_80364AE8 != D_80364AEA) {
             sp64 = 3;
         } else if (D_80364A98 == 0x80 || D_803643D5 != 0) {
             sp64 = 1;
-        } else if (D_8036EA74 < D_8036EA64) {
+        } else if (D_8036EA70.tc < D_8036EA60.tc) {
             sp64 = 0;
         } else {
             sp64 = 2;
         }
-        D_8020C070[24].unkC = D_802084D0[sp64];
+        D_8020C070[24].text = D_802084D0[sp64];
         D_8020C070[24].unk10 = D_802084E0[sp64];
     }
-    return D_8036EA7A;
+    return D_8036EA70.coin;
 }
 
 /* Nothing references these; the original .rodata has 12 zero bytes here. */
@@ -324,16 +223,16 @@ s8 func_801EF1E0(void) {
 
 u8 func_801EF2BC(u16 arg0, u8 arg1, u8 arg2) {
     u8 sp7;
-    UnkStruct_802E8F94 *sp0;
+    LevelInfo *sp0;
 
     sp0 = &D_802E8F94[arg1];
-    if (sp0->unk30 >= arg0 && arg2 >= 12) {
+    if (sp0->medalTimes[0] >= arg0 && arg2 >= 12) {
         sp7 = 4;
-    } else if (sp0->unk32 >= arg0) {
+    } else if (sp0->medalTimes[1] >= arg0) {
         sp7 = 3;
-    } else if (sp0->unk34 >= arg0) {
+    } else if (sp0->medalTimes[2] >= arg0) {
         sp7 = 2;
-    } else if (sp0->unk36 >= arg0) {
+    } else if (sp0->medalTimes[3] >= arg0) {
         sp7 = 1;
     } else {
         sp7 = 5;
@@ -345,7 +244,6 @@ extern u8 D_0048F5A0[];
 extern u8 D_0048F970[];
 extern u8 D_0048F970_2[]; /* same address as D_0048F970: see undefined_syms */
 extern u8 D_0048FA70[];
-extern u8 *D_80358070;
 void func_801F4E70(s32);
 void func_8028B4C4(u8 *romStart, u8 *dst, u32 *size, u8, u8, u8);
 
@@ -373,7 +271,7 @@ void func_801EF380(s32 arg0) {
 }
 
 void func_801EF4AC(void) {
-    UnkStruct_803156F8 *sp12C;
+    FrameBuf *sp12C;
     Gfx *gfx;
     s32 sp124;
     s32 sp120;
@@ -381,9 +279,9 @@ void func_801EF4AC(void) {
     s16 sp11A;
 
     sp12C = &D_803156F8[D_8035805C ^ 1];
-    gfx = sp12C->unk48B0;
+    gfx = sp12C->dl;
     func_8028A470();
-    func_80284E54(D_803156F8[D_8035805C].unk48B0, D_80358078, 1, 1, 0x4D2, 0);
+    func_80284E54(D_803156F8[D_8035805C].dl, D_80358078, 1, 1, 0x4D2, 0);
     D_8035805C ^= 1;
     gSPSegment(gfx++, 0, 0);
     gSPSegment(gfx++, 2, osVirtualToPhysical(sp12C));
@@ -421,13 +319,13 @@ void func_801EF4AC(void) {
         }
     }
     if (D_80358060 < 2) {
-        guPerspective(&sp12C->unk1240, &D_8035807C, 45.0f, 4.0f / 3.0f, 40.0f, 8000.0f, 0.25f);
+        guPerspective(&sp12C->mtx[73], &D_8035807C, 45.0f, 4.0f / 3.0f, 40.0f, 8000.0f, 0.25f);
         if (D_802159DC == 1) {
-            guTranslate(&sp12C->unk1280, 0.0f, -130.0f, 0.0f);
-            guRotate(&sp12C->unk12C0, 35.0f, 0.1f, 0.0f, 0.0f);
+            guTranslate(&sp12C->mtx[74], 0.0f, -130.0f, 0.0f);
+            guRotate(&sp12C->mtx[75], 35.0f, 0.1f, 0.0f, 0.0f);
         } else {
-            guTranslate(&sp12C->unk1280, 0.0f, 0.0f, 0.0f);
-            guRotate(&sp12C->unk12C0, -10.0f, 0.1f, 0.0f, 0.0f);
+            guTranslate(&sp12C->mtx[74], 0.0f, 0.0f, 0.0f);
+            guRotate(&sp12C->mtx[75], -10.0f, 0.1f, 0.0f, 0.0f);
         }
     }
     if (D_80358060 >= 20) {
@@ -444,10 +342,10 @@ void func_801EF4AC(void) {
         } else if (D_80358060 == 75 && D_802159DC == 1) {
             func_80260650(D_80367738, 0xBB, 0);
         }
-        guLookAtReflect(&sp12C->unk140, &sp12C->unk3C00, 1.0f, 0.0f, D_802159E0, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        guLookAtReflect(&sp12C->mtx[5], &sp12C->lookAt, 1.0f, 0.0f, D_802159E0, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
         D_802159D0 += D_802159E4;
         guRotate(&D_802182D0[D_8035805C], D_802159D0 % 360, 0.0f, 1.0f, 0.0f);
-        guScale(&sp12C->unk1300, 1.5f, 1.5f, 1.5f);
+        guScale(&sp12C->mtx[76], 1.5f, 1.5f, 1.5f);
         gDPSetRenderMode(gfx++, G_RM_AA_ZB_OPA_INTER, G_RM_NOOP2);
         gfx = func_801F4FBC(sp12C, gfx);
     }
@@ -482,5 +380,5 @@ void func_801EF4AC(void) {
     }
     gDPFullSync(gfx++);
     gSPEndDisplayList(gfx++);
-    D_80358078 = gfx - sp12C->unk48B0;
+    D_80358078 = gfx - sp12C->dl;
 }

@@ -1,26 +1,8 @@
 #include "common.h"
+#include "game/frame.h"
+#include "game/level.h"
+#include "game/player.h"
 
-/* 0x1040-byte records; D_803643C8 is the first, D_803643CC the next free. */
-typedef struct {
-    /* 0x0000 */ u8 unk0[0x1000];
-    /* 0x1000 */ f32 unk1000;
-    /* 0x1004 */ s32 unk1004;
-    /* 0x1008 */ s32 unk1008;
-    /* 0x100C */ s32 unk100C;
-    /* 0x1010 */ s32 unk1010;
-    /* 0x1014 */ s32 unk1014;
-    /* 0x1018 */ s16 unk1018;
-    /* 0x101A */ s16 unk101A;
-    /* 0x101C */ s16 unk101C;
-    /* 0x101E */ s16 unk101E;
-    /* 0x1020 */ s16 unk1020;
-    /* 0x1022 */ u8 unk1022;
-    /* 0x1023 */ u8 unk1023;
-    /* 0x1024 */ u8 unk1024[0x1C];
-} UnkStruct_803643C8; /* size = 0x1040 */
-
-extern UnkStruct_803643C8 *D_803643C8;
-extern UnkStruct_803643C8 *D_803643CC;
 extern s32 D_803EBBF8;
 
 void func_80284E54(Gfx *, s32, s32, s32, s32, s32);
@@ -192,18 +174,12 @@ typedef struct {
 } UnkStruct_803F4030; /* size = 0xFC */
 
 /* The per-frame buffer (UnkStruct_02000000 in 00000.c); only the part used here. */
-typedef struct {
-    /* 0x0000 */ u8 pad0[0x3900];
-    /* 0x3900 */ Vtx unk3900[48];
-} UnkStruct_80258B78;
-
 extern UnkStruct_803F4030 D_803F4030[];
 extern UnkStruct_803F4030 *D_803F7654;
-extern UnkStruct_80258B78 D_02000000;
+extern FrameGame D_02000000;
 extern u8 *D_80365330;
-extern s32 D_802E8BDC;
 
-void func_80258B78(Gfx **arg0, UnkStruct_80258B78 *arg1) {
+void func_80258B78(Gfx **arg0, FrameGame *arg1) {
     Gfx *gfx;
     s32 sp70;
     s32 sp6C;
@@ -237,29 +213,29 @@ void func_80258B78(Gfx **arg0, UnkStruct_80258B78 *arg1) {
             sp66 = D_803F4030[sp70].unk10 >> 5;
             sp64 = D_803F4030[sp70].unk44 >> 5;
             sp62 = D_803F4030[sp70].unk18 >> 5;
-            arg1->unk3900[sp6C].v.ob[0] = sp66 - sp68;
-            arg1->unk3900[sp6C].v.ob[1] = sp64;
-            arg1->unk3900[sp6C].v.ob[2] = sp62 - sp68;
-            arg1->unk3900[sp6C].v.tc[0] = 0;
-            arg1->unk3900[sp6C].v.tc[1] = 0;
+            arg1->unk1900[0x200 + sp6C].v.ob[0] = sp66 - sp68;
+            arg1->unk1900[0x200 + sp6C].v.ob[1] = sp64;
+            arg1->unk1900[0x200 + sp6C].v.ob[2] = sp62 - sp68;
+            arg1->unk1900[0x200 + sp6C].v.tc[0] = 0;
+            arg1->unk1900[0x200 + sp6C].v.tc[1] = 0;
             sp6C++;
-            arg1->unk3900[sp6C].v.ob[0] = sp66 + sp68;
-            arg1->unk3900[sp6C].v.ob[1] = sp64;
-            arg1->unk3900[sp6C].v.ob[2] = sp62 - sp68;
-            arg1->unk3900[sp6C].v.tc[0] = 0x7E0;
-            arg1->unk3900[sp6C].v.tc[1] = 0;
+            arg1->unk1900[0x200 + sp6C].v.ob[0] = sp66 + sp68;
+            arg1->unk1900[0x200 + sp6C].v.ob[1] = sp64;
+            arg1->unk1900[0x200 + sp6C].v.ob[2] = sp62 - sp68;
+            arg1->unk1900[0x200 + sp6C].v.tc[0] = 0x7E0;
+            arg1->unk1900[0x200 + sp6C].v.tc[1] = 0;
             sp6C++;
-            arg1->unk3900[sp6C].v.ob[0] = sp66 + sp68;
-            arg1->unk3900[sp6C].v.ob[1] = sp64;
-            arg1->unk3900[sp6C].v.ob[2] = sp62 + sp68;
-            arg1->unk3900[sp6C].v.tc[0] = 0x7E0;
-            arg1->unk3900[sp6C].v.tc[1] = 0x7E0;
+            arg1->unk1900[0x200 + sp6C].v.ob[0] = sp66 + sp68;
+            arg1->unk1900[0x200 + sp6C].v.ob[1] = sp64;
+            arg1->unk1900[0x200 + sp6C].v.ob[2] = sp62 + sp68;
+            arg1->unk1900[0x200 + sp6C].v.tc[0] = 0x7E0;
+            arg1->unk1900[0x200 + sp6C].v.tc[1] = 0x7E0;
             sp6C++;
-            arg1->unk3900[sp6C].v.ob[0] = sp66 - sp68;
-            arg1->unk3900[sp6C].v.ob[1] = sp64;
-            arg1->unk3900[sp6C].v.ob[2] = sp62 + sp68;
-            arg1->unk3900[sp6C].v.tc[0] = 0;
-            arg1->unk3900[sp6C].v.tc[1] = 0x7E0;
+            arg1->unk1900[0x200 + sp6C].v.ob[0] = sp66 - sp68;
+            arg1->unk1900[0x200 + sp6C].v.ob[1] = sp64;
+            arg1->unk1900[0x200 + sp6C].v.ob[2] = sp62 + sp68;
+            arg1->unk1900[0x200 + sp6C].v.tc[0] = 0;
+            arg1->unk1900[0x200 + sp6C].v.tc[1] = 0x7E0;
             sp6C++;
             if (sp60 == 0) {
                 gDPLoadTextureBlock(gfx++, OS_K0_TO_PHYSICAL(D_80365330), G_IM_FMT_IA, G_IM_SIZ_8b, 64, 64, 0,
@@ -275,7 +251,7 @@ void func_80258B78(Gfx **arg0, UnkStruct_80258B78 *arg1) {
                 gSPClearGeometryMode(gfx++, G_ZBUFFER);
                 gDPSetRenderMode(gfx++, G_RM_CLD_SURF, G_RM_CLD_SURF2);
             }
-            gSPVertex(gfx++, &D_02000000.unk3900[sp6C - 4], 4, 0);
+            gSPVertex(gfx++, &D_02000000.unk1900[0x200 + sp6C - 4], 4, 0);
             gSP1Triangle(gfx++, 0, 1, 3, 0);
             gSP1Triangle(gfx++, 1, 2, 3, 0);
             break;

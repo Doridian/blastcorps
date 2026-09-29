@@ -1,4 +1,6 @@
 #include "common.h"
+#include "game/frame.h"
+#include "game/game.h"
 
 /* A recorded replay frame: 0x14 bytes. */
 typedef struct {
@@ -10,38 +12,6 @@ typedef struct {
     /* 0x10 */ s16 unk10;
     /* 0x12 */ s16 unk12;
 } UnkStruct_8039CA68;
-
-/* A spline path: 0x84 bytes. */
-typedef struct {
-    /* 0x00 */ s16 pts[10][6];
-    /* 0x78 */ s32 count;
-    /* 0x7C */ f32 tension;
-    /* 0x80 */ u8 speed;
-    /* 0x81 */ u8 mode;
-} UnkStruct_802FE980;
-
-typedef struct {
-    /* 0x00 */ u32 unk0;
-    /* 0x04 */ s32 unk4;
-} UnkStruct_80294B64;
-
-typedef struct {
-    /* 0x00 */ s32 unk0;
-    /* 0x04 */ s32 unk4;
-} UnkStruct_80293F84;
-
-typedef struct {
-    /* 0x00 */ s32 unk0;
-    /* 0x04 */ s32 unk4;
-    /* 0x08 */ s32 unk8;
-} UnkStruct_802936AC;
-
-typedef struct {
-    /* 0x00 */ u8 unk0;
-    /* 0x02 */ s16 unk2;
-    /* 0x04 */ s16 unk4;
-    /* 0x06 */ u8 unk6;
-} UnkStruct_802FEDA0; /* size = 0x8 */
 
 typedef struct {
     /* 0x00 */ u32 from;
@@ -56,13 +26,7 @@ typedef struct {
 } UnkStruct_802FF150;
 
 extern s32 func_802AC4C4(s32, s32, s32, s32, s32, s32, s32, s32);
-typedef struct {
-    /* 0x0000 */ Mtx unk0[8];
-    /* 0x0200 */ u8 unk200[0x12C0];
-    /* 0x14C0 */ Mtx unk14C0;
-} UnkStruct_02000000;
-
-extern UnkStruct_02000000 D_02000000;
+extern FrameGame D_02000000;
 
 void func_80295394(s32 *arg0, s32 *arg1, s32 *arg2, s16 *arg3, s16 *arg4, s16 *arg5);
 extern void func_802AA6D0(s32, s32, s32, s16, s32, s32, s32, Mtx *);
@@ -71,10 +35,6 @@ extern void func_8029A7E4(char *, ...);
 extern s32 func_80286038(s32);
 
 extern s32 D_803156C0;
-extern u64 D_80364A90;
-extern s32 D_803643E0;
-extern s32 D_803643E4;
-extern s32 D_803643E8;
 extern u8 D_803643D4;
 extern s16 D_803ED390[3];
 extern void *D_803BDB00;
@@ -162,7 +122,7 @@ void func_80294F00(void) {
     }
 }
 
-void func_80295120(Gfx **arg0, UnkStruct_02000000 *arg1) {
+void func_80295120(Gfx **arg0, FrameGame *arg1) {
     Gfx *gfx;
     s32 x;
     s32 y;
@@ -174,10 +134,10 @@ void func_80295120(Gfx **arg0, UnkStruct_02000000 *arg1) {
     gfx = *arg0;
     if (D_8039CA61 != 0) {
         func_80295394(&x, &y, &z, &rx, &ry, &rz);
-        func_802AA6D0(x, y, z, rx, ry, rz, D_802FF0D0[D_8039CA7C], &arg1->unk14C0);
+        func_802AA6D0(x, y, z, rx, ry, rz, D_802FF0D0[D_8039CA7C], &arg1->unk11C0[12]);
         gSPSegment(gfx++, 6, osVirtualToPhysical(D_803BDB04));
         gSPSegment(gfx++, 7, osVirtualToPhysical(D_803BDB00));
-        gSPMatrix(gfx++, &D_02000000.unk14C0, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        gSPMatrix(gfx++, &D_02000000.unk11C0[12], G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         gDPPipeSync(gfx++);
         gDPSetEnvColor(gfx++, 0, 0, 0, 255);
         gDPSetPrimColor(gfx++, 0, 0, 255, 255, 255, 100);

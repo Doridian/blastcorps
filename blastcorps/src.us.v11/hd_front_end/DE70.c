@@ -1,4 +1,6 @@
 #include "common.h"
+#include "game/frame.h"
+#include "game/game.h"
 
 /* A loaded asset's header: the fields are offsets from its start. */
 typedef struct {
@@ -10,10 +12,6 @@ typedef struct {
     /* 0x1C */ s32 unk1C;
     /* 0x20 */ s32 unk20;
 } UnkStruct_801F4E70;
-
-typedef struct {
-    /* 0x00000 */ u8 unk0[0x21498];
-} UnkStruct_803156F8; /* size = 0x21498 */
 
 void func_802A0700(void);
 void func_802A08B4(void *, void *);
@@ -27,11 +25,9 @@ extern u8 D_006E8980[];
 extern u8 D_006EA850[];
 extern u8 D_006EAB90[];
 extern u8 D_006EC4C0[];
-extern u8 *D_80358070;
-extern u8 D_8035805C;
 extern u16 D_8035807C;
 extern s16 D_8036BB20;
-extern UnkStruct_803156F8 D_803156F8[];
+extern FrameBuf D_803156F8[];
 
 /* .bss, 0x802182C0-0x80218740 (tools/bss_c.py) */
 u32 D_802182C0;

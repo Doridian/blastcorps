@@ -1,17 +1,8 @@
 #include "common.h"
+#include "game/audio.h"
+#include "game/vehicle.h"
+#include "game/game.h"
 
-typedef struct {
-    /* 0x00 */ u8 unk0[0x5C];
-    /* 0x5C */ s32 unk5C;
-    /* 0x60 */ s32 unk60;
-    /* 0x64 */ s32 unk64;
-    /* 0x68 */ s32 unk68;
-    /* 0x6C */ s32 unk6C;
-    /* 0x70 */ s32 unk70;
-} UnkStruct_80364460; /* size = 0x74 */
-
-extern UnkStruct_80364460 D_80364460[];
-extern UnkStruct_80364460 *D_803649D0;
 extern s32 D_803649E8;
 
 f32 func_8027DB5C(s32 *arg0, s32 *arg1, s32 arg2);
@@ -49,10 +40,8 @@ typedef struct {
     /* 0x32 */ u8 unk32[2];
 } UnkStruct_802FC3F0; /* size = 0x34 */
 
-extern u8 *D_80358070;
 void func_802802D4(Vtx *arg0, s32 arg1, s32 arg2, s32 arg3);
 void func_8028072C(Vtx *arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, s16 arg6);
-extern u8 D_802E8BD0;
 
 s32 func_802A0CC8(s32, s32);
 
@@ -111,10 +100,6 @@ typedef struct {
     /* 0x06 */ s16 unk6;
 } UnkStruct_802FC520; /* size = 0x8 */
 
-extern s32 D_803643E0;
-extern s32 D_803643E4;
-extern s32 D_803643E8;
-extern s32 D_80367738;
 extern s16 D_80367BD6;
 /* Segment 2 base, reached through a relocation, not a constant. */
 extern Mtx D_02000000[];
@@ -129,7 +114,7 @@ extern u8 D_803EF6FF;
 
 void func_8026A5CC(u64 *dst, u64 *src, s32 size);
 s32 func_8026A6F0(s32, s32, s32, s32, s32, s32);
-void func_80260650(s32, s32, s32 *);
+void func_80260650(SndBank *, s32, s32 *);
 void func_802A0B00(u16, s32);
 s32 func_8029DBF0(u8);
 void func_802AC1A0(s32);
@@ -295,16 +280,16 @@ f32 func_8027DB5C(s32 *arg0, s32 *arg1, s32 arg2) {
     i = 0;
     max = 0.0f;
     while (&D_80364460[i] != D_803649D0) {
-        if ((sp18 = D_80364460[i].unk5C) != 0xFE && (sp18 != 0 || D_803649E8 == 0)) {
-            if (func_8027E164(D_80364460[i].unk64, D_80364460[i].unk6C, arg0, arg1) != 0) {
+        if ((sp18 = D_80364460[i].type) != 0xFE && (sp18 != 0 || D_803649E8 == 0)) {
+            if (func_8027E164(D_80364460[i].x, D_80364460[i].z, arg0, arg1) != 0) {
                 if (D_80364460[i].unk70 != 0) {
-                    sp1C = func_8027DD88(D_80364460[i].unk64, D_80364460[i].unk6C, arg0, arg1);
+                    sp1C = func_8027DD88(D_80364460[i].x, D_80364460[i].z, arg0, arg1);
                     if (sp1C <= 0.5) {
                         sp1C = sp1C * 2.0;
                     } else {
                         sp1C = (1.0 - sp1C) * 2.0;
                     }
-                    sp20 = func_8027E228(D_80364460[i].unk5C);
+                    sp20 = func_8027E228(D_80364460[i].type);
                     sp24 = sp1C * sp20;
                     if (max < sp24) {
                         max = sp24;

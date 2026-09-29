@@ -230,13 +230,36 @@ Rules for the C, so it ports cleanly later:
 
 Mostly done alongside Phase 2, but it's its own effort.
 
-- Structs for the level, the actors (vehicles, buildings, the carrier), the
-  camera, and the save data. `docs/blast_corps_levels.txt` and
-  `docs/blast_corps_vehicles.txt` are the starting points.
-- Name functions from evidence only (strings, asserts, known source, call
-  graph), and write down the evidence in `symbols_known.txt`, as for gzip.
-- Mark every field that holds a pointer or a ROM offset in data loaded from
-  ROM. The port has to widen or rebase exactly those fields.
+- [x] Shared headers (`blastcorps/include/game/`, conventions in
+      `docs/DECOMPILING.md`, "Shared types"): one definition for each
+      structure more than one file uses, with a size check. us.v11's C files
+      had 266 struct typedefs, 61 of them defined again in other files (the
+      player record 22 times, the level table 15); now 84 are left, each
+      used by one file, and the shared ones are in the headers: the player
+      record and save layout (`player.h`), the level table, level file header,
+      RDUs and level results (`level.h`), the vehicles (`vehicle.h`), the
+      window system (`yoshi.h`), the scheduler (`sched.h`), the audio
+      manager and sound player (`audio.h`), the per-frame buffer (`frame.h`),
+      the camera (`camera.h`), and the game state most files share
+      (`game.h`). The scheduler, the level results and the best times are
+      typed in `.bss` too, where they had been separate variables or byte
+      arrays, and the per-frame buffer's byte offsets are fields.
+- [ ] Structs for the level's objects at run time (buildings, the carrier,
+      the vehicles' state beyond position and type), the camera's state
+      (still separate variables in hd.c), and the rest of the front end.
+      `docs/blast_corps_levels.txt` and `docs/blast_corps_vehicles.txt` are
+      the starting points; most of this code is in the handwritten engine.
+- [x] Name functions from evidence only (strings, asserts, known source, call
+      graph), and write down the evidence in `symbols_known.txt`, as for gzip.
+      The scheduler's functions are named after SGI's sched.c; gen_symbols.py
+      now also gives other modules the hand-identified names they call.
+- [x] Mark every field that holds a pointer or a ROM offset in data loaded from
+      ROM (`ROMPTR`, `AssetOffset`, `RomAddr` in `types.h`): so far the level
+      header's offsets and the sound bank's pointers. The port has to widen
+      or rebase exactly those fields; more will come with Phase 4's assets.
+- [ ] Rename the `D_` symbols the headers identify (`playerNumber`, `levelno`,
+      `saveIt`, `frontEndPresent`, ...). They keep their address names for
+      now; the port refers to some of them by name.
 
 ## Phase 4: assets
 

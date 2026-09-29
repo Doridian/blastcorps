@@ -1,4 +1,6 @@
 #include "common.h"
+#include "game/audio.h"
+#include "game/game.h"
 
 typedef struct {
     /* 0x0 */ s16 unk0;
@@ -33,15 +35,10 @@ typedef struct {
     /* 0x14 */ Vtx *unk14;
 } UnkStruct_8039AF00; /* size = 0x18 */
 
-extern s32 D_80358070;
-extern s32 D_803643E0;
-extern s32 D_803643E4;
-extern s32 D_803643E8;
-extern s32 D_80367738;
 extern s16 D_803EDC00;
 extern s16 D_803F8B72;
 
-void func_80260650(s32, s32, s32 *);
+void func_80260650(SndBank *, s32, s32 *);
 s32 func_8026A6F0(s32, s32, s32, s32, s32, s32);
 s32 func_802A0CC8(s32, s32);
 void func_802CE880(s32, s32, s32, s32, s32);

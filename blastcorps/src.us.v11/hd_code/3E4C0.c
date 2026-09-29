@@ -1,10 +1,10 @@
 #include "common.h"
+#include "game/camera.h"
 
 
 extern Mtx D_02000000[];
 extern u32 D_803156C4;
 extern u16 D_8035807C;
-extern s16 D_80364452;
 extern s16 D_80367BD6;
 extern s32 D_803F7660;
 extern s32 D_803F7670;

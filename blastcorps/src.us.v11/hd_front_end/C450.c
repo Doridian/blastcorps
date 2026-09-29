@@ -1,57 +1,8 @@
 #include "common.h"
-
-/* A node of the front end's object tree, 0x3C bytes. */
-typedef struct UnkStruct_8020BD30 {
-    /* 0x00 */ f32 unk0;
-    /* 0x04 */ f32 unk4;
-    /* 0x08 */ f32 unk8;
-    /* 0x0C */ f32 unkC;
-    /* 0x10 */ struct UnkStruct_8020BD30 *unk10;
-    /* 0x14 */ struct UnkStruct_8020BD30 *unk14;
-    /* 0x18 */ u8 unk18;
-    /* 0x19 */ u8 unk19;
-    /* 0x1A */ u8 unk1A;
-    /* 0x1C */ f32 unk1C;
-    /* 0x20 */ f32 unk20;
-    /* 0x24 */ f32 unk24;
-    /* 0x28 */ f32 unk28;
-    /* 0x2C */ f32 unk2C;
-    /* 0x30 */ f32 unk30;
-    /* 0x34 */ f32 unk34;
-    /* 0x38 */ f32 unk38;
-} UnkStruct_8020BD30; /* size = 0x3C */
-
-typedef struct {
-    /* 0x00 */ u8 unk0[0x10];
-    /* 0x10 */ u32 unk10;
-    /* 0x14 */ u8 unk14[4];
-    /* 0x18 */ u8 unk18[0x3C];
-    /* 0x54 */ u8 unk54[0x3C];
-    /* 0x90 */ u8 unk90;
-    /* 0x91 */ u8 unk91;
-    /* 0x92 */ u8 unk92[0x6E];
-} UnkStruct_80364AF0; /* size = 0x100 */
-
-typedef struct {
-    /* 0x00 */ u8 unk0[0x18];
-    /* 0x18 */ s8 unk18[4];
-    /* 0x1C */ s8 unk1C[8];
-    /* 0x24 */ u8 unk24[0xC];
-} UnkStruct_8020D810; /* size = 0x30 */
-
-typedef struct {
-    /* 0x0 */ s32 unk0;
-    /* 0x4 */ Gfx *unk4;
-} UnkStruct_80218270; /* size = 0x8 */
-
-/* gDPSetPrimColor with the colour word ORed as b | (r | g) | a. */
-#define gDPSetPrimColorB(pkt, m, l, r, g, b, a)                                                         \
-    {                                                                                                  \
-        Gfx *_g = (Gfx *)(pkt);                                                                        \
-                                                                                                       \
-        _g->words.w0 = (_SHIFTL(G_SETPRIMCOLOR, 24, 8) | _SHIFTL(m, 8, 8) | _SHIFTL(l, 0, 8));         \
-        _g->words.w1 = (_SHIFTL(b, 8, 8) | (_SHIFTL(r, 24, 8) | _SHIFTL(g, 16, 8)) | _SHIFTL(a, 0, 8)); \
-    }
+#include "game/frontend.h"
+#include "game/game.h"
+#include "game/level.h"
+#include "game/player.h"
 
 f32 sqrtf(f32);
 s32 func_801FE760(s32);
@@ -63,26 +14,19 @@ void func_801F4878(Gfx *, u8 *);
 void func_801F4C3C(UnkStruct_8020BD30 *, f32);
 s32 func_801F36B0(s32 *, s32 *);
 
-extern UnkStruct_8020BD30 D_8020BE98; /* D_8020BD30[6] */
 extern f32 D_8020BDE4;
 extern f32 D_8020BDEC;
-extern u8 D_8035805C;
 extern u16 D_8035807C;
 extern f32 D_8021A918;
 extern f32 D_8021A91C;
 extern f32 D_8021A920;
-extern u8 D_80364AE8;
-extern UnkStruct_80364AF0 D_80364AF0[];
-extern UnkStruct_8020D810 D_8020D810[];
 
 Gfx *func_801F3964(Gfx *, u8 *, UnkStruct_8020BD30 *, f32);
 Gfx *func_801F4110(Gfx *, u8 *, UnkStruct_8020BD30 *, f32);
 Gfx *func_801FE238(Gfx *, u8 *);
 void func_801FCE74(Vtx *, s32, f32, f32, s32, s32, f32, s32);
 
-extern u8 *D_80358070;
 extern Gfx D_8020BC88[];
-extern u8 D_802E8F38[][8];
 extern u8 D_803156F8[];
 extern f32 D_8020F080; /* 25000.0f */
 extern u16 D_80217288;

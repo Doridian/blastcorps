@@ -1,19 +1,10 @@
 #include "common.h"
+#include "game/frame.h"
+#include "game/game.h"
+#include "game/sched.h"
 
 /* An RSP task with the bookkeeping sent along with it: 0x60 bytes, two per
  * task slot (double-buffered by D_8035805C). */
-typedef struct {
-    /* 0x00 */ s32 unk0;
-    /* 0x04 */ s32 unk4;
-    /* 0x08 */ s32 unk8;
-    /* 0x0C */ u16 *unkC;
-    /* 0x10 */ OSTask task;
-    /* 0x50 */ void *unk50;
-    /* 0x54 */ OSMesgQueue *unk54;
-    /* 0x58 */ s32 unk58;
-    /* 0x5C */ s32 unk5C;
-} UnkStruct_8036E698; /* size = 0x60 */
-
 extern u16 D_80000400[][320 * 240];
 extern u64 D_80207090[];
 extern u64 D_80210690[];
@@ -22,10 +13,7 @@ extern u64 D_802E6820[];
 extern u64 D_802E68F0[];
 extern u64 D_8030E390[];
 extern OSMesgQueue D_803153D8;
-extern OSMesgQueue D_80315440;
-extern u8 D_803156D8[];
-extern u8 D_803156F8[];
-extern u8 D_8035805C;
+extern FrameGame D_803156F8[];
 extern u64 D_80367750[];
 extern u64 D_8036AFB0[];
 
@@ -36,7 +24,7 @@ u64 *D_8036E660[6];
 u64 *D_8036E678[5];
 u8 D_8036E68C[7];
 u64 *D_8036E694;
-UnkStruct_8036E698 D_8036E698[5][2];
+SchedTask D_8036E698[5][2];
 
 void func_80284DB0(void) {
     D_8036E660[0] = D_80207090;
@@ -50,49 +38,49 @@ void func_80284DB0(void) {
 }
 
 void func_80284E54(Gfx *arg0, s32 arg1, u8 arg2, u8 arg3, s32 arg4, u8 arg5) {
-    UnkStruct_8036E698 *t;
+    SchedTask *t;
     s32 size;
 
     size = arg1 * 8;
     t = &D_8036E698[arg2][D_8035805C];
     D_8036E68C[arg2] = 1;
-    t->task.t.type = M_GFXTASK;
+    t->list.t.type = M_GFXTASK;
     if (arg2 == 4) {
-        t->task.t.flags = 2;
+        t->list.t.flags = 2;
     } else {
-        t->task.t.flags = 0;
+        t->list.t.flags = 0;
     }
-    t->task.t.ucode_boot = D_802E6820;
-    t->task.t.ucode_boot_size = (u8 *)D_802E68F0 - (u8 *)D_802E6820;
-    t->task.t.ucode = D_8036E660[arg2];
-    t->task.t.ucode_data = D_8036E678[arg2];
-    t->task.t.ucode_size = 0x1000;
-    t->task.t.ucode_data_size = 0x800;
-    t->task.t.dram_stack = D_80367750;
-    t->task.t.dram_stack_size = 0x400;
-    t->task.t.output_buff = D_8036E694;
-    t->task.t.output_buff_size = (u64 *)((u8 *)D_8036E694 + 0xA000);
-    t->task.t.data_ptr = (u64 *)arg0;
-    t->task.t.data_size = size;
-    t->task.t.yield_data_ptr = D_8036AFB0;
-    t->task.t.yield_data_size = 0x900;
-    t->unk0 = 0;
-    t->unk54 = &D_803153D8;
-    t->unk58 = (arg2 << 16) | arg4;
-    t->unk8 = 3;
+    t->list.t.ucode_boot = D_802E6820;
+    t->list.t.ucode_boot_size = (u8 *)D_802E68F0 - (u8 *)D_802E6820;
+    t->list.t.ucode = D_8036E660[arg2];
+    t->list.t.ucode_data = D_8036E678[arg2];
+    t->list.t.ucode_size = 0x1000;
+    t->list.t.ucode_data_size = 0x800;
+    t->list.t.dram_stack = D_80367750;
+    t->list.t.dram_stack_size = 0x400;
+    t->list.t.output_buff = D_8036E694;
+    t->list.t.output_buff_size = (u64 *)((u8 *)D_8036E694 + 0xA000);
+    t->list.t.data_ptr = (u64 *)arg0;
+    t->list.t.data_size = size;
+    t->list.t.yield_data_ptr = D_8036AFB0;
+    t->list.t.yield_data_size = 0x900;
+    t->next = NULL;
+    t->msgQ = &D_803153D8;
+    t->msg = (OSMesg)((arg2 << 16) | arg4);
+    t->flags = 3;
     if (arg3) {
-        t->unk8 |= 0x40;
+        t->flags |= 0x40;
     }
-    t->unkC = D_80000400[D_8035805C];
-    t->unk50 = D_803156D8;
+    t->framebuffer = D_80000400[D_8035805C];
+    t->client = &D_803156D8;
     if (arg5) {
         osWritebackDCacheAll();
     } else {
         osWritebackDCache(t, 0x60);
         osWritebackDCache(arg0, size);
-        osWritebackDCache(D_803156F8 + D_8035805C * 0x21498, 0x21498);
+        osWritebackDCache(&D_803156F8[D_8035805C], sizeof(FrameGame));
     }
-    osSendMesg(&D_80315440, t, OS_MESG_BLOCK);
+    osSendMesg(&D_80315440.interruptQ, t, OS_MESG_BLOCK);
 }
 
 void func_80285110(u32 arg0) {

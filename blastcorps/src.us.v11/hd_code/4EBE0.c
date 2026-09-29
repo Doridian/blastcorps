@@ -1,15 +1,7 @@
 #include "common.h"
-
-/* A recorded replay frame: 0x14 bytes. */
-typedef struct {
-    /* 0x00 */ s32 x;
-    /* 0x04 */ s32 y;
-    /* 0x08 */ s32 z;
-    /* 0x0C */ s16 unkC;
-    /* 0x0E */ s16 unkE;
-    /* 0x10 */ s16 unk10;
-    /* 0x12 */ s16 unk12;
-} UnkStruct_8039CA68;
+#include "game/game.h"
+#include "game/level.h"
+#include "game/player.h"
 
 /* A spline path: 0x84 bytes. */
 typedef struct {
@@ -43,24 +35,6 @@ typedef struct {
     /* 0x06 */ u8 unk6;
 } UnkStruct_802FEDA0; /* size = 0x8 */
 
-typedef struct {
-    /* 0x00 */ u32 from;
-    /* 0x04 */ u32 to;
-} UnkStruct_802FF11C;
-
-typedef struct {
-    /* 0x00 */ s32 x[4];
-    /* 0x10 */ s32 z[4];
-    /* 0x20 */ s8 list[8];
-    /* 0x28 */ u8 unk28;
-} UnkStruct_802FF150;
-
-typedef struct {
-    /* 0x0000 */ Mtx unk0[8];
-    /* 0x0200 */ u8 unk200[0x12C0];
-    /* 0x14C0 */ Mtx unk14C0;
-} UnkStruct_02000000;
-
 
 void func_802949B0(s32 arg0);
 f32 func_80294840(f32 arg0, f32 arg1, f32 arg2, f32 arg3);
@@ -68,11 +42,7 @@ extern void func_8026A2E8(f32, f32 *);
 extern u8 func_8027EED8(s32, s32, s16 *);
 extern void func_802608C8(void *);
 
-extern u8 D_802E8BD0;
 extern u32 D_803156C4;
-extern s32 D_803643E0;
-extern s32 D_803643E8;
-extern s32 D_802E8BDC;
 extern void *D_8036DCD8;
 extern s16 D_8036E4C8;
 extern u8 D_8036E4CA;

@@ -1,81 +1,13 @@
 #include "common.h"
-
-/* Rare's sound player, derived from libaudio's sndplayer.c. */
-typedef struct UnkSndState_s {
-    /* 0x00 */ ALLink node;
-    /* 0x08 */ ALSound *sound;
-    /* 0x0C */ ALVoice voice;
-    /* 0x28 */ f32 unk28;
-    /* 0x2C */ f32 pitch;
-    /* 0x30 */ struct UnkSndState_s **unk30;
-    /* 0x34 */ s16 unk34;
-    /* 0x36 */ u8 unk36;
-    /* 0x38 */ s32 unk38;
-    /* 0x3C */ u8 unk3C;
-    /* 0x3D */ u8 unk3D;
-    /* 0x3E */ u8 unk3E;
-    /* 0x3F */ u8 unk3F;
-} UnkSndState; /* size = 0x40 */
-
-typedef struct {
-    /* 0x00 */ u16 type;
-    /* 0x04 */ UnkSndState *state;
-    /* 0x08 */ s32 param;
-    /* 0x0C */ void *unkC;
-} UnkSndEvent; /* size = 0x10, an ALEvent */
-
-typedef struct {
-    /* 0x00 */ u8 unk0[0xC];
-    /* 0x0C */ ALSound *soundArray[1];
-} UnkSndInst;
-
-typedef struct {
-    /* 0x00 */ u8 unk0[0xC];
-    /* 0x0C */ UnkSndInst *unkC;
-} UnkSndBank;
-
-typedef struct {
-    /* 0x00 */ u8 unk0;
-    /* 0x01 */ u8 unk1[0x43];
-} UnkStruct_802E8F94; /* size = 0x44 */
-
-typedef struct {
-    /* 0x00 */ u8 unk0[0x18];
-    /* 0x18 */ u8 unk18[0xE8];
-} UnkStruct_80364AF0; /* size = 0x100 */
-
-typedef struct {
-    /* 0x00 */ u32 maxSounds;
-    /* 0x04 */ s32 maxEvents;
-    /* 0x08 */ s32 unk8;
-    /* 0x0C */ ALHeap *heap;
-    /* 0x10 */ u16 unk10;
-} UnkSndConfig;
-
-typedef struct {
-    /* 0x00 */ ALPlayer node;
-    /* 0x14 */ ALEventQueue evtq;
-    /* 0x28 */ ALEvent nextEvent;
-    /* 0x38 */ ALSynth *drvr;
-    /* 0x3C */ s32 unk3C;
-    /* 0x40 */ UnkSndState *unk40;
-    /* 0x44 */ UnkSndState *unk44;
-    /* 0x48 */ s32 unk48;
-    /* 0x4C */ ALMicroTime frameTime;
-    /* 0x50 */ ALMicroTime nextDelta;
-    /* 0x54 */ ALMicroTime curTime;
-} UnkSndPlayer;
-
-typedef struct {
-    /* 0x0 */ UnkSndState *head;
-    /* 0x4 */ UnkSndState *tail;
-    /* 0x8 */ UnkSndState *freeList;
-} UnkStruct_802E8CE0;
+#include "game/game.h"
+#include "game/audio.h"
+#include "game/level.h"
+#include "game/player.h"
 
 void func_8024FC2C(Gfx **gfxp, s32 arg1);
 Gfx *func_8025D2B4(Gfx *gfx, s32 arg1, s32 *arg2);
 void func_8025E1E0(Gfx **gfxp);
-UnkSndState *func_80260650(UnkSndBank *bank, s16 id, UnkSndState **handle);
+SndState *func_80260650(SndBank *bank, s16 id, SndState **handle);
 void func_802609D0(void);
 void func_802609F0(void);
 void func_80260A10(void);
@@ -102,26 +34,18 @@ extern u8 D_00489E70[];
 extern u8 D_0048F5A0[];
 extern s8 D_802E8BD8;
 extern u8 D_802E8BF0;
-extern UnkStruct_802E8F94 D_802E8F94[];
 extern u8 D_803643D6;
 extern u8 D_803643D7;
 extern u8 D_803643D8;
 extern s32 D_80364AA8;
-extern u8 D_80364AE8;
-extern UnkStruct_80364AF0 D_80364AF0[];
 extern ALCSPlayer *D_80367734;
-extern UnkSndBank *D_80367738;
 extern u32 D_80367740;
 extern s16 D_8036BB18;
 extern s16 D_8036BB1A;
 extern s16 D_8036BB1C;
-extern s32 D_802E8BDC;
 extern Vtx D_802FA8B0[][4];
 extern u32 D_803156C4;
 extern u32 D_80358060;
-extern u8 *D_80358070;
-extern u64 D_80364A90;
-extern u64 D_80364A98;
 extern s16 D_8039CAA0;
 
 extern u32 D_802E8BEC;
@@ -531,7 +455,7 @@ void func_8025E2CC(Gfx **gfxp, s32 arg1, s32 arg2) {
         if (D_80366BC0 == 0) {
             func_802C1DD0(D_802E8F94[D_802E8BDC].unk0 == 0x20 || D_802E8F94[D_802E8BDC].unk0 == 0x80);
             D_80366BB8 = 0;
-            if ((D_80364AF0[D_80364AE8].unk18[D_802E8BDC] > 0 && D_80364AF0[D_80364AE8].unk18[D_802E8BDC] < 6) ? 1 : 0) {
+            if LEVEL_DONE_IN(D_80364AF0[D_80364AE8], D_802E8BDC) {
                 func_802609F0();
                 func_80260A10();
                 D_80366BC2 = 5;
@@ -633,7 +557,7 @@ void func_8025E67C(Gfx **gfxp, s32 arg1, u8 arg2) {
                     break;
                 case 50:
                     if (D_8036BB1C == 1 && func_802753C0() == 0) {
-                        if ((D_80364AF0[D_80364AE8].unk18[D_802E8BDC] > 0 && D_80364AF0[D_80364AE8].unk18[D_802E8BDC] < 6) ? 1 : 0) {
+                        if LEVEL_DONE_IN(D_80364AF0[D_80364AE8], D_802E8BDC) {
                             func_80275390(0x08000000);
                         } else {
                             func_80275390(0x40);
@@ -667,7 +591,7 @@ void func_8025E67C(Gfx **gfxp, s32 arg1, u8 arg2) {
                         } else if (now - D_80366BB8 - 270 >= 46) {
                             if (D_80364A90 == 0x100000000000) {
                                 D_80364A98 = 0x200000000000;
-                            } else if ((D_80364AF0[D_80364AE8].unk18[D_802E8BDC] > 0 && D_80364AF0[D_80364AE8].unk18[D_802E8BDC] < 6) ? 1 : 0) {
+                            } else if LEVEL_DONE_IN(D_80364AF0[D_80364AE8], D_802E8BDC) {
                                 func_80275390(0x08000000);
                             } else {
                                 func_80275390(0x40);

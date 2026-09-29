@@ -1,4 +1,7 @@
 #include "common.h"
+#include "game/game.h"
+#include "game/level.h"
+#include "game/player.h"
 
 /* 12-byte sort records: a u16 key, a quad index and a texture address. */
 typedef struct {
@@ -7,10 +10,6 @@ typedef struct {
     /* 0x8 */ s32 unk8;
 } UnkStruct_80365340; /* size = 0xC */
 
-extern s32 D_802E8BDC;
-extern u8 D_8035805C;
-extern u8 *D_80358070;
-extern u64 D_80364A98;
 
 void func_8025B070(void);
 void func_802597D8(u8 *arg0, u8 *arg1, s32 arg2);

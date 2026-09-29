@@ -1,28 +1,20 @@
 #include "common.h"
+#include "game/audio.h"
+#include "game/game.h"
+#include "game/yoshi.h"
 
 s32 func_801E96F8(void);
-void func_80260650(s32, s32, s32 *);
+void func_80260650(SndBank *, s32, s32 *);
 s32 func_8026A828(s32, s32);
 void func_8026AF6C(s32);
 
 extern u8 D_802FAD50[];
-extern s32 D_80367738;
-extern s16 D_8036BB1C;
 
-/* 0x1C-byte menu entries, laid out like UnkStruct_8036BB24 in hd_front_end/E7B0.c. */
-typedef struct {
-    /* 0x00 */ u8 unk0[0xC];
-    /* 0x0C */ char *unkC;
-    /* 0x10 */ char *unk10;
-    /* 0x14 */ u8 unk14[8];
-} UnkStruct_8020C070; /* size = 0x1C */
-
+/* 0x1C-byte menu entries, laid out like YoshiEntry in hd_front_end/E7B0.c. */
 void func_8028B4C4(u8 *romStart, u8 *dst, u32 *size, u8, u8, u8);
 
 extern u8 D_0068B550[];
 extern u8 D_006A32B0[];
-extern u8 *D_80358070;
-extern UnkStruct_8020C070 D_8020C070[];
 
 /* .bss, 0x8021AB90-0x8021ABB0 (tools/bss_c.py) */
 u16 *D_8021AB90[4];
@@ -59,8 +51,8 @@ void func_80201240(s32 arg0) {
     D_8021ABA0 = arg0;
     D_8021ABA2 = 0;
     D_8021ABA1 = 0;
-    D_8020C070[175].unkC = D_8020E3E8[arg0];
-    D_8020C070[175].unk10 = D_8020E430[arg0];
+    D_8020C070[175].text = D_8020E3E8[arg0];
+    D_8020C070[175].unk10 = (u16 *)D_8020E430[arg0];
 }
 
 Gfx *func_80201364(s32 arg0, Gfx *arg1) {

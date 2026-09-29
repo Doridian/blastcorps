@@ -1,20 +1,12 @@
 #include "common.h"
+#include "game/audio.h"
+#include "game/game.h"
+#include "game/level.h"
+#include "game/player.h"
 
-typedef struct {
-    /* 0x00 */ u8 pad0[0x18];
-    /* 0x18 */ u8 unk18[0xD6];
-    /* 0xEE */ u8 unkEE;
-    /* 0xEF */ u8 padEF[0x11];
-} UnkStruct_80364AF0; /* size = 0x100 */
-
-extern s32 D_802E8BDC;
 extern s32 D_802E8BEC;
 extern u8 D_802E8BF0;
 extern u8 D_803643D4;
-extern u64 D_80364A98;
-extern u8 D_80364AE8;
-extern UnkStruct_80364AF0 D_80364AF0[];
-extern s32 D_80367738;
 /*
  * This file's .bss.  Defined here, a u64's two halves share one lui.
  */
@@ -32,7 +24,7 @@ u8 D_803A6B04;
 u64 func_801ECA50(u8);
 void func_8025B9D0(s32, s32 *);
 void func_8025BB50(void);
-void func_80260650(s32, s32, s32);
+void func_80260650(SndBank *, s32, s32);
 void func_802609D0(void);
 void func_8026AF6C(s32);
 s32 func_8026F92C(u64);
@@ -40,7 +32,7 @@ void func_80295E50(void);
 void func_8029A500(void);
 void func_8029A7E4(char *, ...);
 
-#define LEVEL_DONE(l) ((D_80364AF0[D_80364AE8].unk18[l] > 0 && D_80364AF0[D_80364AE8].unk18[l] < 6) ? 1 : 0)
+#define LEVEL_DONE(l) LEVEL_DONE_IN(D_80364AF0[D_80364AE8], l)
 
 void func_802995F0(s32 arg0) {
     D_803A6B03 = arg0;
@@ -215,7 +207,7 @@ void func_80299E10(s32 arg0) {
         case 0x26:
         case 0x2F:
         case 0x31:
-            D_80364AF0[D_80364AE8].unk18[D_802E8BDC] = 5;
+            D_80364AF0[D_80364AE8].medal[D_802E8BDC] = 5;
             break;
         case 0x37:
             D_80364AF0[D_80364AE8].unkEE |= 1;

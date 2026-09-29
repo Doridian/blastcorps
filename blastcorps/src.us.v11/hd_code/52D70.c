@@ -1,26 +1,9 @@
 #include "common.h"
+#include "game/game.h"
+#include "game/level.h"
+#include "game/player.h"
 
-typedef struct {
-    /* 0x00 */ u8 unk0[0x90];
-    /* 0x90 */ u8 unk90;
-    /* 0x91 */ u8 unk91;
-    /* 0x92 */ u8 unk92[0x6E];
-} UnkStruct_80364AF0; /* size = 0x100 */
-
-typedef struct {
-    /* 0x00 */ u8 unk0;
-    /* 0x02 */ s16 unk2;
-    /* 0x04 */ s16 unk4;
-    /* 0x06 */ s16 unk6;
-} UnkStruct_802E8F38; /* size = 0x8 */
-
-extern UnkStruct_802E8F38 D_802E8F38[];
 extern s32 D_802FA268;
-extern s32 D_80358070;
-extern u64 D_80364A98;
-extern u8 D_80364AE8;
-extern UnkStruct_80364AF0 D_80364AF0[];
-extern u16 D_80370C28;
 
 u8 func_8029766C(u8 arg0, u8 *arg1);
 s32 func_8026A6F0(s32, s32, s32, s32, s32, s32);
@@ -50,9 +33,9 @@ void func_80297530(u8 arg0) {
     D_8039CAC8 = D_80364AF0[D_80364AE8].unk90;
     if (sp1F != 0) {
         D_8039CAB7 = 1;
-        D_8039CAB0 = D_802E8F38[sp1E].unk2;
-        D_8039CAB2 = D_802E8F38[sp1E].unk4;
-        D_8039CAB4 = D_802E8F38[sp1E].unk6;
+        D_8039CAB0 = D_802E8F38[sp1E].x;
+        D_8039CAB2 = D_802E8F38[sp1E].y;
+        D_8039CAB4 = D_802E8F38[sp1E].z;
         D_8039CAB6 = sp1E;
         D_8039CAB8 = 0;
         D_8039CAC4 = (Mtx *)D_80358070;
@@ -71,7 +54,7 @@ u8 func_8029766C(u8 arg0, u8 *arg1) {
     sp7 = 0;
     sp0 = 0;
     do {
-        if (D_802E8F38[sp0].unk0 == arg0) {
+        if (D_802E8F38[sp0].level == arg0) {
             sp7 = 1;
         } else {
             sp0++;
@@ -97,7 +80,7 @@ void func_802976E8(Gfx **arg0) {
 }
 
 void func_80297804(s32 arg0, s32 arg1, s32 arg2) {
-    if (D_8039CAB7 != 0 && D_80364AF0[D_80364AE8].unk91 < 5) {
+    if (D_8039CAB7 != 0 && D_80364AF0[D_80364AE8].gameState < 5) {
         if (D_8039CAB8 != 0) {
             if (func_8026A6F0(arg0 >> 5, arg1 >> 5, arg2 >> 5, D_8039CAB0, D_8039CAB2, D_8039CAB4) >= 0x8D) {
                 D_8039CAB8 = 0;

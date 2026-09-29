@@ -1,4 +1,7 @@
 #include "common.h"
+#include "game/frame.h"
+#include "game/audio.h"
+#include "game/game.h"
 
 typedef struct {
     /* 0x00 */ s32 x;
@@ -71,16 +74,10 @@ typedef struct {
     /* 0x0A */ UnkStruct_8028FDA0_Elem unkA[1];
 } UnkStruct_8028FDA0;
 
-typedef struct {
-    /* 0x0000 */ Mtx unk0[8];
-    /* 0x0200 */ u8 unk200[0x900];
-    /* 0x0B00 */ Mtx unkB00[8];
-} UnkStruct_802917B0;
-
-extern UnkStruct_802917B0 D_02000000;
+extern FrameGame D_02000000;
 
 void func_80291724(s32 arg0);
-extern void *func_80260650(void *, s16, void **);
+extern void *func_80260650(SndBank *, s16, void **);
 extern void func_802608C8(void *);
 extern s32 func_8026A610(s32, s32, s32, s32);
 extern s32 func_8029B930(void);
@@ -104,11 +101,7 @@ extern void func_802AAE1C(u8, s16, s16, s32 *, s32 *);
 extern s32 func_802CE6F8(s32, s32, s32);
 
 extern u8 D_803A7424;
-extern s32 D_803643E0;
-extern s32 D_803643E4;
-extern s32 D_803643E8;
 extern s16 D_8036443C;
-extern void *D_80367738;
 extern s16 D_803A7410;
 extern s16 D_803A7412;
 extern s32 D_803EF6DC;
@@ -522,7 +515,7 @@ void func_80291724(s32 arg0) {
     }
 }
 
-void func_802917B0(Gfx **arg0, UnkStruct_802917B0 *arg1) {
+void func_802917B0(Gfx **arg0, FrameGame *arg1) {
     Gfx *gfx;
     s32 i;
 
@@ -537,8 +530,8 @@ void func_802917B0(Gfx **arg0, UnkStruct_802917B0 *arg1) {
         gSPTexture(gfx++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON);
     }
     for (i = 0; i < D_8039C710; i++) {
-        guTranslate(&arg1->unkB00[i], D_8039C550[i].x / 32.0f, D_8039C550[i].y / 32.0f, D_8039C550[i].z / 32.0f);
-        gSPMatrix(gfx++, &D_02000000.unkB00[i], G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+        guTranslate(&arg1->unk2C0[0x21 + i], D_8039C550[i].x / 32.0f, D_8039C550[i].y / 32.0f, D_8039C550[i].z / 32.0f);
+        gSPMatrix(gfx++, &D_02000000.unk2C0[0x21 + i], G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
         gDPLoadTextureBlock(gfx++, OS_K0_TO_PHYSICAL(D_8039C550[i].unk30), G_IM_FMT_RGBA, G_IM_SIZ_16b,
                             D_802FDC08[D_8039C550[i].unk10].unk282, D_802FDC08[D_8039C550[i].unk10].unk283, 0,
                             G_TX_MIRROR | G_TX_CLAMP, G_TX_MIRROR | G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK,

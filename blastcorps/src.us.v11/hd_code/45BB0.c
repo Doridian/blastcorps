@@ -1,45 +1,21 @@
 #include "common.h"
+#include "game/vehicle.h"
+#include "game/game.h"
+#include "game/yoshi.h"
+#include "game/level.h"
+#include "game/player.h"
 
-/* Same layout as OSContPad, but byte 1 is also read on its own. */
-typedef struct {
-    /* 0x0 */ u16 unk0;
-    /* 0x2 */ s8 unk2;
-    /* 0x3 */ s8 unk3;
-    /* 0x4 */ u8 unk4;
-} UnkStruct_80370BD8;
-
+/* The first three fields of an OSContPad (D_80370C30 keeps a copy of one). */
 typedef struct {
     /* 0x0 */ u16 unk0;
     /* 0x2 */ s8 unk2;
     /* 0x3 */ s8 unk3;
 } UnkStruct_80370C30;
 
-typedef struct {
-    /* 0x0000 */ u8 unk0[0x2E18];
-    /* 0x2E18 */ char *unk2E18;
-    /* 0x2E1C */ s32 unk2E1C;
-    /* 0x2E20 */ u8 unk2E20[0xE];
-    /* 0x2E2E */ s16 unk2E2E;
-    /* 0x2E30 */ u8 unk2E30[4];
-    /* 0x2E34 */ char *unk2E34;
-} UnkStruct_802F5804;
-
-typedef struct {
-    /* 0x000 */ u8 unk0[0x9B8];
-    /* 0x9B8 */ s16 unk9B8;
-} UnkStruct_802F8BDC;
-
 extern u8 D_8039C4B0;
-extern u8 D_802E8BD0;
-extern UnkStruct_802F5804 D_802F5804[];
-extern UnkStruct_802F8BDC D_802F8BDC[];
-extern u8 D_80364456;
-extern u8 D_80364AE8;
 extern s32 D_80364BE0[][0x40];
 extern u32 D_80358060;
 extern s32 D_80358064;
-extern s32 D_802E8BDC;
-extern u64 D_80364A90;
 extern s8 D_80370C75;
 extern u8 D_803ED40A;
 extern s16 D_803F7C34;
@@ -61,8 +37,8 @@ u8 D_802FDB14 = 0;
 
 /* .bss, 0x80370BC0-0x80370C50 (tools/bss_c.py) */
 s32 D_80370BC0;
-u8 D_80370BC8[0x10];
-UnkStruct_80370BD8 D_80370BD8;
+OSContStatus D_80370BC8[MAXCONTROLLERS];
+OSContPad D_80370BD8; /* read with osContGetReadData; its button word's low byte is also read on its own */
 u8 D_80370BDE[2];
 u8 D_80370BE0[0x10];
 OSMesg D_80370BF0;
@@ -133,7 +109,7 @@ void func_8028A42C(void) {
 }
 
 void func_8028A470(void) {
-    UnkStruct_80370BD8 *sp44;
+    OSContPad *sp44;
     s32 unused;
     s32 sp3C;
 
@@ -142,18 +118,18 @@ void func_8028A470(void) {
         if (D_8039C4B0 == 0 && D_80370C10 != 0) {
             osRecvMesg(&D_80370BF8, NULL, OS_MESG_BLOCK);
             osContGetReadData(sp44);
-            if (sp44->unk4 != 0) {
+            if (sp44->errno != 0) {
                 func_8029A7E4("pad read error - zeroing data\n");
-                sp44->unk0 = 0;
-                sp44->unk2 = sp44->unk3 = ((s8 *) sp44)[1];
+                sp44->button = 0;
+                sp44->stick_x = sp44->stick_y = ((s8 *) sp44)[1];
             }
             D_80370C10 = 0;
         }
         D_80370C2A = D_80370C28;
-        D_80370C28 = sp44->unk0;
+        D_80370C28 = sp44->button;
         if (D_80370C38 != 0) {
-            if (sp44->unk0 & 0x4000) {
-                sp44->unk0 &= ~0x4000;
+            if (sp44->button & 0x4000) {
+                sp44->button &= ~0x4000;
             } else {
                 D_80370C38 = 0;
             }
@@ -167,8 +143,8 @@ void func_8028A470(void) {
         }
         D_80370C13 = D_80370C11;
         D_80370C14 = D_80370C12;
-        D_80370C11 = sp44->unk2;
-        D_80370C12 = sp44->unk3;
+        D_80370C11 = sp44->stick_x;
+        D_80370C12 = sp44->stick_y;
         D_80370C24 = D_80370C1E;
         D_80370C25 = D_80370C1F;
         D_80370C26 = D_80370C20;
@@ -188,15 +164,15 @@ void func_8028A470(void) {
                         }
                     } while (D_80370C30.unk0 & 0xC0);
                 }
-                sp44->unk0 = D_80370C30.unk0;
-                sp44->unk2 = D_80370C30.unk2;
-                sp44->unk3 = D_80370C30.unk3;
-                sp44->unk0 &= ~8;
+                sp44->button = D_80370C30.unk0;
+                sp44->stick_x = D_80370C30.unk2;
+                sp44->stick_y = D_80370C30.unk3;
+                sp44->button &= ~8;
                 break;
             case 0x4:
             case 0x100:
                 if (D_802E8BD0 == 0 || D_80364A90 == 0x2000) {
-                    func_8025BBE8(sp44->unk0 & ~0x1000, sp44->unk2, sp44->unk3);
+                    func_8025BBE8(sp44->button & ~0x1000, sp44->stick_x, sp44->stick_y);
                 }
                 break;
             case 0x1:
@@ -205,9 +181,9 @@ void func_8028A470(void) {
             case 0x800:
             case 0x1000:
             case 0x4000000:
-                sp44->unk0 = 0;
-                sp44->unk2 = 0;
-                sp44->unk3 = 0;
+                sp44->button = 0;
+                sp44->stick_x = 0;
+                sp44->stick_y = 0;
                 break;
         }
         D_80370C34 = 0;
@@ -226,7 +202,7 @@ void func_8028A470(void) {
             }
             D_80370C35 = sp3C;
             if (D_802E8BD0 != 0) {
-                func_8028ADF0(1, 0, &sp44->unk0, &sp44->unk2, &sp44->unk3);
+                func_8028ADF0(1, 0, &sp44->button, &sp44->stick_x, &sp44->stick_y);
             } else {
                 switch (sp3C) {
                     case 0:
@@ -238,98 +214,98 @@ void func_8028A470(void) {
                             case 0:
                             case 2:
                             case 16:
-                                func_8028B734(&sp44->unk2, &sp44->unk3, D_80364456);
-                                func_8028B190(&sp44->unk2, &sp44->unk3);
+                                func_8028B734(&sp44->stick_x, &sp44->stick_y, D_80364456);
+                                func_8028B190(&sp44->stick_x, &sp44->stick_y);
                                 break;
                             default:
                                 D_80370C75 = 0;
-                                func_8028ADF0(0, 0, &sp44->unk0, &sp44->unk2, &sp44->unk3);
+                                func_8028ADF0(0, 0, &sp44->button, &sp44->stick_x, &sp44->stick_y);
                                 break;
                         }
                         break;
                     case 1:
                         if (D_80364456 == 9) {
                             D_80370C75 = 0;
-                            func_8028ADF0(1, 1, &sp44->unk0, &sp44->unk2, &sp44->unk3);
+                            func_8028ADF0(1, 1, &sp44->button, &sp44->stick_x, &sp44->stick_y);
                         } else {
                             D_80370C75 = 0;
-                            func_8028ADF0(1, 0, &sp44->unk0, &sp44->unk2, &sp44->unk3);
+                            func_8028ADF0(1, 0, &sp44->button, &sp44->stick_x, &sp44->stick_y);
                         }
                         break;
                 }
             }
         }
     } else {
-        sp44->unk0 = 0;
-        sp44->unk2 = 0;
-        sp44->unk3 = 0;
+        sp44->button = 0;
+        sp44->stick_x = 0;
+        sp44->stick_y = 0;
     }
-    if (sp44->unk0 & 0x200) {
+    if (sp44->button & 0x200) {
         D_80370C15 = 1;
     } else {
         D_80370C15 = 0;
     }
-    if (sp44->unk0 & 0x100) {
+    if (sp44->button & 0x100) {
         D_80370C16 = 1;
     } else {
         D_80370C16 = 0;
     }
-    if (sp44->unk0 & 0x800) {
+    if (sp44->button & 0x800) {
         D_80370C17 = 1;
     } else {
         D_80370C17 = 0;
     }
-    if (sp44->unk0 & 0x400) {
+    if (sp44->button & 0x400) {
         D_80370C18 = 1;
     } else {
         D_80370C18 = 0;
     }
-    if (sp44->unk0 & 0x1000) {
+    if (sp44->button & 0x1000) {
         D_80370C19 = 1;
     } else {
         D_80370C19 = 0;
     }
-    if (sp44->unk0 & 0x20) {
+    if (sp44->button & 0x20) {
         D_80370C1A = 1;
     } else {
         D_80370C1A = 0;
     }
-    if (sp44->unk0 & 0x10) {
+    if (sp44->button & 0x10) {
         D_80370C1B = 1;
     } else {
         D_80370C1B = 0;
     }
-    if (sp44->unk0 & 0x8000) {
+    if (sp44->button & 0x8000) {
         D_80370C1C = 1;
     } else {
         D_80370C1C = 0;
     }
-    if (sp44->unk0 & 0x4000) {
+    if (sp44->button & 0x4000) {
         D_80370C1D = 1;
     } else {
         D_80370C1D = 0;
     }
-    if (sp44->unk0 & 2) {
+    if (sp44->button & 2) {
         D_80370C1E = 1;
     } else {
         D_80370C1E = 0;
     }
-    if (sp44->unk0 & 4) {
+    if (sp44->button & 4) {
         D_80370C1F = 1;
     } else {
         D_80370C1F = 0;
     }
-    if (sp44->unk0 & 8) {
+    if (sp44->button & 8) {
         D_80370C20 = 1;
     } else {
         D_80370C20 = 0;
     }
-    if (sp44->unk0 & 1) {
+    if (sp44->button & 1) {
         D_80370C21 = 1;
     } else {
         D_80370C21 = 0;
     }
-    if (sp44->unk0 & 0x2000) {
+    if (sp44->button & 0x2000) {
         D_80370C22 = 1;
     } else {
         D_80370C22 = 0;
@@ -337,8 +313,8 @@ void func_8028A470(void) {
     D_80370C23 = D_80370C1D || D_80370C22;
     D_80370C2E = D_80370C2C;
     D_80370C2F = D_80370C2D;
-    D_80370C2C = sp44->unk2;
-    D_80370C2D = sp44->unk3;
+    D_80370C2C = sp44->stick_x;
+    D_80370C2D = sp44->stick_y;
 }
 
 void func_8028ADF0(u8 arg0, u8 arg1, u16 *arg2, s8 *arg3, s8 *arg4) {
@@ -475,14 +451,14 @@ void func_8028B240(void) {
     if (sp1C == 0) {
         func_8029A7E4("\n\007 --- ASSERTION FAULT - %s - %s, line %d\n\n", "found", "controller.c", 0x203);
     }
-    D_802F5804[0].unk2E18 = sp20;
-    D_802F5804[0].unk2E1C = 0;
-    D_802F5804[0].unk2E34 = sp24[sp18];
-    D_802F5804[0].unk2E2E = 0x13;
+    D_802F5804[421].text = sp20;
+    D_802F5804[421].unk10 = 0;
+    D_802F5804[422].text = sp24[sp18];
+    D_802F5804[422].unk6 = 0x13;
     if ((D_80364BE0[D_80364AE8][0] ^ 0x10205) & (1 << D_80364456)) {
-        D_802F8BDC[0].unk9B8 = 0x1A8;
+        D_802F8BDC[88].unk18 = 0x1A8;
     } else {
-        D_802F8BDC[0].unk9B8 = 0x1A7;
+        D_802F8BDC[88].unk18 = 0x1A7;
     }
     func_8026AF6C(0x8058);
 }

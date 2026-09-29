@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/game.h"
 
 typedef struct {
     /* 0x00 */ f32 unk0;
@@ -11,7 +12,6 @@ typedef struct {
 
 extern s32 D_80358058;
 
-extern s32 D_80358070;
 extern u8 D_80367C00;
 
 void func_80257490(s32, s32);
@@ -82,7 +82,7 @@ void func_80278BF0(Gfx *src, Gfx *end, Gfx **out) {
 
     *out = (Gfx *)D_80358070;
     dst = *out;
-    D_80358070 = (s32)((Gfx *)D_80358070 + (end - src) - 2);
+    D_80358070 = (u8 *)((Gfx *)D_80358070 + (end - src) - 2);
     while (src != end) {
         switch (cmd = src->words.w0 >> 24) {
             case (s8)G_ENDDL:
@@ -120,10 +120,10 @@ void func_80278BF0(Gfx *src, Gfx *end, Gfx **out) {
 }
 
 void func_80278E3C(void) {
-    func_80257490(D_80358070, 0x40);
-    D_8036D170 = D_80358070;
+    func_80257490((s32)D_80358070, 0x40);
+    D_8036D170 = (s32)D_80358070;
     D_80358070 += 0x5460;
-    func_80257490(D_80358070, 8);
+    func_80257490((s32)D_80358070, 8);
     D_8036D178 = 0;
     D_8036CC68 = 0;
     D_8036CC6C = 0;
