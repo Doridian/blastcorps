@@ -218,6 +218,11 @@ static void usage(const char *argv0) {
             "  --screenshot PREFIX  save the last frame as PREFIXnnnnn.bmp\n"
             "                       (PORT_SHOT_EVERY=N: every N frames too)\n"
             "  --save PATH          EEPROM file (default blastcorps.eep)\n"
+            "  --renderer gl|sw     OpenGL or the software renderer (default: gl with a\n"
+            "                       window, sw headless)\n"
+            "  --scale N            gl: internal resolution 320x240 times N (default: the\n"
+            "                       window's)\n"
+            "  --filter F           textures: n64 (3-point, default), bilinear or point\n"
             "environment: PORT_AUTOSTART=1 taps Start/A; PORT_DUMP=N,... writes RDRAM\n"
             "at the Nth controller read (and on a crash)\n", argv0);
     exit(2);
@@ -238,6 +243,16 @@ int main(int argc, char **argv) {
             deterministic = 1;
         else if (!strcmp(argv[i], "--headless"))
             host_headless = 1;
+        else if (!strcmp(argv[i], "--renderer") && i + 1 < argc) {
+            i++;
+            host_renderer = !strcmp(argv[i], "gl") ? 1 : !strcmp(argv[i], "sw") ? 0 : (usage(argv[0]), 0);
+        } else if (!strcmp(argv[i], "--scale") && i + 1 < argc)
+            gfx_gl_scale = atoi(argv[++i]);
+        else if (!strcmp(argv[i], "--filter") && i + 1 < argc) {
+            i++;
+            gfx_filter = !strcmp(argv[i], "n64") ? 0 : !strcmp(argv[i], "point") ? 1
+                       : !strcmp(argv[i], "bilinear") ? 2 : (usage(argv[0]), 0);
+        }
         else if (argv[i][0] == '-')
             usage(argv[0]);
         else

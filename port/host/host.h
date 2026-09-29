@@ -21,4 +21,14 @@ void host_video_init(void);
 void host_video_frame(void);
 void host_video_shutdown(void);
 
+/* the renderer: 0 software (gfx.c), 1 OpenGL (gfx_gl.c); -1 until chosen
+   (OpenGL with a window, software headless) */
+extern int host_renderer;
+extern int gfx_filter;              /* GFX_FILTER_* (gfx.h) */
+extern int gfx_gl_scale;            /* internal resolution factor, 0: the window's */
+struct SDL_Window;
+unsigned gfx_gl_window_flags(void);
+int gfx_gl_init(struct SDL_Window *win);
+void gfx_gl_present(uint32_t vi_fb, int vi_width, const char *screenshot);
+
 #endif

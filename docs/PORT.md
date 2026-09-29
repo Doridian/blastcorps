@@ -16,16 +16,28 @@ build/port/blastcorps baserom.us.v11.z64   # the user's own ROM
 ```
 
 It needs clang/LLVM with its development headers (BEPass is an LLVM
-plugin), a 32-bit (multilib) libc and SDL2, and Python 3.  Keys: arrows or
+plugin), a 32-bit (multilib) libc and SDL2, and Python 3; the OpenGL
+renderer also needs 32-bit libepoxy and an OpenGL 3.3 driver (without
+libepoxy only the software renderer is built).  Keys: arrows or
 WASD for the stick, X = A, C = B, Z = Z, Enter = Start, Q/E = L/R, IJKL = C
 buttons, TFGH = D-pad; an SDL game controller works too.  `--help` lists
 the options: `--headless`, `--deterministic` (virtual time: as fast as the
 host can, identical every run), `--frames N`, `--screenshot PREFIX`,
-`--save PATH` (the 4 Kbit EEPROM, default `blastcorps.eep`).
+`--save PATH` (the 4 Kbit EEPROM, default `blastcorps.eep`),
+`--renderer gl|sw` (default: OpenGL with a window, software headless),
+`--scale N` (OpenGL: render at 320x240 times N; by default it follows the
+window's height, so resizing the window changes it) and
+`--filter n64|bilinear|point` (textures: the N64's 3-point filter where
+the game asks for bilinear filtering, which is the default, a 4-tap
+bilinear one, or point sampling throughout).
 `PORT_AUTOSTART=1` taps Start and A, which is enough to get from the title
 through the name entry into Simian Acres; `PORT_DUMP=N,...` writes RDRAM at
 the Nth controller read, counted as `tools/recomp/test/snapshot.c` counts
 them in mupen64plus, so the two can be compared byte for byte.
+`PORT_SHOT_EVERY=N` saves a screenshot every N frames (at the internal
+resolution with OpenGL); `PORT_GL_QUANT=1` makes the OpenGL renderer write
+5-bit color, as the RDRAM framebuffer holds it, and `PORT_GL_READBACK=1`
+copies its framebuffers back to RDRAM after every task (see "Graphics").
 
 ## Memory model
 
@@ -111,16 +123,89 @@ IDO never would.
   "loading" it (`func_8028B3E0`, wrapped at link time) restores its `.data`
   from a startup copy and clears its `.bss`, which is what the N64's inflate
   leaves behind.
-- **Graphics** (`port/host/gfx.c`): a software Fast3D (gbi 2.0D) renderer
-  that draws into the game's framebuffer in RDRAM, as the RDP would, and
-  shows the VI's current framebuffer.  RSP: matrices, vertices, lighting,
-  texgen, clipping, culling.  RDP: TMEM loads, tiles, all texture formats,
-  the combiner (both cycles), a simplified blender, alpha compare, a float
-  z-buffer tied to the z image, 8/16/32-bit color images.  OS_EVENT_DP is
-  raised only for a display list that ends in a full sync, as the game's
-  scheduler expects.  Point sampling, no anti-aliasing, no fog.
+- **Graphics**: see "Graphics" below.
 - **Audio**: the game's audio thread and libaudio run; the audio task is
   reported done without running, so there is no sound.
+
+## Graphics
+
+The RSP's graphics tasks are Fast3D (gbi 2.0D) display lists.
+`port/host/gfx.c` is the front end both renderers share and the software
+renderer; `port/host/gfx_gl.c` is the OpenGL 3.3 one; `gfx.h` is the
+interface between them.
+
+- **Front end** (RSP and RDP state): matrices, vertices, lighting,
+  texgen, fog (into shade alpha, as the RSP does it; the game doesn't use
+  it), clipping against the near plane, culling, `gSPModifyVertex` (the
+  game rewrites texture coordinates with it: `G_MW_POINTS`), TMEM loads
+  laid out as the RDP lays them out (the odd-row swizzle, which LoadBlock
+  applies by counting `dxt` and the sampler undoes, and RGBA32 split
+  across the two halves; the game's LoadBlock textures only look right with
+  it), tiles, texel decoding for every format, level of detail (the tile
+  pair and LOD_FRACTION from texels per pixel, which the terrain's
+  mip-mapped 2-cycle mode uses), and the combiner and blender decoding.
+  OS_EVENT_DP is raised only for a display list that ends in a full sync,
+  as the game's scheduler expects.  For `--deterministic` the RDP's time is
+  charged from the geometry (the covered area), so both renderers see the
+  same timeline and their frames can be compared.
+- **Software renderer**: draws into the game's color image in RDRAM, as
+  the RDP would, and the VI shows RDRAM.  The combiner (both cycles), the
+  blender (P * A + M * B over A + B, per cycle; without FORCE_BL the last
+  cycle only passes the color, as full-coverage pixels do on the
+  hardware), alpha compare and coverage-from-alpha, a float z-buffer tied to
+  the z image (a fill rectangle into it clears it), N64 3-point filtering,
+  8/16/32-bit color images.  It is the reference, and it runs headless.
+- **OpenGL renderer**: the front end hands it clipped screen-space
+  polygons and rectangles.  The game's two 320-wide 16-bit framebuffers
+  become render targets at the internal resolution, sharing one depth
+  buffer (the z image).  Textures are decoded from TMEM with the software
+  renderer's own decoder, into the texels a tile can address, and cached by
+  a hash of the TMEM bytes and parameters they come from; wrapping,
+  mirroring, clamping, shifts, filtering and LOD are done in the shader
+  with `texelFetch`, as the RDP does them, so they behave the same at any
+  resolution.  Each combiner/blender mode compiles to a fragment shader
+  (both cycles, alpha compare, coverage from alpha); the blender cycle that
+  reads the framebuffer becomes the GL blend (ONE, SRC_ALPHA) with the
+  source premultiplied, which gives (P * A + M * B) / (A + B) exactly for
+  any P, M, A, B.  Triangles are batched per draw state.  The frame shown
+  is the target the VI points at, scaled to the window with its aspect
+  kept.
+- **Where the game uses the framebuffer itself.**  Traced by write- and
+  read-protecting the framebuffers between tasks (a SIGSEGV hook, not kept):
+  the CPU never touches the two color framebuffers in the attract mode,
+  the front end or Simian Acres.  The z image's memory (the start of
+  `init`'s, `0x8021ED00`) is used by the gzip inflate as scratch while a
+  level loads, which doesn't matter to either renderer.  What the game
+  does render to texture is 64-wide 8-bit images at `0x803580C0`-
+  `0x8035E240` (the soft shadows behind the text panels and under the
+  vehicles), which it then loads as IA16 textures: the OpenGL renderer
+  leaves every color image that isn't a 320-wide 16-bit one to the
+  software rasterizer, in RDRAM, so those work unchanged.  A texture load
+  from a GPU framebuffer (none happens) reads it back first;
+  `PORT_GL_READBACK=1` also copies the framebuffers to RDRAM after every
+  task, for code that reads them with the CPU.  A framebuffer the GPU never
+  drew is shown from RDRAM.
+
+Comparing the two (`--deterministic`, `PORT_SHOT_EVERY=150`, 1x, the attract
+mode and 4,500 frames of `PORT_AUTOSTART=1` into Simian Acres): 0.01-0.02%
+of pixels differ by more than 24 (of 255) in any channel, and the mean
+difference is 2.9, which is the software renderer's 5-bit framebuffer
+(1.5 with `PORT_GL_QUANT=1`, where what's left is translucent surfaces
+blended with 5-bit or 8-bit memory).  Host time per graphics task (the
+display list, the RSP work and the draw calls; about four tasks a frame),
+Simian Acres: software 3.7 ms, OpenGL 0.42 ms, the same at 1x and 4x
+since the GPU's work is asynchronous (a Radeon RX 7900 XTX).  4,500
+deterministic frames take about 8 s with OpenGL at 4x against about 62 s
+in software.  In real time both hold 60 frames a second; the process's CPU
+use says little either way, since the game's threads spin on counters
+while they wait for the retrace.
+
+Not done: anti-aliasing (the coverage the blender uses on edges; rendering
+above 1x and scaling down is the substitute) and the VI's filters, dither,
+the combiner's noise and chroma key inputs, texgen from the look-at
+vectors (the port uses the modelview's axes), the far plane (depth is
+clamped instead), and triangle edges follow GL's and the software
+renderer's pixel-center rule rather than the RDP's.
 
 ## The glue to the translated code
 
@@ -165,9 +250,8 @@ Guarded with `#ifdef TARGET_PC`; the N64 build still matches.
   the CPU is fast, and the intro modes don't wait for the retrace (the
   scheduler swaps at once when `D_80364A90` has certain bits), so the
   attract sequence runs about 15 times faster than on the hardware, and
-  gameplay at 60 frames a second instead of about 30.  Rendering: some
-  textures glitch (no TMEM swizzle, no bilinear filtering or LOD), the
-  blender is approximate.  No audio.  Non-void functions that fall off the
+  gameplay at 60 frames a second instead of about 30.  Rendering: no
+  anti-aliasing (see "Graphics").  No audio.  Non-void functions that fall off the
   end (`func_8024B4B8`, `func_80271F48`, `func_8027E164`, `func_801F6160`,
   `func_801F61C8`, `func_801F6ED4`) return whatever the host leaves.
 
@@ -178,8 +262,6 @@ Guarded with `#ifdef TARGET_PC`; the N64 build still matches.
   estimates, and find what the game uses to pace its modes.
 - **Audio.**  An audio-ucode HLE for the audio task, and SDL output from
   `osAiSetNextBuffer`.
-- **An accelerated renderer** (OpenGL, or Fast3D in the style of sm64-port's
-  gfx_pc) in place of the software one, at `host_gfx_task()`.
 - **Real call states** for the translated code's test.  Recording `ctx` and
   memory at each translated function's entry during play would replace the
   random registers, and reach the 30% of blocks the random states don't.

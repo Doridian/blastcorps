@@ -1,9 +1,9 @@
 /*
  * Window, input and presentation (SDL2).
  *
- * Until a display-list renderer is wired in, what's shown is the VI's
- * current framebuffer as it is in RDRAM (RGBA 5551), i.e. whatever the CPU
- * drew into it; the RDP's work is not emulated.
+ * With the software renderer, what's shown is the VI's current
+ * framebuffer as it is in RDRAM (RGBA 5551), which gfx.c draws into as the
+ * RDP would.  With the OpenGL one, gfx_gl.c presents the GPU's copy of it.
  */
 #include <SDL.h>
 #include <stdio.h>
@@ -15,6 +15,7 @@
 int host_max_frames;
 const char *host_screenshot_prefix;
 int host_headless;
+int host_renderer = -1;
 
 static SDL_Window *win;
 static SDL_Renderer *ren;
@@ -37,16 +38,33 @@ void host_video_init(void) {
         SDL_setenv("SDL_VIDEODRIVER", "offscreen", 1);
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_EVENTS) != 0)
         host_fatal("SDL_Init: %s", SDL_GetError());
-    win = SDL_CreateWindow("Blast Corps", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480,
-                           SDL_WINDOW_RESIZABLE);
+    if (host_renderer < 0)
+        host_renderer = !host_headless;
+#ifndef PORT_HAVE_GL
+    if (host_renderer == 1)
+        host_log("built without OpenGL; using the software renderer\n");
+    host_renderer = 0;
+#endif
+    int ww = 640, wh = 480;
+    if (host_renderer == 1 && gfx_gl_scale > 2) {
+        ww = 320 * gfx_gl_scale;
+        wh = 240 * gfx_gl_scale;
+    }
+    win = SDL_CreateWindow("Blast Corps", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, ww, wh,
+                           SDL_WINDOW_RESIZABLE | (host_renderer == 1 ? gfx_gl_window_flags() : 0));
     if (!win)
         host_fatal("SDL_CreateWindow: %s", SDL_GetError());
+    if (host_renderer == 1 && !gfx_gl_init(win))
+        host_renderer = 0;
+    if (host_renderer == 1)
+        goto pads;
     ren = SDL_CreateRenderer(win, -1, 0);
     if (!ren)
         ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_SOFTWARE);
     if (!ren)
         host_fatal("SDL_CreateRenderer: %s", SDL_GetError());
     tex = SDL_CreateTexture(ren, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, 320, 240);
+pads:
     for (int i = 0; i < SDL_NumJoysticks(); i++)
         if (SDL_IsGameController(i) && (pad = SDL_GameControllerOpen(i)))
             break;
@@ -89,7 +107,21 @@ void host_video_frame(void) {
         host_log("frame %d\n", frame);
         host_threads_dump();
     }
-    /* the VI framebuffer, RGBA5551 big-endian */
+    const char *every = getenv("PORT_SHOT_EVERY");
+    int ev = every ? atoi(every) : 0;
+    int shot = host_screenshot_prefix && ((host_max_frames && frame == host_max_frames) || (ev > 0 && frame % ev == 0));
+    char path[512];
+    if (shot)
+        snprintf(path, sizeof path, "%s%05d.bmp", host_screenshot_prefix, frame);
+    if (host_renderer == 1) {
+        gfx_gl_present(vi_fb, vi_width, shot ? path : NULL);
+        if (shot)
+            host_log("saved %s\n", path);
+        goto done;
+    }
+    /* the VI framebuffer, RGBA5551 big-endian (black while the VI is) */
+    if (!vi_fb)
+        memset(pixels, 0, sizeof pixels);
     if (vi_fb) {
         const uint8_t *src = port_ptr(vi_fb);
         for (int y = 0; y < 240; y++)
@@ -104,14 +136,11 @@ void host_video_frame(void) {
     SDL_RenderClear(ren);
     SDL_RenderCopy(ren, tex, NULL, NULL);
     SDL_RenderPresent(ren);
-    const char *every = getenv("PORT_SHOT_EVERY");
-    int ev = every ? atoi(every) : 0;
-    if (host_screenshot_prefix && ((host_max_frames && frame == host_max_frames) || (ev > 0 && frame % ev == 0))) {
-        char path[512];
-        snprintf(path, sizeof path, "%s%05d.bmp", host_screenshot_prefix, frame);
+    if (shot) {
         save_bmp(path, 320, 240);
         host_log("saved %s\n", path);
     }
+done:
     if (host_max_frames && frame >= host_max_frames)
         quit = 1;
 }

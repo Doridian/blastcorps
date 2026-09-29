@@ -163,11 +163,18 @@ add_dependencies(recomp recomp_headers)
 find_package(PkgConfig REQUIRED)
 set(ENV{PKG_CONFIG_LIBDIR} "/usr/lib32/pkgconfig:/usr/share/pkgconfig")
 pkg_check_modules(SDL2 REQUIRED sdl2)
+# the OpenGL renderer (gfx_gl.c) is optional: without libepoxy, only the
+# software one is built
+pkg_check_modules(EPOXY epoxy)
 file(GLOB HOST_C ${CMAKE_CURRENT_SOURCE_DIR}/host/*.c)
 add_library(host OBJECT ${HOST_C})
 target_include_directories(host PRIVATE ${ROOT}/tools/recomp/runtime ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/host ${SDL2_INCLUDE_DIRS})
 target_compile_options(host PRIVATE ${HOST_FLAGS} ${SDL2_CFLAGS_OTHER})
+if(EPOXY_FOUND)
+    target_compile_definitions(host PRIVATE PORT_HAVE_GL)
+    target_include_directories(host PRIVATE ${EPOXY_INCLUDE_DIRS})
+endif()
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/host/gfx.c PROPERTIES COMPILE_OPTIONS "-O3;-msse4.1")
 
 # ---- link ----------------------------------------------------------------------
@@ -194,7 +201,7 @@ set_target_properties(blastcorps PROPERTIES LINKER_LANGUAGE C LINK_DEPENDS "${GE
 add_dependencies(blastcorps port_syms)
 target_link_options(blastcorps PRIVATE -m32 -no-pie -Wl,-Ttext-segment=0x80400000 -Wl,--wrap=func_8028B3E0 -Wl,${GEN}/port_syms.ld -Wl,-T,${GEN}/port_rdram.ld
     -Wl,${CMAKE_CURRENT_SOURCE_DIR}/port_fixed.ld)
-target_link_libraries(blastcorps PRIVATE ${SDL2_LDFLAGS} m)
+target_link_libraries(blastcorps PRIVATE ${SDL2_LDFLAGS} ${EPOXY_LDFLAGS} m)
 
 # every game variable where the N64 has it?
 add_custom_command(TARGET blastcorps POST_BUILD
