@@ -3,6 +3,7 @@
 #include "game/game.h"
 #include "game/level.h"
 #include "game/player.h"
+#include "functions.h"
 
 /*
  * This file's .bss: func_80274BF0 and func_80275270 store D_8036C778 (a u64)
@@ -35,10 +36,7 @@ Vtx D_802FA8B0[2][4] = {
 f32 D_802FA930 = 8.0f;
 
 
-void func_80275270(u64 arg0, f32 arg2);
 
-u16 func_8026B10C(void);
-void func_8026AF6C(u16);
 
 Gfx *func_80274BF0(u8 *arg0, Gfx *arg1) {
     Gfx *gfx;
@@ -82,8 +80,6 @@ Gfx *func_80274BF0(u8 *arg0, Gfx *arg1) {
     return gfx;
 }
 
-void func_8029A7E4(char *, ...);
-void func_80261570(f32);
 
 void func_80275270(u64 arg0, f32 arg2) {
     if (D_8036C778 != 0) {
